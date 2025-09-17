@@ -246,19 +246,20 @@ EOF
 
 cat > gui/preview.py << 'EOF'
 """
-Composant d'aperçu HTML du Markdown
+Composant d'aperçu HTML du Markdown avec mise en forme
 """
 
 import tkinter as tk
 from tkinter import ttk
-import tkinter.html as tkhtml  # Fallback simple
 import markdown
+import re
 
 class MarkdownPreview:
     def __init__(self, parent):
         self.parent = parent
         self.md = markdown.Markdown(extensions=['tables', 'fenced_code', 'toc'])
         self.setup_ui()
+        self.setup_text_tags()
         
     def setup_ui(self):
         """Configuration de l'interface de prévisualisation"""
@@ -272,14 +273,16 @@ class MarkdownPreview:
         preview_frame = ttk.Frame(self.frame)
         preview_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Utilisation d'un Text widget en lecture seule comme fallback
+        # Widget Text avec mise en forme
         self.preview_widget = tk.Text(
             preview_frame,
             wrap=tk.WORD,
             state=tk.DISABLED,
             font=("Arial", 11),
             bg="white",
-            fg="#333333"
+            fg="#333333",
+            padx=10,
+            pady=10
         )
         
         scrollbar = ttk.Scrollbar(preview_frame, orient=tk.VERTICAL, command=self.preview_widget.yview)
@@ -288,19 +291,51 @@ class MarkdownPreview:
         self.preview_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
+    def setup_text_tags(self):
+        """Configuration des tags pour la mise en forme"""
+        # Titres
+        self.preview_widget.tag_config("h1", font=("Arial", 18, "bold"), foreground="#2c3e50", spacing3=10)
+        self.preview_widget.tag_config("h2", font=("Arial", 16, "bold"), foreground="#2c3e50", spacing3=8)
+        self.preview_widget.tag_config("h3", font=("Arial", 14, "bold"), foreground="#2c3e50", spacing3=6)
+        self.preview_widget.tag_config("h4", font=("Arial", 12, "bold"), foreground="#2c3e50", spacing3=4)
+        
+        # Texte en gras
+        self.preview_widget.tag_config("bold", font=("Arial", 11, "bold"))
+        
+        # Texte en italique
+        self.preview_widget.tag_config("italic", font=("Arial", 11, "italic"))
+        
+        # Code inline
+        self.preview_widget.tag_config("code", font=("Consolas", 10), background="#f6f8fa", 
+                                     relief=tk.RAISED, borderwidth=1)
+        
+        # Bloc de code
+        self.preview_widget.tag_config("code_block", font=("Consolas", 10), background="#f6f8fa", 
+                                     lmargin1=20, lmargin2=20, spacing1=5, spacing3=5)
+        
+        # Citations
+        self.preview_widget.tag_config("blockquote", font=("Arial", 11, "italic"), 
+                                     foreground="#6a737d", lmargin1=20, lmargin2=20,
+                                     borderwidth=2, relief=tk.RAISED)
+        
+        # Liens
+        self.preview_widget.tag_config("link", foreground="#0366d6", underline=True)
+        
+        # Listes
+        self.preview_widget.tag_config("list", lmargin1=20, lmargin2=40)
+        
     def update_preview(self, markdown_content):
-        """Mettre à jour l'aperçu"""
+        """Mettre à jour l'aperçu avec mise en forme"""
         try:
             # Conversion Markdown vers HTML
             html_content = self.md.convert(markdown_content)
             
-            # Affichage simple dans le Text widget
+            # Effacer le contenu précédent
             self.preview_widget.configure(state=tk.NORMAL)
             self.preview_widget.delete("1.0", tk.END)
             
-            # Insertion du contenu (version simplifiée sans HTML)
-            # TODO: Améliorer avec un vrai rendu HTML
-            self.preview_widget.insert("1.0", self._html_to_text(html_content))
+            # Parser et insérer le contenu avec mise en forme
+            self._parse_and_insert_html(html_content)
             
             self.preview_widget.configure(state=tk.DISABLED)
             
@@ -310,14 +345,67 @@ class MarkdownPreview:
             self.preview_widget.insert("1.0", f"Erreur de prévisualisation: {e}")
             self.preview_widget.configure(state=tk.DISABLED)
             
-    def _html_to_text(self, html_content):
-        """Conversion basique HTML vers texte (temporaire)"""
-        import re
-        # Suppression des balises HTML basiques
-        text = re.sub('<[^<]+?>', '', html_content)
-        # Décodage des entités HTML
-        text = text.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')
-        return text
+    def _parse_and_insert_html(self, html_content):
+        """Parser HTML et insérer avec les bonnes balises de mise en forme"""
+        # Nettoyer le HTML des balises de paragraphe pour un meilleur rendu
+        html_content = html_content.replace('<p>', '').replace('</p>', '\n\n')
+        
+        # Traiter les titres
+        for level in range(1, 7):
+            pattern = f'<h{level}>(.*?)</h{level}>'
+            html_content = re.sub(pattern, lambda m: self._insert_with_tag(m.group(1), f"h{level}"), html_content)
+        
+        # Traiter le gras
+        html_content = re.sub(r'<strong>(.*?)</strong>', lambda m: self._insert_with_tag(m.group(1), "bold"), html_content)
+        html_content = re.sub(r'<b>(.*?)</b>', lambda m: self._insert_with_tag(m.group(1), "bold"), html_content)
+        
+        # Traiter l'italique
+        html_content = re.sub(r'<em>(.*?)</em>', lambda m: self._insert_with_tag(m.group(1), "italic"), html_content)
+        html_content = re.sub(r'<i>(.*?)</i>', lambda m: self._insert_with_tag(m.group(1), "italic"), html_content)
+        
+        # Traiter le code inline
+        html_content = re.sub(r'<code>(.*?)</code>', lambda m: self._insert_with_tag(m.group(1), "code"), html_content)
+        
+        # Traiter les blocs de code
+        html_content = re.sub(r'<pre><code>(.*?)</code></pre>', 
+                            lambda m: self._insert_with_tag(m.group(1), "code_block"), 
+                            html_content, flags=re.DOTALL)
+        
+        # Traiter les citations
+        html_content = re.sub(r'<blockquote>(.*?)</blockquote>', 
+                            lambda m: self._insert_with_tag(m.group(1).strip(), "blockquote"), 
+                            html_content, flags=re.DOTALL)
+        
+        # Traiter les liens
+        html_content = re.sub(r'<a[^>]*>(.*?)</a>', lambda m: self._insert_with_tag(m.group(1), "link"), html_content)
+        
+        # Traiter les listes
+        html_content = re.sub(r'<ul>(.*?)</ul>', self._process_list, html_content, flags=re.DOTALL)
+        html_content = re.sub(r'<ol>(.*?)</ol>', self._process_list, html_content, flags=re.DOTALL)
+        
+        # Supprimer les balises restantes
+        html_content = re.sub(r'<[^>]+>', '', html_content)
+        
+        # Insérer le texte final
+        self.preview_widget.insert(tk.END, html_content)
+        
+    def _insert_with_tag(self, text, tag):
+        """Insérer du texte avec une balise spécifique"""
+        start_pos = self.preview_widget.index(tk.INSERT)
+        self.preview_widget.insert(tk.INSERT, text)
+        end_pos = self.preview_widget.index(tk.INSERT)
+        self.preview_widget.tag_add(tag, start_pos, end_pos)
+        return ""  # Retourner vide car le texte a été inséré
+        
+    def _process_list(self, match):
+        """Traiter les listes"""
+        list_content = match.group(1)
+        items = re.findall(r'<li>(.*?)</li>', list_content, re.DOTALL)
+        result = ""
+        for i, item in enumerate(items, 1):
+            clean_item = re.sub(r'<[^>]+>', '', item).strip()
+            result += f"  • {clean_item}\n"
+        return result + "\n"
 EOF
 
 # Création des fichiers Core
@@ -506,6 +594,14 @@ echo "📄 Création du fichier requirements.txt..."
 cat > requirements.txt << 'EOF'
 # Dépendances pour BlueNotebook - Éditeur Markdown Python
 
+# Interface graphique
+# tkinter est inclus avec Python (bibliothèque standard)
+# Si tkinter n'est pas disponible sur votre système :
+# - Ubuntu/Debian: sudo apt-get install python3-tk
+# - CentOS/RHEL: sudo yum install tkinter
+# - macOS: inclus avec Python
+# - Windows: inclus avec Python
+
 # Traitement Markdown
 markdown>=3.4.0
 pymdown-extensions>=10.0.0
@@ -513,17 +609,29 @@ pymdown-extensions>=10.0.0
 # Coloration syntaxique
 Pygments>=2.15.0
 
-# Interface graphique avancée (optionnel)
+# Interface graphique avancée (alternatives optionnelles)
+# Décommenter si vous voulez utiliser PyQt au lieu de tkinter :
 # PyQt5>=5.15.0
-# ou
-# tkinter (inclus avec Python)
+# PyQtWebEngine>=5.15.0
 
-# Export PDF (optionnel)
+# ou PySide6 (alternative à PyQt)
+# PySide6>=6.4.0
+
+# Export PDF (optionnel pour fonctionnalités avancées)
 # weasyprint>=59.0
+# reportlab>=4.0.0
 
-# Tests
+# Traitement d'images (optionnel)
+# Pillow>=10.0.0
+
+# Tests et développement
 pytest>=7.0.0
 pytest-cov>=4.0.0
+
+# Outils de développement (optionnel)
+# black>=23.0.0      # Formatage de code
+# flake8>=6.0.0      # Linting
+# mypy>=1.0.0        # Vérification de types
 EOF
 
 # Création du fichier README.md

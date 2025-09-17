@@ -251,7 +251,6 @@ Composant d'aperçu HTML du Markdown
 
 import tkinter as tk
 from tkinter import ttk
-import tkinter.html as tkhtml  # Fallback simple
 import markdown
 
 class MarkdownPreview:
@@ -506,6 +505,14 @@ echo "📄 Création du fichier requirements.txt..."
 cat > requirements.txt << 'EOF'
 # Dépendances pour BlueNotebook - Éditeur Markdown Python
 
+# Interface graphique
+# tkinter est inclus avec Python (bibliothèque standard)
+# Si tkinter n'est pas disponible sur votre système :
+# - Ubuntu/Debian: sudo apt-get install python3-tk
+# - CentOS/RHEL: sudo yum install tkinter
+# - macOS: inclus avec Python
+# - Windows: inclus avec Python
+
 # Traitement Markdown
 markdown>=3.4.0
 pymdown-extensions>=10.0.0
@@ -513,17 +520,29 @@ pymdown-extensions>=10.0.0
 # Coloration syntaxique
 Pygments>=2.15.0
 
-# Interface graphique avancée (optionnel)
+# Interface graphique avancée (alternatives optionnelles)
+# Décommenter si vous voulez utiliser PyQt au lieu de tkinter :
 # PyQt5>=5.15.0
-# ou
-# tkinter (inclus avec Python)
+# PyQtWebEngine>=5.15.0
 
-# Export PDF (optionnel)
+# ou PySide6 (alternative à PyQt)
+# PySide6>=6.4.0
+
+# Export PDF (optionnel pour fonctionnalités avancées)
 # weasyprint>=59.0
+# reportlab>=4.0.0
 
-# Tests
+# Traitement d'images (optionnel)
+# Pillow>=10.0.0
+
+# Tests et développement
 pytest>=7.0.0
 pytest-cov>=4.0.0
+
+# Outils de développement (optionnel)
+# black>=23.0.0      # Formatage de code
+# flake8>=6.0.0      # Linting
+# mypy>=1.0.0        # Vérification de types
 EOF
 
 # Création du fichier README.md
