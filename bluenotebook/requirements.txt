@@ -1,15 +1,8 @@
 # Dépendances pour BlueNotebook - Éditeur Markdown Python
 
-# Interface graphique
-# tkinter est inclus avec Python (bibliothèque standard)
-# Si tkinter n'est pas disponible sur votre système :
-# - Ubuntu/Debian: sudo apt-get install python3-tk
-# - CentOS/RHEL: sudo yum install tkinter
-# - macOS: inclus avec Python
-# - Windows: inclus avec Python
-
-# Rendu HTML pour l'aperçu Markdown
-tkhtmlview>=0.2.0
+# Interface graphique PyQt5 avec navigateur intégré
+PyQt5>=5.15.0
+PyQtWebEngine>=5.15.0
 
 # Traitement Markdown
 markdown>=3.4.0
@@ -17,21 +10,6 @@ pymdown-extensions>=10.0.0
 
 # Coloration syntaxique
 Pygments>=2.15.0
-
-# Interface graphique avancée (alternatives optionnelles)
-# Décommenter si vous voulez utiliser PyQt au lieu de tkinter :
-# PyQt5>=5.15.0
-# PyQtWebEngine>=5.15.0
-
-# ou PySide6 (alternative à PyQt)
-# PySide6>=6.4.0
-
-# Export PDF (optionnel pour fonctionnalités avancées)
-# weasyprint>=59.0
-# reportlab>=4.0.0
-
-# Traitement d'images (optionnel)
-# Pillow>=10.0.0
 
 # Tests et développement
 pytest>=7.0.0

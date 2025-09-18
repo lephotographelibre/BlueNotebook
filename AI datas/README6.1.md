@@ -23,6 +23,14 @@ Un éditeur de texte Markdown moderne et professionnel développé en Python ave
 
 ### Installation rapide
 
+1. **Créer le projet** :
+```bash
+# Exécuter le script de génération
+./setup_bluenotebook.sh
+cd bluenotebook
+```
+
+2. **Installer les dépendances** :
 ```bash
 # Créer un environnement virtuel (recommandé)
 python -m venv venv
@@ -32,8 +40,10 @@ venv\\Scripts\\activate   # Windows
 
 # Installer les dépendances
 pip install -r requirements.txt
+```
 
-# Lancer l'application
+3. **Lancer l'application** :
+```bash
 python main.py
 ```
 
@@ -64,44 +74,55 @@ pip install PyQt5 PyQtWebEngine markdown pymdown-extensions Pygments
 | `Ctrl+F` | Rechercher |
 | `F5` | Basculer l'aperçu |
 
-## 🛠️ Développement
+### Syntaxe Markdown supportée
 
-### Tests
+```markdown
+# Titres
+## Sous-titres
+### Titres de niveau 3
 
-```bash
-# Lancer tous les tests
-pytest tests/
+**Gras** et *italique*
 
-# Tests avec couverture
-pytest tests/ --cov=.
+`Code inline` et blocs de code :
+```python
+def hello():
+    print("Hello BlueNotebook!")
 ```
 
-### Personnalisation
+> Citations
+> sur plusieurs lignes
 
-- **CSS de l'aperçu** : Modifier `gui/preview.py`
-- **Extensions Markdown** : Modifier `setup_markdown()` dans `gui/preview.py`
-- **Interface** : Modifier les fichiers dans `gui/`
+- Listes à puces
+- Avec sous-éléments
+  - Comme ça
 
-## 🐛 Dépannage
+1. Listes numérotées
+2. Deuxième élément
 
-### Problèmes courants
+| Tables | Colonnes |
+|--------|----------|
+| Data   | Values   |
 
-**PyQt5 ne s'installe pas** :
-```bash
-# Ubuntu/Debian
-sudo apt-get install python3-pyqt5 python3-pyqt5.qtwebengine
-
-# macOS avec Homebrew
-brew install pyqt5
-
-# Windows : utiliser pip normalement
-pip install PyQt5 PyQtWebEngine
-```
-
-## 📄 Licence
-
-MIT License
+[Liens](https://example.com) et ![Images](image.png)
 
 ---
 
-**BlueNotebook** - Un éditeur Markdown moderne pour tous vos besoins d'écriture ! 🔵📓
+Règles horizontales et plus !
+```
+
+## 🏗️ Structure du projet
+
+```
+bluenotebook/
+├── main.py              # Point d'entrée
+├── gui/                 # Interface utilisateur PyQt5
+│   ├── __init__.py
+│   ├── main_window.py   # Fenêtre principale
+│   ├── editor.py        # Éditeur avec coloration syntaxique
+│   └── preview.py       # Aperçu HTML avec QWebEngine
+├── core/                # Logique métier
+│   ├── __init__.py
+│   ├── markdown_parser.py  # Gestionnaire Markdown
+│   └── file_handler.py     # Gestionnaire de fichiers
+├── resources/           # Ressources
+│   └── styles.css

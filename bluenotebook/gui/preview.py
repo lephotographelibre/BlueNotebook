@@ -1,265 +1,351 @@
 """
-Composant d'aperçu HTML du Markdown avec rendu HTML complet
+Composant d'aperçu HTML du Markdown avec QWebEngine
 """
 
-import tkinter as tk
-from tkinter import ttk
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QUrl, QTimer
 import markdown
-from tkhtmlview import HTMLScrolledText
+import tempfile
+import os
 
-class MarkdownPreview:
-    def __init__(self, parent):
-        self.parent = parent
+class MarkdownPreview(QWidget):
+    """Aperçu HTML avec QWebEngine"""
+    
+    def __init__(self):
+        super().__init__()
+        self.current_html = ""
+        self.setup_ui()
+        self.setup_markdown()
+        
+    def setup_ui(self):
+        """Configuration de l'interface de prévisualisation"""
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
+        
+        # Label compact en haut
+        label = QLabel("👀 Aperçu")
+        label.setStyleSheet("""
+            QLabel {
+                font-weight: bold; 
+                padding: 8px; 
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                color: #495057;
+            }
+        """)
+        label.setMaximumHeight(35)
+        layout.addWidget(label)
+        
+        # Vue web pour l'aperçu HTML - prend tout l'espace restant
+        self.web_view = QWebEngineView()
+        self.web_view.setStyleSheet("""
+            QWebEngineView {
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                background-color: white;
+            }
+        """)
+        
+        # La vue web prend tout l'espace disponible
+        layout.addWidget(self.web_view, 1)  # stretch factor = 1
+        
+        self.setLayout(layout)
+        
+        # Charger le contenu par défaut
+        self.show_welcome_content()
+        
+    def setup_markdown(self):
+        """Configuration du processeur Markdown"""
         self.md = markdown.Markdown(
             extensions=[
                 'tables',
-                'fenced_code', 
-                'toc',
+                'fenced_code',
                 'codehilite',
+                'toc',
                 'attr_list',
                 'def_list',
                 'footnotes',
-                'md_in_html'
+                'md_in_html',
+                'sane_lists',
+                'smarty'
             ],
             extension_configs={
                 'codehilite': {
                     'css_class': 'highlight',
                     'use_pygments': True
+                },
+                'toc': {
+                    'permalink': True
                 }
             }
         )
-        self.setup_ui()
         
-    def setup_ui(self):
-        """Configuration de l'interface de prévisualisation"""
-        self.frame = ttk.Frame(self.parent)
+    def create_html_template(self, content):
+        """Créer le template HTML complet"""
+        # Ajouter la table des matières si elle existe
+        toc_html = ""
+        if hasattr(self.md, 'toc') and self.md.toc:
+            toc_html = f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
         
-        # Label
-        label = ttk.Label(self.frame, text="Aperçu")
-        label.pack(pady=(0, 5))
-        
-        # Zone de prévisualisation HTML avec scrollbar
-        self.html_widget = HTMLScrolledText(
-            self.frame,
-            html="<h1>BlueNotebook</h1><p>Tapez du Markdown dans l'éditeur pour voir l'aperçu ici.</p>",
-            height=20,
-            width=50,
-            wrap=tk.WORD,
-            background="white"
-        )
-        self.html_widget.pack(fill=tk.BOTH, expand=True)
-        
-        # Appliquer le CSS par défaut
-        self.apply_default_css()
-        
-    def apply_default_css(self):
-        """Appliquer les styles CSS par défaut"""
-        css = """
-        <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 20px;
-            background-color: #fff;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            color: #2c3e50;
-            margin-top: 24px;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-        
-        h1 { 
-            font-size: 2em; 
-            border-bottom: 2px solid #eaecef; 
-            padding-bottom: 8px; 
-        }
-        
-        h2 { 
-            font-size: 1.5em; 
-            border-bottom: 1px solid #eaecef; 
-            padding-bottom: 8px; 
-        }
-        
-        h3 { font-size: 1.25em; }
-        h4 { font-size: 1.1em; }
-        h5 { font-size: 1em; }
-        h6 { font-size: 0.9em; }
-        
-        p {
-            margin-bottom: 16px;
-            text-align: justify;
-        }
-        
-        code {
-            background-color: #f6f8fa;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #d73a49;
-        }
-        
-        pre {
-            background-color: #f6f8fa;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 16px 0;
-            border: 1px solid #e1e4e8;
-        }
-        
-        pre code {
-            background: none;
-            padding: 0;
-            border-radius: 0;
-            color: #24292e;
-        }
-        
-        blockquote {
-            border-left: 4px solid #dfe2e5;
-            padding-left: 16px;
-            color: #6a737d;
-            margin: 16px 0;
-            font-style: italic;
-        }
-        
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 16px;
-            border: 1px solid #e1e4e8;
-        }
-        
-        th, td {
-            border: 1px solid #e1e4e8;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        
-        th {
-            background-color: #f6f8fa;
-            font-weight: 600;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        ul, ol {
-            margin-bottom: 16px;
-            padding-left: 32px;
-        }
-        
-        li {
-            margin-bottom: 4px;
-        }
-        
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .highlight {
-            background-color: #f6f8fa;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            border: 1px solid #e1e4e8;
-        }
-        
-        /* Coloration syntaxique pour le code */
-        .highlight .k { color: #d73a49; font-weight: bold; } /* Keyword */
-        .highlight .s { color: #032f62; } /* String */
-        .highlight .c { color: #6a737d; font-style: italic; } /* Comment */
-        .highlight .n { color: #24292e; } /* Name */
-        .highlight .o { color: #d73a49; } /* Operator */
-        .highlight .p { color: #24292e; } /* Punctuation */
-        .highlight .nb { color: #005cc5; } /* Name.Builtin */
-        .highlight .nf { color: #6f42c1; } /* Name.Function */
-        
-        /* Style pour les alertes */
-        .alert {
-            padding: 12px 16px;
-            margin: 16px 0;
-            border-radius: 6px;
-            border-left: 4px solid;
-        }
-        
-        .alert-info {
-            background-color: #e6f7ff;
-            border-left-color: #1890ff;
-            color: #0050b3;
-        }
-        
-        .alert-warning {
-            background-color: #fffbe6;
-            border-left-color: #faad14;
-            color: #ad6800;
-        }
-        
-        .alert-error {
-            background-color: #fff2f0;
-            border-left-color: #f5222d;
-            color: #a8071a;
-        }
-        
-        /* Table des matières */
-        .toc {
-            background-color: #f8f9fa;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            padding: 16px;
-            margin: 16px 0;
-        }
-        
-        .toc ul {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        
-        .toc > ul {
-            padding-left: 0;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                margin: 10px;
-                font-size: 14px;
-            }
-            
-            h1 { font-size: 1.5em; }
-            h2 { font-size: 1.3em; }
-            h3 { font-size: 1.1em; }
-        }
-        </style>
-        """
-        self.default_css = css
-        
-    def update_preview(self, markdown_content):
-        """Mettre à jour l'aperçu avec rendu HTML complet"""
-        try:
-            if not markdown_content.strip():
-                # Contenu par défaut si vide
-                html_content = """
-                <h1>🔵 BlueNotebook</h1>
-                <p><em>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</em></p>
+        return f"""
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BlueNotebook Preview</title>
+            <style>
+                /* Reset et base */
+                * {{
+                    box-sizing: border-box;
+                }}
                 
-                <h2>Exemples de syntaxe Markdown :</h2>
+                body {{
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #24292e;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                    background-color: #ffffff;
+                    font-size: 16px;
+                }}
+                
+                /* Titres */
+                h1, h2, h3, h4, h5, h6 {{
+                    margin-top: 24px;
+                    margin-bottom: 16px;
+                    font-weight: 600;
+                    line-height: 1.25;
+                    color: #1f2937;
+                }}
+                
+                h1 {{
+                    font-size: 2em;
+                    border-bottom: 1px solid #eaecef;
+                    padding-bottom: 0.3em;
+                }}
+                
+                h2 {{
+                    font-size: 1.5em;
+                    border-bottom: 1px solid #eaecef;
+                    padding-bottom: 0.3em;
+                }}
+                
+                h3 {{ font-size: 1.25em; }}
+                h4 {{ font-size: 1em; }}
+                h5 {{ font-size: 0.875em; }}
+                h6 {{ font-size: 0.85em; color: #6a737d; }}
+                
+                /* Paragraphes et texte */
+                p {{
+                    margin-top: 0;
+                    margin-bottom: 16px;
+                    text-align: justify;
+                }}
+                
+                /* Mise en forme */
+                strong {{
+                    font-weight: 600;
+                    color: #1f2937;
+                }}
+                
+                em {{
+                    font-style: italic;
+                    color: #374151;
+                }}
+                
+                /* Code */
+                code {{
+                    padding: 0.2em 0.4em;
+                    margin: 0;
+                    font-size: 85%;
+                    background-color: rgba(27, 31, 35, 0.05);
+                    border-radius: 6px;
+                    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+                    color: #e74c3c;
+                }}
+                
+                pre {{
+                    padding: 16px;
+                    overflow: auto;
+                    font-size: 85%;
+                    line-height: 1.45;
+                    background-color: #f6f8fa;
+                    border-radius: 6px;
+                    border: 1px solid #e1e4e8;
+                    margin-bottom: 16px;
+                }}
+                
+                pre code {{
+                    display: inline;
+                    padding: 0;
+                    margin: 0;
+                    overflow: visible;
+                    line-height: inherit;
+                    word-wrap: normal;
+                    background-color: transparent;
+                    border: 0;
+                    color: #24292e;
+                }}
+                
+                /* Citations */
+                blockquote {{
+                    padding: 0 1em;
+                    color: #6a737d;
+                    border-left: 0.25em solid #dfe2e5;
+                    margin: 0 0 16px 0;
+                    font-style: italic;
+                }}
+                
+                /* Listes */
+                ul, ol {{
+                    margin-top: 0;
+                    margin-bottom: 16px;
+                    padding-left: 2em;
+                }}
+                
+                li {{
+                    margin-bottom: 0.25em;
+                }}
+                
+                /* Liens */
+                a {{
+                    color: #0366d6;
+                    text-decoration: none;
+                    font-weight: 500;
+                }}
+                
+                a:hover {{
+                    text-decoration: underline;
+                }}
+                
+                /* Images */
+                img {{
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 6px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    margin: 10px 0;
+                }}
+                
+                /* Tableaux */
+                table {{
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-bottom: 16px;
+                    border: 1px solid #e1e4e8;
+                    border-radius: 6px;
+                    overflow: hidden;
+                }}
+                
+                th, td {{
+                    padding: 6px 13px;
+                    border: 1px solid #e1e4e8;
+                    text-align: left;
+                }}
+                
+                th {{
+                    font-weight: 600;
+                    background-color: #f6f8fa;
+                }}
+                
+                tr:nth-child(2n) {{
+                    background-color: #f9f9f9;
+                }}
+                
+                /* Règles horizontales */
+                hr {{
+                    height: 0.25em;
+                    margin: 24px 0;
+                    background-color: #e1e4e8;
+                    border: 0;
+                }}
+                
+                /* Coloration syntaxique */
+                .highlight {{
+                    background: #f8f8f8;
+                    border: 1px solid #e1e4e8;
+                    border-radius: 6px;
+                    padding: 16px;
+                    overflow-x: auto;
+                    margin: 16px 0;
+                }}
+                
+                .highlight .k {{ color: #d73a49; font-weight: bold; }}
+                .highlight .s {{ color: #032f62; }}
+                .highlight .c {{ color: #6a737d; font-style: italic; }}
+                .highlight .nb {{ color: #005cc5; }}
+                .highlight .nf {{ color: #6f42c1; }}
+                
+                /* Table des matières */
+                .toc {{
+                    background-color: #f8f9fa;
+                    border: 1px solid #e1e4e8;
+                    border-radius: 6px;
+                    padding: 16px;
+                    margin: 16px 0;
+                    float: right;
+                    max-width: 300px;
+                    margin-left: 20px;
+                }}
+                
+                .toc h2 {{
+                    margin-top: 0;
+                    font-size: 1em;
+                    border-bottom: none;
+                    padding-bottom: 0;
+                }}
+                
+                .toc ul {{
+                    list-style: none;
+                    padding-left: 0;
+                }}
+                
+                .toc ul ul {{
+                    padding-left: 20px;
+                }}
+                
+                .toc a {{
+                    text-decoration: none;
+                    color: #0366d6;
+                    font-size: 0.9em;
+                }}
+                
+                /* Responsive */
+                @media (max-width: 768px) {{
+                    body {{
+                        padding: 20px;
+                        font-size: 14px;
+                    }}
+                    
+                    .toc {{
+                        float: none;
+                        margin-left: 0;
+                        max-width: 100%;
+                    }}
+                }}
+            </style>
+        </head>
+        <body>
+            {toc_html}
+            {content}
+        </body>
+        </html>
+        """
+        
+    def show_welcome_content(self):
+        """Afficher le contenu de bienvenue"""
+        welcome_content = """
+        <div style="text-align: center; padding: 40px;">
+            <h1>🔵 Bienvenue dans BlueNotebook</h1>
+            <p><em>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</em></p>
+            
+            <div style="text-align: left; max-width: 600px; margin: 40px auto;">
+                <h2>📝 Syntaxe Markdown supportée :</h2>
                 
                 <h3>Titres</h3>
                 <pre><code># Titre 1
@@ -267,65 +353,59 @@ class MarkdownPreview:
 ### Titre 3</code></pre>
                 
                 <h3>Mise en forme</h3>
-                <pre><code>**Gras** ou __Gras__
-*Italique* ou _Italique_
-`Code inline`</code></pre>
+                <p><strong>Gras</strong> : <code>**texte**</code> ou <code>__texte__</code></p>
+                <p><em>Italique</em> : <code>*texte*</code> ou <code>_texte_</code></p>
+                <p><code>Code inline</code> : <code>`code`</code></p>
                 
                 <h3>Listes</h3>
-                <pre><code>- Item 1
-- Item 2
-  - Sous-item</code></pre>
+                <ul>
+                    <li>Liste à puces : <code>- item</code></li>
+                    <li>Liste numérotée : <code>1. item</code></li>
+                </ul>
                 
-                <h3>Citations</h3>
-                <pre><code>> Ceci est une citation
-> Sur plusieurs lignes</code></pre>
-                """
-            else:
-                # Réinitialiser le parser pour éviter les conflits
-                self.md.reset()
+                <h3>Autres</h3>
+                <ul>
+                    <li>Citations : <code>&gt; texte</code></li>
+                    <li>Liens : <code>[texte](url)</code></li>
+                    <li>Images : <code>![alt](url)</code></li>
+                    <li>Tables : <code>| col1 | col2 |</code></li>
+                    <li>Code : <code>```python</code></li>
+                </ul>
+            </div>
+        </div>
+        """
+        self.web_view.setHtml(welcome_content)
+        
+    def update_content(self, markdown_content):
+        """Mettre à jour le contenu de l'aperçu"""
+        try:
+            if not markdown_content.strip():
+                self.show_welcome_content()
+                return
                 
-                # Conversion Markdown vers HTML
-                html_content = self.md.convert(markdown_content)
-                
-                # Ajouter la table des matières si elle existe
-                if hasattr(self.md, 'toc') and self.md.toc:
-                    toc_html = f'<div class="toc"><h3>Table des matières</h3>{self.md.toc}</div>'
-                    html_content = toc_html + html_content
+            # Réinitialiser le parser
+            self.md.reset()
             
-            # Combiner CSS et contenu HTML
-            full_html = f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>BlueNotebook Preview</title>
-                {self.default_css}
-            </head>
-            <body>
-                {html_content}
-            </body>
-            </html>
-            """
+            # Convertir Markdown en HTML
+            html_content = self.md.convert(markdown_content)
             
-            # Mettre à jour le widget HTML
-            self.html_widget.set_html(full_html)
+            # Créer le HTML complet avec CSS
+            full_html = self.create_html_template(html_content)
+            
+            # Mettre à jour la vue web
+            self.web_view.setHtml(full_html)
+            self.current_html = full_html
             
         except Exception as e:
-            # Affichage d'erreur avec style
-            error_html = f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                {self.default_css}
-            </head>
-            <body>
-                <div class="alert alert-error">
-                    <h3>❌ Erreur de prévisualisation</h3>
-                    <p><strong>Erreur:</strong> {str(e)}</p>
+            error_html = self.create_html_template(f"""
+                <div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 16px; border-radius: 4px;">
+                    <h3>❌ Erreur de rendu</h3>
+                    <p><strong>Erreur :</strong> {str(e)}</p>
                     <p><em>Vérifiez la syntaxe Markdown dans l'éditeur.</em></p>
                 </div>
-            </body>
-            </html>
-            """
-            self.html_widget.set_html(error_html)
+            """)
+            self.web_view.setHtml(error_html)
+            
+    def get_html(self):
+        """Récupérer le HTML complet pour l'export"""
+        return self.current_html
