@@ -1,0 +1,3 @@
+V1.0    Première release avec Qt (editeur Markdown + Preview)
+V1.1.0  Gestion du répertoire Journal
+V1.1.1  Fix gestion variable d'environnement JOURNAL_DIRECTORY

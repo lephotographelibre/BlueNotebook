@@ -260,11 +260,10 @@ class MainWindow(QMainWindow):
             journal_path = Path(self.journal_dir_arg).resolve()
 
         # 2. Variable d'environnement
-        elif (
-            "JOURNAL_DIRECTORY" in os.environ
-            and Path(os.environ["JOURNAL_DIRECTORY"]).is_dir()
-        ):
-            journal_path = Path(os.environ["JOURNAL_DIRECTORY"]).resolve()
+        elif "JOURNAL_DIRECTORY" in os.environ:
+            env_path = Path(os.environ["JOURNAL_DIRECTORY"])
+            if env_path.is_dir():
+                journal_path = env_path.resolve()
 
         # 3. Répertoire par défaut dans le dossier utilisateur
         else:
@@ -286,6 +285,10 @@ class MainWindow(QMainWindow):
 
         self.journal_directory = journal_path
         self.update_journal_dir_label()
+        if self.journal_directory:
+            print(f"📓 Répertoire du journal: {self.journal_directory}")
+        else:
+            print("⚠️ Répertoire du journal non défini.")
 
     def update_journal_dir_label(self):
         """Met à jour le label du répertoire de journal dans la barre de statut."""
