@@ -10,6 +10,8 @@ bluenotebook$ ./run_bluenotebook.sh --journal "/ssd/Dropbox/bluenotebook"
 bluenotebook$ export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
 bluenotebook$ ./run_bluenotebook.sh
 
+et mettre a jour le dossier technique docs/V1.0 bluenotebook_technical_doc.md avec les nouvelles fonctionnalités décrites dans versions.md. 
+Remettre à jour l'aborecence des fichiers
 
 ## V1.1.1   Fix gestion variable d'environnement JOURNAL_DIRECTORY
 
