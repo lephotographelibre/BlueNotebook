@@ -1,3 +1,13 @@
+## V1.1.3 Fix Bug #1 Cannot see HTML fragment pasted into the editor
+
+       padding: 10px;
+                background-color: #ffffff;
+                selection-background-color: #3498db;
+                color: #2c3e50;   ---> Ajouté
+                selection-color: white;
+                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            }
+
 ## V1.1.2   Création d'en script de lancement
 
 Je voudrais un script bash pour linix et un script pour windows pour lancer le programme bluenotebook. sur Linux bien vérifier que l'in est dasn un terminal bash ce script doit positionner l'environnement virtuel pyenv nommé .venv_bluenotebook avec Python 3.13.5, verifier le bon chargements des packages qui sont dans requirements.txt, puis lancer le programme main.py
