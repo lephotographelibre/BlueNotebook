@@ -9,24 +9,26 @@ import markdown
 import tempfile
 import os
 
+
 class MarkdownPreview(QWidget):
     """Aperçu HTML avec QWebEngine"""
-    
+
     def __init__(self):
         super().__init__()
         self.current_html = ""
         self.setup_ui()
         self.setup_markdown()
-        
+
     def setup_ui(self):
         """Configuration de l'interface de prévisualisation"""
         layout = QVBoxLayout()
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
-        
+
         # Label compact en haut
         label = QLabel("👀 Aperçu")
-        label.setStyleSheet("""
+        label.setStyleSheet(
+            """
             QLabel {
                 font-weight: bold; 
                 padding: 8px; 
@@ -35,61 +37,63 @@ class MarkdownPreview(QWidget):
                 border-radius: 4px;
                 color: #495057;
             }
-        """)
+        """
+        )
         label.setMaximumHeight(35)
         layout.addWidget(label)
-        
+
         # Vue web pour l'aperçu HTML - prend tout l'espace restant
         self.web_view = QWebEngineView()
-        self.web_view.setStyleSheet("""
+        self.web_view.setStyleSheet(
+            """
             QWebEngineView {
                 border: 1px solid #dee2e6;
                 border-radius: 4px;
                 background-color: white;
             }
-        """)
-        
+        """
+        )
+
         # La vue web prend tout l'espace disponible
         layout.addWidget(self.web_view, 1)  # stretch factor = 1
-        
+
         self.setLayout(layout)
-        
+
         # Charger le contenu par défaut
         self.show_welcome_content()
-        
+
     def setup_markdown(self):
         """Configuration du processeur Markdown"""
         self.md = markdown.Markdown(
             extensions=[
-                'tables',
-                'fenced_code',
-                'codehilite',
-                'toc',
-                'attr_list',
-                'def_list',
-                'footnotes',
-                'md_in_html',
-                'sane_lists',
-                'smarty'
+                "tables",
+                "fenced_code",
+                "codehilite",
+                "toc",
+                "attr_list",
+                "def_list",
+                "footnotes",
+                "md_in_html",
+                "sane_lists",
+                "smarty",
+                "pymdownx.tilde",  # Ajout de l'extension pour le barré
+                "pymdownx.mark",  # Ajout de l'extension pour le surlignage
             ],
             extension_configs={
-                'codehilite': {
-                    'css_class': 'highlight',
-                    'use_pygments': True
-                },
-                'toc': {
-                    'permalink': True
-                }
-            }
+                "codehilite": {"css_class": "highlight", "use_pygments": True},
+                "toc": {"permalink": True},
+            },
         )
-        
+
     def create_html_template(self, content):
         """Créer le template HTML complet"""
         # Ajouter la table des matières si elle existe
         toc_html = ""
-        if hasattr(self.md, 'toc') and self.md.toc:
-            toc_html = f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
-        
+        if hasattr(self.md, "toc") and self.md.toc:
+            toc_html = (
+                f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
+            )
+
         return f"""
         <!DOCTYPE html>
         <html lang="fr">
@@ -275,6 +279,18 @@ class MarkdownPreview(QWidget):
                     margin: 16px 0;
                 }}
                 
+                /* Surlignage */
+                mark {{
+                    background-color: #fff8c5;
+                    padding: 0.1em 0.3em;
+                }}
+                
+                /* Barré */
+                del, s {{
+                    text-decoration: line-through;
+                    color: #6a737d;
+                }}
+                
                 .highlight .k {{ color: #d73a49; font-weight: bold; }}
                 .highlight .s {{ color: #032f62; }}
                 .highlight .c {{ color: #6a737d; font-style: italic; }}
@@ -336,7 +352,7 @@ class MarkdownPreview(QWidget):
         </body>
         </html>
         """
-        
+
     def show_welcome_content(self):
         """Afficher le contenu de bienvenue"""
         welcome_content = """
@@ -375,37 +391,39 @@ class MarkdownPreview(QWidget):
         </div>
         """
         self.web_view.setHtml(welcome_content)
-        
+
     def update_content(self, markdown_content):
         """Mettre à jour le contenu de l'aperçu"""
         try:
             if not markdown_content.strip():
                 self.show_welcome_content()
                 return
-                
+
             # Réinitialiser le parser
             self.md.reset()
-            
+
             # Convertir Markdown en HTML
             html_content = self.md.convert(markdown_content)
-            
+
             # Créer le HTML complet avec CSS
             full_html = self.create_html_template(html_content)
-            
+
             # Mettre à jour la vue web
             self.web_view.setHtml(full_html)
             self.current_html = full_html
-            
+
         except Exception as e:
-            error_html = self.create_html_template(f"""
+            error_html = self.create_html_template(
+                f"""
                 <div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 16px; border-radius: 4px;">
                     <h3>❌ Erreur de rendu</h3>
                     <p><strong>Erreur :</strong> {str(e)}</p>
                     <p><em>Vérifiez la syntaxe Markdown dans l'éditeur.</em></p>
                 </div>
-            """)
+            """
+            )
             self.web_view.setHtml(error_html)
-            
+
     def get_html(self):
         """Récupérer le HTML complet pour l'export"""
         return self.current_html

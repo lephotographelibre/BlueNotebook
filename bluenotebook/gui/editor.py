@@ -2,6 +2,7 @@
 Composant éditeur de texte BlueNotebook avec coloration syntaxique PyQt5
 """
 
+import re
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -12,6 +13,8 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QPushButton,
 )
+from PyQt5.QtWidgets import QDialogButtonBox, QFormLayout, QInputDialog
+
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import (
     QFont,
@@ -20,8 +23,8 @@ from PyQt5.QtGui import (
     QSyntaxHighlighter,
     QTextDocument,
     QKeySequence,
+    QTextCursor,
 )
-import re
 
 
 class MarkdownHighlighter(QSyntaxHighlighter):
@@ -82,7 +85,9 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         """Coloration d'un bloc de texte"""
         # Titres (# ## ### etc.)
         title_pattern = r"^(#{1,6})\s+(.+)$"
-        for match in re.finditer(title_pattern, text, re.MULTILINE):
+        for match in re.finditer(
+            title_pattern, text, re.MULTILINE
+        ):  # pyright: ignore[reportArgumentType, reportCallIssue]
             level = len(match.group(1)) - 1
             if level < len(self.title_formats):
                 self.setFormat(
@@ -195,6 +200,54 @@ class FindDialog(QDialog):
             self.parent().replace_text(
                 self.search_edit.text(), self.replace_edit.text()
             )
+
+
+class LinkDialog(QDialog):
+    """Boîte de dialogue pour insérer un lien Markdown."""
+
+    def __init__(self, parent=None, selected_text=""):
+        super().__init__(parent)
+        self.setWindowTitle("Insérer un lien Markdown")
+
+        self.layout = QFormLayout(self)
+
+        self.text_edit = QLineEdit(self)
+        self.text_edit.setText(selected_text)
+        self.layout.addRow("Texte du lien:", self.text_edit)
+
+        self.url_edit = QLineEdit(self)
+        self.url_edit.setPlaceholderText("https://example.com")
+        self.layout.addRow("URL:", self.url_edit)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self.layout.addWidget(self.button_box)
+
+    def get_data(self):
+        """Retourne le texte et l'URL saisis."""
+        return self.text_edit.text(), self.url_edit.text()
+
+    @staticmethod
+    def get_link(parent=None, selected_text=""):
+        """Méthode statique pour afficher le dialogue et obtenir les données."""
+        dialog = LinkDialog(parent, selected_text)
+        # Pré-remplir l'URL si le texte sélectionné est une URL
+        if selected_text.startswith("http://") or selected_text.startswith("https://"):
+            dialog.url_edit.setText(selected_text)
+            dialog.text_edit.setText(
+                ""
+            )  # Vider le texte pour que l'utilisateur le saisisse
+            dialog.text_edit.setFocus()
+        else:
+            dialog.url_edit.setFocus()
+
+        if dialog.exec_() == QDialog.Accepted:
+            return dialog.get_data()
+        return None, None
 
 
 class MarkdownEditor(QWidget):
@@ -313,3 +366,159 @@ class MarkdownEditor(QWidget):
 
         # Rechercher la prochaine occurrence
         self.find_text(find_text)
+
+    def format_text(self, format_type):
+        """Applique le formatage Markdown au texte sélectionné."""
+        cursor = self.text_edit.textCursor()
+        if not cursor.hasSelection():
+            # Gérer les insertions sans sélection comme la ligne horizontale et le tableau
+            if format_type == "hr":
+                cursor.insertText("\n---\n")
+            elif format_type == "table":
+                table_template = "| En-tête 1 | En-tête 2 |\n|---|---|\n| Cellule 1 | Cellule 2 |\n| Cellule 3 | Cellule 4 |"
+                cursor.insertText(table_template)
+            return
+
+        selected_text = cursor.selectedText()
+
+        # Formats qui s'appliquent sur la ligne entière
+        if format_type in ["h1", "h2", "h3", "h4", "h5"]:
+            prefix = {
+                "h1": "# ",
+                "h2": "## ",
+                "h3": "### ",
+                "h4": "#### ",
+                "h5": "##### ",
+            }[format_type]
+
+            # Étendre la sélection à la ligne entière
+            start_pos = cursor.selectionStart()
+            end_pos = cursor.selectionEnd()
+            cursor.setPosition(start_pos)
+            cursor.movePosition(QTextCursor.StartOfLine)
+            cursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+            cursor.movePosition(QTextCursor.EndOfLine, QTextCursor.KeepAnchor)
+
+            line_text = cursor.selectedText()
+
+            # Supprimer les anciens préfixes de titre
+            line_text = re.sub(r"^\s*#+\s*", "", line_text)
+
+            new_text = prefix + line_text
+            cursor.insertText(new_text)
+            return
+
+        if format_type in ["quote", "ul", "ol", "task_list"]:
+            start_pos = cursor.selectionStart()
+            end_pos = cursor.selectionEnd()
+            cursor.setPosition(start_pos)
+            cursor.movePosition(QTextCursor.StartOfLine)
+            start_pos = cursor.position()
+            cursor.setPosition(end_pos)
+            cursor.movePosition(QTextCursor.EndOfLine)
+            end_pos = cursor.position()
+            cursor.setPosition(start_pos)
+            cursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+
+            lines = cursor.selectedText().splitlines()
+
+            new_text = self._apply_line_prefix(lines, format_type)
+            cursor.insertText(new_text)
+            return
+
+        # Formats qui entourent le texte
+        wrappers = {
+            "bold": "**",
+            "italic": "*",
+            "strikethrough": "~~",
+            "inline_code": "`",
+            "highlight": "==",
+        }
+
+        if format_type in wrappers:
+            wrapper = wrappers[format_type]
+            # Si le texte est déjà entouré, on enlève les wrappers
+            if selected_text.startswith(wrapper) and selected_text.endswith(wrapper):
+                new_text = selected_text[len(wrapper) : -len(wrapper)]
+            else:
+                new_text = f"{wrapper}{selected_text}{wrapper}"
+            cursor.insertText(new_text)
+
+        elif format_type == "table":
+            table_template = "| En-tête 1 | En-tête 2 |\n|---|---|\n| Cellule 1 | Cellule 2 |\n| Cellule 3 | Cellule 4 |"
+            cursor.insertText(table_template)
+
+        elif format_type == "hr":
+            # Insère une ligne horizontale après la sélection
+            cursor.movePosition(QTextCursor.EndOfLine)
+            cursor.insertText("\n\n---\n")
+
+        elif format_type == "code_block":
+            # Gérer les blocs de code sur plusieurs lignes
+            if "\n" in selected_text:
+                new_text = f"```\n{selected_text}\n```"
+            else:
+                new_text = f"```\n{selected_text}\n```"
+            cursor.insertText(new_text)
+
+        elif format_type == "url":
+            new_text = f"<{selected_text}>"
+            cursor.insertText(new_text)
+
+        elif format_type == "image":
+            # Pour l'image, on suppose que le texte sélectionné est une URL
+            # Une boîte de dialogue serait mieux, mais pour l'instant on utilise une valeur par défaut
+            new_text = f'<img src="{selected_text}" width="400">'
+            cursor.insertText(new_text)
+
+        elif format_type == "markdown_link":
+            text, url = LinkDialog.get_link(self, selected_text)
+            if text and url:
+                new_text = f"[{text}]({url})"
+                cursor.insertText(new_text)
+
+    def clear_formatting(self):
+        """Supprime le formatage Markdown de la sélection."""
+        cursor = self.text_edit.textCursor()
+        if not cursor.hasSelection():
+            return
+
+        selected_text = cursor.selectedText()
+
+        # Expression régulière pour trouver les caractères de formatage Markdown
+        # #, *, _, ~, `, [, ], (, ), !, <, >
+        markdown_chars = r"([#*_~`\[\]\(\)!<>])"
+
+        # Supprimer les préfixes de ligne (titre, citation, liste)
+        cleaned_text = re.sub(
+            r"^\s*([#>\-]+\s*|\d+\.\s*)", "", selected_text, flags=re.MULTILINE
+        )
+
+        # Supprimer les autres caractères de formatage
+        cleaned_text = re.sub(markdown_chars, "", cleaned_text)
+
+        # Cas spécifique des blocs de code
+        cleaned_text = re.sub(r"```.*?\n", "", cleaned_text)
+        cleaned_text = cleaned_text.replace("```", "")
+
+        cursor.insertText(cleaned_text)
+
+    def _apply_line_prefix(self, lines, format_type):
+        """Applique un préfixe à chaque ligne pour les listes et citations."""
+        new_lines = []
+        if format_type == "quote":
+            for line in lines:
+                new_lines.append(f"> {line}")
+        elif format_type == "task_list":
+            for line in lines:
+                # Enlever les préfixes de liste existants avant d'ajouter le nouveau
+                cleaned_line = re.sub(r"^\s*-\s*\[[ x]\]\s*|\s*-\s*", "", line).strip()
+                new_lines.append(f"- [ ] {cleaned_line}")
+        elif format_type == "ul":
+            for line in lines:
+                new_lines.append(f"- {line}")
+        elif format_type == "ol":
+            for i, line in enumerate(lines):
+                new_lines.append(f"{i + 1}. {line}")
+
+        return "\n".join(new_lines)

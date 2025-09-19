@@ -2,6 +2,7 @@
 Fenêtre principale de BlueNotebook - Éditeur Markdown avec PyQt5
 """
 
+import functools
 import os
 from datetime import datetime
 from pathlib import Path
@@ -109,15 +110,14 @@ class MainWindow(QMainWindow):
 
     def set_application_icon(self):
         """Définir l'icône de l'application"""
-        import os
+        # Utiliser le chemin du fichier actuel pour construire des chemins absolus
+        base_path = os.path.dirname(os.path.abspath(__file__))
 
         # Chemins possibles pour l'icône
         icon_paths = [
-            "resources/icons/bluenotebook.ico",
-            "resources/icons/bluenotebook.png",
-            "resources/icons/bluenotebook_64.png",
-            "bluenotebook.ico",
-            "bluenotebook.png",
+            os.path.join(base_path, "..", "resources", "icons", "bluenotebook.ico"),
+            os.path.join(base_path, "..", "resources", "icons", "bluenotebook.png"),
+            os.path.join(base_path, "..", "resources", "icons", "bluenotebook_64.png"),
         ]
 
         for icon_path in icon_paths:
@@ -142,89 +142,195 @@ class MainWindow(QMainWindow):
         """Configuration du menu"""
         menubar = self.menuBar()
 
+        self._create_actions()
+
         # Menu Fichier
-        file_menu = menubar.addMenu("&Fichier")
-
-        new_action = QAction("&Nouveau", self)
-        new_action.setShortcut(QKeySequence.New)
-        new_action.setStatusTip("Créer un nouveau fichier")
-        new_action.triggered.connect(self.new_file)
-        file_menu.addAction(new_action)
-
-        open_action = QAction("&Ouvrir", self)
-        open_action.setShortcut(QKeySequence.Open)
-        open_action.setStatusTip("Ouvrir un fichier existant")
-        open_action.triggered.connect(self.open_file)
-        file_menu.addAction(open_action)
-
-        open_journal_action = QAction("Ouvrir &Journal", self)
-        open_journal_action.setStatusTip("Ouvrir un répertoire de journal")
-        open_journal_action.triggered.connect(self.open_journal)
-        file_menu.addAction(open_journal_action)
-
+        file_menu = menubar.addMenu("📁 &Fichier")
+        file_menu.addAction(self.new_action)
+        file_menu.addAction(self.open_action)
+        file_menu.addAction(self.open_journal_action)
         file_menu.addSeparator()
-
-        save_action = QAction("&Sauvegarder", self)
-        save_action.setShortcut(QKeySequence.Save)
-        save_action.setStatusTip("Sauvegarder le fichier")
-        save_action.triggered.connect(self.save_file)
-        file_menu.addAction(save_action)
-
-        save_as_action = QAction("Sauvegarder &sous...", self)
-        save_as_action.setShortcut(QKeySequence.SaveAs)
-        save_as_action.setStatusTip("Sauvegarder sous un nouveau nom")
-        save_as_action.triggered.connect(self.save_file_as)
-        file_menu.addAction(save_as_action)
-
+        file_menu.addAction(self.save_action)
+        file_menu.addAction(self.save_as_action)
         file_menu.addSeparator()
-
-        export_action = QAction("&Exporter HTML...", self)
-        export_action.setStatusTip("Exporter en HTML")
-        export_action.triggered.connect(self.export_html)
-        file_menu.addAction(export_action)
-
+        file_menu.addAction(self.export_action)
         file_menu.addSeparator()
-
-        quit_action = QAction("&Quitter", self)
-        quit_action.setShortcut(QKeySequence.Quit)
-        quit_action.setStatusTip("Quitter l'application")
-        quit_action.triggered.connect(self.close)
-        file_menu.addAction(quit_action)
+        file_menu.addAction(self.quit_action)
 
         # Menu Edition
-        edit_menu = menubar.addMenu("&Edition")
-
-        undo_action = QAction("&Annuler", self)
-        undo_action.setShortcut(QKeySequence.Undo)
-        undo_action.triggered.connect(self.editor.undo)
-        edit_menu.addAction(undo_action)
-
-        redo_action = QAction("&Rétablir", self)
-        redo_action.setShortcut(QKeySequence.Redo)
-        redo_action.triggered.connect(self.editor.redo)
-        edit_menu.addAction(redo_action)
-
+        edit_menu = menubar.addMenu("✏️ &Edition")
+        edit_menu.addAction(self.undo_action)
+        edit_menu.addAction(self.redo_action)
         edit_menu.addSeparator()
-
-        find_action = QAction("&Rechercher", self)
-        find_action.setShortcut(QKeySequence.Find)
-        find_action.triggered.connect(self.editor.show_find_dialog)
-        edit_menu.addAction(find_action)
+        edit_menu.addAction(self.find_action)
 
         # Menu Affichage
-        view_menu = menubar.addMenu("&Affichage")
+        view_menu = menubar.addMenu("👁️ &Affichage")
+        view_menu.addAction(self.toggle_preview_action)
 
-        toggle_preview = QAction("&Basculer l'aperçu", self)
-        toggle_preview.setShortcut("F5")
-        toggle_preview.triggered.connect(self.toggle_preview)
-        view_menu.addAction(toggle_preview)
+        # Menu Formatter
+        format_menu = menubar.addMenu("🎨 F&ormater")
+        self._setup_format_menu(format_menu)
 
         # Menu Aide
-        help_menu = menubar.addMenu("&Aide")
+        help_menu = menubar.addMenu("❓ &Aide")
+        help_menu.addAction(self.about_action)
 
-        about_action = QAction("À &propos", self)
-        about_action.triggered.connect(self.show_about)
-        help_menu.addAction(about_action)
+    def _create_actions(self):
+        """Crée toutes les actions de l'application."""
+        self.new_action = QAction(
+            "📄 &Nouveau",
+            self,
+            shortcut=QKeySequence.New,
+            statusTip="Créer un nouveau fichier",
+            triggered=self.new_file,
+        )
+        self.open_action = QAction(
+            "📂 &Ouvrir",
+            self,
+            shortcut=QKeySequence.Open,
+            statusTip="Ouvrir un fichier existant",
+            triggered=self.open_file,
+        )
+        self.open_journal_action = QAction(
+            "📓 Ouvrir &Journal",
+            self,
+            statusTip="Ouvrir un répertoire de journal",
+            triggered=self.open_journal,
+        )
+        self.save_action = QAction(
+            "💾 &Sauvegarder",
+            self,
+            shortcut=QKeySequence.Save,
+            statusTip="Sauvegarder le fichier",
+            triggered=self.save_file,
+        )
+        self.save_as_action = QAction(
+            "💾 Sauvegarder &sous...",
+            self,
+            shortcut=QKeySequence.SaveAs,
+            statusTip="Sauvegarder sous un nouveau nom",
+            triggered=self.save_file_as,
+        )
+        self.export_action = QAction(
+            "🌐 &Exporter HTML...",
+            self,
+            statusTip="Exporter en HTML",
+            triggered=self.export_html,
+        )
+        self.quit_action = QAction(
+            "🚪 &Quitter",
+            self,
+            shortcut=QKeySequence.Quit,
+            statusTip="Quitter l'application",
+            triggered=self.close,
+        )
+
+        self.undo_action = QAction(
+            "↩️ &Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
+        )
+        self.redo_action = QAction(
+            "↪️ &Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
+        )
+        self.find_action = QAction(
+            "🔍 &Rechercher",
+            self,
+            shortcut=QKeySequence.Find,
+            triggered=self.editor.show_find_dialog,
+        )
+
+        self.toggle_preview_action = QAction(
+            "👁️ &Basculer l'aperçu", self, shortcut="F5", triggered=self.toggle_preview
+        )
+
+        self.about_action = QAction("ℹ️ À &propos", self, triggered=self.show_about)
+
+    def _setup_format_menu(self, format_menu):
+        """Configure le menu de formatage de manière dynamique."""
+        # --- Sous-menu Titre ---
+        title_menu = QMenu("📜 Titre", self)
+        title_actions_data = [
+            ("Niv 1 (#)", "h1"),
+            ("Niv 2 (##)", "h2"),
+            ("Niv 3 (###)", "h3"),
+            ("Niv 4 (####)", "h4"),
+            ("Niv 5 (#####)", "h5"),
+        ]
+        for name, data in title_actions_data:
+            action = QAction(name, self)
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            title_menu.addAction(action)
+        format_menu.addMenu(title_menu)
+
+        # --- Sous-menu Style de texte ---
+        style_menu = QMenu("🎨 Style de texte", self)
+        style_actions_data = [
+            ("Gras (**texte**)", "bold", QKeySequence.Bold),
+            ("Italique (*texte*)", "italic"),  # Raccourci Ctrl+I retiré
+            ("Barré (~~texte~~)", "strikethrough"),
+            ("Surligné (==texte==)", "highlight"),
+        ]
+        for name, data, *shortcut in style_actions_data:
+            action = QAction(name, self)
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            if shortcut:
+                action.setShortcut(shortcut[0])
+            style_menu.addAction(action)
+        format_menu.addMenu(style_menu)
+
+        # --- Sous-menu Code ---
+        code_menu = QMenu("💻 Code", self)
+        code_actions_data = [
+            ("Monospace (inline) (`code`)", "inline_code"),
+            ("Bloc de code (```...```)", "code_block"),
+        ]
+        for name, data in code_actions_data:
+            action = QAction(name, self)
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            code_menu.addAction(action)
+        format_menu.addMenu(code_menu)
+
+        # --- Sous-menu Listes ---
+        list_menu = QMenu("📋 Listes", self)
+        list_actions_data = [
+            ("Liste non ordonnée (- item)", "ul"),
+            ("Liste ordonnée (1. item)", "ol"),
+            ("Liste de tâches (- [ ] item)", "task_list"),
+        ]
+        for name, data in list_actions_data:
+            action = QAction(name, self)
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            list_menu.addAction(action)
+        format_menu.addMenu(list_menu)
+
+        # --- Sous-menu Insérer ---
+        insert_menu = QMenu("➕ Insérer", self)
+        insert_actions_data = [
+            ("Lien (URL ou email) (<url>)", "url"),
+            (
+                "Image (<img ...>)",
+                "image",
+                QKeySequence.Italic,
+            ),  # Raccourci Ctrl+I ajouté ici
+            ("Lien Markdown (texte)", "markdown_link"),
+            ("Tableau (|...|)", "table"),
+            ("Ligne Horizontale (---)", "hr"),
+            ("Citation (> texte)", "quote"),
+        ]
+        for name, data, *shortcut in insert_actions_data:
+            action = QAction(name, self)
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            if shortcut:
+                action.setShortcut(shortcut[0])
+            insert_menu.addAction(action)
+        format_menu.addMenu(insert_menu)
+
+        format_menu.addSeparator()
+
+        # --- Action RaZ ---
+        clear_action = QAction("🧹 RaZ (Effacer le formatage)", self)
+        clear_action.triggered.connect(self.editor.clear_formatting)
+        format_menu.addAction(clear_action)
 
     def setup_statusbar(self):
         """Configuration de la barre de statut"""
@@ -237,6 +343,7 @@ class MainWindow(QMainWindow):
 
         # Label pour le répertoire du journal
         self.journal_dir_label = QLabel("")
+        self.journal_dir_label.setStyleSheet("color: #3498db;")  # Bleu clair
         self.statusbar.addWidget(self.journal_dir_label)
 
         # Indicateur de modification
@@ -601,18 +708,24 @@ Commencez à taper pour voir la magie opérer ! ✨
             self,
             "À propos de BlueNotebook",
             f"""<h2>BlueNotebook V{self.app_version}</h2>
-            <p><b>Éditeur de journal Markdown moderne</b></p> 
+            <p><b>Éditeur de journal Markdown </b></p> 
             <p>Un éditeur de texte Markdown avec aperçu en temps réel, 
             développé avec PyQt5 et QWebEngine.</p>
+            <p>Très inspiré du logiciel <a href="https://github.com/lephotographelibre/BlueNotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
             <p><b>Fonctionnalités :</b></p>
             <ul>
+            <li>Gestion d'un journal<li>
+            <li>Sauvegarde Automatique (soon)</li>
             <li>Édition avec coloration syntaxique</li>
+            <li>Extensions Markdown surligné, barré</li>
             <li>Aperçu HTML en temps réel</li>
-            <li>Export HTML</li>
-            <li>Interface moderne</li>
+            <li>Export HTML des pages du journal</li>
+            <li>Export PDF du journal complet ou partiel (soon)</li>
+            <li>Gestion de Templates (soon)</li>
+            <li>Support de tags / Recherche par tags (soon)</li>
             </ul>
             <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
-            <p>© 2024 BlueNotebook</p>""",
+            <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>""",
         )
 
     def check_save_changes(self):
