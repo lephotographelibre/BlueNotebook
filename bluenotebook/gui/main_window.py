@@ -2,6 +2,7 @@
 Fenêtre principale de BlueNotebook - Éditeur Markdown avec PyQt5
 """
 
+import webbrowser
 import functools
 import os
 from datetime import datetime
@@ -22,7 +23,7 @@ from PyQt5.QtWidgets import (
     QDialog,
     QDialogButtonBox,
 )
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
 
 from .editor import MarkdownEditor
@@ -174,6 +175,7 @@ class MainWindow(QMainWindow):
 
         # Menu Aide
         help_menu = menubar.addMenu("❓ &Aide")
+        help_menu.addAction(self.online_help_action)
         help_menu.addAction(self.about_action)
 
     def _create_actions(self):
@@ -243,7 +245,19 @@ class MainWindow(QMainWindow):
             "👁️ &Basculer l'aperçu", self, shortcut="F5", triggered=self.toggle_preview
         )
 
-        self.about_action = QAction("ℹ️ À &propos", self, triggered=self.show_about)
+        self.about_action = QAction(
+            QIcon.fromTheme("help-about"),
+            "À &propos",
+            self,
+            triggered=self.show_about,
+        )
+
+        self.online_help_action = QAction(
+            QIcon.fromTheme("help-contents"),
+            "&Documentation en ligne",
+            self,
+            triggered=self.show_online_help,
+        )
 
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
@@ -701,6 +715,25 @@ Commencez à taper pour voir la magie opérer ! ✨
             self.preview.hide()
         else:
             self.preview.show()
+
+    def show_online_help(self):
+        """Affiche la page d'aide HTML dans le navigateur par défaut."""
+        # Construire le chemin vers le fichier d'aide
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        help_file_path = os.path.join(
+            base_path, "..", "resources", "html", "bluenotebook_aide_en_ligne.html"
+        )
+
+        if os.path.exists(help_file_path):
+            # Convertir le chemin en URL de fichier
+            url = f"file:///{os.path.abspath(help_file_path)}"
+            webbrowser.open(url)
+        else:
+            QMessageBox.warning(
+                self,
+                "Aide non trouvée",
+                f"Le fichier d'aide n'a pas été trouvé:\n{help_file_path}",
+            )
 
     def show_about(self):
         """Afficher la boîte À propos"""

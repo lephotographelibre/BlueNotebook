@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide en ligne - BlueNotebook</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .header-icon {
+            vertical-align: middle;
+            margin-right: 10px;
+            width: 48px; /* Taille ajustée pour l'icône */
+            height: 48px;
+        }
+        h2 {
+            color: #2980b9;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .menu {
+            font-weight: bold;
+            color: #c0392b;
+        }
+        ul {
+            list-style-type: square;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
+            Aide en ligne de BlueNotebook
+        </h1>
+    </header>
+
+    <section id="introduction">
+        <h2>Introduction</h2>
+        <p>Bienvenue dans la documentation de <strong>BlueNotebook</strong>. Cet éditeur a été conçu pour vous offrir une expérience simple et puissante pour la prise de notes quotidienne au format Markdown.</p>
+    </section>
+
+    <section id="journal">
+        <h2>Gestion du Journal</h2>
+        <p>Le concept central de BlueNotebook est le <strong>journal</strong>. C'est un dossier sur votre ordinateur où toutes vos notes sont stockées.</p>
+        <ul>
+            <li><strong>Fichier du jour :</strong> Au lancement, BlueNotebook ouvre ou crée automatiquement un fichier pour la date du jour (ex: <code>20240729.md</code>).</li>
+            <li><strong>Sauvegarde :</strong> Utiliser <span class="menu">Fichier -> Sauvegarder</span> (<code>Ctrl+S</code>) enregistre vos modifications dans le fichier du jour. Si le fichier existe déjà, vous pouvez choisir de <strong>remplacer</strong> son contenu ou d'<strong>ajouter</strong> vos nouvelles notes à la fin.</li>
+            <li><strong>Changer de journal :</strong> Le menu <span class="menu">Fichier -> Ouvrir Journal</span> vous permet de sélectionner un autre dossier comme répertoire de journal.</li>
+        </ul>
+    </section>
+
+    <section id="formatter">
+        <h2>Menu Formater</h2>
+        <p>Le menu <span class="menu">Formater</span> vous permet d'appliquer rapidement la syntaxe Markdown à votre texte sans avoir à la taper manuellement.</p>
+        <ul>
+            <li><strong>Titre :</strong> Applique des niveaux de titre (<code>#</code>, <code>##</code>, etc.).</li>
+            <li><strong>Style de texte :</strong> Met en <strong>gras</strong> (<code>**texte**</code>), <em>italique</em> (<code>*texte*</code>), <del>barré</del> (<code>~~texte~~</code>) ou <mark>surligné</mark> (<code>==texte==</code>).</li>
+            <li><strong>Code :</strong> Formate du code <code>en ligne</code> ou en
+<pre><code>bloc de code.
+</code></pre>
+            </li>
+            <li><strong>Listes :</strong> Crée des listes à puces, numérotées ou des listes de tâches.</li>
+            <li><strong>Insérer :</strong> Ajoute des éléments comme des liens, images, tableaux, lignes horizontales ou citations.</li>
+            <li><strong>RaZ :</strong> Supprime tout le formatage Markdown de la sélection.</li>
+        </ul>
+    </section>
+
+    <section id="raccourcis">
+        <h2>Raccourcis Clavier Utiles</h2>
+        <ul>
+            <li><code>Ctrl+N</code> : Nouveau fichier (non journal).</li>
+            <li><code>Ctrl+O</code> : Ouvrir un fichier spécifique.</li>
+            <li><code>Ctrl+S</code> : Sauvegarder dans le journal du jour.</li>
+            <li><code>Ctrl+B</code> : Mettre en gras.</li>
+            <li><code>Ctrl+I</code> : Insérer une image (ou mettre en italique si l'extension est désactivée).</li>
+            <li><code>F5</code> : Afficher/Masquer le panneau d'aperçu.</li>
+        </ul>
+    </section>
+
+    <section id="apropos">
+        <h2>À propos</h2>
+        <p>Pour plus d'informations sur la version et les technologies utilisées, consultez la boîte de dialogue <span class="menu">Aide -> À propos</span>.</p>
+    </section>
+
+</body>
+</html>

@@ -1,3 +1,7 @@
+## V1.1.5 Aide en ligne
+
+Création d'une page d'aide de documentation en ligne menu Aide -> Documentation en ligne. le fichier html de la page d'aide est stocké dans le repertoire bluenotebook/resources/html/ et se nomme  bluenotebook_aide_en_ligne.html
+
 ## V1.1.4 Ajout Menu Formater 
 
 Le menu est organisé en sous-menus logiques pour un accès facile aux différentes options de formatage.
