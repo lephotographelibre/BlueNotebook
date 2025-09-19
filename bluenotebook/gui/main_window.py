@@ -28,6 +28,7 @@ from PyQt5.QtGui import QKeySequence, QIcon, QFont
 
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
+from core.quote_fetcher import QuoteFetcher
 
 
 class MainWindow(QMainWindow):
@@ -38,6 +39,8 @@ class MainWindow(QMainWindow):
         self.journal_directory = None
         self.current_file = None
         self.is_modified = False
+        self.daily_quote = None
+        self.daily_author = None
 
         self.setup_ui()
         self.setup_menu()
@@ -51,6 +54,7 @@ class MainWindow(QMainWindow):
         self.update_timer.timeout.connect(self.update_preview)
 
         self.load_initial_file()
+        self.show_quote_of_the_day()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -87,7 +91,7 @@ class MainWindow(QMainWindow):
         )
 
         # Zone d'édition (gauche)
-        self.editor = MarkdownEditor()
+        self.editor = MarkdownEditor(main_window=self)
         splitter.addWidget(self.editor)
 
         # Zone d'aperçu (droite)
@@ -272,7 +276,9 @@ class MainWindow(QMainWindow):
         ]
         for name, data in title_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            action.triggered.connect(
+                lambda checked=False, d=data: self.editor.format_text(d)
+            )
             title_menu.addAction(action)
         format_menu.addMenu(title_menu)
 
@@ -286,7 +292,9 @@ class MainWindow(QMainWindow):
         ]
         for name, data, *shortcut in style_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            action.triggered.connect(
+                lambda checked=False, d=data: self.editor.format_text(d)
+            )
             if shortcut:
                 action.setShortcut(shortcut[0])
             style_menu.addAction(action)
@@ -300,7 +308,9 @@ class MainWindow(QMainWindow):
         ]
         for name, data in code_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            action.triggered.connect(
+                lambda checked=False, d=data: self.editor.format_text(d)
+            )
             code_menu.addAction(action)
         format_menu.addMenu(code_menu)
 
@@ -313,7 +323,9 @@ class MainWindow(QMainWindow):
         ]
         for name, data in list_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            action.triggered.connect(
+                lambda checked=False, d=data: self.editor.format_text(d)
+            )
             list_menu.addAction(action)
         format_menu.addMenu(list_menu)
 
@@ -330,10 +342,13 @@ class MainWindow(QMainWindow):
             ("Tableau (|...|)", "table"),
             ("Ligne Horizontale (---)", "hr"),
             ("Citation (> texte)", "quote"),
+            ("Citation du jour", "quote_of_the_day"),
         ]
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            action.triggered.connect(
+                lambda checked=False, d=data: self.editor.format_text(d)
+            )
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
@@ -786,3 +801,15 @@ Commencez à taper pour voir la magie opérer ! ✨
             event.accept()
         else:
             event.ignore()
+
+    def show_quote_of_the_day(self):
+        """Affiche la citation du jour dans une boîte de dialogue."""
+        self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
+        if self.daily_quote and self.daily_author:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Citation du Jour")
+            msg_box.setText(f"<blockquote><i>« {self.daily_quote} »</i></blockquote>")
+            msg_box.setInformativeText(f"<b>{self.daily_author}</b>")
+            msg_box.setIcon(QMessageBox.Information)
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()

@@ -255,8 +255,9 @@ class MarkdownEditor(QWidget):
 
     textChanged = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, main_window=None):
         super().__init__()
+        self.main_window = main_window
         self.setup_ui()
         self.find_dialog = None
 
@@ -370,6 +371,18 @@ class MarkdownEditor(QWidget):
     def format_text(self, format_type):
         """Applique le formatage Markdown au texte sélectionné."""
         cursor = self.text_edit.textCursor()
+
+        # Gérer l'insertion de la citation du jour, qui ne nécessite pas de sélection
+        if format_type == "quote_of_the_day":
+            if (
+                self.main_window
+                and hasattr(self.main_window, "daily_quote")
+                and self.main_window.daily_quote
+            ):
+                quote_text = f"> {self.main_window.daily_quote}\n> \n> **{self.main_window.daily_author}**"
+                cursor.insertText(quote_text)
+            return
+
         if not cursor.hasSelection():
             # Gérer les insertions sans sélection comme la ligne horizontale et le tableau
             if format_type == "hr":

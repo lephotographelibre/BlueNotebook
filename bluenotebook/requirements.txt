@@ -19,3 +19,12 @@ pytest-cov>=4.0.0
 # black>=23.0.0      # Formatage de code
 # flake8>=6.0.0      # Linting
 # mypy>=1.0.0        # Vérification de types
+
+# Pour le web scraping de la citation du jour
+requests>=2.31.0
+beautifulsoup4>=4.12.3
+lxml>=5.2.1  # Parser HTML plus rapide et robuste
+appdirs>=1.4.4  # Pour trouver les répertoires de cache système
+
+ 
+

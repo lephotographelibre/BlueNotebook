@@ -1,3 +1,10 @@
+## V1.1.6 Citation du jour
+
+Pour récupérer une citation du jour en français + Menu Inserer Citation du jour comme quote Markdown
+
+https://citations.ouest-france.fr/ + WebScrapping
+
+
 ## V1.1.5 Aide en ligne
 
 Création d'une page d'aide de documentation en ligne menu Aide -> Documentation en ligne. le fichier html de la page d'aide est stocké dans le repertoire bluenotebook/resources/html/ et se nomme  bluenotebook_aide_en_ligne.html
