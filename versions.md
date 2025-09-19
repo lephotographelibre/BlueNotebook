@@ -1,3 +1,10 @@
+## V1.1.7 Fix #2 Markdown editor - coloration syntaxique nefonctionne pas
+
+Re écriture de la classe MarkdownHighlighter.
+Redéfinition du parser pour éviter un chevauchement des filtres
+[#2](https://github.com/lephotographelibre/BlueNotebook/issues/2) 
+
+
 ## V1.1.6 Citation du jour
 
 Pour récupérer une citation du jour en français + Menu Inserer Citation du jour comme quote Markdown

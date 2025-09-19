@@ -1,6 +1,6 @@
 # BlueNotebook - Éditeur Markdown Python
 
-Un éditeur de texte Markdown moderne et professionnel développé en Python avec PyQt5 et QWebEngine.
+Un éditeur de texte Markdown moderne et professionnel développé en Python avec PyQt5 et QWebEngine. *aaa*
 
 ## ✨ Fonctionnalités
 

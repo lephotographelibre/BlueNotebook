@@ -28,7 +28,7 @@ from PyQt5.QtGui import (
 
 
 class MarkdownHighlighter(QSyntaxHighlighter):
-    """Coloration syntaxique pour Markdown"""
+    """Coloration syntaxique pour Markdown (titres, gras, italique)"""
 
     def __init__(self, document):
         super().__init__(document)
@@ -40,7 +40,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.title_formats = []
         for i in range(1, 7):
             format = QTextCharFormat()
-            format.setForeground(QColor("#2c3e50"))
+            format.setForeground(QColor("#AA3731"))
             format.setFontWeight(QFont.Bold)
             format.setFontPointSize(16 - i)
             self.title_formats.append(format)
@@ -48,91 +48,157 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Format pour le gras
         self.bold_format = QTextCharFormat()
         self.bold_format.setFontWeight(QFont.Bold)
-        self.bold_format.setForeground(QColor("#2c3e50"))
+        self.bold_format.setForeground(QColor("#448C27"))
 
         # Format pour l'italique
         self.italic_format = QTextCharFormat()
         self.italic_format.setFontItalic(True)
-        self.italic_format.setForeground(QColor("#7f8c8d"))
+        self.italic_format.setForeground(QColor("#448C27"))
 
         # Format pour le code inline
-        self.code_format = QTextCharFormat()
-        self.code_format.setForeground(QColor("#e74c3c"))
-        self.code_format.setBackground(QColor("#f8f9fa"))
-        self.code_format.setFontFamily("Consolas, Monaco, monospace")
+        self.inline_code_format = QTextCharFormat()
+        self.inline_code_format.setFontWeight(QFont.Bold)
+        self.inline_code_format.setForeground(QColor("#d6336c"))  # Rose/Rouge
+        self.inline_code_format.setBackground(QColor("#f2f07f"))
+        self.inline_code_format.setFontFamily("Consolas, Monaco, monospace")
 
-        # Format pour les liens
-        self.link_format = QTextCharFormat()
-        self.link_format.setForeground(QColor("#3498db"))
-        self.link_format.setUnderlineStyle(QTextCharFormat.SingleUnderline)
+        # Format pour les blocs de code
+        self.code_block_format = QTextCharFormat()
+        self.code_block_format.setBackground(QColor("#f0f0f0"))  # Gris clair
+        self.code_block_format.setFontFamily("Consolas, Monaco, monospace")
 
-        # Format pour les citations
+        # Format pour les citations (blockquote)
         self.quote_format = QTextCharFormat()
-        self.quote_format.setForeground(QColor("#95a5a6"))
+        self.quote_format.setForeground(QColor("#2B303B"))  # Gris
         self.quote_format.setFontItalic(True)
 
         # Format pour les listes
         self.list_format = QTextCharFormat()
-        self.list_format.setForeground(QColor("#8e44ad"))
+        self.list_format.setForeground(QColor("#AA3731"))  # Violet
+        self.list_format.setFontWeight(QFont.Bold)
 
-        # Format pour le code en bloc
-        self.code_block_format = QTextCharFormat()
-        self.code_block_format.setBackground(QColor("#f8f9fa"))
-        self.code_block_format.setForeground(QColor("#2c3e50"))
-        self.code_block_format.setFontFamily("Consolas, Monaco, monospace")
+        # Format pour les liens Markdown
+        self.link_format = QTextCharFormat()
+        self.link_format.setForeground(QColor("#0366d6"))  # Bleu
+        self.link_format.setUnderlineStyle(QTextCharFormat.SingleUnderline)
+
+        # Format pour les tags (#tag)
+        self.tag_format = QTextCharFormat()
+        self.tag_format.setForeground(QColor("#d73a49"))  # Rouge
+        self.tag_format.setFontWeight(QFont.Bold)
+
+        # Format pour le texte barré (strikethrough)
+        self.strikethrough_format = QTextCharFormat()
+        self.strikethrough_format.setForeground(QColor("#448C27"))  # Gris moyen
+        self.strikethrough_format.setFontStrikeOut(True)
+
+        # Format pour le surlignage (highlight)
+        self.highlight_format = QTextCharFormat()
+        self.highlight_format.setBackground(
+            QColor("#FFC0CB")
+        )  # Rose clair (Light Pink)
 
     def highlightBlock(self, text):
         """Coloration d'un bloc de texte"""
-        # Titres (# ## ### etc.)
-        title_pattern = r"^(#{1,6})\s+(.+)$"
-        for match in re.finditer(
-            title_pattern, text, re.MULTILINE
-        ):  # pyright: ignore[reportArgumentType, reportCallIssue]
+        # Gestion des blocs de code (```...```)
+        self.setCurrentBlockState(0)
+        if self.previousBlockState() == 1 or text.strip().startswith("```"):
+            self.setFormat(0, len(text), self.code_block_format)
+            if not text.strip().endswith("```"):
+                self.setCurrentBlockState(1)
+
+        title_pattern = r"^(#{1,6})\s*(.*)$"
+        for match in re.finditer(title_pattern, text):
             level = len(match.group(1)) - 1
             if level < len(self.title_formats):
+                # Colorer tout le titre (hashtags + texte)
                 self.setFormat(
                     match.start(),
                     match.end() - match.start(),
                     self.title_formats[level],
                 )
 
-        # Gras (**text** ou __text__)
-        bold_pattern = r"(\*\*|__)([^*_]+)(\*\*|__)"
-        for match in re.finditer(bold_pattern, text):
+        # Gras (**text** ou __text__) - version simplifiée
+        # Utilise une regex qui ne capture pas les astérisques seuls à l'intérieur
+        bold_star_pattern = r"\*\*(?!\s)(.*?)(?<!\s)\*\*"
+        for match in re.finditer(bold_star_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
 
-        # Italique (*text* ou _text_)
-        italic_pattern = r"(?<!\*)\*([^*]+)\*(?!\*)|(?<!_)_([^_]+)_(?!_)"
-        for match in re.finditer(italic_pattern, text):
+        bold_underscore_pattern = r"__(?!\s)(.*?)(?<!\s)__"
+        for match in re.finditer(bold_underscore_pattern, text):
+            self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
+
+        # Italique (*text* ou _text_) - version simplifiée
+        # Ne capture pas si c'est du gras (**)
+        italic_star_pattern = r"(?<!\*)\*(?!\s)(.*?)(?<!\s)\*(?!\*)"
+        for match in re.finditer(italic_star_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.italic_format
+            )
+
+        # Ne capture pas si c'est du gras (__)
+        italic_underscore_pattern = r"(?<!_)_(?!\s)(.*?)(?<!\s)_(?!_)"
+        for match in re.finditer(italic_underscore_pattern, text):
             self.setFormat(
                 match.start(), match.end() - match.start(), self.italic_format
             )
 
         # Code inline (`code`)
-        code_pattern = r"`([^`]+)`"
-        for match in re.finditer(code_pattern, text):
-            self.setFormat(match.start(), match.end() - match.start(), self.code_format)
+        inline_code_pattern = r"`([^`]+)`"
+        for match in re.finditer(inline_code_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.inline_code_format
+            )
 
-        # Liens [text](url)
-        link_pattern = r"\[([^\]]+)\]\([^)]+\)"
-        for match in re.finditer(link_pattern, text):
-            self.setFormat(match.start(), match.end() - match.start(), self.link_format)
+        # Barré (~~texte~~)
+        strikethrough_pattern = r"~~([^~]+)~~"
+        for match in re.finditer(strikethrough_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.strikethrough_format
+            )
 
-        # Citations (> text)
-        quote_pattern = r"^>\s*(.+)$"
-        for match in re.finditer(quote_pattern, text, re.MULTILINE):
+        # Surlignage (==texte==)
+        highlight_pattern = r"==([^=]+)=="
+        for match in re.finditer(highlight_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.highlight_format
+            )
+        # Citations (> texte)
+        quote_pattern = r"^>\s.*"
+        for match in re.finditer(quote_pattern, text):
             self.setFormat(
                 match.start(), match.end() - match.start(), self.quote_format
             )
 
-        # Listes (- * + 1.)
-        list_pattern = r"^[\s]*[-\*\+][\s]+|^[\s]*\d+\.[\s]+"
-        for match in re.finditer(list_pattern, text, re.MULTILINE):
+        # Listes à puces et numérotées (-, *, +, 1.)
+        # Cible uniquement le marqueur de liste
+        list_pattern = r"^\s*([-*+]|\d+\.)\s"
+        for match in re.finditer(list_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.list_format)
 
-        # Code en bloc (```)
-        if text.strip().startswith("```") or text.strip().startswith("    "):
-            self.setFormat(0, len(text), self.code_block_format)
+        # Liens Markdown ([texte](url))
+        link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
+        for match in re.finditer(link_pattern, text):
+            # Colorer le lien en entier
+            self.setFormat(match.start(), match.end() - match.start(), self.link_format)
+
+        # Auto-liens (<url> ou <email>)
+        autolink_pattern = r"<((?:https?://|mailto:)[^>]+|[^>@]+@[^>]+)>"
+        for match in re.finditer(autolink_pattern, text):
+            # Colorer le lien en entier, y compris les chevrons
+            self.setFormat(match.start(), match.end() - match.start(), self.link_format)
+
+        # Tags (@@tag, au moins 2 caractères après les @@)
+        # Utilise \B pour s'assurer que le # n'est pas précédé d'un caractère de mot
+        tag_pattern = r"@@(\w{2,})\b"
+        for match in re.finditer(tag_pattern, text):
+            self.setFormat(match.start(), match.end() - match.start(), self.tag_format)
+
+        # Images HTML (<img ...>)
+        image_pattern = r"<img[^>]+>"
+        for match in re.finditer(image_pattern, text, re.IGNORECASE):
+            # Colorer la balise image en entier
+            self.setFormat(match.start(), match.end() - match.start(), self.link_format)
 
 
 class FindDialog(QDialog):
