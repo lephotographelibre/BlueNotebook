@@ -1,3 +1,8 @@
+## V1.1.12 Zoom Editeur avec la Molette
+
+Pour améliorer l'ergonomie de l'éditeur. Pour implémenter le zoom avec CTRL + Molette, il faut intercepter l'événement de la molette de la souris dans le widget de l'éditeur.
+
+
 ## V1.1.11 Insertion d'un "Internal Link" vers  un fichier
 
 Ajouter dasn le mene Formater -> Insérer -> Fichier

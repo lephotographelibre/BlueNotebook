@@ -637,3 +637,21 @@ class MarkdownEditor(QWidget):
                 new_lines.append(f"{i + 1}. {line}")
 
         return "\n".join(new_lines)
+
+    # V1.1.12 Zoom Editeur avec la Molette
+    def wheelEvent(self, event):
+        """
+        Gère l'événement de la molette de la souris pour le zoom.
+        """
+        # Vérifie si la touche CTRL est pressée
+        if event.modifiers() == Qt.ControlModifier:
+            # Récupère le mouvement de la molette (positif pour le haut, négatif pour le bas)
+            angle = event.angleDelta().y()
+            if angle > 0:
+                self.text_edit.zoomIn(1)  # Zoom avant
+            elif angle < 0:
+                self.text_edit.zoomOut(1)  # Zoom arrière
+            event.accept()  # Indique que l'événement a été traité
+        else:
+            # Si CTRL n'est pas pressée, comportement par défaut (défilement)
+            super().wheelEvent(event)

@@ -1,4 +1,4 @@
-# Document d'Architecture Technique - BlueNotebook V1.1.11
+# Document d'Architecture Technique - BlueNotebook V1.1.12
 
 ## 1. Introduction
 
@@ -161,7 +161,7 @@ L'architecture actuelle, qui sépare distinctement le **Noyau Métier (`core`)**
 *Ce document a été mis à jour pour la version 1.1.11.*
 
 
-# Manuel Utilisateur - BlueNotebook v1.1.11
+# Manuel Utilisateur - BlueNotebook v1.1.12
 
 ## 1. Introduction
 
@@ -306,6 +306,7 @@ Pour une productivité accrue, utilisez les raccourcis clavier suivants :
 | Mettre en gras | `Ctrl+B` |
 | Insérer une image | `Ctrl+I` |
 | Basculer l'aperçu | `F5` |
+| Zoomer/Dézoomer le texte | `Ctrl + Molette souris` |
 
 ## 7. Exemples d'Utilisation
 
