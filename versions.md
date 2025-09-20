@@ -1,3 +1,29 @@
+## V1.1.11 Insertion d'un "Internal Link" vers  un fichier
+
+Ajouter dasn le mene Formater -> Insérer -> Fichier
+qui permette à l'utilisateur de choisir un fichier dans le répertoire de fichier puis qui insere un lien Markdown vers ce fichier sous la forme
+[An Internal Link](/guides/content/editing-an-existing-page)
+en mettant entre crocher [] le nom+extension fichier sans le path
+
+exemple:
+ [Twitter-Logо.png](file:///home/jm/Images/pixmaps/Twitter-Log%D0%BE.png)
+
+```
+├── ➕ Insérer
+│   ├── 🔗 Lien (URL ou email) (<url>)
+│   ├── 🖼️ Image (<img ...>)
+│   ├── 🔗 Lien Markdown (texte)
+│   ├── 🔗 Fichier
+│   ├── ▦ Tableau (|...|)
+│   ├── ➖ Ligne Horizontale (---)
+│   ├── 💬 Citation (> texte)
+│   ├── ✨ Citation du jour
+│   ├── 🏷️ Tag (@@)
+│   └── 🕒 Heure (HH:MM)
+```
+
+
+
 ## V1.1.10 Modifier la couleur de fond de l'editeur + Tag formating
 
 HTMLColors `#d6ebff`

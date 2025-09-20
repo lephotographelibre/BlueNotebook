@@ -2,10 +2,14 @@
 Composant éditeur de texte BlueNotebook avec coloration syntaxique PyQt5
 """
 
+from pathlib import Path
+
+import os
 import re
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QFileDialog,
     QTextEdit,
     QLabel,
     QDialog,
@@ -447,6 +451,25 @@ class MarkdownEditor(QWidget):
             ):
                 quote_text = f"> {self.main_window.daily_quote}\n> \n> **{self.main_window.daily_author}**"
                 cursor.insertText(quote_text)
+            return
+
+        # V1.1.11 Correction: Gérer l'insertion de lien interne sans sélection
+        if format_type == "internal_link":
+            # Utiliser le répertoire du journal comme point de départ
+            start_dir = (
+                str(self.main_window.journal_directory)
+                if self.main_window and self.main_window.journal_directory
+                else ""
+            )
+            filename, _ = QFileDialog.getOpenFileName(
+                self, "Sélectionner un fichier à lier", start_dir
+            )
+
+            if filename:
+                file_basename = os.path.basename(filename)
+                file_uri = Path(filename).as_uri()  # Convertit en URI file://
+                new_text = f"[{file_basename}]({file_uri})"
+                cursor.insertText(new_text)
             return
 
         if not cursor.hasSelection():

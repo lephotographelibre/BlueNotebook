@@ -340,6 +340,11 @@ class MainWindow(QMainWindow):
             ),  # Raccourci Ctrl+I ajouté ici
             ("🔗 Lien Markdown (texte)", "markdown_link"),
         ]
+        # V1.1.11 Ajout de l'insertion de lien vers un fichier interne
+        insert_internal_link_action = QAction("🔗 Fichier", self)
+        insert_internal_link_action.triggered.connect(
+            lambda: self.editor.format_text("internal_link")
+        )
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
             action.triggered.connect(
@@ -349,6 +354,7 @@ class MainWindow(QMainWindow):
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
+        insert_menu.addAction(insert_internal_link_action)
 
         insert_menu.addSeparator()
 
