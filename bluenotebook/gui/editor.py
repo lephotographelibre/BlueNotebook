@@ -356,8 +356,8 @@ class MarkdownEditor(QWidget):
         self.text_edit.setAcceptRichText(False)  # Texte brut seulement
 
         # Configuration de la police
-        font = QFont("Consolas, Monaco, 'Courier New', monospace")
-        font.setPointSize(11)
+        font = QFont("'Droid Sans Mono', 'monospace', monospace")
+        font.setPointSize(12)
         self.text_edit.setFont(font)
 
         # Style amélioré
@@ -371,7 +371,6 @@ class MarkdownEditor(QWidget):
                 selection-background-color: #3498db;
                 color: #2c3e50;
                 selection-color: white;
-                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             }
             
             QTextEdit:focus {

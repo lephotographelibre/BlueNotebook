@@ -1,3 +1,7 @@
+## V1.1.8 Changement de la police de caractères de l'editeur
+
+Dans `editor.py ` remplace la police "*Courier New*" par "*Droid Sans Mono*" qui est la police utilisée dans VSCode
+
 ## V1.1.7 Fix Issue #2 Markdown editor - coloration syntaxique nefonctionne pas
 
 Re écriture de la classe MarkdownHighlighter.
