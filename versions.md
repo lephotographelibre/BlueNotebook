@@ -1,7 +1,8 @@
-## V1.1.7 Fix #2 Markdown editor - coloration syntaxique nefonctionne pas
+## V1.1.7 Fix Issue #2 Markdown editor - coloration syntaxique nefonctionne pas
 
 Re écriture de la classe MarkdownHighlighter.
 Redéfinition du parser pour éviter un chevauchement des filtres
+
 [#2](https://github.com/lephotographelibre/BlueNotebook/issues/2) 
 
 

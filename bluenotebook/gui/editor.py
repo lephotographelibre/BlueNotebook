@@ -27,6 +27,7 @@ from PyQt5.QtGui import (
 )
 
 
+# V1.1.7 Fix Issue #2 Markdown editor - coloration syntaxique nefonctionne pas
 class MarkdownHighlighter(QSyntaxHighlighter):
     """Coloration syntaxique pour Markdown (titres, gras, italique)"""
 

@@ -17,7 +17,7 @@ from gui.main_window import MainWindow
 
 def main():
     """Fonction principale"""
-    parser = argparse.ArgumentParser(description="BlueNotebook - Éditeur Markdown")
+    parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
     parser.add_argument(
         "-j", "--journal", dest="journal_dir", help="Spécifie le répertoire du journal."
     )
