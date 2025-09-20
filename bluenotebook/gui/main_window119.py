@@ -184,48 +184,48 @@ class MainWindow(QMainWindow):
 
     def _create_actions(self):
         """Crée toutes les actions de l'application."""
-        self.new_action = QAction(  # noqa
-            "📄 Nouveau",
+        self.new_action = QAction(
+            "📄 &Nouveau",
             self,
             shortcut=QKeySequence.New,
             statusTip="Créer un nouveau fichier",
             triggered=self.new_file,
         )
         self.open_action = QAction(
-            "📂 Ouvrir",
+            "📂 &Ouvrir",
             self,
             shortcut=QKeySequence.Open,
             statusTip="Ouvrir un fichier existant",
             triggered=self.open_file,
         )
         self.open_journal_action = QAction(
-            "📓 Ouvrir Journal",
+            "📓 Ouvrir &Journal",
             self,
             statusTip="Ouvrir un répertoire de journal",
             triggered=self.open_journal,
         )
         self.save_action = QAction(
-            "💾 Sauvegarder",
+            "💾 &Sauvegarder",
             self,
             shortcut=QKeySequence.Save,
             statusTip="Sauvegarder le fichier",
             triggered=self.save_file,
         )
         self.save_as_action = QAction(
-            "💾 Sauvegarder sous...",
+            "💾 Sauvegarder &sous...",
             self,
             shortcut=QKeySequence.SaveAs,
             statusTip="Sauvegarder sous un nouveau nom",
             triggered=self.save_file_as,
         )
         self.export_action = QAction(
-            "🌐 Exporter HTML...",
+            "🌐 &Exporter HTML...",
             self,
             statusTip="Exporter en HTML",
             triggered=self.export_html,
         )
         self.quit_action = QAction(
-            "🚪 Quitter",
+            "🚪 &Quitter",
             self,
             shortcut=QKeySequence.Quit,
             statusTip="Quitter l'application",
@@ -233,30 +233,32 @@ class MainWindow(QMainWindow):
         )
 
         self.undo_action = QAction(
-            "↩️ Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
+            "↩️ &Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
         )
         self.redo_action = QAction(
-            "↪️ Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
+            "↪️ &Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
         )
         self.find_action = QAction(
-            "🔍 Rechercher",
+            "🔍 &Rechercher",
             self,
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
         )
 
         self.toggle_preview_action = QAction(
-            "👁️ Basculer l'aperçu", self, shortcut="F5", triggered=self.toggle_preview
+            "👁️ &Basculer l'aperçu", self, shortcut="F5", triggered=self.toggle_preview
         )
 
         self.about_action = QAction(
-            "ℹ️ À propos",
+            QIcon.fromTheme("help-about"),
+            "À &propos",
             self,
             triggered=self.show_about,
         )
 
         self.online_help_action = QAction(
-            "🌐 Documentation en ligne",
+            QIcon.fromTheme("help-contents"),
+            "&Documentation en ligne",
             self,
             triggered=self.show_online_help,
         )
@@ -264,13 +266,13 @@ class MainWindow(QMainWindow):
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
         # --- Sous-menu Titre ---
-        title_menu = QMenu("📜 Titres", self)
+        title_menu = QMenu("📜 Titre", self)
         title_actions_data = [
-            ("1️⃣ Niv 1 (#)", "h1"),
-            ("2️⃣ Niv 2 (##)", "h2"),
-            ("3️⃣ Niv 3 (###)", "h3"),
-            ("4️⃣ Niv 4 (####)", "h4"),
-            ("5️⃣ Niv 5 (#####)", "h5"),
+            ("Niv 1 (#)", "h1"),
+            ("Niv 2 (##)", "h2"),
+            ("Niv 3 (###)", "h3"),
+            ("Niv 4 (####)", "h4"),
+            ("Niv 5 (#####)", "h5"),
         ]
         for name, data in title_actions_data:
             action = QAction(name, self)
@@ -283,10 +285,10 @@ class MainWindow(QMainWindow):
         # --- Sous-menu Style de texte ---
         style_menu = QMenu("🎨 Style de texte", self)
         style_actions_data = [
-            ("🅱️ Gras (**texte**)", "bold", QKeySequence.Bold),
-            ("*️⃣ Italique (*texte*)", "italic"),  # Raccourci Ctrl+I retiré
-            ("~ Barré (~~texte~~)", "strikethrough"),
-            ("🖍️ Surligné (==texte==)", "highlight"),
+            ("Gras (**texte**)", "bold", QKeySequence.Bold),
+            ("Italique (*texte*)", "italic"),  # Raccourci Ctrl+I retiré
+            ("Barré (~~texte~~)", "strikethrough"),
+            ("Surligné (==texte==)", "highlight"),
         ]
         for name, data, *shortcut in style_actions_data:
             action = QAction(name, self)
@@ -301,8 +303,8 @@ class MainWindow(QMainWindow):
         # --- Sous-menu Code ---
         code_menu = QMenu("💻 Code", self)
         code_actions_data = [
-            ("` Monospace (inline)", "inline_code"),
-            ("``` Bloc de code", "code_block"),
+            ("Monospace (inline) (`code`)", "inline_code"),
+            ("Bloc de code (```...```)", "code_block"),
         ]
         for name, data in code_actions_data:
             action = QAction(name, self)
@@ -315,9 +317,9 @@ class MainWindow(QMainWindow):
         # --- Sous-menu Listes ---
         list_menu = QMenu("📋 Listes", self)
         list_actions_data = [
-            ("• Liste non ordonnée", "ul"),
-            ("1. Liste ordonnée", "ol"),
-            ("☑️ Liste de tâches", "task_list"),
+            ("Liste non ordonnée (- item)", "ul"),
+            ("Liste ordonnée (1. item)", "ol"),
+            ("Liste de tâches (- [ ] item)", "task_list"),
         ]
         for name, data in list_actions_data:
             action = QAction(name, self)
@@ -329,25 +331,30 @@ class MainWindow(QMainWindow):
 
         # --- Sous-menu Insérer ---
         insert_menu = QMenu("➕ Insérer", self)
-        insert_actions_data = [  # noqa
-            ("🔗 Lien (URL ou email) (<url>)", "url"),
+        insert_actions_data = [
+            ("Lien (URL ou email) (<url>)", "url", "link.png"),
             (
-                "🖼️ Image (<img ...>)",
+                "Image (<img ...>)",
                 "image",
+                "image.png",
                 QKeySequence.Italic,
             ),  # Raccourci Ctrl+I ajouté ici
-            ("🔗 Lien Markdown (texte)", "markdown_link"),
-            ("▦ Tableau (|...|)", "table"),
-            ("➖ Ligne Horizontale (---)", "hr"),
-            ("💬 Citation (> texte)", "quote"),
-            ("✨ Citation du jour", "quote_of_the_day"),
-            ("🕒 Heure (HH:MM)", "time"),
+            ("Lien Markdown (texte)", "markdown_link", "markdown.png"),
+            ("Tableau (|...|)", "table", "table.png"),
+            ("Ligne Horizontale (---)", "hr", "minus.png"),
+            ("Citation (> texte)", "quote", "quote.png"),
+            ("Citation du jour", "quote_of_the_day", "quote-of-the-day.png"),
+            ("Heure (HH:MM)", "time", "clock.png"),
         ]
-        for name, data, *shortcut in insert_actions_data:
+        for name, data, icon_name, *shortcut in insert_actions_data:
             action = QAction(name, self)
             action.triggered.connect(
                 lambda checked=False, d=data: self.editor.format_text(d)
             )
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            icon_path = os.path.join(base_path, "..", "resources", "icons", icon_name)
+            if os.path.exists(icon_path):
+                action.setIcon(QIcon(icon_path))
 
             if shortcut:
                 action.setShortcut(shortcut[0])

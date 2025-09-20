@@ -1,3 +1,28 @@
+## V1.1.9 Insertion  de l'heure par menue Formater + Emojs Menus
+
+Je veux pouvoir inserer l'heure directement dans l'éditeur Markdown
+Ajout d'un choix de menu Formater - > Insérer -> Heure. Insérer la chaine de caractère HH:MM correspondanst à l'heure locale . Ne pas ouvlier d'accmpagner le laber Heure d'une petite icone.
+
+Modifier le fichier de documentation docs/V1.1.8 bluenotebook_technical_doc.md en modifiant le representaion graphique de la barre de menu pour y ajouter le sous menu heure
+
+Dans le menu inserer les differents items sont des labels texte uniquement. Ajouter une emoj pour chacun deux avant le label (Lien, Image, ....Heure)
+
+── ➕ Insérer
+│   ├── 🔗 Lien (URL ou email) (<url>)
+│   ├── 🖼️ Image (<img ...>)
+│   ├── 🔗 Lien Markdown (texte)
+│   ├── ▦ Tableau (|...|)
+│   ├── ➖ Ligne Horizontale (---)
+│   ├── 💬 Citation (> texte)
+│   ├── ✨ Citation du jour
+│   └── 🕒 Heure (HH:MM) 
+├── ---
+└── 🧹 RaZ (Effacer le formatage)
+
+❓ Aide
+├── 🌐 Documentation en ligne
+└── ℹ️ À propos
+
 ## V1.1.8 Changement de la police de caractères de l'editeur
 
 Dans `editor.py ` remplace la police "*Courier New*" par "*Droid Sans Mono*" qui est la police utilisée dans VSCode

@@ -456,6 +456,11 @@ class MarkdownEditor(QWidget):
             elif format_type == "table":
                 table_template = "| En-tête 1 | En-tête 2 |\n|---|---|\n| Cellule 1 | Cellule 2 |\n| Cellule 3 | Cellule 4 |"
                 cursor.insertText(table_template)
+            # V1.1.9 Insertion de l'heure
+            elif format_type == "time":
+                from datetime import datetime
+
+                cursor.insertText(f"**{datetime.now().strftime('%H:%M')}**")
             return
 
         selected_text = cursor.selectedText()
