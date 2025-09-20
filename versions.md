@@ -1,3 +1,38 @@
+## V1.1.10 Modifier la couleur de fond de l'editeur + Tag formating
+
+HTMLColors `#d6ebff`
+
+editor.py --> background-color: #d6ebff;
+```python
+
+        # Style amélioré
+        self.text_edit.setStyleSheet(
+            """
+            QTextEdit {
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 10px;
+                background-color: #d6ebff;
+                selection-background-color: #3498db;
+                color: #2c3e50;
+                selection-color: white;
+            }
+
+```
+
+**10:54**
+Ajout Tag formating
+ 
+```
+🎨 Formater
+  └── ➕ Insérer
+
+      ├── 🏷️ Tag  (@@)
+      └── 🕒 Heure
+```
+
+
+
 ## V1.1.9 Insertion  de l'heure par menue Formater + Emojs Menus
 
 Je veux pouvoir inserer l'heure directement dans l'éditeur Markdown

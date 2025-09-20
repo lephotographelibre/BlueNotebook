@@ -328,8 +328,10 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(list_menu)
 
         # --- Sous-menu Insérer ---
-        insert_menu = QMenu("➕ Insérer", self)
-        insert_actions_data = [  # noqa
+        # V1.1.9 Le menu est maintenant créé dans _setup_format_menu
+        # insert_menu = QMenu("➕ Insérer", self)
+        insert_menu = QMenu("➕ Insérer", self)  # noqa
+        insert_actions_data = [
             ("🔗 Lien (URL ou email) (<url>)", "url"),
             (
                 "🖼️ Image (<img ...>)",
@@ -337,11 +339,6 @@ class MainWindow(QMainWindow):
                 QKeySequence.Italic,
             ),  # Raccourci Ctrl+I ajouté ici
             ("🔗 Lien Markdown (texte)", "markdown_link"),
-            ("▦ Tableau (|...|)", "table"),
-            ("➖ Ligne Horizontale (---)", "hr"),
-            ("💬 Citation (> texte)", "quote"),
-            ("✨ Citation du jour", "quote_of_the_day"),
-            ("🕒 Heure (HH:MM)", "time"),
         ]
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
@@ -352,6 +349,33 @@ class MainWindow(QMainWindow):
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
+
+        insert_menu.addSeparator()
+
+        # Actions statiques
+        insert_hr_action = QAction("➖ Ligne Horizontale", self)
+        insert_hr_action.triggered.connect(lambda: self.editor.format_text("hr"))
+        insert_table_action = QAction("▦ Tableau", self)
+        insert_table_action.triggered.connect(lambda: self.editor.format_text("table"))
+        insert_quote_action = QAction("💬 Citation", self)
+        insert_quote_action.triggered.connect(lambda: self.editor.format_text("quote"))
+        insert_quote_day_action = QAction("✨ Citation du jour", self)
+        insert_quote_day_action.triggered.connect(
+            lambda: self.editor.format_text("quote_of_the_day")
+        )
+
+        insert_menu.addAction(insert_quote_action)
+        insert_menu.addAction(insert_quote_day_action)
+        insert_menu.addAction(insert_hr_action)
+        insert_menu.addAction(insert_table_action)
+        insert_menu.addSeparator()
+        # V1.1.10 Ajout Tag Menu
+        insert_tag_action = QAction("🏷️ Tag (@@)", self)
+        insert_tag_action.triggered.connect(lambda: self.editor.format_text("tag"))
+        insert_menu.addAction(insert_tag_action)
+        insert_time_action = QAction("🕒 Heure", self)
+        insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
+        insert_menu.addAction(insert_time_action)
         format_menu.addMenu(insert_menu)
 
         format_menu.addSeparator()

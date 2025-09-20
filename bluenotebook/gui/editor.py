@@ -367,7 +367,7 @@ class MarkdownEditor(QWidget):
                 border: 1px solid #dee2e6;
                 border-radius: 4px;
                 padding: 10px;
-                background-color: #ffffff;
+                background-color: #d6ebff;
                 selection-background-color: #3498db;
                 color: #2c3e50;
                 selection-color: white;
@@ -560,6 +560,14 @@ class MarkdownEditor(QWidget):
             if text and url:
                 new_text = f"[{text}]({url})"
                 cursor.insertText(new_text)
+
+        elif format_type == "tag":
+            new_text = f"@@{selected_text}"
+            cursor.insertText(new_text)
+
+        elif format_type == "tag":
+            new_text = f"@@{selected_text}"
+            cursor.insertText(new_text)
 
     def clear_formatting(self):
         """Supprime le formatage Markdown de la sélection."""
