@@ -1,7 +1,8 @@
 
 ## V1.1.16 Barre status - Couleur affichage nom du fichier - Etat de sauvegarde du fichier courant
 
-Gestion du cycle de vie de nom de fichier courant dans l'editeur (exemple 20250921.md) affiché dans la barre de status de l'application.
+Gestion des couleurs pour l'état de sauvegarde du fichier dans la barre de statut. C'est une excellente idée pour améliorer la visibilité de l'état du document.
+
 A l'ouverture la police de caractère utilise la couleur blanche.
 Des que le fichier est modifié et pas sauvegardé le fichier passe au rouge et dès qu'il vient d'etre sauverardé il passe au vert
 
