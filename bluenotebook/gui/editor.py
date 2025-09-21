@@ -352,7 +352,7 @@ class MarkdownEditor(QWidget):
             }
         """
         )
-        label.setMaximumHeight(35)
+        label.setMaximumHeight(35)  # noqa
         layout.addWidget(label)
 
         # Zone de texte - prend tout l'espace restant

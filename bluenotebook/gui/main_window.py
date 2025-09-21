@@ -523,31 +523,36 @@ class MainWindow(QMainWindow):
     def new_file(self):
         """Créer un nouveau fichier"""
         if self.check_save_changes():
-            self.editor.set_text(
-                """______________________________________________________________
+            today_str = datetime.now().strftime("%d/%m/%Y")
+            template = f"""______________________________________________________________
 
-# Date
+# {today_str}
 
 ______________________________________________________________
 
 ## TODO
 
+- [ ] 
+
 ______________________________________________________________
-## Activité du jour
+## Activités & Notes
 
 
 
 
-## A faire demain
+## Pour Demain
 
 
 
 ## Liens
 
+
 ## Tags
 
+@@
+
 """
-            )
+            self.editor.set_text(template)
             self.current_file = None
             self.is_modified = False
             self.update_title()

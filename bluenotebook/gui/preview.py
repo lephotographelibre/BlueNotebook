@@ -2,12 +2,26 @@
 Composant d'aperçu HTML du Markdown avec QWebEngine
 """
 
+import re
+from xml.etree import ElementTree
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl, QTimer
+from markdown.inlinepatterns import InlineProcessor
 import markdown
 import tempfile
 import os
+
+
+class TagInlineProcessor(InlineProcessor):
+    """Traite les tags @@tag en les entourant d'une balise span."""
+
+    def handleMatch(self, m, data):
+        el = ElementTree.Element("span")
+        el.set("class", "tag")
+        el.text = m.group(0)
+        return el, m.start(0), m.end(0)
 
 
 class MarkdownPreview(QWidget):
@@ -39,7 +53,7 @@ class MarkdownPreview(QWidget):
             }
         """
         )
-        label.setMaximumHeight(35)
+        label.setMaximumHeight(35)  # noqa
         layout.addWidget(label)
 
         # Vue web pour l'aperçu HTML - prend tout l'espace restant
@@ -83,6 +97,14 @@ class MarkdownPreview(QWidget):
                 "codehilite": {"css_class": "highlight", "use_pygments": True},
                 "toc": {"permalink": True},
             },
+        )
+        # Enregistrer l'implémentation ElementTree pour que Markdown l'utilise
+        markdown.etree = ElementTree
+
+        # Ajouter le processeur de tags personnalisé
+        # La regex r"@@(\w{2,})\b" correspond à @@ suivi d'au moins 2 caractères de mot
+        self.md.inlinePatterns.register(
+            TagInlineProcessor(r"@@(\w{2,})\b", self.md), "tag", 175
         )
 
     def create_html_template(self, content):
@@ -297,6 +319,15 @@ class MarkdownPreview(QWidget):
                 .highlight .nb {{ color: #005cc5; }}
                 .highlight .nf {{ color: #6f42c1; }}
                 
+                /* Tags */
+                .tag {{
+                    color: #d73a49; /* Rouge, comme dans l'éditeur */
+                    font-weight: bold;
+                    background-color: rgba(215, 58, 73, 0.1); /* Léger fond rouge */
+                    border-radius: 4px;
+                    padding: 0.1em 0.3em;
+                }}
+
                 /* Table des matières */
                 .toc {{
                     background-color: #f8f9fa;

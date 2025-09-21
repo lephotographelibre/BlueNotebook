@@ -1,18 +1,25 @@
-## V1.1.13 Changement de la page par defaut de l'editeur
+## V1.1.13 Changement de la page par defaut de l'editeur et colorations des tags en HTML
 
+1
 main_windows.py --> fonction new_file(self)
 Lorsque l'on crée un nouveau document, on applique par defaut une page au format Markdown qui est une template de page de Journal.
 
+2
 Changement entête
 previews.py --> class MarkdownPreview(QWidget):
 label = QLabel("👀 Aperçu HTML")
 
+3
 Changement entête
 editor.py --> class MarkdownEditor(QWidget) --> fonction setup_ui(self)
 label = QLabel("📝 Éditeur Markdown")
 
+4
 Pour que les tags apparaissent en rouge également dans l'aperçu HTML, il faut modifier le moteur de rendu Markdown pour qu'il reconnaisse et stylise spécifiquement les tags @@....
 Pour l'appliquer à l'aperçu, nous devons utiliser une extension Markdown qui va transformer @@tag en une balise HTML spécifique (par exemple <span class="tag">tag</span>), puis ajouter le style CSS correspondant.
+
+une balise HTML spécifique (par exemple, <span class="tag">tag</span>) et ajouter le style CSS correspondant
+ajouter une extension Markdown personnalisée qui s'occupe de cette transformation et ajout le style CSS nécessaire.
 
 ## V1.1.12 Zoom Editeur avec la Molette
 
