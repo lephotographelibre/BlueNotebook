@@ -24,11 +24,12 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
 )
 from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QThreadPool
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
 
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
-from core.quote_fetcher import QuoteFetcher
+from core.quote_fetcher import QuoteFetcher  # noqa
 
 
 class MainWindow(QMainWindow):
@@ -41,6 +42,9 @@ class MainWindow(QMainWindow):
         self.is_modified = False
         self.daily_quote = None
         self.daily_author = None
+
+        # Initialiser le pool de threads pour les tâches de fond
+        self.thread_pool = QThreadPool()
 
         self.setup_ui()
         self.setup_menu()
@@ -55,6 +59,7 @@ class MainWindow(QMainWindow):
 
         self.load_initial_file()
         self.show_quote_of_the_day()
+        self.start_initial_indexing()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -413,6 +418,11 @@ class MainWindow(QMainWindow):
         self.stats_label = QLabel("")
         self.statusbar.addPermanentWidget(self.stats_label)
 
+        # Label pour le statut de l'indexation des tags
+        self.tag_index_status_label = QLabel("")
+        self.tag_index_status_label.setStyleSheet("color: green;")
+        self.statusbar.addPermanentWidget(self.tag_index_status_label)
+
     def setup_connections(self):
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -577,6 +587,7 @@ ______________________________________________________________
                     "Journal",
                     f"Le répertoire du journal est maintenant :\n{self.journal_directory}",
                 )
+                self.start_initial_indexing()  # Relancer l'indexation
 
     def open_file(self):
         """Ouvrir un fichier"""
@@ -846,3 +857,25 @@ ______________________________________________________________
         # Exécuter un script JavaScript pour faire défiler la page web
         js_code = f"window.scrollTo(0, document.body.scrollHeight * {relative_pos});"
         preview_page.runJavaScript(js_code)
+
+    def start_initial_indexing(self):
+        """Lance l'indexation des tags pour le répertoire de journal actuel."""
+        # Importer ici pour éviter les dépendances circulaires si nécessaire
+        from core.tag_indexer import start_tag_indexing
+
+        start_tag_indexing(
+            self.journal_directory, self.thread_pool, self.on_indexing_finished
+        )
+
+    def on_indexing_finished(self, unique_tag_count):
+        """Callback exécuté à la fin de l'indexation."""
+        if unique_tag_count >= 0:
+            message = f"Index Tags Terminé: {unique_tag_count} tags uniques trouvés."
+            print(f"✅ {message}")
+            self.tag_index_status_label.setText(message)
+            # Optionnel: faire disparaître le message après quelques secondes
+            QTimer.singleShot(10000, lambda: self.tag_index_status_label.clear())
+        else:
+            message = "Erreur d'indexation des tags."
+            print(f"⚠️ {message}")
+            self.tag_index_status_label.setText(message)

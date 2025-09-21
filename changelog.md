@@ -1,3 +1,38 @@
+## V1.1.15 Creation asynchrone d'un index de tags au démarrage
+
+Ajout d'une fonctionnalité de recherche puissante. L'indexation asynchrone des tags permettra de ne pas ralentir le démarrage de l'application tout en préparant les données pour une future utilisation.
+
+fichier tag_indexer.py --> class TagIndexer(QRunnable)
+
+Le fichier `index_tags.txt` est un simple fichier texte créé **dans le répertoire du Journal courant** où chaque ligne représente une occurrence d'un tag trouvé dans vos fichiers de journal (.md).
+Le format est le suivant:
+*@@tag++contexte du tag++nom_du_fichier.md*
+```
+Description des parties :
+@@tag
+
+C'est le tag lui-même, tel qu'il a été trouvé dans le fichier. Par exemple, @@projet ou @@idee.
+++
+
+C'est un séparateur fixe utilisé pour délimiter les différentes parties de l'information.
+contexte du tag
+
+Il s'agit des 40 caractères qui suivent immédiatement le tag sur la même ligne dans le fichier source. Cela permet de donner un aperçu rapide de l'endroit où le tag a été utilisé. Les espaces au début et à la fin de ce contexte sont supprimés.
+++
+
+Le même séparateur.
+nom_du_fichier.md
+
+C'est le nom du fichier (par exemple, 20240927.md) dans lequel le tag a été trouvé.
+```
+
+Affichage du résultat d'indexation dans la console et dans la barre de status de la fenètre blueNotebook
+
+✅ Index Tags Terminé: 7 tags uniques trouvés.
+
+
+
+
 ## V1.1.14 Syncronisation panneau Editeur et panneau Apercu HTML
 
  La synchronisation du défilement (scroll sync) est une fonctionnalité clé pour les éditeurs Markdown.
