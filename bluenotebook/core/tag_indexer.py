@@ -3,6 +3,8 @@ Module pour l'indexation asynchrone des tags dans le journal.
 """
 
 import os
+import csv
+import json
 import re
 from pathlib import Path
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
@@ -39,7 +41,7 @@ class TagIndexer(QRunnable):
             self.signals.finished.emit(0)
             return
 
-        all_tags_data = []
+        all_tags_info = []
         unique_tags = set()
 
         try:
@@ -53,36 +55,29 @@ class TagIndexer(QRunnable):
                                 context = match.group(2).strip()
                                 filename = file_path.name
 
-                                # Stocker les données formatées
-                                all_tags_data.append(f"{tag}++{context}++{filename}")
+                                # Stocker les données structurées
+                                all_tags_info.append(
+                                    {
+                                        "tag": tag,
+                                        "context": context,
+                                        "filename": filename,
+                                    }
+                                )
                                 unique_tags.add(tag)
                 except Exception:
                     # Ignorer les fichiers qui ne peuvent pas être lus
                     continue
 
-            if not all_tags_data:
+            if not all_tags_info:
                 self.signals.finished.emit(0)
                 return
 
             # Trier la liste par ordre alphabétique des tags
-            all_tags_data.sort()
+            all_tags_info.sort(key=lambda x: x["tag"])
 
-            # Gérer le fichier d'index
-            index_file_path = self.journal_directory / "index_tags.txt"
-
-            # Sauvegarder l'ancien index s'il existe
-            if index_file_path.exists():
-                backup_path = self.journal_directory / "index_tags.txt.SAVE"
-                try:
-                    # Renommer est plus sûr et atomique
-                    index_file_path.rename(backup_path)
-                except OSError:
-                    # Si le renommage échoue (ex: permissions), on ignore
-                    pass
-
-            # Écrire le nouvel index
-            with open(index_file_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(all_tags_data))
+            self._write_text_index(all_tags_info)
+            self._write_csv_index(all_tags_info)
+            self._write_json_index(all_tags_info)
 
             # Émettre le signal de fin avec le nombre de tags uniques
             self.signals.finished.emit(len(unique_tags))
@@ -90,6 +85,76 @@ class TagIndexer(QRunnable):
         except Exception as e:
             print(f"❌ Erreur lors de l'indexation des tags : {e}")
             self.signals.finished.emit(-1)  # Émettre -1 en cas d'erreur
+
+    def _write_text_index(self, all_tags_info):
+        """Écrit l'index au format texte simple."""
+        index_file_path = self.journal_directory / "index_tags.txt"
+        if index_file_path.exists():
+            backup_path = self.journal_directory / "index_tags.txt.SAVE"
+            try:
+                index_file_path.rename(backup_path)
+            except OSError:
+                pass
+
+        all_tags_data = [
+            f"{info['tag']}++{info['context']}++{info['filename']}"
+            for info in all_tags_info
+        ]
+        with open(index_file_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(all_tags_data))
+
+    def _write_csv_index(self, all_tags_info):
+        """Écrit l'index au format CSV."""
+        index_file_path = self.journal_directory / "index_tags.csv"
+        if index_file_path.exists():
+            backup_path = self.journal_directory / "index_tags.csv.SAVE"
+            try:
+                index_file_path.rename(backup_path)
+            except OSError:
+                pass
+
+        with open(index_file_path, "w", newline="", encoding="utf-8") as csvfile:
+            fieldnames = ["tag", "context", "filename"]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(all_tags_info)
+
+    def _write_json_index(self, all_tags_info):
+        """Écrit l'index au format JSON."""
+        index_file_path = self.journal_directory / "index_tags.json"
+        if index_file_path.exists():
+            backup_path = self.journal_directory / "index_tags.json.SAVE"
+            try:
+                index_file_path.rename(backup_path)
+            except OSError:
+                pass
+
+        json_data = {}
+        for info in all_tags_info:
+            tag = info["tag"]
+            if tag not in json_data:
+                json_data[tag] = {"occurrences": 0, "details": []}
+
+            # Extraire et formater la date depuis le nom de fichier
+            date_str = ""
+            filename_base = Path(info["filename"]).stem  # ex: "20240928"
+            if len(filename_base) == 8 and filename_base.isdigit():
+                year = filename_base[0:4]
+                month = filename_base[4:6]
+                day = filename_base[6:8]
+                date_str = f"{year}-{month}-{day}"  # Format ISO 8601
+
+            json_data[tag]["details"].append(
+                {
+                    "context": info["context"],
+                    "filename": info["filename"],
+                    "date": date_str,
+                }
+            )
+            json_data[tag]["occurrences"] += 1
+
+        with open(index_file_path, "w", encoding="utf-8") as f:
+            json.dump(json_data, f, indent=2, ensure_ascii=False)
 
 
 def start_tag_indexing(journal_directory, pool, on_finished):

@@ -1,4 +1,4 @@
-## V1.1.15 Creation asynchrone d'un index de tags au démarrage
+## V1.1.15 Creation asynchrone d'un index de tags au démarrage txt, csv et JSON
 
 Ajout d'une fonctionnalité de recherche puissante. L'indexation asynchrone des tags permettra de ne pas ralentir le démarrage de l'application tout en préparant les données pour une future utilisation.
 
@@ -30,7 +30,39 @@ Affichage du résultat d'indexation dans la console et dans la barre de status d
 
 ✅ Index Tags Terminé: 7 tags uniques trouvés.
 
+Etendre la fonctionnalité d'indexation pour générer également des fichiers CSV et JSON en plus du fichier texte existant. Cela offrira plus de flexibilité pour exploiter les données des tags à l'avenir.
 
+fichier JSON ìndex_tags.json
+
+```json
+{
+  "@@projet": {
+    "occurrences": 2,
+    "details": [
+      {
+        "context": "avancement sur le projet BlueNotebook",
+        "filename": "20240927.md",
+        "date": "2024-09-27"
+      },
+      {
+        "context": "réunion de suivi pour le projet Alpha",
+        "filename": "20240928.md",
+        "date": "2024-09-28"
+      }
+    ]
+  },
+  "@@idee": {
+    "occurrences": 1,
+    "details": [
+      {
+        "context": "une nouvelle fonctionnalité pour l'app",
+        "filename": "20240927.md",
+        "date": "2024-09-27"
+      }
+    ]
+  }
+}
+```
 
 
 ## V1.1.14 Syncronisation panneau Editeur et panneau Apercu HTML
