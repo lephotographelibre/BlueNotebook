@@ -794,7 +794,7 @@ ______________________________________________________________
             <p><b>Éditeur de journal Markdown </b></p> 
             <p>Un éditeur de texte Markdown avec aperçu en temps réel, 
             développé avec PyQt5 et QWebEngine.</p>
-            <p>Très inspiré du logiciel <a href="https://github.com/lephotographelibre/BlueNotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
+            <p>Très inspiré du logiciel <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
             <p><b>Fonctionnalités :</b></p>
             <ul>
             <li>Gestion d'un journal<li>
@@ -805,7 +805,7 @@ ______________________________________________________________
             <li>Export HTML des pages du journal</li>
             <li>Export PDF du journal complet ou partiel (soon)</li>
             <li>Gestion de Templates (soon)</li>
-            <li>Support de tags / Recherche par tags (soon)</li>
+            <li>Gestion de tags / Recherche par tags (soon)</li>
             </ul>
             <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
             <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>""",
