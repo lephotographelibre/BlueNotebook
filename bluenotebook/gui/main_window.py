@@ -709,7 +709,8 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2000)
+            # V1.1.18 Issue #6 2000 -> 2
+            self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2)
 
         except Exception as e:
             QMessageBox.critical(
@@ -728,7 +729,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2000)
+            self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2)
         except Exception as e:
             QMessageBox.critical(
                 self, "Erreur", f"Impossible d'ajouter au fichier :\n{str(e)}"

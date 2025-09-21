@@ -1,3 +1,9 @@
+## V1.1.17 Fix Issue #6 Message transient on save file
+
+file main_windows.py  -> Passe timeou 2000 -> 2
+
+self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2)
+self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2)
 
 ## V1.1.16 Barre status - Couleur affichage nom du fichier - Etat de sauvegarde du fichier courant
 
