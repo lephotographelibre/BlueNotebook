@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 BlueNotebook - Éditeur de texte Markdown avec PyQt5
 
 Point d'entrée principal de l'application
