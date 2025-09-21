@@ -1,3 +1,9 @@
+## V1.1.14 Syncronisation panneau Editeur et panneau Apercu HTML
+
+ La synchronisation du défilement (scroll sync) est une fonctionnalité clé pour les éditeurs Markdown.
+
+Faire défiler le panneau de l'éditeur, le panneau de l'aperçu HTML se déplacera en tandem pour afficher la section correspondante du document.
+
 ## V1.1.13 Changement de la page par defaut de l'editeur et colorations des tags en HTML
 
 1

@@ -416,6 +416,9 @@ class MainWindow(QMainWindow):
     def setup_connections(self):
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
+        self.editor.text_edit.verticalScrollBar().valueChanged.connect(
+            self.sync_preview_scroll
+        )
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -827,3 +830,19 @@ ______________________________________________________________
             msg_box.setIcon(QMessageBox.Information)
             msg_box.setStandardButtons(QMessageBox.Ok)
             msg_box.exec_()
+
+    def sync_preview_scroll(self, value):
+        """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
+        editor_scrollbar = self.editor.text_edit.verticalScrollBar()
+        preview_page = self.preview.web_view.page()
+
+        # Calculer la position relative (0.0 à 1.0)
+        scroll_max = editor_scrollbar.maximum()
+        if scroll_max == 0:
+            relative_pos = 0.0
+        else:
+            relative_pos = value / scroll_max
+
+        # Exécuter un script JavaScript pour faire défiler la page web
+        js_code = f"window.scrollTo(0, document.body.scrollHeight * {relative_pos});"
+        preview_page.runJavaScript(js_code)
