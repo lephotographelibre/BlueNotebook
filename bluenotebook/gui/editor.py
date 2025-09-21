@@ -339,7 +339,7 @@ class MarkdownEditor(QWidget):
         layout.setSpacing(5)
 
         # Label compact en haut
-        label = QLabel("📝 Éditeur")
+        label = QLabel("📝 Éditeur Markdown")
         label.setStyleSheet(
             """
             QLabel {

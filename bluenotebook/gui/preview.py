@@ -26,7 +26,7 @@ class MarkdownPreview(QWidget):
         layout.setSpacing(5)
 
         # Label compact en haut
-        label = QLabel("👀 Aperçu")
+        label = QLabel("👀 Aperçu HTML")
         label.setStyleSheet(
             """
             QLabel {

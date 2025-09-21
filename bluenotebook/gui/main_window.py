@@ -519,54 +519,33 @@ class MainWindow(QMainWindow):
 
         self.stats_label.setText(f"{lines} lignes | {words} mots | {chars} caractères")
 
+    # V1.1.13 Changement de la page par defaut de l'editeur
     def new_file(self):
         """Créer un nouveau fichier"""
         if self.check_save_changes():
             self.editor.set_text(
-                """# Bienvenue dans BlueNotebook
+                """______________________________________________________________
 
-## Éditeur Markdown moderne
+# Date
 
-**BlueNotebook** est un éditeur de texte Markdown avec aperçu en temps réel.
+______________________________________________________________
 
-### Fonctionnalités
+## TODO
 
-- ✏️ **Édition** avec coloration syntaxique
-- 👀 **Aperçu HTML** en temps réel
-- 💾 **Sauvegarde** automatique
-- 🚀 **Interface moderne** avec PyQt5
+______________________________________________________________
+## Activité du jour
 
-### Syntaxe Markdown
 
-Voici quelques exemples de syntaxe Markdown :
 
-#### Mise en forme du texte
-- **Gras** : `**texte**` ou `__texte__`
-- *Italique* : `*texte*` ou `_texte_`
-- `Code inline` : `code`
 
-#### Listes
-1. Premier élément
-2. Deuxième élément
-   - Sous-élément
-   - Autre sous-élément
+## A faire demain
 
-#### Code
-```python
-def hello_world():
-    print("Hello, BlueNotebook!")
-```
 
-#### Citations
-> Ceci est une citation
-> sur plusieurs lignes
 
-#### Liens et images
-[Lien vers un site](https://example.com)
+## Liens
 
----
+## Tags
 
-Commencez à taper pour voir la magie opérer ! ✨
 """
             )
             self.current_file = None
