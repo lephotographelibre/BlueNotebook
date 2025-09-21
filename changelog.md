@@ -1,3 +1,14 @@
+
+## V1.1.16 Barre status - Couleur affichage nom du fichier - Etat de sauvegarde du fichier courant
+
+Gestion du cycle de vie de nom de fichier courant dans l'editeur (exemple 20250921.md) affiché dans la barre de status de l'application.
+A l'ouverture la police de caractère utilise la couleur blanche.
+Des que le fichier est modifié et pas sauvegardé le fichier passe au rouge et dès qu'il vient d'etre sauverardé il passe au vert
+
+main_window.py --> Classe MainWindow(QMainWindow) --> fonction setup_statusbar(self):
+
+ 
+
 ## V1.1.15 Creation asynchrone d'un index de tags au démarrage txt, csv et JSON
 
 Ajout d'une fonctionnalité de recherche puissante. L'indexation asynchrone des tags permettra de ne pas ralentir le démarrage de l'application tout en préparant les données pour une future utilisation.

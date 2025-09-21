@@ -403,6 +403,7 @@ class MainWindow(QMainWindow):
 
         # Indicateur du fichier actuel
         self.file_label = QLabel("Nouveau fichier")
+        self._set_file_label_color("white")  # Couleur par défaut à l'ouverture
         self.statusbar.addWidget(self.file_label)
 
         # Label pour le répertoire du journal
@@ -513,11 +514,13 @@ class MainWindow(QMainWindow):
             self.file_label.setText(filename)
 
         if self.is_modified:
+            self._set_file_label_color("red")
             self.setWindowTitle(
                 f"BlueNotebook V{self.app_version} - {filename} *"
             )  # Déjà correct, mais je vérifie
             self.modified_label.setText("●")
         else:
+            # Ne pas changer la couleur ici, elle sera gérée par les actions (save, open)
             self.setWindowTitle(
                 f"BlueNotebook V{self.app_version} - {filename}"
             )  # Déjà correct, mais je vérifie
@@ -570,6 +573,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self.update_stats()
+            self._set_file_label_color("white")
             self.update_preview()
 
     def open_journal(self):
@@ -615,6 +619,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self.update_stats()
+            self._set_file_label_color("white")
             self.update_preview()
 
         except Exception as e:
@@ -703,6 +708,7 @@ ______________________________________________________________
 
             self.is_modified = False
             self.update_title()
+            self._set_file_label_color("green")
             self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2000)
 
         except Exception as e:
@@ -721,6 +727,7 @@ ______________________________________________________________
 
             self.is_modified = False
             self.update_title()
+            self._set_file_label_color("green")
             self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2000)
         except Exception as e:
             QMessageBox.critical(
@@ -879,3 +886,7 @@ ______________________________________________________________
             message = "Erreur d'indexation des tags."
             print(f"⚠️ {message}")
             self.tag_index_status_label.setText(message)
+
+    def _set_file_label_color(self, color):
+        """Définit la couleur du texte pour le label du nom de fichier."""
+        self.file_label.setStyleSheet(f"color: {color};")
