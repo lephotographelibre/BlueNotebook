@@ -1,3 +1,9 @@
+## V1.1.18 Mise en place Licence GNU GPLv3
+
+https://www.gnu.org/licenses/gpl-3.0.html
+
+Entete des fichiers Python, A Propos Aide en Ligne
+
 ## V1.1.17 Fix Issue #6 Message transient on save file
 
 file main_windows.py  -> Passe timeou 2000 -> 2
