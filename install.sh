@@ -15,6 +15,7 @@ echo "Création du fichier bluenotebook.desktop..."
 DESKTOP_FILE_CONTENT="[Desktop Entry]
 Version=1.0
 Name=BlueNotebook
+GenericName[fr]=Éditeur de journal Markdown
 Comment=Éditeur de journal Markdown avec aperçu en temps réel
 Exec=${PROJECT_ROOT}/bluenotebook/run_bluenotebook.sh --journal \"/ssd/Dropbox/bluenotebook\"
 Icon=${PROJECT_ROOT}/bluenotebook/resources/images/bluenotebook_256-x256_fond_blanc.png
