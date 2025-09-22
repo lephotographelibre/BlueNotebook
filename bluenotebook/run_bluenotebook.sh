@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /home/jm/PycharmProjects/BlueNotebook/bluenotebook/
+
 # Script de lancement pour BlueNotebook sur Linux
 
 set -e # Arrête le script si une commande échoue

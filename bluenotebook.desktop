@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=BlueNotebook
+Comment=Éditeur de journal Markdown avec aperçu en temps réel
+Exec=/home/jm/PycharmProjects/BlueNotebook/bluenotebook/run_bluenotebook.sh --journal "/ssd/Dropbox/bluenotebook"
+Icon=/home/jm/PycharmProjects/BlueNotebook/bluenotebook/resources/images/bluenotebook_256-x256_fond_blanc.png
+Terminal=false
+Type=Application
+Categories=Office;TextEditor;Development;
+StartupNotify=true
+
