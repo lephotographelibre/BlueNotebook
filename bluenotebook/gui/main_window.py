@@ -38,12 +38,13 @@ from PyQt5.QtWidgets import (
     QDialog,
     QDialogButtonBox,
 )
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QDate
 from PyQt5.QtCore import QThreadPool
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
 
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
+from .navigation import NavigationPanel
 from core.quote_fetcher import QuoteFetcher  # noqa
 
 
@@ -75,6 +76,7 @@ class MainWindow(QMainWindow):
         self.load_initial_file()
         self.show_quote_of_the_day()
         self.start_initial_indexing()
+        self.update_calendar_highlights()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -93,17 +95,34 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(10, 10, 10, 10)
         main_layout.setSpacing(10)
 
-        # Splitter pour séparer éditeur et aperçu
-        splitter = QSplitter(Qt.Horizontal)
-        splitter.setHandleWidth(8)
-        splitter.setStyleSheet(
+        # Splitter principal pour séparer la navigation du reste
+        main_splitter = QSplitter(Qt.Horizontal)
+        main_splitter.setHandleWidth(8)
+        main_splitter.setStyleSheet(
             """
             QSplitter::handle {
                 background-color: #dee2e6;
                 border: 1px solid #adb5bd;
                 border-radius: 3px;
             }
-            
+            QSplitter::handle:hover {
+                background-color: #3498db;
+            }
+        """
+        )
+
+        # Panneau de navigation (gauche)
+        self.navigation_panel = NavigationPanel()
+        main_splitter.addWidget(self.navigation_panel)
+
+        # Splitter secondaire pour séparer éditeur et aperçu
+        editor_preview_splitter = QSplitter(Qt.Horizontal)
+        editor_preview_splitter.setHandleWidth(8)
+        editor_preview_splitter.setStyleSheet(
+            """
+            QSplitter::handle {
+                background-color: #dee2e6;
+            }
             QSplitter::handle:hover {
                 background-color: #3498db;
             }
@@ -112,26 +131,36 @@ class MainWindow(QMainWindow):
 
         # Zone d'édition (gauche)
         self.editor = MarkdownEditor(main_window=self)
-        splitter.addWidget(self.editor)
+        editor_preview_splitter.addWidget(self.editor)
 
         # Zone d'aperçu (droite)
         self.preview = MarkdownPreview()
-        splitter.addWidget(self.preview)
+        editor_preview_splitter.addWidget(self.preview)
 
         # Configuration du splitter
         # Répartition 50/50 par défaut
-        splitter.setSizes([700, 700])
+        editor_preview_splitter.setSizes([700, 700])
 
         # Empêcher la fermeture complète des panneaux
-        splitter.setCollapsible(0, False)  # Éditeur
-        splitter.setCollapsible(1, False)  # Aperçu
+        editor_preview_splitter.setCollapsible(0, False)  # Éditeur
+        editor_preview_splitter.setCollapsible(1, False)  # Aperçu
 
         # Tailles minimales pour éviter les problèmes d'affichage
         self.editor.setMinimumWidth(300)
         self.preview.setMinimumWidth(300)
 
+        # Ajouter le splitter secondaire au splitter principal
+        main_splitter.addWidget(editor_preview_splitter)
+
+        # Configuration du splitter principal
+        # Fixer la largeur du panneau de navigation
+        self.navigation_panel.setFixedWidth(400)
+        main_splitter.setSizes([400, 1000])  # Ajuster les tailles initiales
+        main_splitter.setCollapsible(0, False)
+        main_splitter.setCollapsible(1, False)
+
         # Ajouter le splitter au layout principal
-        main_layout.addWidget(splitter)
+        main_layout.addWidget(main_splitter)
 
     def set_application_icon(self):
         """Définir l'icône de l'application"""
@@ -191,6 +220,7 @@ class MainWindow(QMainWindow):
 
         # Menu Affichage
         view_menu = menubar.addMenu("👁️ &Affichage")
+        view_menu.addAction(self.toggle_navigation_action)
         view_menu.addAction(self.toggle_preview_action)
 
         # Menu Formatter
@@ -263,6 +293,13 @@ class MainWindow(QMainWindow):
             self,
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
+        )
+
+        self.toggle_navigation_action = QAction(
+            "🧭 Basculer Navigation",
+            self,
+            shortcut="F6",
+            triggered=self.toggle_navigation,
         )
 
         self.toggle_preview_action = QAction(
@@ -470,6 +507,14 @@ class MainWindow(QMainWindow):
         self.editor.text_edit.verticalScrollBar().valueChanged.connect(
             self.sync_preview_scroll
         )
+        self.navigation_panel.prev_day_button_clicked.connect(
+            self.on_prev_day_button_clicked
+        )
+        self.navigation_panel.next_day_button_clicked.connect(
+            self.on_next_day_button_clicked
+        )
+        self.navigation_panel.today_button_clicked.connect(self.on_today_button_clicked)
+        self.navigation_panel.date_clicked.connect(self.on_calendar_date_clicked)
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -632,6 +677,7 @@ ______________________________________________________________
                     f"Le répertoire du journal est maintenant :\n{self.journal_directory}",
                 )
                 self.start_initial_indexing()  # Relancer l'indexation
+                self.update_calendar_highlights()  # Mettre à jour le calendrier
 
     def open_file(self):
         """Ouvrir un fichier"""
@@ -669,17 +715,28 @@ ______________________________________________________________
 
     def save_file(self):
         """Sauvegarder le fichier"""
-        # Logique de sauvegarde dans le journal
+        # Si aucun répertoire de journal n'est défini, on fait un "Sauvegarder sous"
         if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                "Sauvegarde impossible",
-                "Le répertoire du journal n'est pas défini.",
-            )
+            self.save_file_as()
             return
 
-        today_str = datetime.now().strftime("%Y%m%d")
-        journal_file_path = self.journal_directory / f"{today_str}.md"
+        # Déterminer le chemin du fichier à sauvegarder
+        file_to_save_path = None
+        if self.current_file:
+            # Si un fichier est déjà ouvert, on le sauvegarde
+            file_to_save_path = Path(self.current_file)
+        else:
+            # Si c'est un nouveau fichier, il devient la note du jour
+            today_str = datetime.now().strftime("%Y%m%d")
+            file_to_save_path = self.journal_directory / f"{today_str}.md"
+
+        # Si le fichier à sauvegarder n'est pas dans le répertoire du journal,
+        # on fait une sauvegarde simple.
+        if not str(file_to_save_path).startswith(str(self.journal_directory)):
+            self._save_to_file(str(file_to_save_path))
+            return
+
+        journal_file_path = file_to_save_path
 
         if journal_file_path.exists():
             # Le fichier journal du jour existe déjà, demander à l'utilisateur
@@ -807,6 +864,13 @@ ______________________________________________________________
         else:
             self.preview.show()
 
+    def toggle_navigation(self):
+        """Basculer la visibilité du panneau de navigation."""
+        if self.navigation_panel.isVisible():
+            self.navigation_panel.hide()
+        else:
+            self.navigation_panel.show()
+
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
         # Construire le chemin vers le fichier d'aide
@@ -928,6 +992,148 @@ ______________________________________________________________
             message = "Erreur d'indexation des tags."
             print(f"⚠️ {message}")
             self.tag_index_status_label.setText(message)
+
+    def on_prev_day_button_clicked(self):
+        """
+        Appelé lors du clic sur 'Jour Précédent'.
+        Trouve la note existante la plus proche avant la date actuelle et l'ouvre.
+        """
+        if not self.journal_directory:
+            return
+
+        # Déterminer la date de départ pour la recherche
+        start_date = QDate.currentDate()
+        if self.current_file:
+            try:
+                filename = Path(self.current_file).stem
+                current_date_obj = datetime.strptime(filename, "%Y%m%d").date()
+                start_date = QDate(
+                    current_date_obj.year,
+                    current_date_obj.month,
+                    current_date_obj.day,
+                )
+            except ValueError:
+                # Le fichier actuel n'est pas une note de journal, on part d'aujourd'hui
+                pass
+
+        # Chercher la note précédente en remontant dans le temps
+        current_check_date = start_date.addDays(-1)
+        # Limiter la recherche pour éviter une boucle infinie (ex: 5 ans)
+        for _ in range(365 * 5):
+            filename = current_check_date.toString("yyyyMMdd") + ".md"
+            file_path = self.journal_directory / filename
+
+            if file_path.exists():
+                # Note trouvée ! On met à jour le calendrier et on l'ouvre.
+                self.navigation_panel.calendar.setSelectedDate(current_check_date)
+                self.on_calendar_date_clicked(current_check_date)
+                return  # Sortir de la fonction
+
+            # Passer au jour précédent
+            current_check_date = current_check_date.addDays(-1)
+
+        # Si on arrive ici, aucune note précédente n'a été trouvée
+        self.statusbar.showMessage(
+            "Aucune note précédente trouvée dans le journal.", 3000
+        )
+
+    def on_next_day_button_clicked(self):
+        """
+        Appelé lors du clic sur 'Jour Suivant'.
+        Trouve la note existante la plus proche après la date actuelle et l'ouvre.
+        """
+        if not self.journal_directory:
+            return
+
+        # Déterminer la date de départ pour la recherche
+        start_date = QDate.currentDate()
+        if self.current_file:
+            try:
+                filename = Path(self.current_file).stem
+                current_date_obj = datetime.strptime(filename, "%Y%m%d").date()
+                start_date = QDate(
+                    current_date_obj.year,
+                    current_date_obj.month,
+                    current_date_obj.day,
+                )
+            except ValueError:
+                # Le fichier actuel n'est pas une note de journal, on part d'aujourd'hui
+                pass
+
+        # Chercher la note suivante en avançant dans le temps
+        current_check_date = start_date.addDays(1)
+        # Limiter la recherche pour éviter une boucle infinie (ex: 5 ans)
+        for _ in range(365 * 5):
+            filename = current_check_date.toString("yyyyMMdd") + ".md"
+            file_path = self.journal_directory / filename
+
+            if file_path.exists():
+                # Note trouvée ! On met à jour le calendrier et on l'ouvre.
+                self.navigation_panel.calendar.setSelectedDate(current_check_date)
+                self.on_calendar_date_clicked(current_check_date)
+                return  # Sortir de la fonction
+
+            # Passer au jour suivant
+            current_check_date = current_check_date.addDays(1)
+
+        # Si on arrive ici, aucune note suivante n'a été trouvée
+        self.statusbar.showMessage(
+            "Aucune note suivante trouvée dans le journal.", 3000
+        )
+
+    def on_today_button_clicked(self):
+        """
+        Appelé lorsque le bouton 'Aujourd'hui' est cliqué.
+        Sélectionne la date du jour et ouvre la note correspondante.
+        """
+        today = QDate.currentDate()
+        self.navigation_panel.calendar.setSelectedDate(today)
+        self.on_calendar_date_clicked(today)
+
+    def on_calendar_date_clicked(self, date):
+        """
+        Appelé lorsqu'une date est cliquée dans le calendrier.
+        Ouvre le fichier journal correspondant.
+        """
+        if not self.journal_directory:
+            return
+
+        # Formater la date en nom de fichier (YYYYMMDD.md)
+        filename = date.toString("yyyyMMdd") + ".md"
+        file_path = self.journal_directory / filename
+
+        # Vérifier si le fichier existe
+        if file_path.exists():
+            # Vérifier si le fichier en cours a des modifications non sauvegardées
+            if self.check_save_changes():
+                self.open_specific_file(str(file_path))
+        else:
+            self.statusbar.showMessage(
+                f"Aucune note pour le {date.toString('dd/MM/yyyy')}", 3000
+            )
+
+    def update_calendar_highlights(self):
+        """Scanne le répertoire du journal et met en évidence les dates dans le calendrier."""
+        if not self.journal_directory:
+            return
+
+        dates_with_notes = set()
+        try:
+            for filename in os.listdir(self.journal_directory):
+                if filename.endswith(".md"):
+                    # Essayer de parser le nom du fichier en date
+                    try:
+                        date_str = os.path.splitext(filename)[0]
+                        date = datetime.strptime(date_str, "%Y%m%d").date()
+                        dates_with_notes.add(QDate(date.year, date.month, date.day))
+                    except ValueError:
+                        # Ignorer les fichiers qui ne correspondent pas au format YYYYMMDD.md
+                        continue
+            self.navigation_panel.highlight_dates(dates_with_notes)
+        except FileNotFoundError:
+            print(
+                f"⚠️ Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
+            )
 
     def _set_file_label_color(self, color):
         """Définit la couleur du texte pour le label du nom de fichier."""
