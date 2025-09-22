@@ -1,3 +1,27 @@
+## V1.1.19 Ajout Menu Inserer Emoj 
+
+Dans le menu Formater je souhaite rajouter un sous menu appelé Emoji qui permette d'insérer les emoli suivant: 
+ Livre, Musique, A  Lire, Casque Audio, Voyage, Santé, Soleil, Nuage , Pluie, Nuage, Vent, Content, Mécontent, Triste.
+Chaque Label Textuel de sous menu  sera accompagné de son Emoji 📖 🎵
+
+├── 😊 Emoji
+│   ├── 📖 Livre
+│   ├── 🎵 Musique
+│   ├── 📚 À Lire
+│   ├── 🎬 À Regarder
+│   ├── 🎧 A Ecouter
+│   ├── ✈️ Voyage
+│   ├── ❤️ Santé
+│   ├── ☀️ Soleil
+│   ├── ☁️ Nuage
+│   ├── 🌧️ Pluie
+│   ├── 🌬️ Vent
+│   ├── 😊 Content
+│   ├── 😠 Mécontent
+│   └── 😢 Triste
+
+
+
 ## V1.1.18 Mise en place Licence GNU GPLv3
 
 https://www.gnu.org/licenses/gpl-3.0.html

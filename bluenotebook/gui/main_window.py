@@ -404,6 +404,31 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_time_action)
         format_menu.addMenu(insert_menu)
 
+        # --- Sous-menu Emoji ---
+        emoji_menu = QMenu("😊 Emoji", self)
+        emoji_actions_data = [
+            ("📖 Livre", "📖"),
+            ("🎵 Musique", "🎵"),
+            ("📚 À Lire", "📚"),
+            ("🎬 À Regarder", "🎬"),
+            ("🎧 A Ecouter", "🎧"),
+            ("✈️ Voyage", "✈️"),
+            ("❤️ Santé", "❤️"),
+            ("☀️ Soleil", "☀️"),
+            ("☁️ Nuage", "☁️"),
+            ("🌧️ Pluie", "🌧️"),
+            ("🌬️ Vent", "🌬️"),
+            ("😊 Content", "😊"),
+            ("😠 Mécontent", "😠"),
+            ("😢 Triste", "😢"),
+        ]
+        for name, emoji in emoji_actions_data:
+            action = QAction(
+                name, self, triggered=functools.partial(self.editor.insert_text, emoji)
+            )
+            emoji_menu.addAction(action)
+        format_menu.addMenu(emoji_menu)
+
         format_menu.addSeparator()
 
         # --- Action RaZ ---

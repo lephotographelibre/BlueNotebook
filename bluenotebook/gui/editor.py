@@ -454,6 +454,11 @@ class MarkdownEditor(QWidget):
         # Rechercher la prochaine occurrence
         self.find_text(find_text)
 
+    def insert_text(self, text):
+        """Insère du texte à la position actuelle du curseur."""
+        cursor = self.text_edit.textCursor()
+        cursor.insertText(text)
+
     def format_text(self, format_type):
         """Applique le formatage Markdown au texte sélectionné."""
         cursor = self.text_edit.textCursor()
