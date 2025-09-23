@@ -1,3 +1,21 @@
+## V1.2.2 Changement format de date dans la template par defaut de l'editeur
+
+Le changement a été effectué dans le fichier `bluenotebook/gui/main_window.py`.
+
+```diff
+--- a/bluenotebook/gui/main_window.py
++++ b/bluenotebook/gui/main_window.py
+@@ -647,7 +647,7 @@
+             except locale.Error:
+                 locale.setlocale(locale.LC_TIME, "")  # Utiliser la locale système
+ 
+-            today_str = datetime.now().strftime("%A %d %B %Y").capitalize()
++            today_str = datetime.now().strftime("%A %d %B %Y").title()
+             template = f"""______________________________________________________________
+ 
+ # {today_str}
+ ```
+
 ## V1.2.1 Panneau a gauche Nommé Navigation qui affiche un Qt Calendar Widget et bouton de Navigation
 panneau a gauche de l'editeur nommé Navigation qui affiche en haut un Qt Widget Calendar . ce panneau dispose d'un choix de menu dans le Menu Affichage ce sous menu est appeler Basculer Naviagtion avec une icone comme pour basculer apercu.
 

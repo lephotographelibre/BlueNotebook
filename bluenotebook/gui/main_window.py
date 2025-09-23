@@ -18,6 +18,7 @@ Fenêtre principale de BlueNotebook - Éditeur Markdown avec PyQt5
 """
 
 import webbrowser
+import locale
 import functools
 import os
 from datetime import datetime
@@ -624,7 +625,13 @@ class MainWindow(QMainWindow):
     def new_file(self):
         """Créer un nouveau fichier"""
         if self.check_save_changes():
-            today_str = datetime.now().strftime("%d/%m/%Y")
+            # Configurer la locale en français pour avoir les noms des jours/mois
+            try:
+                locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+            except locale.Error:
+                locale.setlocale(locale.LC_TIME, "")  # Utiliser la locale système
+
+            today_str = datetime.now().strftime("%A %d %B %Y").title()
             template = f"""______________________________________________________________
 
 # {today_str}
