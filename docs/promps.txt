@@ -1,2 +1,10 @@
  
+SAVE REPONSE
 sauvegarde la reponse à la racine du projet en Markdown  et indique moi ou a ete sauvegardé ce document
+
+GENERE DOC
+Je voudrais que tu crée une documentation au format Markdown et que tu sauvegardes ce fichier  a la racine du projet. dis mois ou tu as sauvegardé ce fichier. 
+
+MENU GRAPHIQUE
+Je voudrais que tu génére une représentation graphique de la barre de menu du projet avec tous ses sous Menu
+et que tu mettes à jour l'aide en ligne  avec cette nouvelle représentation graphique 

@@ -1,3 +1,5 @@
+
+
 ## V1.2.2 Changement format de date dans la template par defaut de l'editeur
 
 Le changement a été effectué dans le fichier `bluenotebook/gui/main_window.py`.
