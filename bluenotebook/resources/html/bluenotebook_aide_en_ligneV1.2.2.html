@@ -26,14 +26,14 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook v1.1.19
+            Manuel Utilisateur - BlueNotebook v1.2.2
         </h1>
     </header>
 
     <section id="introduction">
         <h2>1. Introduction</h2>
         <p>Bienvenue dans BlueNotebook ! Ce guide vous explique comment utiliser l'application pour tenir votre journal personnel en Markdown.</p>
-        <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe Markdown et affiche un aperçu en temps réel de votre document.</p>
+        <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe <strong>Markdown</strong>, un langage de balisage léger qui permet de formater du texte de manière simple et lisible. L'un des grands avantages de Markdown est sa portabilité : votre texte est automatiquement converti en <strong>HTML</strong> pour l'aperçu et peut être exporté en <strong>HTML</strong> ou en <strong>PDF</strong> (prochainement) pour un partage et une publication faciles, tout en conservant une mise en page professionnelle.</p><p></p> Pour une référence complète, vous pouvez consulter la <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">documentation officielle de la syntaxe Markdown (en Anglais)</a>.</p>
     </section>
 
     <section id="lancement">
@@ -63,12 +63,13 @@
 
     <section id="interface">
         <h2>3. L'interface Principale</h2>
-        <p>L'interface est divisée en deux panneaux principaux :</p>
+        <p>L'interface est divisée en trois panneaux principaux :</p>
         <ol>
-            <li><strong>L'Éditeur (à gauche) :</strong> C'est ici que vous écrivez votre texte en utilisant la syntaxe Markdown.</li>
+            <li><strong>Le Panneau de Navigation (à gauche) :</strong> Votre centre de commande pour naviguer dans le temps. Il contient un calendrier et des outils pour vous déplacer entre vos notes.</li>
+            <li><strong>L'Éditeur (au centre) :</strong> C'est ici que vous écrivez votre texte en utilisant la syntaxe Markdown.</li>
             <li><strong>La Prévisualisation (à droite) :</strong> Affiche le rendu final de votre texte, mis en forme.</li>
         </ol>
-        <p>Vous pouvez redimensionner ces panneaux en faisant glisser le séparateur central. Vous pouvez également masquer/afficher la prévisualisation avec la touche <code>F5</code>.</p>
+        <p>Vous pouvez redimensionner ces panneaux en faisant glisser les séparateurs. Vous pouvez également masquer/afficher les panneaux latéraux avec les raccourcis <code>F6</code> (Navigation) et <code>F5</code> (Prévisualisation).</p>
         <p>La <strong>barre de statut</strong>, située tout en bas de la fenêtre, est une source d'information précieuse. De gauche à droite, vous y trouverez :</p>
         <ul>
             <li>Le nom du <strong>fichier actuel</strong> (ex: <code>20250920.md</code>).</li>
@@ -95,11 +96,53 @@
             </li>
         </ul>
         <h3>Accéder aux Anciennes Notes</h3>
-        <p>Pour consulter ou modifier une entrée d'un jour précédent, utilisez simplement le menu <code>Fichier > Ouvrir</code> (<code>Ctrl+O</code>). Une fenêtre s'ouvrira, vous permettant de naviguer jusqu'à votre répertoire de journal et de sélectionner le fichier correspondant à la date souhaitée (par exemple, <code>20250919.md</code> pour relire la note de la veille).</p>
+        <p>Pour consulter ou modifier une entrée d'un jour précédent, la méthode la plus simple est d'utiliser le <strong>calendrier</strong> dans le panneau de navigation. Cliquez simplement sur la date souhaitée (les jours avec une note sont affichés en bleu) pour ouvrir instantanément l'entrée correspondante. Vous pouvez également utiliser les boutons "Jour Précédent" et "Jour Suivant" pour naviguer séquentiellement entre vos notes.</p>
+    </section>
+
+    <section id="navigation">
+        <h2>5. Naviguer dans votre Journal</h2>
+        <p>Le panneau de Navigation, situé à gauche de l'éditeur, est votre meilleur allié pour explorer vos archives. Vous pouvez l'afficher ou le masquer à tout moment avec la touche <code>F6</code> ou via le menu <code>Affichage > Basculer Navigation</code>.</p>
+
+        <h3>Le Calendrier Interactif</h3>
+        <p>Le calendrier est le cœur de la navigation. Il vous donne une vue d'ensemble de vos activités d'écriture.</p>
+        <ul>
+            <li><strong>Synchronisation avec l'Éditeur :</strong> Lorsque vous ouvrez une note, sa date est automatiquement sélectionnée dans le calendrier. Inversement, cliquer sur une date dans le calendrier ouvrira la note correspondante dans l'éditeur.</li>
+            <li><strong>Code Couleur :</strong>
+                <ul>
+                    <li><span style="color: #3498db; font-weight: bold;">Bleu et Gras</span> : Indique qu'une note de journal existe pour ce jour. La date de la note actuellement ouverte est également affichée en bleu.</li>
+                    <li><span style="font-weight: bold;">Blanc</span> : Pas de note de journal pour ce jour. Si vous cliquez sur une date sans note, un message apparaîtra dans la barre de statut en bas de la fenêtre.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Les Flèches de Navigation</h3>
+        <p>Juste au-dessus du calendrier, une barre d'outils avec trois boutons vous permet de vous déplacer rapidement entre les notes existantes :</p>
+        <ul>
+            <li><strong>⬅️ Jour Précédent :</strong> Recherche et ouvre la note existante la plus proche *avant* la date actuelle.</li>
+            <li><strong>📅 Aujourd'hui :</strong> Ouvre la note du jour. C'est le moyen le plus rapide de revenir au présent.</li>
+            <li><strong>Jour Suivant ➡️ :</strong> Recherche et ouvre la note existante la plus proche *après* la date actuelle.</li>
+
+        </ul>
+
+        <h3>Exemple d'utilisation : Retrouver une note de la semaine dernière</h3>
+        <ol>
+            <li>Vous êtes sur la note du jour. Le calendrier affiche la date d'aujourd'hui en bleu et gras.</li>
+            <li>Vous vous souvenez avoir écrit quelque chose d'important mardi dernier. Vous repérez cette date dans le calendrier. Elle est en bleu, ce qui confirme qu'une note existe.</li>
+            <li>Vous cliquez sur la date du mardi. Immédiatement, le contenu de la note de ce jour-là s'affiche dans l'éditeur.</li>
+            <li>Vous modifiez la note. Un indicateur <code>●</code> apparaît dans la barre de statut à côté du nom du fichier.</li>
+            <li>Vous appuyez sur <code>Ctrl+S</code> pour sauvegarder. Une boîte de dialogue apparaît :
+                <ul>
+                    <li><strong>Ajouter à la fin :</strong> Ajoute vos modifications à la fin du fichier existant.</li>
+                    <li><strong>Remplacer :</strong> Écrase complètement l'ancienne note avec la nouvelle version.</li>
+                </ul>
+            </li>
+            <li>Une fois la sauvegarde effectuée, l'indicateur <code>●</code> disparaît.</li>
+        </ol>
+        <p>Cette interaction simple entre le calendrier et l'éditeur rend l'exploration et la mise à jour de vos anciennes notes extrêmement fluides.</p>
     </section>
 
     <section id="menus">
-        <h2>5. Exploration Détaillée des Menus</h2>
+        <h2>6. Exploration Détaillée des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p><pre><code>📁 Fichier
 ├── 📄 Nouveau (Ctrl+N) : Ouvre un nouvel onglet avec un modèle de page de journal vierge.
 ├── 📂 Ouvrir (Ctrl+O) : Ouvre un fichier Markdown existant depuis votre ordinateur.
@@ -119,7 +162,9 @@
 └── 🔍 Rechercher (Ctrl+F) : Ouvre une boîte de dialogue pour rechercher et remplacer du texte.
 
 👁️ Affichage
-└── 👁️ Basculer l'aperçu (F5) : Affiche ou masque le panneau de prévisualisation HTML.
+├── 🧭 Basculer Navigation (F6) : Affiche ou masque le panneau de navigation de gauche (Calendrier, etc.).
+└── 👁️ Basculer l'aperçu (F5) : Affiche ou masque le panneau de prévisualisation HTML de droite.
+
 
 🎨 Formater
 ├── 📜 Titres : Applique des niveaux de titre Markdown.
@@ -184,7 +229,7 @@
     </section>
 
     <section id="raccourcis">
-        <h2>6. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>7. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -199,13 +244,14 @@
                 <tr><td>Mettre en gras</td><td><code>Ctrl+B</code></td></tr>
                 <tr><td>Insérer une image</td><td><code>Ctrl+I</code></td></tr>
                 <tr><td>Basculer l'aperçu</td><td><code>F5</code></td></tr>
+                <tr><td>Basculer la navigation</td><td><code>F6</code></td></tr>
                 <tr><td>Zoomer/Dézoomer le texte</td><td><code>Ctrl + Molette souris</code></td></tr>
             </tbody>
         </table>
     </section>
 
     <section id="exemples">
-        <h2>7. Exemples d'Utilisation</h2>
+        <h2>8. Exemples d'Utilisation</h2>
         <h3>Cas 1 : Le Journal de Bord Professionnel</h3>
         <p>Utilisez BlueNotebook pour suivre votre journée de travail. Chaque matin, lancez l'application. L'entrée du jour est prête.</p>
         <ul>
