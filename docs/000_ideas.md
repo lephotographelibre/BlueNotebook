@@ -1,4 +1,4 @@
-# Evolutions
+# Evolutions
 Avec Priorités
 
 ## Fonctionnalité de backup (Priority 1)
@@ -18,8 +18,12 @@ Menu Fichier --> Préférences
 Affichage d'un panneau avec Trois Tabs
 
 1 Général (Journal, répertoire sauvegarde,)
-2 Affichages couleurs, police
+2 Affichages couleurs fons, police, icones, css aperçu
 3 Intégration externes/Plugins (Citation du Jour, Météo , News)
+
+## Interfacs avec google todolist (priority 1)
+
+## Interface avec Google Photos (Priority 3)
 
 ## Ajout d'un menu Statistiques (Priority 3)
 
