@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,7 +12,7 @@
         h2 { color: #2980b9; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-top: 30px; }
         h3 { color: #34495e; }
         code { background-color: #ecf0f1; padding: 2px 5px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
-        ul { list-style-type: square; padding-left: 20px; }
+        ul, ol { list-style-type: square; padding-left: 20px; }
         li { margin-bottom: 10px; }
         table { border-collapse: collapse; width: 100%; margin: 20px 0; }
         th, td { border: 1px solid #bdc3c7; padding: 8px 12px; text-align: left; }
@@ -26,7 +25,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook v1.1.11
+            Manuel Utilisateur - BlueNotebook v1.3.1
         </h1>
     </header>
 
@@ -108,6 +107,9 @@
 ├── 📓 Ouvrir Journal: Sélectionne le dossier qui sert de journal.
 ├── 💾 Sauvegarder (Ctrl+S): Enregistre la note dans le fichier du jour.
 ├── 💾 Sauvegarder sous... (Ctrl+Shift+S): Enregistre dans un nouveau fichier.
+├── ---
+├── 💾 Sauvegarde Journal...: Crée une archive ZIP de tout le journal.
+├── 🔄 Restauration Journal...: Restaure le journal depuis une archive.
 ├── 🌐 Exporter HTML...: Exporte la note actuelle au format HTML.
 └── 🚪 Quitter (Ctrl+Q): Ferme l'application.
 
@@ -120,41 +122,35 @@
 └── 👁️ Basculer l'aperçu (F5): Affiche ou masque le panneau de prévisualisation.
 
 🎨 Formater
-├── 📜 Titres
-│   ├── 1️⃣ Niv 1 (#)
-│   ├── 2️⃣ Niv 2 (##)
-│   ├── 3️⃣ Niv 3 (###)
-│   ├── 4️⃣ Niv 4 (####)
-│   └── 5️⃣ Niv 5 (#####)
-├── 🎨 Style de texte
-│   ├── 🅱️ Gras (**texte**)
-│   ├── *️⃣ Italique (*texte*)
-│   ├── ~ Barré (~~texte~~)
-│   └── 🖍️ Surligné (==texte==)
-├── 💻 Code
-│   ├── ` Monospace (inline)
-│   └── ``` Bloc de code
-├── 📋 Listes
-│   ├── • Liste non ordonnée
-│   ├── 1. Liste ordonnée
-│   └── ☑️ Liste de tâches
-├── ➕ Insérer
-│   ├── 🔗 Lien (URL ou email)
-│   ├── 🖼️ Image
-│   ├── 🔗 Lien Markdown
-│   ├── 🔗 Fichier (Lien interne)
-│   ├── ➖ Ligne Horizontale
-│   ├── ▦ Tableau
-│   ├── 💬 Citation
-│   ├── ✨ Citation du jour
-│   ├── 🏷️ Tag (@@)
-│   └── 🕒 Heure
-└── 🧹 RaZ (Effacer le formatage)
+... (détails des autres menus)
 
 ❓ Aide
 ├── 🌐 Documentation en ligne
 └── ℹ️ À propos
         </code></pre>
+    </section>
+
+    <section id="backup-restore">
+        <h2>5.1 Sauvegarde et Restauration du Journal</h2>
+        <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
+        <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
+        <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
+        <ol>
+            <li>En cliquant sur cette option, une boîte de dialogue s'ouvrira.</li>
+            <li>Choisissez un emplacement sur votre ordinateur et un nom pour votre fichier de sauvegarde. Par défaut, le nom sera <code>BlueNotebook-Backup-NomDuJournal-Date.zip</code>.</li>
+            <li>BlueNotebook compressera alors tous vos fichiers de notes (<code>.md</code>), ainsi que les fichiers d'index, dans une seule archive <code>.zip</code>.</li>
+        </ol>
+        <p>C'est une excellente habitude à prendre régulièrement, ou avant de faire de grands changements.</p>
+
+        <h3>Restaurer votre Journal (<code>Fichier > Restauration Journal...</code>)</h3>
+        <p>Si vous avez besoin de revenir à une version précédente de votre journal, ou de le transférer sur un nouvel ordinateur, cette fonction est là pour vous.</p>
+        <ol>
+            <li>Sélectionnez l'option de menu. Une fenêtre vous demandera de choisir le fichier d'archive <code>.zip</code> que vous souhaitez restaurer.</li>
+            <li><strong>Action de sécurité :</strong> Avant de procéder, BlueNotebook renommera automatiquement votre répertoire de journal actuel (par exemple, de <code>bluenotebook</code> à <code>bluenotebook.bak-20250923-153000</code>). <strong>Vos données actuelles ne sont pas supprimées.</strong></li>
+            <li>Une boîte de dialogue vous demandera de confirmer l'opération, en vous informant du nom de la sauvegarde qui vient d'être créée.</li>
+            <li>Après confirmation, le contenu de l'archive sera extrait, remplaçant le contenu de votre répertoire de journal.</li>
+            <li>L'application vous informera que la restauration est terminée et vous invitera à la redémarrer pour charger le nouveau journal.</li>
+        </ol>
     </section>
 
     <section id="raccourcis">
@@ -177,43 +173,9 @@
         </table>
     </section>
 
-    <section id="exemples">
-        <h2>7. Exemples d'Utilisation</h2>
-        <h3>Cas 1 : Le Journal de Bord Professionnel</h3>
-        <p>Utilisez BlueNotebook pour suivre votre journée de travail. Chaque matin, lancez l'application. L'entrée du jour est prête.</p>
-        <ul>
-            <li>Utilisez les <strong>Titres</strong> (<code>#</code>) pour séparer les projets ou les réunions.</li>
-            <li>Créez des <strong>listes de tâches</strong> (<code>- [ ]</code>) pour vos objectifs de la journée et cochez-les (<code>- [x]</code>) au fur et à mesure.</li>
-            <li>Insérez l'<strong>heure</strong> (<code>Formater > Insérer > Heure</code>) avant de noter les minutes d'un appel.</li>
-            <li>Collez des extraits de code dans des <strong>blocs de code</strong> pour les garder sous la main.</li>
-            <li>Utilisez les <strong>tags</strong> (<code>@@projet-alpha</code>) pour retrouver facilement toutes les notes liées à un projet.</li>
-        </ul>
-        <h3>Cas 2 : Le Journal Intime</h3>
-        <p>C'est l'usage classique. BlueNotebook offre un environnement sans distraction pour vos pensées.</p>
-        <ul>
-            <li>Écrivez librement. La date est gérée automatiquement.</li>
-            <li>Insérez la <strong>citation du jour</strong> pour commencer votre session d'écriture avec une inspiration.</li>
-            <li>Utilisez les <strong>citations</strong> (<code>></code>) pour retranscrire des dialogues ou des pensées marquantes.</li>
-            <li>Ajoutez des <strong>images</strong> pour illustrer un souvenir.</li>
-        </ul>
-        <h3>Cas 3 : La Base de Connaissances Personnelle</h3>
-        <p>Transformez votre journal en un wiki personnel.</p>
-        <ul>
-            <li>Créez une note pour un sujet spécifique en utilisant <code>Fichier > Sauvegarder sous...</code> (ex: <code>recette-lasagnes.md</code>).</li>
-            <li>Documentez une procédure technique avec des <strong>blocs de code</strong> et des <strong>listes numérotées</strong>.</li>
-            <li>Enregistrez des liens importants avec une description pour vous en souvenir.</li>
-            <li>Utilisez la fonction <code>Rechercher</code> (<code>Ctrl+F</code>) pour retrouver rapidement une information.</li>
-        </ul>
-    </section>
-
-    <section id="scripts">
-        <h2>8. Personnalisation des Scripts de Lancement</h2>
-        <p>Les scripts <code>.sh</code> et <code>.bat</code> transmettent les arguments (comme <code>--journal</code>) à l'application via <code>"$@"</code> (Linux) ou <code>%*</code> (Windows).</p>
-    </section>
-
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.1.11 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.1.12 de BlueNotebook.</em></p>
     </footer>
 
 </body>

@@ -5,7 +5,16 @@ Avec Priorités
 
 "Backup" in the "Fichier" menu saves all your entered data in a zip file.
 A Spécifier
-Menu Fichier --> Backup et  Restore
+ 
+📁 Fichier
+├── ... (autres actions)
+├── ---
+├── 💾 Sauvegarde...
+├── 🔄 Restauration...
+├── ---
+└── 🚪 Quitter
+
+bouton 
 
 ### Rednotebook ---> Backup
 fichier -> Backup Select backupfilename dans file Manager RedNotebook-Backup-RedNotebookDropbox-2025-09-23.zip

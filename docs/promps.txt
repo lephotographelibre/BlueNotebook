@@ -8,3 +8,10 @@ Je voudrais que tu crée une documentation au format Markdown et que tu sauvegar
 MENU GRAPHIQUE
 Je voudrais que tu génére une représentation graphique de la barre de menu du projet avec tous ses sous Menu
 et que tu mettes à jour l'aide en ligne  avec cette nouvelle représentation graphique 
+
+
+@BlueNotebook  je voudrais que tu mettes en oeuvre la spectification de la sauvegarde décrite dans le document backup.ms. Attention les option de menue devront s'appeler "Sauvergarde Journal" et "Restauration Journal". Lors de la restauration le fichier Journal existant sera sauvegarder et pas détruit .La fenetre de confirmation lors de la restauration devra donner le nom du fichier dasn lequel on va sauvegarder le dosser Journal existant.
+
+Il faut rajouter un séparateur dasn le menu Fichier entre Sauvegarde... et Sauvegarde Journal. Il faut regrouper les 3 items concernant le Journal (Ouvrir Journal, Sauvegarder Journal, Restautation Journal
+Dans la boite de confirmation lors de la restauration l'affichage du nom sous lequel le dossier journal va etre sauvegarder ne s'affiche pas correctement la police grasse n'est pas mise en oeuvre et a la place j'ai <b> </b>
+les deux boutons doivent afficher les labels suivant "Valider Restauration" à la place de Yes et "Annuler" à la place de "No"

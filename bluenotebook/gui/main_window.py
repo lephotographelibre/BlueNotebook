@@ -21,6 +21,8 @@ import webbrowser
 import locale
 import functools
 import os
+import shutil
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from PyQt5.QtWidgets import (
@@ -208,6 +210,9 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.save_action)
         file_menu.addAction(self.save_as_action)
         file_menu.addSeparator()
+        file_menu.addAction(self.backup_journal_action)
+        file_menu.addAction(self.restore_journal_action)
+        file_menu.addSeparator()
         file_menu.addAction(self.export_action)
         file_menu.addSeparator()
         file_menu.addAction(self.quit_action)
@@ -272,6 +277,18 @@ class MainWindow(QMainWindow):
             shortcut=QKeySequence.SaveAs,
             statusTip="Sauvegarder sous un nouveau nom",
             triggered=self.save_file_as,
+        )
+        self.backup_journal_action = QAction(
+            "💾 Sauvegarde Journal...",
+            self,
+            statusTip="Sauvegarder le journal complet dans une archive ZIP",
+            triggered=self.backup_journal,
+        )
+        self.restore_journal_action = QAction(
+            "🔄 Restauration Journal...",
+            self,
+            statusTip="Restaurer le journal depuis une archive ZIP",
+            triggered=self.restore_journal,
         )
         self.export_action = QAction(
             "🌐 Exporter HTML...",
@@ -880,6 +897,110 @@ ______________________________________________________________
                     self, "Erreur", f"Impossible d'exporter en HTML :\n{str(e)}"
                 )
 
+    def backup_journal(self):
+        """Sauvegarde le répertoire du journal dans une archive ZIP."""
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Sauvegarde impossible",
+                "Aucun répertoire de journal n'est actuellement défini.",
+            )
+            return
+
+        # Générer un nom de fichier de sauvegarde par défaut
+        backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d')}.zip"
+
+        # Ouvrir une boîte de dialogue pour choisir l'emplacement de la sauvegarde
+        backup_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Sauvegarder le journal",
+            backup_filename_default,
+            "Archives ZIP (*.zip)",
+        )
+
+        if not backup_path:
+            return  # L'utilisateur a annulé
+
+        try:
+            # Créer l'archive ZIP
+            shutil.make_archive(
+                base_name=os.path.splitext(backup_path)[0],
+                format="zip",
+                root_dir=self.journal_directory,
+            )
+            self.statusbar.showMessage(f"Journal sauvegardé dans {backup_path}", 5000)
+            QMessageBox.information(
+                self,
+                "Sauvegarde terminée",
+                f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+            )
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur de sauvegarde", f"La sauvegarde a échoué : {e}"
+            )
+
+    def restore_journal(self):
+        """Restaure un journal depuis une archive ZIP."""
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Restauration impossible",
+                "Aucun répertoire de journal de destination n'est défini.",
+            )
+            return
+
+        # Sélectionner l'archive à restaurer
+        zip_path, _ = QFileDialog.getOpenFileName(
+            self, "Restaurer le journal", "", "Archives ZIP (*.zip)"
+        )
+
+        if not zip_path:
+            return
+
+        # Nom du backup pour le journal existant
+        current_journal_backup_path = (
+            f"{self.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        )
+
+        # Fenêtre de confirmation
+        reply = QMessageBox.question(
+            self,
+            "Confirmation de la restauration",
+            f"Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.\n\n"
+            f"Le journal actuel sera d'abord sauvegardé ici :\n<b>{current_journal_backup_path}</b>\n\n"
+            "L'application va redémarrer après la restauration. Continuer ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+
+        if reply == QMessageBox.No:
+            return
+
+        try:
+            # 1. Sauvegarder (renommer) le journal actuel
+            os.rename(self.journal_directory, current_journal_backup_path)
+
+            # 2. Créer le répertoire de destination vide
+            os.makedirs(self.journal_directory)
+
+            # 3. Extraire l'archive
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                zip_ref.extractall(self.journal_directory)
+
+            QMessageBox.information(
+                self,
+                "Restauration terminée",
+                "La restauration est terminée. L'application va maintenant se fermer.\n"
+                "Veuillez la relancer pour utiliser le journal restauré.",
+            )
+            # Fermer l'application pour forcer un rechargement propre
+            self.close()
+
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur de restauration", f"La restauration a échoué : {e}"
+            )
+
     def toggle_preview(self):
         """Basculer la visibilité de l'aperçu"""
         if self.preview.isVisible():
@@ -899,7 +1020,7 @@ ______________________________________________________________
         # Construire le chemin vers le fichier d'aide
         base_path = os.path.dirname(os.path.abspath(__file__))
         help_file_path = os.path.join(
-            base_path, "..", "resources", "html", "bluenotebook_aide_en_ligne.html"
+            base_path, "..", "resources", "html", "aide_en_ligne.html"
         )
 
         if os.path.exists(help_file_path):
