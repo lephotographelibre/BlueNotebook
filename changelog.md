@@ -1,4 +1,31 @@
+## V1.2.3 Déplace le menu Inserer dans la barre de Menu
 
+Rendre le menu "Insérer" plus accessible en le plaçant au premier niveau de la barre de menus améliorera certainement l'expérience utilisateur. MaJour de la doc technique V1.2.3 et de l'aide en ligne
+
+```
+👁️ Affichage
+..
+🎨 Formater
+...
+➕ Insérer
+├── 🔗 Lien (URL ou email) (<url>)
+├── 🖼️ Image (<img ...>)
+├── 🔗 Lien Markdown (texte)
+├── 🔗 Fichier
+├── ---
+├── ➖ Ligne Horizontale
+├── ▦ Tableau
+├── 💬 Citation
+├── ✨ Citation du jour
+├── ---
+├── 🏷️ Tag (@@)
+├── 🕒 Heure
+├── ---
+├── 😊 Emoji
+...
+❓ Aide
+..
+```
 
 ## V1.2.2 Changement format de date dans la template par defaut de l'editeur
 

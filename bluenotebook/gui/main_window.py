@@ -228,6 +228,10 @@ class MainWindow(QMainWindow):
         format_menu = menubar.addMenu("🎨 F&ormater")
         self._setup_format_menu(format_menu)
 
+        # Menu Insérer (maintenant au premier niveau)
+        insert_menu = menubar.addMenu("➕ &Insérer")
+        self._setup_insert_menu(insert_menu)
+
         # Menu Aide
         help_menu = menubar.addMenu("❓ &Aide")
         help_menu.addAction(self.online_help_action)
@@ -385,35 +389,39 @@ class MainWindow(QMainWindow):
             list_menu.addAction(action)
         format_menu.addMenu(list_menu)
 
-        # --- Sous-menu Insérer ---
-        # V1.1.9 Le menu est maintenant créé dans _setup_format_menu
-        # insert_menu = QMenu("➕ Insérer", self)
-        insert_menu = QMenu("➕ Insérer", self)  # noqa
+        format_menu.addSeparator()
+
+        # --- Action RaZ ---
+        clear_action = QAction("🧹 RaZ (Effacer le formatage)", self)
+        clear_action.triggered.connect(self.editor.clear_formatting)
+        format_menu.addAction(clear_action)
+
+    def _setup_insert_menu(self, insert_menu):
+        """Configure le menu d'insertion de manière dynamique."""
         insert_actions_data = [
             ("🔗 Lien (URL ou email) (<url>)", "url"),
             (
                 "🖼️ Image (<img ...>)",
                 "image",
                 QKeySequence.Italic,
-            ),  # Raccourci Ctrl+I ajouté ici
+            ),  # Raccourci Ctrl+I
             ("🔗 Lien Markdown (texte)", "markdown_link"),
         ]
-        # V1.1.11 Ajout de l'insertion de lien vers un fichier interne
-        insert_internal_link_action = QAction("🔗 Fichier", self)
-        insert_internal_link_action.triggered.connect(
-            lambda: self.editor.format_text("internal_link")
-        )
+
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
             action.triggered.connect(
                 lambda checked=False, d=data: self.editor.format_text(d)
             )
-
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
-        insert_menu.addAction(insert_internal_link_action)
 
+        insert_internal_link_action = QAction("🔗 Fichier", self)
+        insert_internal_link_action.triggered.connect(
+            lambda: self.editor.format_text("internal_link")
+        )
+        insert_menu.addAction(insert_internal_link_action)
         insert_menu.addSeparator()
 
         # Actions statiques
@@ -428,19 +436,34 @@ class MainWindow(QMainWindow):
             lambda: self.editor.format_text("quote_of_the_day")
         )
 
-        insert_menu.addAction(insert_quote_action)
-        insert_menu.addAction(insert_quote_day_action)
         insert_menu.addAction(insert_hr_action)
         insert_menu.addAction(insert_table_action)
+        insert_menu.addAction(insert_quote_action)
+        insert_menu.addAction(insert_quote_day_action)
         insert_menu.addSeparator()
-        # V1.1.10 Ajout Tag Menu
+
         insert_tag_action = QAction("🏷️ Tag (@@)", self)
         insert_tag_action.triggered.connect(lambda: self.editor.format_text("tag"))
         insert_menu.addAction(insert_tag_action)
+
         insert_time_action = QAction("🕒 Heure", self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
         insert_menu.addAction(insert_time_action)
-        format_menu.addMenu(insert_menu)
+        insert_menu.addSeparator()
+
+        # --- Sous-menu Insérer ---
+        # V1.1.9 Le menu est maintenant créé dans _setup_format_menu
+        # insert_menu = QMenu("➕ Insérer", self)
+        insert_menu = QMenu("➕ Insérer", self)  # noqa
+        insert_actions_data = [
+            ("🔗 Lien (URL ou email) (<url>)", "url"),
+            (
+                "🖼️ Image (<img ...>)",
+                "image",
+                QKeySequence.Italic,
+            ),  # Raccourci Ctrl+I ajouté ici
+            ("🔗 Lien Markdown (texte)", "markdown_link"),
+        ]
 
         # --- Sous-menu Emoji ---
         emoji_menu = QMenu("😊 Emoji", self)
@@ -465,14 +488,7 @@ class MainWindow(QMainWindow):
                 name, self, triggered=functools.partial(self.editor.insert_text, emoji)
             )
             emoji_menu.addAction(action)
-        format_menu.addMenu(emoji_menu)
-
-        format_menu.addSeparator()
-
-        # --- Action RaZ ---
-        clear_action = QAction("🧹 RaZ (Effacer le formatage)", self)
-        clear_action.triggered.connect(self.editor.clear_formatting)
-        format_menu.addAction(clear_action)
+        insert_menu.addMenu(emoji_menu)
 
     def setup_statusbar(self):
         """Configuration de la barre de statut"""
