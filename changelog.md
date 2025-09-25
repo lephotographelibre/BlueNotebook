@@ -1,3 +1,15 @@
+## V1.4.2 Fix bug Crash if show_quote_of_the_day is false - set a default value
+
+preferences_dialog.py
+```python
+class PreferencesDialog(QDialog):
+  .....
+        # V1.4.2 Fix bug Crash if show_quote_of_the_day is false - set a default value
+        # is_checked = self.settings_manager.get("integrations.show_quote_of_the_day")
+        is_checked = self.settings_manager.get(
+            "integrations.show_quote_of_the_day", False
+        )
+```
 ## V1.4.1 Ajouts d'un panneau Préferences dans BlueNotebook (Priority 2)
 
 Ce panneau est le centre de contrôle pour personnaliser l'apparence et le comportement de l'application BlueNotebook.

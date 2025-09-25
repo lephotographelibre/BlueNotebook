@@ -120,7 +120,11 @@ class PreferencesDialog(QDialog):
         self.show_quote_checkbox = QCheckBox(
             "Afficher la citation du jour au démarrage"
         )
-        is_checked = self.settings_manager.get("integrations.show_quote_of_the_day")
+        # V1.4.2 Fix bug Crash if show_quote_of_the_day is false - set a default value
+        # is_checked = self.settings_manager.get("integrations.show_quote_of_the_day")
+        is_checked = self.settings_manager.get(
+            "integrations.show_quote_of_the_day", False
+        )
         self.show_quote_checkbox.setChecked(is_checked)
         layout.addWidget(self.show_quote_checkbox)
 

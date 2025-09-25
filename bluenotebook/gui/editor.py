@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
 Composant éditeur de texte BlueNotebook avec coloration syntaxique PyQt5
 """
 
 from pathlib import Path
-
 import os
 import re
 from PyQt5.QtWidgets import (
@@ -34,7 +32,6 @@ from PyQt5.QtWidgets import (
     QPushButton,
 )
 from PyQt5.QtWidgets import QDialogButtonBox, QFormLayout, QInputDialog
-
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import (
     QFont,
@@ -51,6 +48,7 @@ from PyQt5.QtGui import (
 class MarkdownHighlighter(QSyntaxHighlighter):
     """Coloration syntaxique pour Markdown (titres, gras, italique)"""
 
+    # [Previous MarkdownHighlighter code remains unchanged]
     def __init__(self, document):
         super().__init__(document)
         self.setup_formats()
@@ -140,7 +138,6 @@ class MarkdownHighlighter(QSyntaxHighlighter):
                 )
 
         # Gras (**text** ou __text__) - version simplifiée
-        # Utilise une regex qui ne capture pas les astérisques seuls à l'intérieur
         bold_star_pattern = r"\*\*(?!\s)(.*?)(?<!\s)\*\*"
         for match in re.finditer(bold_star_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
@@ -150,14 +147,12 @@ class MarkdownHighlighter(QSyntaxHighlighter):
             self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
 
         # Italique (*text* ou _text_) - version simplifiée
-        # Ne capture pas si c'est du gras (**)
         italic_star_pattern = r"(?<!\*)\*(?!\s)(.*?)(?<!\s)\*(?!\*)"
         for match in re.finditer(italic_star_pattern, text):
             self.setFormat(
                 match.start(), match.end() - match.start(), self.italic_format
             )
 
-        # Ne capture pas si c'est du gras (__)
         italic_underscore_pattern = r"(?<!_)_(?!\s)(.*?)(?<!\s)_(?!_)"
         for match in re.finditer(italic_underscore_pattern, text):
             self.setFormat(
@@ -192,7 +187,6 @@ class MarkdownHighlighter(QSyntaxHighlighter):
             )
 
         # Listes à puces et numérotées (-, *, +, 1.)
-        # Cible uniquement le marqueur de liste
         list_pattern = r"^\s*([-*+]|\d+\.)\s"
         for match in re.finditer(list_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.list_format)
@@ -200,17 +194,14 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Liens Markdown ([texte](url))
         link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
         for match in re.finditer(link_pattern, text):
-            # Colorer le lien en entier
             self.setFormat(match.start(), match.end() - match.start(), self.link_format)
 
         # Auto-liens (<url> ou <email>)
         autolink_pattern = r"<((?:https?://|mailto:)[^>]+|[^>@]+@[^>]+)>"
         for match in re.finditer(autolink_pattern, text):
-            # Colorer le lien en entier, y compris les chevrons
             self.setFormat(match.start(), match.end() - match.start(), self.link_format)
 
         # Tags (@@tag, au moins 2 caractères après les @@)
-        # Utilise \B pour s'assurer que le # n'est pas précédé d'un caractère de mot
         tag_pattern = r"@@(\w{2,})\b"
         for match in re.finditer(tag_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.tag_format)
@@ -218,13 +209,13 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Images HTML (<img ...>)
         image_pattern = r"<img[^>]+>"
         for match in re.finditer(image_pattern, text, re.IGNORECASE):
-            # Colorer la balise image en entier
             self.setFormat(match.start(), match.end() - match.start(), self.link_format)
 
 
 class FindDialog(QDialog):
     """Dialogue de recherche"""
 
+    # [Previous FindDialog code remains unchanged]
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
@@ -292,6 +283,7 @@ class FindDialog(QDialog):
 class LinkDialog(QDialog):
     """Boîte de dialogue pour insérer un lien Markdown."""
 
+    # [Previous LinkDialog code remains unchanged]
     def __init__(self, parent=None, selected_text=""):
         super().__init__(parent)
         self.setWindowTitle("Insérer un lien Markdown")
@@ -322,12 +314,9 @@ class LinkDialog(QDialog):
     def get_link(parent=None, selected_text=""):
         """Méthode statique pour afficher le dialogue et obtenir les données."""
         dialog = LinkDialog(parent, selected_text)
-        # Pré-remplir l'URL si le texte sélectionné est une URL
         if selected_text.startswith("http://") or selected_text.startswith("https://"):
             dialog.url_edit.setText(selected_text)
-            dialog.text_edit.setText(
-                ""
-            )  # Vider le texte pour que l'utilisateur le saisisse
+            dialog.text_edit.setText("")
             dialog.text_edit.setFocus()
         else:
             dialog.url_edit.setFocus()
@@ -368,7 +357,7 @@ class MarkdownEditor(QWidget):
             }
         """
         )
-        label.setMaximumHeight(35)  # noqa
+        label.setMaximumHeight(35)
         layout.addWidget(label)
 
         # Zone de texte - prend tout l'espace restant
@@ -380,7 +369,8 @@ class MarkdownEditor(QWidget):
         font.setPointSize(12)
         self.text_edit.setFont(font)
 
-        # Style amélioré
+        # Style amélioré avec fond de sélection jaune plus léger
+        # V1.4.2 Editeur Surlignage en Jaune lors de sélection
         self.text_edit.setStyleSheet(
             """
             QTextEdit {
@@ -388,9 +378,9 @@ class MarkdownEditor(QWidget):
                 border-radius: 4px;
                 padding: 10px;
                 background-color: #d6ebff;
-                selection-background-color: #3498db;
+                selection-background-color: #e9e942ff; /* V1.4.2 Very light yellow for selection background */
                 color: #2c3e50;
-                selection-color: white;
+                selection-color: inherit; /* Retains original text color */
             }
             
             QTextEdit:focus {
@@ -463,7 +453,6 @@ class MarkdownEditor(QWidget):
         """Applique le formatage Markdown au texte sélectionné."""
         cursor = self.text_edit.textCursor()
 
-        # Gérer l'insertion de la citation du jour, qui ne nécessite pas de sélection
         if format_type == "quote_of_the_day":
             if (
                 self.main_window
@@ -474,9 +463,7 @@ class MarkdownEditor(QWidget):
                 cursor.insertText(quote_text)
             return
 
-        # V1.1.11 Correction: Gérer l'insertion de lien interne sans sélection
         if format_type == "internal_link":
-            # Utiliser le répertoire du journal comme point de départ
             start_dir = (
                 str(self.main_window.journal_directory)
                 if self.main_window and self.main_window.journal_directory
@@ -488,19 +475,17 @@ class MarkdownEditor(QWidget):
 
             if filename:
                 file_basename = os.path.basename(filename)
-                file_uri = Path(filename).as_uri()  # Convertit en URI file://
+                file_uri = Path(filename).as_uri()
                 new_text = f"[{file_basename}]({file_uri})"
                 cursor.insertText(new_text)
             return
 
         if not cursor.hasSelection():
-            # Gérer les insertions sans sélection comme la ligne horizontale et le tableau
             if format_type == "hr":
                 cursor.insertText("\n---\n")
             elif format_type == "table":
                 table_template = "| En-tête 1 | En-tête 2 |\n|---|---|\n| Cellule 1 | Cellule 2 |\n| Cellule 3 | Cellule 4 |"
                 cursor.insertText(table_template)
-            # V1.1.9 Insertion de l'heure
             elif format_type == "time":
                 from datetime import datetime
 
@@ -509,7 +494,6 @@ class MarkdownEditor(QWidget):
 
         selected_text = cursor.selectedText()
 
-        # Formats qui s'appliquent sur la ligne entière
         if format_type in ["h1", "h2", "h3", "h4", "h5"]:
             prefix = {
                 "h1": "# ",
@@ -519,7 +503,6 @@ class MarkdownEditor(QWidget):
                 "h5": "##### ",
             }[format_type]
 
-            # Étendre la sélection à la ligne entière
             start_pos = cursor.selectionStart()
             end_pos = cursor.selectionEnd()
             cursor.setPosition(start_pos)
@@ -528,8 +511,6 @@ class MarkdownEditor(QWidget):
             cursor.movePosition(QTextCursor.EndOfLine, QTextCursor.KeepAnchor)
 
             line_text = cursor.selectedText()
-
-            # Supprimer les anciens préfixes de titre
             line_text = re.sub(r"^\s*#+\s*", "", line_text)
 
             new_text = prefix + line_text
@@ -549,12 +530,10 @@ class MarkdownEditor(QWidget):
             cursor.setPosition(end_pos, QTextCursor.KeepAnchor)
 
             lines = cursor.selectedText().splitlines()
-
             new_text = self._apply_line_prefix(lines, format_type)
             cursor.insertText(new_text)
             return
 
-        # Formats qui entourent le texte
         wrappers = {
             "bold": "**",
             "italic": "*",
@@ -565,7 +544,6 @@ class MarkdownEditor(QWidget):
 
         if format_type in wrappers:
             wrapper = wrappers[format_type]
-            # Si le texte est déjà entouré, on enlève les wrappers
             if selected_text.startswith(wrapper) and selected_text.endswith(wrapper):
                 new_text = selected_text[len(wrapper) : -len(wrapper)]
             else:
@@ -577,12 +555,10 @@ class MarkdownEditor(QWidget):
             cursor.insertText(table_template)
 
         elif format_type == "hr":
-            # Insère une ligne horizontale après la sélection
             cursor.movePosition(QTextCursor.EndOfLine)
             cursor.insertText("\n\n---\n")
 
         elif format_type == "code_block":
-            # Gérer les blocs de code sur plusieurs lignes
             if "\n" in selected_text:
                 new_text = f"```\n{selected_text}\n```"
             else:
@@ -594,8 +570,6 @@ class MarkdownEditor(QWidget):
             cursor.insertText(new_text)
 
         elif format_type == "image":
-            # Pour l'image, on suppose que le texte sélectionné est une URL
-            # Une boîte de dialogue serait mieux, mais pour l'instant on utilise une valeur par défaut
             new_text = f'<img src="{selected_text}" width="400">'
             cursor.insertText(new_text)
 
@@ -609,10 +583,6 @@ class MarkdownEditor(QWidget):
             new_text = f"@@{selected_text}"
             cursor.insertText(new_text)
 
-        elif format_type == "tag":
-            new_text = f"@@{selected_text}"
-            cursor.insertText(new_text)
-
     def clear_formatting(self):
         """Supprime le formatage Markdown de la sélection."""
         cursor = self.text_edit.textCursor()
@@ -620,20 +590,12 @@ class MarkdownEditor(QWidget):
             return
 
         selected_text = cursor.selectedText()
-
-        # Expression régulière pour trouver les caractères de formatage Markdown
-        # #, *, _, ~, `, [, ], (, ), !, <, >
         markdown_chars = r"([#*_~`\[\]\(\)!<>])"
 
-        # Supprimer les préfixes de ligne (titre, citation, liste)
         cleaned_text = re.sub(
             r"^\s*([#>\-]+\s*|\d+\.\s*)", "", selected_text, flags=re.MULTILINE
         )
-
-        # Supprimer les autres caractères de formatage
         cleaned_text = re.sub(markdown_chars, "", cleaned_text)
-
-        # Cas spécifique des blocs de code
         cleaned_text = re.sub(r"```.*?\n", "", cleaned_text)
         cleaned_text = cleaned_text.replace("```", "")
 
@@ -647,7 +609,6 @@ class MarkdownEditor(QWidget):
                 new_lines.append(f"> {line}")
         elif format_type == "task_list":
             for line in lines:
-                # Enlever les préfixes de liste existants avant d'ajouter le nouveau
                 cleaned_line = re.sub(r"^\s*-\s*\[[ x]\]\s*|\s*-\s*", "", line).strip()
                 new_lines.append(f"- [ ] {cleaned_line}")
         elif format_type == "ul":
@@ -659,82 +620,59 @@ class MarkdownEditor(QWidget):
 
         return "\n".join(new_lines)
 
-    # V1.1.12 Zoom Editeur avec la Molette
     def wheelEvent(self, event):
-        """
-        Gère l'événement de la molette de la souris pour le zoom.
-        """
-        # Vérifie si la touche CTRL est pressée
+        """Gère l'événement de la molette de la souris pour le zoom."""
         if event.modifiers() == Qt.ControlModifier:
-            # Récupère le mouvement de la molette (positif pour le haut, négatif pour le bas)
             angle = event.angleDelta().y()
             if angle > 0:
-                self.text_edit.zoomIn(1)  # Zoom avant
+                self.text_edit.zoomIn(1)
             elif angle < 0:
-                self.text_edit.zoomOut(1)  # Zoom arrière
-            event.accept()  # Indique que l'événement a été traité
+                self.text_edit.zoomOut(1)
+            event.accept()
         else:
-            # Si CTRL n'est pas pressée, comportement par défaut (défilement)
             super().wheelEvent(event)
 
     def set_font(self, font):
         """Définit la police de l'éditeur de texte."""
         self.text_edit.setFont(font)
 
-    # fix Claude
     def set_background_color(self, color_hex):
         """Définit la couleur de fond de l'éditeur."""
-        # Méthode améliorée pour gérer les cas où la couleur n'est pas encore définie
         current_style = self.text_edit.styleSheet()
-
-        # Chercher si background-color existe déjà dans le style
         if "background-color:" in current_style:
-            # Remplacer la couleur existante
-            # La regex gère maintenant les espaces optionnels et les couleurs de différents formats
             new_style = re.sub(
                 r"background-color:\s*[^;]+;",
                 f"background-color: {color_hex};",
                 current_style,
             )
         else:
-            # Ajouter la propriété background-color dans le bloc QTextEdit
             if "QTextEdit {" in current_style:
-                # Insérer après l'accolade ouvrante
                 new_style = current_style.replace(
                     "QTextEdit {",
                     f"QTextEdit {{\n                background-color: {color_hex};",
                 )
             else:
-                # Créer un nouveau style si aucun n'existe
                 new_style = f"QTextEdit {{ background-color: {color_hex}; }}"
-
         self.text_edit.setStyleSheet(new_style)
 
     def set_text_color(self, color_hex):
         """Définit la couleur du texte de l'éditeur."""
         current_style = self.text_edit.styleSheet()
-
-        # Chercher si color existe déjà dans le style
         if (
             "color:" in current_style
             and "background-color:"
             not in current_style.split("color:")[1].split(";")[0]
         ):
-            # Remplacer la couleur existante (en évitant de remplacer background-color ou selection-color)
             new_style = re.sub(
                 r"(?<!background-)(?<!selection-)color:\s*[^;]+;",
                 f"color: {color_hex};",
                 current_style,
             )
         else:
-            # Ajouter la propriété color dans le bloc QTextEdit
             if "QTextEdit {" in current_style:
-                # Insérer après l'accolade ouvrante
                 new_style = current_style.replace(
                     "QTextEdit {", f"QTextEdit {{\n                color: {color_hex};"
                 )
             else:
-                # Créer un nouveau style si aucun n'existe
                 new_style = f"QTextEdit {{ color: {color_hex}; }}"
-
         self.text_edit.setStyleSheet(new_style)
