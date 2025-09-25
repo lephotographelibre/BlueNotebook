@@ -1,3 +1,30 @@
+## V1.3.2 Menu "Fichier" regroupement des actions relatives au "Journal"
+
+la nouvelle structure du menu "Fichier" après les derniers changements.
+
+J'ai mis en évidence le nouveau groupement des actions relatives au "Journal" pour que vous puissiez bien voir la différence.
+
+```
+📁 Fichier
+├── 📄 Nouveau
+├── 📂 Ouvrir
+├── ---
+├── 💾 Sauvegarder
+├── 💾 Sauvegarder sous...
+├── ---
+│
+├── 📓 Ouvrir Journal           ┐
+├── 💾 Sauvegarde Journal...    ├─  (Actions groupées pour le Journal)
+├── 🔄 Restauration Journal...  ┘
+├── ---
+│
+├── 🌐 Exporter HTML...
+├── ---
+└── 🚪 Quitter (Ctrl+Q)
+
+```
+
+
 ## V1.3.1 Mise en place Sauvegarde/Restauration Journal
 
 ####  Résumé des fonctionnalités de Sauvegarde et Restauration
