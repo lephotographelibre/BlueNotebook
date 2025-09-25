@@ -20,6 +20,50 @@
         a { color: #2980b9; text-decoration: none; }
         a:hover { text-decoration: underline; }
         tr:nth-child(even) { background-color: #fdfdfd; }
+
+        /* Table des matières */
+        .toc {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            float: right;
+            max-width: 300px;
+            margin-left: 20px;
+        }
+        .toc h2 {
+            margin-top: 0;
+            font-size: 1.1em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc ul ul {
+            padding-left: 20px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #0366d6;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                font-size: 14px;
+            }
+            .toc {
+                float: none;
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -27,9 +71,24 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook v1.4.1
+            Manuel Utilisateur - BlueNotebook v1.4.2
         </h1>
     </header>
+
+    <div class="toc">
+        <h2>📋 Table des matières</h2>
+        <ul>
+            <li><a href="#introduction">1. Introduction</a></li>
+            <li><a href="#lancement">2. Lancement et Configuration</a></li>
+            <li><a href="#interface">3. L'interface Principale</a></li>
+            <li><a href="#concept-journal">4. Le concept de "Journal"</a></li>
+            <li><a href="#menus">5. Exploration des Menus</a></li>
+            <li><a href="#backup-restore">6. Sauvegarde et Restauration</a></li>
+            <li><a href="#raccourcis">7. Raccourcis Clavier</a></li>
+        </ul>
+    </div>
+
+    <div style="clear: both;"></div>
 
     <section id="introduction">
         <h2>1. Introduction</h2>
@@ -171,7 +230,7 @@
     </section>
 
     <section id="backup-restore">
-        <h2>5.1 Sauvegarde et Restauration du Journal</h2>
+        <h2>6. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -194,7 +253,7 @@
     </section>
 
     <section id="raccourcis">
-        <h2>6. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>7. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -216,7 +275,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.3.3 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.4.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

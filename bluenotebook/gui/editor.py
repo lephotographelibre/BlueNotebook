@@ -378,7 +378,7 @@ class MarkdownEditor(QWidget):
                 border-radius: 4px;
                 padding: 10px;
                 background-color: #d6ebff;
-                selection-background-color: #e9e942ff; /* V1.4.2 Very light yellow for selection background */
+                selection-background-color: #e9e942; /* V1.4.2 Very light yellow for selection background */
                 color: #2c3e50;
                 selection-color: inherit; /* Retains original text color */
             }
