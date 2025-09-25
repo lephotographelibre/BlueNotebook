@@ -1,26 +1,19 @@
 # Evolutions
 Avec Priorités
 
-## Fonctionnalité de backup (Priority 1)
 
-"Backup" in the "Fichier" menu saves all your entered data in a zip file.
-A Spécifier
- 
-📁 Fichier
-├── ... (autres actions)
-├── ---
-├── 💾 Sauvegarde...
-├── 🔄 Restauration...
-├── ---
-└── 🚪 Quitter
+## V1.4.1 Ajouts d'un panneau Préferences dans BlueNotebook (Priority 2)
 
-bouton 
+@prompt 
+Je voudrais ajouter une fonctionnalié qui permette a un utilisateur de définir ses péférences.
+1 nouveau choix de menu "Préférences..." dans Fichier juste avant "Quitter" qui appelle un panneau avec 3 tab: Général, Affichage, Intégrations
+Dans l'onglet Géneral on va trouver "Police Editeur" qui va permettre de sélectionner une police de caractères
+Dans l'onglet Affichage on va trouver "Couleur Fond Editeurr" qui va permettre de sélectionner une couleur de fond de l'éditeur
+Dans L'onglet "Intégrations" Un choix à cliquer "Afficher la citation du Jour" qui permette de choisir si l'itilsateur veut afficher la citation du jour au démarrage
+Le panneau Préférences disposera en bas à Doite de dexu boutons  "Valider" ou "Annuler" Permettant de valider l'ensemble des choix séléctionnés sur les trois tabs.
+Il faudrait exernaliser dasn un fichier settings.py tous le code lié à la gestion de ce panneau de préférences
 
-### Rednotebook ---> Backup
-fichier -> Backup Select backupfilename dans file Manager RedNotebook-Backup-RedNotebookDropbox-2025-09-23.zip
-
-## Ajouts d'un panneau Préferences dans BlueNotebook (Priority 2)
-
+je voudrais garder en memoire comme valeurs par default les valeurs actuelles Police de l'éditeur,Couleur de la police de l'editeur, Taille de la polices, Couleur de fond de l'éditeur dans le fichier settings.py et dans l'onglet général un cloix à cliquer Remise à 0 qui réinitialise toutes les valeurs sauveragrder dans  settings.py
 
 
 Menu Fichier --> Préférences

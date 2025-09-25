@@ -1,3 +1,51 @@
+## V1.4.1 Ajouts d'un panneau Préferences dans BlueNotebook (Priority 2)
+
+Ce panneau est le centre de contrôle pour personnaliser l'apparence et le comportement de l'application BlueNotebook.
+
+### Accès et Structure Générale du panneau Préferences
+
+*   **Accès** : On ouvre ce panneau via le menu `Fichier > ⚙️ Préférences...`.
+*   **Structure** : C'est une fenêtre de dialogue (`QDialog`) qui contient un système d'onglets (`QTabWidget`) pour organiser les différents paramètres. En bas, deux boutons permettent de `Valider` les changements ou de les `Annuler`.
+
+### Onglet "Général"
+
+Cet onglet se concentre sur les paramètres fondamentaux de l'éditeur.
+
+*   **Police de l'éditeur** :
+    *   **Fonctionnalité** : Permet de choisir la famille de police (ex: "Droid Sans Mono", "Consolas") et sa taille.
+    *   **Interface** : Un bouton affiche la police actuelle (ex: `Droid Sans Mono, 12pt`). Un clic sur ce bouton ouvre la boîte de dialogue standard de sélection de police de votre système.
+
+*   **Remise à 0** :
+    *   **Fonctionnalité** : C'est le bouton de "Remise à Zéro" (RaZ). Il réinitialise **toutes** les préférences de l'application (police, couleurs, etc.) à leurs valeurs par défaut.
+    *   **Interface** : Un bouton `Remise à 0`.
+    *   **Fonctionnement détaillé** :
+        1.  Affiche une boîte de dialogue pour **confirmer** l'action, prévenant l'utilisateur qu'un redémarrage est nécessaire.
+        2.  Si l'utilisateur confirme, il appelle la méthode `settings_manager.reset_to_defaults()` qui supprime le fichier de configuration `settings.json` et le recrée avec les valeurs d'usine.
+        3.  Affiche un message d'information confirmant la réinitialisation.
+        4.  Ferme la fenêtre des préférences **sans sauvegarder** les choix qui étaient affichés à l'écran, pour s'assurer que ce sont bien les valeurs par défaut qui seront utilisées au prochain démarrage.
+
+### Onglet "Affichage"
+
+Cet onglet est dédié à la personnalisation visuelle de la zone d'écriture.
+
+*   **Couleur de fond de l'éditeur** :
+    *   **Fonctionnalité** : Permet de choisir une couleur de fond pour la zone où vous tapez le texte.
+    *   **Interface** : Un bouton dont la couleur de fond reflète la couleur actuellement sélectionnée. Un clic ouvre le sélecteur de couleurs.
+
+*   **Couleur de la police de l'éditeur** :
+    *   **Fonctionnalité** : Permet de choisir la couleur du texte dans l'éditeur.
+    *   **Interface** : Similaire au choix de la couleur de fond, un bouton affiche la couleur du texte choisie.
+
+### Onglet "Intégrations"
+
+Cet onglet gère les fonctionnalités qui interagissent avec des services externes ou des modules optionnels.
+
+*   **Afficher la citation du jour au démarrage** :
+    *   **Fonctionnalité** : Permet d'activer ou de désactiver l'affichage de la fenêtre "Citation du Jour" qui apparaît au lancement de l'application.
+    *   **Interface** : Une simple case à cocher (`QCheckBox`).
+
+En résumé, le panneau des préférences offre un moyen simple et organisé de personnaliser les aspects les plus importants de l'expérience utilisateur, avec une fonction de réinitialisation sécurisée pour revenir facilement à la configuration initiale.
+
 ## V1.3.3 Correctif sur la boite de Dialogue de Restautation
 
 Label "Valider" et "Annuler" et texte affiché formatté correctement

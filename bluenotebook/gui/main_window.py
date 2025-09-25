@@ -44,10 +44,12 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer, QDate
 from PyQt5.QtCore import QThreadPool
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
+from PyQt5.QtGui import QColor
 
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
+from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher  # noqa
 
 
@@ -61,11 +63,16 @@ class MainWindow(QMainWindow):
         self.is_modified = False
         self.daily_quote = None
         self.daily_author = None
+        # Importer ici pour éviter les dépendances circulaires si nécessaire
+        from core.settings import SettingsManager
+
+        self.settings_manager = SettingsManager()
 
         # Initialiser le pool de threads pour les tâches de fond
         self.thread_pool = QThreadPool()
 
         self.setup_ui()
+        self.apply_settings()  # Appliquer les paramètres au démarrage
         self.setup_menu()
         self.setup_statusbar()
         self.setup_connections()
@@ -215,6 +222,8 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(self.export_action)
         file_menu.addSeparator()
+        file_menu.addAction(self.preferences_action)
+        file_menu.addSeparator()
         file_menu.addAction(self.quit_action)
 
         # Menu Edition
@@ -295,6 +304,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Exporter en HTML",
             triggered=self.export_html,
+        )
+        self.preferences_action = QAction(
+            "⚙️ Préférences...",
+            self,
+            statusTip="Ouvrir les préférences de l'application",
+            triggered=self.open_preferences,
         )
         self.quit_action = QAction(
             "🚪 Quitter",
@@ -1114,15 +1129,19 @@ ______________________________________________________________
 
     def show_quote_of_the_day(self):
         """Affiche la citation du jour dans une boîte de dialogue."""
-        self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
-        if self.daily_quote and self.daily_author:
-            msg_box = QMessageBox(self)
-            msg_box.setWindowTitle("Citation du Jour")
-            msg_box.setText(f"<blockquote><i>« {self.daily_quote} »</i></blockquote>")
-            msg_box.setInformativeText(f"<b>{self.daily_author}</b>")
-            msg_box.setIcon(QMessageBox.Information)
-            msg_box.setStandardButtons(QMessageBox.Ok)
-            msg_box.exec_()
+        # Vérifier si l'affichage est activé dans les paramètres
+        if self.settings_manager.get("integrations.show_quote_of_the_day"):
+            self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
+            if self.daily_quote and self.daily_author:
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Citation du Jour")
+                msg_box.setText(
+                    f"<blockquote><i>« {self.daily_quote} »</i></blockquote>"
+                )
+                msg_box.setInformativeText(f"<b>{self.daily_author}</b>")
+                msg_box.setIcon(QMessageBox.Information)
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
@@ -1307,3 +1326,44 @@ ______________________________________________________________
     def _set_file_label_color(self, color):
         """Définit la couleur du texte pour le label du nom de fichier."""
         self.file_label.setStyleSheet(f"color: {color};")
+
+    def open_preferences(self):
+        """Ouvre la boîte de dialogue des préférences."""
+        dialog = PreferencesDialog(self.settings_manager, self)
+        if dialog.exec_() == QDialog.Accepted:
+            # Sauvegarder les nouveaux paramètres
+            self.settings_manager.set(
+                "editor.font_family", dialog.current_font.family()
+            )
+            self.settings_manager.set(
+                "editor.font_size", dialog.current_font.pointSize()
+            )
+            self.settings_manager.set(
+                "editor.background_color", dialog.current_color.name()
+            )
+            self.settings_manager.set(
+                "editor.text_color", dialog.current_text_color.name()
+            )
+            self.settings_manager.set(
+                "integrations.show_quote_of_the_day",
+                dialog.show_quote_checkbox.isChecked(),
+            )
+
+            self.settings_manager.save_settings()
+            self.apply_settings()
+
+    def apply_settings(self):
+        """Applique les paramètres chargés à l'interface utilisateur."""
+        # Appliquer la police
+        font_family = self.settings_manager.get("editor.font_family")
+        font_size = self.settings_manager.get("editor.font_size")
+        font = QFont(font_family, font_size)
+        self.editor.set_font(font)
+
+        # Appliquer la couleur de fond
+        bg_color = self.settings_manager.get("editor.background_color")
+        self.editor.set_background_color(bg_color)
+
+        # Appliquer la couleur du texte
+        text_color = self.settings_manager.get("editor.text_color")
+        self.editor.set_text_color(text_color)

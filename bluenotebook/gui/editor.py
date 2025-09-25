@@ -676,3 +676,65 @@ class MarkdownEditor(QWidget):
         else:
             # Si CTRL n'est pas pressée, comportement par défaut (défilement)
             super().wheelEvent(event)
+
+    def set_font(self, font):
+        """Définit la police de l'éditeur de texte."""
+        self.text_edit.setFont(font)
+
+    # fix Claude
+    def set_background_color(self, color_hex):
+        """Définit la couleur de fond de l'éditeur."""
+        # Méthode améliorée pour gérer les cas où la couleur n'est pas encore définie
+        current_style = self.text_edit.styleSheet()
+
+        # Chercher si background-color existe déjà dans le style
+        if "background-color:" in current_style:
+            # Remplacer la couleur existante
+            # La regex gère maintenant les espaces optionnels et les couleurs de différents formats
+            new_style = re.sub(
+                r"background-color:\s*[^;]+;",
+                f"background-color: {color_hex};",
+                current_style,
+            )
+        else:
+            # Ajouter la propriété background-color dans le bloc QTextEdit
+            if "QTextEdit {" in current_style:
+                # Insérer après l'accolade ouvrante
+                new_style = current_style.replace(
+                    "QTextEdit {",
+                    f"QTextEdit {{\n                background-color: {color_hex};",
+                )
+            else:
+                # Créer un nouveau style si aucun n'existe
+                new_style = f"QTextEdit {{ background-color: {color_hex}; }}"
+
+        self.text_edit.setStyleSheet(new_style)
+
+    def set_text_color(self, color_hex):
+        """Définit la couleur du texte de l'éditeur."""
+        current_style = self.text_edit.styleSheet()
+
+        # Chercher si color existe déjà dans le style
+        if (
+            "color:" in current_style
+            and "background-color:"
+            not in current_style.split("color:")[1].split(";")[0]
+        ):
+            # Remplacer la couleur existante (en évitant de remplacer background-color ou selection-color)
+            new_style = re.sub(
+                r"(?<!background-)(?<!selection-)color:\s*[^;]+;",
+                f"color: {color_hex};",
+                current_style,
+            )
+        else:
+            # Ajouter la propriété color dans le bloc QTextEdit
+            if "QTextEdit {" in current_style:
+                # Insérer après l'accolade ouvrante
+                new_style = current_style.replace(
+                    "QTextEdit {", f"QTextEdit {{\n                color: {color_hex};"
+                )
+            else:
+                # Créer un nouveau style si aucun n'existe
+                new_style = f"QTextEdit {{ color: {color_hex}; }}"
+
+        self.text_edit.setStyleSheet(new_style)
