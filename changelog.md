@@ -1,3 +1,8 @@
+## V1.3.3 Correctif sur la boite de Dialogue de Restautation
+
+Label "Valider" et "Annuler" et texte affiché formatté correctement
+Mise à jour du menu dans Aide en ligne et footer
+
 ## V1.3.2 Menu "Fichier" regroupement des actions relatives au "Journal"
 
 la nouvelle structure du menu "Fichier" après les derniers changements.

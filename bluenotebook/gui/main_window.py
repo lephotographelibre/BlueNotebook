@@ -916,10 +916,30 @@ ______________________________________________________________
             "Sauvegarder le journal",
             backup_filename_default,
             "Archives ZIP (*.zip)",
+            options=QFileDialog.DontConfirmOverwrite,
         )
 
         if not backup_path:
             return  # L'utilisateur a annulé
+
+        # Vérifier si le fichier existe et demander confirmation si nécessaire
+        if os.path.exists(backup_path):
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Question)
+            msg_box.setWindowTitle("Fichier existant")
+            msg_box.setText(
+                f"Le fichier '{os.path.basename(backup_path)}' existe déjà.\n\n"
+                "Voulez-vous le remplacer ?"
+            )
+            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msg_box.button(QMessageBox.Yes).setText("Valider")
+            msg_box.button(QMessageBox.No).setText("Annuler")
+            msg_box.setDefaultButton(QMessageBox.No)
+            reply = msg_box.exec_()
+
+            if reply == QMessageBox.No:
+                self.statusbar.showMessage("Sauvegarde annulée.", 3000)
+                return
 
         try:
             # Créer l'archive ZIP
@@ -962,16 +982,21 @@ ______________________________________________________________
             f"{self.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         )
 
-        # Fenêtre de confirmation
-        reply = QMessageBox.question(
-            self,
-            "Confirmation de la restauration",
-            f"Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.\n\n"
-            f"Le journal actuel sera d'abord sauvegardé ici :\n<b>{current_journal_backup_path}</b>\n\n"
-            "L'application va redémarrer après la restauration. Continuer ?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+        # Fenêtre de confirmation personnalisée
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setWindowTitle("Confirmation de la restauration")
+        msg_box.setTextFormat(Qt.RichText)  # Interpréter le texte comme du HTML
+        msg_box.setText(
+            f"<p>Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.</p>"
+            f"<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{current_journal_backup_path}</b></p>"
+            f"<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
         )
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg_box.button(QMessageBox.Yes).setText("Valider")
+        msg_box.button(QMessageBox.No).setText("Annuler")
+        msg_box.setDefaultButton(QMessageBox.No)
+        reply = msg_box.exec_()
 
         if reply == QMessageBox.No:
             return
