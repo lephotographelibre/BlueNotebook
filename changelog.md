@@ -1,3 +1,46 @@
+## V1.4.4 Editeur Coloration syntaxique Sélection et Tag Headings Markdown
+
+dans editor.py Nouvelle couleur texte sélectionné
+
+```python
+
+        # Style amélioré couleur rouge
+        # V1.4.4 Editeur Surlignage en Jaune lors de sélection
+        self.text_edit.setStyleSheet(
+            """
+            QTextEdit {
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 10px;
+                background-color: #d6ebff;
+                selection-background-color: #ffffff; 
+                color: #2c3e50;
+                selection-color: #ff0004;
+            }
+            
+            QTextEdit:focus {
+                border: 2px solid #3498db;
+            }
+        """
+        )
+```
+
+
+dans editor.py Nouvelle couleur heading format.setForeground(QColor("#208bd7"))
+
+```python
+    def setup_formats(self):
+        """Configuration des formats de coloration"""
+        # Format pour les titres
+        self.title_formats = []
+        for i in range(1, 7):
+            format = QTextCharFormat()
+            format.setForeground(QColor("#208bd7"))
+            format.setFontWeight(QFont.Bold)
+            format.setFontPointSize(16 - i)
+            self.title_formats.append(format)
+
+```
 ## V1.4.3 Document fonctionnalités Settings 
 
 --> docs/V1.4.3_settings.md
@@ -17,7 +60,9 @@ documenter les fichiers settings.json dans ~/.config/settings.json
 }
 ```
 ainsi que le fichier core/settings.py avec la Classes SettingManager()
-+
+
+preferences_dialog.py
+
 Correction de la boite de dialogue Raz (supprime Yes et No --> Valider et Annuler)
 ```python
     def _reset_settings(self):

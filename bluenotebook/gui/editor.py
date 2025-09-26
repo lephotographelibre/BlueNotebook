@@ -59,7 +59,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.title_formats = []
         for i in range(1, 7):
             format = QTextCharFormat()
-            format.setForeground(QColor("#AA3731"))
+            format.setForeground(QColor("#208bd7"))
             format.setFontWeight(QFont.Bold)
             format.setFontPointSize(16 - i)
             self.title_formats.append(format)
@@ -369,8 +369,8 @@ class MarkdownEditor(QWidget):
         font.setPointSize(12)
         self.text_edit.setFont(font)
 
-        # Style amélioré avec fond de sélection jaune plus léger
-        # V1.4.2 Editeur Surlignage en Jaune lors de sélection
+        # Style amélioré couleur rouge
+        # V1.4.4 Editeur Surlignage en Jaune lors de sélection
         self.text_edit.setStyleSheet(
             """
             QTextEdit {
@@ -378,9 +378,9 @@ class MarkdownEditor(QWidget):
                 border-radius: 4px;
                 padding: 10px;
                 background-color: #d6ebff;
-                selection-background-color: #e9e942; /* V1.4.2 Very light yellow for selection background */
+                selection-background-color: #ffffff; 
                 color: #2c3e50;
-                selection-color: inherit; /* Retains original text color */
+                selection-color: #ff0004;
             }
             
             QTextEdit:focus {
