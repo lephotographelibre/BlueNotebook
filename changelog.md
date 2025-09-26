@@ -24,7 +24,7 @@ dans editor.py et outline.py
                 background: #a0a0a0; /* Un peu plus foncé au survol */
             }}
 
-"""
+```
 
 ## V1.5.2 Fix Issue #10 Claude - Sync btw Outline and Editor
 
