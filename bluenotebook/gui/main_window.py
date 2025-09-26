@@ -686,26 +686,24 @@ class MainWindow(QMainWindow):
 
 ______________________________________________________________
 
-## TODO
+# TODO
 
 - [ ] 
 
 ______________________________________________________________
-## Activités & Notes
+# Activités & Notes
 
 
 
 
-## Pour Demain
+# Pour Demain
 
 
 
-## Liens
+# Liens
 
 
-## Tags
 
-@@
 
 """
             self.editor.set_text(template)
@@ -1345,6 +1343,13 @@ ______________________________________________________________
                 "editor.text_color", dialog.current_text_color.name()
             )
             self.settings_manager.set(
+                "editor.heading_color", dialog.current_heading_color.name()
+            )
+            self.settings_manager.set(
+                "editor.selection_text_color",
+                dialog.current_selection_text_color.name(),
+            )
+            self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
             )
@@ -1367,3 +1372,11 @@ ______________________________________________________________
         # Appliquer la couleur du texte
         text_color = self.settings_manager.get("editor.text_color")
         self.editor.set_text_color(text_color)
+
+        # Appliquer la couleur des titres
+        heading_color = self.settings_manager.get("editor.heading_color")
+        self.editor.set_heading_color(heading_color)
+
+        # Appliquer la couleur du texte de sélection
+        selection_text_color = self.settings_manager.get("editor.selection_text_color")
+        self.editor.set_selection_text_color(selection_text_color)

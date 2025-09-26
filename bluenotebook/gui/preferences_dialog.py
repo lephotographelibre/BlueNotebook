@@ -110,6 +110,31 @@ class PreferencesDialog(QDialog):
         self.text_color_button.clicked.connect(self._select_text_color)
         layout.addRow("Couleur de la police de l'éditeur:", self.text_color_button)
 
+        # Couleur des titres
+        heading_color_hex = self.settings_manager.get("editor.heading_color")
+        self.current_heading_color = QColor(heading_color_hex)
+
+        self.heading_color_button = QPushButton()
+        self.heading_color_button.setStyleSheet(
+            f"background-color: {heading_color_hex};"
+        )
+        self.heading_color_button.clicked.connect(self._select_heading_color)
+        layout.addRow("Couleur des titres:", self.heading_color_button)
+
+        # Couleur du texte sélectionné
+        selection_text_color_hex = self.settings_manager.get(
+            "editor.selection_text_color"
+        )
+        self.current_selection_text_color = QColor(selection_text_color_hex)
+        self.selection_text_color_button = QPushButton()
+        self.selection_text_color_button.setStyleSheet(
+            f"background-color: {selection_text_color_hex};"
+        )
+        self.selection_text_color_button.clicked.connect(
+            self._select_selection_text_color
+        )
+        layout.addRow("Couleur du texte sélectionné:", self.selection_text_color_button)
+
         return widget
 
     def _create_integrations_tab(self):
@@ -147,6 +172,22 @@ class PreferencesDialog(QDialog):
         if color.isValid():
             self.current_text_color = color
             self.text_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_heading_color(self):
+        color = QColorDialog.getColor(self.current_heading_color, self)
+        if color.isValid():
+            self.current_heading_color = color
+            self.heading_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_selection_text_color(self):
+        color = QColorDialog.getColor(self.current_selection_text_color, self)
+        if color.isValid():
+            self.current_selection_text_color = color
+            self.selection_text_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
 
     # Fix Claude V1.4.1
     def _reset_settings(self):

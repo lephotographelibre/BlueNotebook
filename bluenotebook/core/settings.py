@@ -36,6 +36,8 @@ class SettingsManager:
                 "font_size": 12,
                 "background_color": "#d6ebff",
                 "text_color": "#2c3e50",
+                "heading_color": "#208bd7",
+                "selection_text_color": "#ff0004",
             },
             "integrations": {"show_quote_of_the_day": True},
         }

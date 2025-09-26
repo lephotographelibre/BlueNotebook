@@ -51,6 +51,11 @@ class MarkdownHighlighter(QSyntaxHighlighter):
     # [Previous MarkdownHighlighter code remains unchanged]
     def __init__(self, document):
         super().__init__(document)
+        self.heading_color = QColor("#208bd7")
+        self.setup_formats()
+
+    def update_heading_color(self, color):
+        self.heading_color = color
         self.setup_formats()
 
     def setup_formats(self):
@@ -59,7 +64,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.title_formats = []
         for i in range(1, 7):
             format = QTextCharFormat()
-            format.setForeground(QColor("#208bd7"))
+            format.setForeground(self.heading_color)
             format.setFontWeight(QFont.Bold)
             format.setFontPointSize(16 - i)
             self.title_formats.append(format)
@@ -675,4 +680,29 @@ class MarkdownEditor(QWidget):
                 )
             else:
                 new_style = f"QTextEdit {{ color: {color_hex}; }}"
+        self.text_edit.setStyleSheet(new_style)
+
+    def set_heading_color(self, color_hex):
+        """Définit la couleur des titres dans le surligneur syntaxique."""
+        self.highlighter.update_heading_color(QColor(color_hex))
+        # Forcer une nouvelle coloration de tout le document
+        self.highlighter.rehighlight()
+
+    def set_selection_text_color(self, color_hex):
+        """Définit la couleur du texte sélectionné."""
+        current_style = self.text_edit.styleSheet()
+        if "selection-color:" in current_style:
+            new_style = re.sub(
+                r"selection-color:\s*[^;]+;",
+                f"selection-color: {color_hex};",
+                current_style,
+            )
+        else:
+            if "QTextEdit {" in current_style:
+                new_style = current_style.replace(
+                    "QTextEdit {",
+                    f"QTextEdit {{\n                selection-color: {color_hex};",
+                )
+            else:
+                new_style = f"QTextEdit {{ selection-color: {color_hex}; }}"
         self.text_edit.setStyleSheet(new_style)

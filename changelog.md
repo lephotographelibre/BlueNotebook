@@ -1,3 +1,5 @@
+## V1.4.5 Préférences couleurs des headings et sélections de texte  
+
 ## V1.4.4 Editeur Coloration syntaxique Sélection et Tag Headings Markdown
 
 dans editor.py Nouvelle couleur texte sélectionné
