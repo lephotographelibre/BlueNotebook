@@ -1,3 +1,32 @@
+## V1.5.2 Fix Issue #10 Claude - Sync btw Outline and Editor
+
+### Problème identifié 
+La méthode ensureCursorVisible() centre le curseur dans la vue au lieu de le placer en haut, et elle peut ne rien faire si le curseur est déjà visible.
+Solutions apportées :
+
+### Positionnement précis du curseur 
+Le curseur est d'abord positionné correctement sur le bloc correspondant au heading.
+
+### Défilement contrôlé
+Au lieu de se fier à ensureCursorVisible(), la méthode :
+
+Utilise d'abord ensureCursorVisible() pour s'assurer que le curseur est dans la zone visible
+Puis ajuste manuellement la position de scroll pour placer le heading en haut
+
+###  Approche itérative
+
+La méthode fait jusqu'à 3 tentatives d'ajustement pour être sûre que le positioning est correct, avec un processEvents() entre chaque tentative pour laisser le temps au widget de se mettre à jour.
+
+###  Gestion des cas limites :
+
+- Vérifie si le curseur est déjà proche du haut (moins de 20 pixels) avant d'ajuster
+- Respecte les limites de la scrollbar (minimum 0, maximum scrollbar.maximum())
+- Ajoute une marge de 10 pixels depuis le haut pour un meilleur rendu visuel
+
+Cette solution devrait résoudre les deux problèmes que vous avez mentionnés :
+
+- Les headings seront toujours positionnés en première ligne, même s'ils sont déjà visibles
+- Les headings en fin de document seront aussi correctement positionnés en haut quand c'est possible
 ## V1.5.1 Panneau "Plan du document" et Préférences d'Affichage des Panneaux
 
 Cette version introduit deux fonctionnalités majeures pour améliorer la navigation dans les documents et la personnalisation de l'espace de travail.

@@ -1324,20 +1324,61 @@ ______________________________________________________________
                 f"Aucune note pour le {date.toString('dd/MM/yyyy')}", 3000
             )
 
+    # V1.5.2 Fix Issue #10 Claude - Sync btw Outline and Editor
     def on_outline_item_clicked(self, position):
         """
         Déplace le curseur vers la position cliquée dans le plan et fait défiler
-        la vue pour que la ligne du titre soit en haut de l'éditeur.
+        la vue pour que la ligne du titre soit exactement à la première ligne de l'éditeur.
         """
+        # Importer QTextCursor si nécessaire
+        from PyQt5.QtGui import QTextCursor
+
         # Déplacer le curseur à la position du titre
         block = self.editor.text_edit.document().findBlock(position)
         cursor = self.editor.text_edit.textCursor()
         cursor.setPosition(block.position())
         self.editor.text_edit.setTextCursor(cursor)
 
-        # Forcer la ligne à s'afficher en haut de la vue
-        self.editor.text_edit.ensureCursorVisible()
-        self.editor.text_edit.setFocus()
+        # Solution robuste : utiliser QTextEdit.scrollToAnchor
+        # Créer un nom d'ancre temporaire basé sur la position
+        anchor_name = f"heading_{block.blockNumber()}"
+
+        # Méthode alternative plus directe :
+        # Forcer le scroll en utilisant la scrollbar directement
+        scrollbar = self.editor.text_edit.verticalScrollBar()
+
+        # Obtenir le rectangle du curseur après l'avoir positionné
+        text_edit = self.editor.text_edit
+
+        # S'assurer que le curseur est visible d'abord
+        text_edit.ensureCursorVisible()
+
+        # Maintenant, ajuster pour que ce soit en haut
+        # On va utiliser une approche itérative pour être sûr
+        for attempt in range(3):  # Maximum 3 tentatives
+            cursor_rect = text_edit.cursorRect()
+
+            # Si le curseur est déjà proche du haut (moins de 20 pixels), c'est bon
+            if cursor_rect.top() <= 20:
+                break
+
+            # Calculer combien on doit scroller vers le haut
+            scroll_adjustment = cursor_rect.top() - 10  # 10 pixels de marge en haut
+
+            # Appliquer l'ajustement
+            current_scroll = scrollbar.value()
+            new_scroll = current_scroll + scroll_adjustment
+            new_scroll = max(0, min(new_scroll, scrollbar.maximum()))
+
+            scrollbar.setValue(new_scroll)
+
+            # Laisser le temps au widget de se mettre à jour
+            from PyQt5.QtWidgets import QApplication
+
+            QApplication.processEvents()
+
+        # Donner le focus à l'éditeur
+        text_edit.setFocus()
 
     def update_calendar_highlights(self):
         """Scanne le répertoire du journal et met en évidence les dates dans le calendrier."""
