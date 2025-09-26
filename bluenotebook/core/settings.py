@@ -39,7 +39,12 @@ class SettingsManager:
                 "heading_color": "#208bd7",
                 "selection_text_color": "#ff0004",
             },
-            "integrations": {"show_quote_of_the_day": True},
+            "integrations": {"show_quote_of_the_day": False},
+            "ui": {
+                "show_navigation_panel": False,
+                "show_outline_panel": True,
+                "show_preview_panel": False,
+            },
         }
 
         # Charger les paramètres

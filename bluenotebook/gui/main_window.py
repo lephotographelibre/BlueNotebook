@@ -49,6 +49,7 @@ from PyQt5.QtGui import QColor
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
+from .outline import OutlinePanel
 from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher  # noqa
 
@@ -125,6 +126,10 @@ class MainWindow(QMainWindow):
         self.navigation_panel = NavigationPanel()
         main_splitter.addWidget(self.navigation_panel)
 
+        # Panneau du plan (milieu)
+        self.outline_panel = OutlinePanel()
+        main_splitter.addWidget(self.outline_panel)
+
         # Splitter secondaire pour séparer éditeur et aperçu
         editor_preview_splitter = QSplitter(Qt.Horizontal)
         editor_preview_splitter.setHandleWidth(8)
@@ -164,10 +169,11 @@ class MainWindow(QMainWindow):
 
         # Configuration du splitter principal
         # Fixer la largeur du panneau de navigation
-        self.navigation_panel.setFixedWidth(400)
-        main_splitter.setSizes([400, 1000])  # Ajuster les tailles initiales
+        self.navigation_panel.setFixedWidth(350)
+        self.outline_panel.setFixedWidth(350)
+        main_splitter.setSizes([350, 350, 1000])  # Ajuster les tailles initiales
         main_splitter.setCollapsible(0, False)
-        main_splitter.setCollapsible(1, False)
+        main_splitter.setCollapsible(2, False)
 
         # Ajouter le splitter au layout principal
         main_layout.addWidget(main_splitter)
@@ -236,6 +242,7 @@ class MainWindow(QMainWindow):
         # Menu Affichage
         view_menu = menubar.addMenu("👁️ &Affichage")
         view_menu.addAction(self.toggle_navigation_action)
+        view_menu.addAction(self.toggle_outline_action)
         view_menu.addAction(self.toggle_preview_action)
 
         # Menu Formatter
@@ -339,8 +346,15 @@ class MainWindow(QMainWindow):
             triggered=self.toggle_navigation,
         )
 
+        self.toggle_outline_action = QAction(
+            "📜 Basculer Plan du document",
+            self,
+            shortcut="F7",
+            triggered=self.toggle_outline,
+        )
+
         self.toggle_preview_action = QAction(
-            "👁️ Basculer l'aperçu", self, shortcut="F5", triggered=self.toggle_preview
+            "👁️ Basculer Aperçu HTML", self, shortcut="F5", triggered=self.toggle_preview
         )
 
         self.about_action = QAction(
@@ -564,6 +578,7 @@ class MainWindow(QMainWindow):
         )
         self.navigation_panel.today_button_clicked.connect(self.on_today_button_clicked)
         self.navigation_panel.date_clicked.connect(self.on_calendar_date_clicked)
+        self.outline_panel.item_clicked.connect(self.on_outline_item_clicked)
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -632,6 +647,7 @@ class MainWindow(QMainWindow):
 
         # Démarrer le timer pour la mise à jour de l'aperçu
         self.update_timer.start(300)  # 300ms de délai
+        self.outline_panel.update_outline(self.editor.text_edit.document())
 
     def update_preview(self):
         """Mettre à jour l'aperçu"""
@@ -688,7 +704,10 @@ ______________________________________________________________
 
 # TODO
 
-- [ ] 
+- [ ] tache 1
+- [ ] tache 2
+- [ ] tache 3
+- [ ] tache 4
 
 ______________________________________________________________
 # Activités & Notes
@@ -1053,6 +1072,13 @@ ______________________________________________________________
         else:
             self.navigation_panel.show()
 
+    def toggle_outline(self):
+        """Basculer la visibilité du panneau de plan."""
+        if self.outline_panel.isVisible():
+            self.outline_panel.hide()
+        else:
+            self.outline_panel.show()
+
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
         # Construire le chemin vers le fichier d'aide
@@ -1298,6 +1324,21 @@ ______________________________________________________________
                 f"Aucune note pour le {date.toString('dd/MM/yyyy')}", 3000
             )
 
+    def on_outline_item_clicked(self, position):
+        """
+        Déplace le curseur vers la position cliquée dans le plan et fait défiler
+        la vue pour que la ligne du titre soit en haut de l'éditeur.
+        """
+        # Déplacer le curseur à la position du titre
+        block = self.editor.text_edit.document().findBlock(position)
+        cursor = self.editor.text_edit.textCursor()
+        cursor.setPosition(block.position())
+        self.editor.text_edit.setTextCursor(cursor)
+
+        # Forcer la ligne à s'afficher en haut de la vue
+        self.editor.text_edit.ensureCursorVisible()
+        self.editor.text_edit.setFocus()
+
     def update_calendar_highlights(self):
         """Scanne le répertoire du journal et met en évidence les dates dans le calendrier."""
         if not self.journal_directory:
@@ -1353,12 +1394,31 @@ ______________________________________________________________
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
             )
+            self.settings_manager.set(
+                "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_outline_panel", dialog.show_outline_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
+            )
 
             self.settings_manager.save_settings()
             self.apply_settings()
 
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
+        # --- Visibilité des panneaux ---
+        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+        self.navigation_panel.setVisible(show_nav)
+
+        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
+        self.outline_panel.setVisible(show_outline)
+
+        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
+        self.preview.setVisible(show_preview)
+
         # Appliquer la police
         font_family = self.settings_manager.get("editor.font_family")
         font_size = self.settings_manager.get("editor.font_size")
@@ -1380,3 +1440,6 @@ ______________________________________________________________
         # Appliquer la couleur du texte de sélection
         selection_text_color = self.settings_manager.get("editor.selection_text_color")
         self.editor.set_selection_text_color(selection_text_color)
+
+        # Appliquer les styles au panneau de plan
+        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))

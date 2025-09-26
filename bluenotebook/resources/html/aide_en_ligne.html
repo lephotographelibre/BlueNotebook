@@ -71,7 +71,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook v1.4.5
+            Manuel Utilisateur - BlueNotebook v1.5.1
         </h1>
     </header>
 
@@ -84,7 +84,8 @@
             <li><a href="#concept-journal">4. Le concept de "Journal"</a></li>
             <li><a href="#menus">5. Exploration des Menus</a></li>
             <li><a href="#backup-restore">6. Sauvegarde et Restauration</a></li>
-            <li><a href="#raccourcis">7. Raccourcis Clavier</a></li>
+            <li><a href="#preferences">7. Personnalisation via les Préférences</a></li>
+            <li><a href="#raccourcis">8. Raccourcis Clavier</a></li>
         </ul>
     </div>
 
@@ -252,8 +253,44 @@
         </ol>
     </section>
 
+    <section id="preferences">
+        <h2>7. Personnalisation via les Préférences</h2>
+        <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
+
+        <h3>Onglet "Général"</h3>
+        <ul>
+            <li><strong>Police de l'éditeur</strong> : Cliquez sur le bouton pour ouvrir une fenêtre de dialogue et choisir la famille de police (ex: "Droid Sans Mono") et sa taille.</li>
+            <li><strong>Remise à 0</strong> : Ce bouton réinitialise <strong>toutes</strong> les options de l'application à leurs valeurs par défaut. Une confirmation vous sera demandée et un redémarrage de l'application sera nécessaire.</li>
+        </ul>
+
+        <h3>Onglet "Affichage"</h3>
+        <p>Cet onglet vous permet de personnaliser l'apparence de la zone d'écriture.</p>
+        <ul>
+            <li><strong>Couleur de fond de l'éditeur</strong> : Choisissez la couleur de l'arrière-plan de la zone de texte.</li>
+            <li><strong>Couleur de la police de l'éditeur</strong> : Modifiez la couleur du texte principal.</li>
+            <li><strong>Couleur des titres</strong> : Personnalisez la couleur des titres Markdown (<code>#</code>, <code>##</code>, etc.).</li>
+            <li><strong>Couleur du texte sélectionné</strong> : Changez la couleur du texte lorsque vous le surlignez avec la souris.</li>
+        </ul>
+
+        <h3>Onglet "Panneaux"</h3>
+        <p>Contrôlez quels panneaux sont visibles par défaut au démarrage de l'application pour un espace de travail sur mesure.</p>
+        <ul>
+            <li><strong>Afficher le panneau de Navigation</strong> : Cochez pour voir le calendrier et les boutons de navigation.</li>
+            <li><strong>Afficher le panneau 'Plan du document'</strong> : Cochez pour afficher la structure hiérarchique de votre note.</li>
+            <li><strong>Afficher le panneau 'Aperçu HTML'</strong> : Cochez pour voir le rendu en temps réel de votre Markdown.</li>
+            <li>Le panneau <strong>Éditeur</strong> est toujours visible et ne peut être désactivé.</li>
+        </ul>
+
+        <h3>Onglet "Intégrations"</h3>
+        <p>Gérez les fonctionnalités additionnelles.</p>
+        <ul>
+            <li><strong>Afficher la citation du jour au démarrage</strong> : Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
+        </ul>
+    </section>
+
+
     <section id="raccourcis">
-        <h2>7. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>8. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -269,13 +306,14 @@
                 <tr><td>Insérer une image</td><td><code>Ctrl+I</code></td></tr>
                 <tr><td>Basculer l'aperçu</td><td><code>F5</code></td></tr>
                 <tr><td>Basculer la navigation</td><td><code>F6</code></td></tr>
+                <tr><td>Basculer le plan du document</td><td><code>F7</code></td></tr>
             </tbody>
         </table>
     </section>
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.4.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.5.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

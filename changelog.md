@@ -1,3 +1,37 @@
+## V1.5.1 Panneau "Plan du document" et Préférences d'Affichage des Panneaux
+
+Cette version introduit deux fonctionnalités majeures pour améliorer la navigation dans les documents et la personnalisation de l'espace de travail.
+
+### 1. Nouveau Panneau : "Plan du document" (Outline)
+
+Un nouveau panneau a été ajouté à l'interface principale, se positionnant entre le panneau "Navigation" et l'éditeur.
+
+*   **Fonctionnalité** : Il affiche en temps réel une vue hiérarchique de tous les titres (headings : `#`, `##`, etc.) présents dans le document que vous éditez. Les titres sont indentés pour refléter leur niveau.
+*   **Navigation Rapide** : Chaque titre dans le plan est cliquable. Un clic déplace le curseur dans l'éditeur à la ligne correspondante et fait défiler la vue pour la rendre visible.
+*   **Cohérence Visuelle** : Le panneau hérite des styles de l'éditeur (police, couleur de fond, couleur des titres) pour une expérience unifiée.
+*   **Contrôle de l'Affichage** : Le panneau peut être masqué/affiché via le menu `Affichage > 📜 Basculer Plan du document` (raccourci `F7`).
+
+### 2. Nouvel Onglet "Panneaux" dans les Préférences
+
+Un nouvel onglet a été ajouté à la fenêtre `Préférences` pour vous permettre de configurer votre espace de travail par défaut.
+
+*   **Personnalisation au Démarrage** : Vous pouvez désormais choisir quels panneaux sont visibles au lancement de l'application.
+*   **Interface** : Des cases à cocher permettent d'activer ou de désactiver les panneaux suivants :
+    *   Panneau de Navigation
+    *   Panneau 'Plan du document'
+    *   Panneau 'Aperçu HTML'
+*   **Persistance** : Vos choix sont sauvegardés dans `settings.json` et restaurés à chaque démarrage.
+*   **Configuration par défaut** :
+    *   Navigation : Fermé
+    *   Plan du document : Ouvert
+    *   Aperçu HTML : Fermé
+
+### 3. Autres modifications
+
+*   Le texte du menu "Basculer l'Aperçu" a été clarifié en "Basculer Aperçu HTML".
+*   L'onglet "Intégrations" dans les préférences a été restauré.
+*   Correction de bugs liés à la création du panneau "Plan du document" et à la navigation.
+
 ## V1.4.5 Préférences couleurs des headings et sélections de texte  
 
 ## V1.4.4 Editeur Coloration syntaxique Sélection et Tag Headings Markdown

@@ -46,6 +46,7 @@ class PreferencesDialog(QDialog):
         self.tabs = QTabWidget()
         self.tabs.addTab(self._create_general_tab(), "Général")
         self.tabs.addTab(self._create_display_tab(), "Affichage")
+        self.tabs.addTab(self._create_panels_tab(), "Panneaux")
         self.tabs.addTab(self._create_integrations_tab(), "Intégrations")
 
         # Boutons Valider/Annuler
@@ -135,6 +136,42 @@ class PreferencesDialog(QDialog):
         )
         layout.addRow("Couleur du texte sélectionné:", self.selection_text_color_button)
 
+        return widget
+
+    def _create_panels_tab(self):
+        """Crée l'onglet 'Panneaux' pour gérer la visibilité au démarrage."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setSpacing(10)
+
+        # Case pour le panneau de Navigation
+        self.show_nav_checkbox = QCheckBox("Afficher le panneau de Navigation")
+        self.show_nav_checkbox.setChecked(
+            self.settings_manager.get("ui.show_navigation_panel", False)
+        )
+        layout.addWidget(self.show_nav_checkbox)
+
+        # Case pour le panneau Plan du document
+        self.show_outline_checkbox = QCheckBox("Afficher le panneau 'Plan du document'")
+        self.show_outline_checkbox.setChecked(
+            self.settings_manager.get("ui.show_outline_panel", True)
+        )
+        layout.addWidget(self.show_outline_checkbox)
+
+        # Case pour le panneau Éditeur (toujours visible et désactivé)
+        self.show_editor_checkbox = QCheckBox("Afficher le panneau Éditeur")
+        self.show_editor_checkbox.setChecked(True)
+        self.show_editor_checkbox.setEnabled(False)
+        layout.addWidget(self.show_editor_checkbox)
+
+        # Case pour le panneau Aperçu HTML
+        self.show_preview_checkbox = QCheckBox("Afficher le panneau 'Aperçu HTML'")
+        self.show_preview_checkbox.setChecked(
+            self.settings_manager.get("ui.show_preview_panel", False)
+        )
+        layout.addWidget(self.show_preview_checkbox)
+
+        layout.addStretch()  # Pour pousser les cases vers le haut
         return widget
 
     def _create_integrations_tab(self):
