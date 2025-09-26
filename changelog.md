@@ -1,3 +1,31 @@
+## V1.5.3 Fix Issue #11 Barre de défilement Editeur et Outline pas visible
+
+La barre de defilement à droite de l'editeur et Plan du document l'Indicateur de progression du defilement n'es pas visible (noir sur noir) --> changer sa couleur en gris clair
+
+Pour corriger cela, j'ai ajouté des règles de style spécifiques pour la barre de défilement du panneau "Plan du document". L'indicateur (la poignée) sera maintenant gris clair, ce qui le rendra bien visible sur le fond sombre.
+
+dans editor.py et outline.py
+
+```python
+
+            /* Style pour la barre de défilement verticale */
+            QScrollBar:vertical {{
+                border: none;
+                background: #e0e0e0; /* Fond de la barre de défilement */
+                width: 12px;
+                margin: 0px 0px 0px 0px;
+            }}
+            QScrollBar::handle:vertical {{
+                background: #b0b0b0; /* Couleur de l'indicateur (gris clair) */
+                min-height: 25px;
+                border-radius: 6px;
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: #a0a0a0; /* Un peu plus foncé au survol */
+            }}
+
+"""
+
 ## V1.5.2 Fix Issue #10 Claude - Sync btw Outline and Editor
 
 ### Problème identifié 

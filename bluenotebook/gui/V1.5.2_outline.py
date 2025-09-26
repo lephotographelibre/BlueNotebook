@@ -121,22 +121,5 @@ class OutlinePanel(QWidget):
                 background-color: {heading_color.name()};
                 color: {background_color.name()};
             }}
-            
-            /* Style pour la barre de défilement verticale */
-            QScrollBar:vertical {{
-                border: none;
-                background: #e0e0e0; /* Fond de la barre de défilement */
-                width: 12px;
-                margin: 0px 0px 0px 0px;
-            }}
-            QScrollBar::handle:vertical {{
-                background: #b0b0b0; /* Couleur de l'indicateur (gris clair) */
-                min-height: 25px;
-                border-radius: 6px;
-            }}
-            QScrollBar::handle:vertical:hover {{
-                background: #a0a0a0; /* Un peu plus foncé au survol */
-            }}
-
         """
         )
