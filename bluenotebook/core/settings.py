@@ -43,20 +43,28 @@ class SettingsManager:
         # Charger les paramètres
         self.settings = self.load_settings()
 
+    def _deep_merge(self, source, destination):
+        """Fusionne récursivement deux dictionnaires."""
+        for key, value in source.items():
+            if isinstance(value, dict):
+                # Obtenir le dictionnaire à fusionner ou un dictionnaire vide
+                node = destination.setdefault(key, {})
+                self._deep_merge(value, node)
+            else:
+                destination.setdefault(key, value)
+        return destination
+
     def load_settings(self):
         """Charge les paramètres depuis le fichier JSON, en utilisant les valeurs par défaut si nécessaire."""
+        defaults = self.defaults.copy()
         if self.settings_path.exists():
             try:
                 with open(self.settings_path, "r", encoding="utf-8") as f:
                     loaded_settings = json.load(f)
-                # Fusionner avec les valeurs par défaut pour garantir que toutes les clés sont présentes
-                # Ceci est une fusion simple ; une fusion profonde serait plus robuste
-                settings = self.defaults.copy()
-                settings.update(loaded_settings)
-                return settings
+                return self._deep_merge(defaults, loaded_settings)
             except (json.JSONDecodeError, TypeError):
-                return self.defaults.copy()
-        return self.defaults.copy()
+                return defaults
+        return defaults
 
     def save_settings(self):
         """Sauvegarde les paramètres actuels dans le fichier JSON."""

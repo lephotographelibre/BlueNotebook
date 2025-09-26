@@ -1,3 +1,38 @@
+## V1.4.3 Document fonctionnalités Settings 
+
+--> docs/V1.4.3_settings.md
+
+documenter les fichiers settings.json dans ~/.config/settings.json
+```json
+{
+    "editor": {
+        "font_family": "Droid Sans Mono",
+        "font_size": 12,
+        "background_color": "#d6ebff",
+        "text_color": "#2c3e50"
+    },
+    "integrations": {
+        "show_quote_of_the_day": true
+    }
+}
+```
+ainsi que le fichier core/settings.py avec la Classes SettingManager()
++
+Correction de la boite de dialogue Raz (supprime Yes et No --> Valider et Annuler)
+```python
+    def _reset_settings(self):
+        """Affiche une confirmation et réinitialise les paramètres."""
+        reply = QMessageBox.question(
+            self,
+            "Confirmation",
+            "Êtes-vous sûr de vouloir réinitialiser toutes les préférences aux valeurs par défaut ?\n"
+            "L'application devra être redémarrée pour appliquer tous les changements.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+```
+
+
 ## V1.4.2 Fix bug Crash if show_quote_of_the_day is false - set a default value
 
 preferences_dialog.py

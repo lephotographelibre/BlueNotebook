@@ -151,14 +151,18 @@ class PreferencesDialog(QDialog):
     # Fix Claude V1.4.1
     def _reset_settings(self):
         """Affiche une confirmation et réinitialise les paramètres."""
-        reply = QMessageBox.question(
-            self,
-            "Confirmation",
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setWindowTitle("Confirmation")
+        msg_box.setText(
             "Êtes-vous sûr de vouloir réinitialiser toutes les préférences aux valeurs par défaut ?\n"
-            "L'application devra être redémarrée pour appliquer tous les changements.",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            "L'application devra être redémarrée pour appliquer tous les changements."
         )
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg_box.button(QMessageBox.Yes).setText("Valider")
+        msg_box.button(QMessageBox.No).setText("Annuler")
+        msg_box.setDefaultButton(QMessageBox.No)
+        reply = msg_box.exec_()
 
         if reply == QMessageBox.Yes:
             self.settings_manager.reset_to_defaults()
