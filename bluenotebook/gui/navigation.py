@@ -25,10 +25,15 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QCalendarWidget,
     QLabel,
+    QSizePolicy,
+    QLineEdit,
     QPushButton,
     QToolBar,
+    QMenu,
     QAction,
+    QToolButton,
 )
+from .word_cloud import WordCloudPanel
 from .tag_cloud import TagCloudPanel
 
 
@@ -50,9 +55,15 @@ class NavigationPanel(QWidget):
     # Signal émis lorsque le bouton "Jour Suivant" est cliqué
     next_day_button_clicked = pyqtSignal()
 
+    # Signal pour la recherche de tag
+    tag_search_triggered = pyqtSignal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.available_tags = []
         self.setup_ui()
+        self.tag_search_input.textChanged.connect(self.on_tag_search_changed)
+        self.tag_search_input.returnPressed.connect(self.on_search_triggered)
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
@@ -90,10 +101,63 @@ class NavigationPanel(QWidget):
         self.calendar.clicked.connect(self.date_clicked.emit)
         layout.addWidget(self.calendar)
 
+        # Conteneur pour le champ de recherche et le bouton de menu déroulant
+        search_container = QWidget()
+        search_layout = QHBoxLayout(search_container)
+        search_layout.setContentsMargins(0, 5, 0, 5)
+        search_layout.setSpacing(2)
+
+        # Champ de recherche de tag
+        self.tag_search_input = QLineEdit()
+        self.tag_search_input.setPlaceholderText("tag")
+        self.tag_search_input.setStyleSheet(
+            """
+            QLineEdit {
+                border: 1px solid #ced4da;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+                border-right: none; /* Fusionne avec le bouton */
+            }
+        """
+        )
+        # Action de recherche pour le QLineEdit
+        search_action = QAction(self)
+        search_action.setIcon(QIcon.fromTheme("edit-find"))
+        search_action.triggered.connect(self.on_search_triggered)
+        self.tag_search_input.addAction(search_action, QLineEdit.TrailingPosition)
+        search_layout.addWidget(self.tag_search_input)
+
+        # Bouton pour le menu déroulant des tags
+        self.tag_dropdown_button = QPushButton()
+        self.tag_dropdown_button.setFixedWidth(30)
+        # Assure que le bouton s'étire verticalement pour correspondre au QLineEdit
+        self.tag_dropdown_button.setSizePolicy(
+            QSizePolicy.Preferred, QSizePolicy.Expanding
+        )
+        self.tag_dropdown_button.setIcon(QIcon.fromTheme("go-down"))
+        self.tag_dropdown_button.setStyleSheet(
+            """
+            QPushButton {
+                border: 1px solid #ced4da;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+        """
+        )
+        self.tag_dropdown_button.clicked.connect(self.show_tag_dropdown)
+        search_layout.addWidget(self.tag_dropdown_button)
+
+        layout.addWidget(search_container)
+
         # Nuage de tags
         self.tag_cloud = TagCloudPanel()
-        self.tag_cloud.setFixedSize(400, 300)
+        self.tag_cloud.setFixedSize(400, 250)
         layout.addWidget(self.tag_cloud)
+
+        # Nuage de mots
+        self.word_cloud = WordCloudPanel()
+        self.word_cloud.setFixedSize(400, 300)
+        layout.addWidget(self.word_cloud)
 
         # Ajouter un espace flexible pour pousser tous les widgets vers le haut
         layout.addStretch()
@@ -141,3 +205,45 @@ class NavigationPanel(QWidget):
 
         for date in dates:
             self.calendar.setDateTextFormat(date, date_format)
+
+    def on_tag_search_changed(self, text):
+        """Ajoute automatiquement '@@' au début du champ de recherche de tag."""
+        # Si le champ est vide ou commence déjà par '@@', ne rien faire.
+        if not text or text.startswith("@@"):
+            return
+
+        # Bloquer les signaux pour éviter une boucle récursive
+        self.tag_search_input.blockSignals(True)
+
+        self.tag_search_input.setText(f"@@{text}")
+
+        # Débloquer les signaux
+        self.tag_search_input.blockSignals(False)
+
+    def on_search_triggered(self):
+        """Déclenché lorsque l'icône de recherche est cliquée ou sur Entrée."""
+        search_text = self.tag_search_input.text()
+        self.tag_search_triggered.emit(search_text)
+
+    def set_available_tags(self, tags: list):
+        """Reçoit la liste des tags disponibles depuis la MainWindow."""
+        self.available_tags = tags
+
+    def show_tag_dropdown(self):
+        """Affiche le menu déroulant avec les tags disponibles."""
+        if not self.available_tags:
+            return
+
+        menu = QMenu(self)
+        for tag in self.available_tags:
+            action = QAction(tag, self)
+            action.triggered.connect(
+                lambda checked, t=tag: self.tag_search_input.setText(t)
+            )
+            menu.addAction(action)
+
+        # Positionner le menu sous le bouton
+        button_pos = self.tag_dropdown_button.mapToGlobal(
+            self.tag_dropdown_button.rect().bottomLeft()
+        )
+        menu.exec_(button_pos)

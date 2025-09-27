@@ -21,6 +21,7 @@ import webbrowser
 import locale
 import functools
 import os
+import json
 import shutil
 import zipfile
 from datetime import datetime
@@ -52,6 +53,7 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher  # noqa
+from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
 from core.word_indexer import start_word_indexing
 
@@ -93,6 +95,7 @@ class MainWindow(QMainWindow):
         self.start_initial_indexing()
         self.update_calendar_highlights()
         self.update_tag_cloud()
+        self.update_word_cloud()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -756,6 +759,7 @@ ______________________________________________________________
                 )
                 self.start_initial_indexing()  # Relancer l'indexation
                 self.update_calendar_highlights()  # Mettre à jour le calendrier
+                self.update_word_cloud()
                 self.update_tag_cloud()
 
     def open_file(self):
@@ -1245,6 +1249,8 @@ ______________________________________________________________
         if not self.settings_manager.get("ui.show_indexing_stats", True):
             QTimer.singleShot(15000, lambda: self.tag_index_status_label.clear())
         self.update_tag_cloud()  # Mettre à jour le nuage après l'indexation
+        self.update_word_cloud()
+        self.update_navigation_panel_data()
 
     def on_prev_day_button_clicked(self):
         """
@@ -1508,6 +1514,17 @@ ______________________________________________________________
                 "indexing.excluded_tags_from_cloud", excluded_tags_list
             )
 
+            # Mots à exclure du nuage de mots
+            excluded_words_cloud_text = dialog.excluded_words_cloud_edit.toPlainText()
+            excluded_words_cloud_list = [
+                word.strip().lower()
+                for word in excluded_words_cloud_text.split(",")
+                if word.strip()
+            ]
+            self.settings_manager.set(
+                "indexing.excluded_words_from_cloud", excluded_words_cloud_list
+            )
+
             self.settings_manager.save_settings()
             self.apply_settings()
 
@@ -1563,6 +1580,34 @@ ______________________________________________________________
         self.navigation_panel.tag_cloud.update_cloud(
             self.journal_directory, excluded_tags_set
         )
+
+    def update_word_cloud(self):
+        """Met à jour le contenu du nuage de mots."""
+        excluded_words_list = self.settings_manager.get(
+            "indexing.excluded_words_from_cloud", []
+        )
+        excluded_words_set = set(excluded_words_list)
+        self.navigation_panel.word_cloud.update_cloud(
+            self.journal_directory, excluded_words_set
+        )
+
+    def update_navigation_panel_data(self):
+        """Met à jour les données nécessaires au panneau de navigation, comme la liste des tags."""
+        if not self.journal_directory:
+            return
+
+        tags_list = []
+        index_file = self.journal_directory / "index_tags.json"
+        if index_file.exists():
+            try:
+                with open(index_file, "r", encoding="utf-8") as f:
+                    tags_data = json.load(f)
+                # Trier les clés (les tags) par ordre alphabétique
+                tags_list = sorted(tags_data.keys())
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"⚠️ Erreur de lecture de l'index des tags pour le menu: {e}")
+
+        self.navigation_panel.set_available_tags(tags_list)
 
     def expand_outline(self):
         """Déplie entièrement l'arborescence du plan du document."""

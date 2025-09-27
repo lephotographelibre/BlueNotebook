@@ -115,6 +115,25 @@ class PreferencesDialog(QDialog):
         )
         layout.addRow(label_tags, self.excluded_tags_edit)
 
+        # Mots à exclure du nuage de mots
+        excluded_words_cloud_list = self.settings_manager.get(
+            "indexing.excluded_words_from_cloud", []
+        )
+        self.excluded_words_cloud_edit = QTextEdit()
+        self.excluded_words_cloud_edit.setPlainText(
+            ", ".join(sorted(excluded_words_cloud_list))
+        )
+        self.excluded_words_cloud_edit.setToolTip(
+            "Liste de mots (séparés par des virgules) à ne pas afficher dans le nuage de mots."
+        )
+        self.excluded_words_cloud_edit.setMaximumHeight(80)
+
+        label_words_cloud = QLabel("Mots à exclure du nuage de mots:")
+        label_words_cloud.setToolTip(
+            "Ces mots n'apparaîtront pas dans le panneau 'Nuage de Mots'."
+        )
+        layout.addRow(label_words_cloud, self.excluded_words_cloud_edit)
+
         return widget
 
     def _create_display_tab(self):

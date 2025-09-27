@@ -49,6 +49,7 @@ class SettingsManager:
             "indexing": {
                 "user_excluded_words": [],
                 "excluded_tags_from_cloud": [],
+                "excluded_words_from_cloud": [],
             },
         }
 

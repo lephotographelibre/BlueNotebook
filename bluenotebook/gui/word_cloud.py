@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Panneau affichant un nuage de tags.
+Panneau affichant un nuage de mots.
 """
 
 import json
@@ -25,10 +25,10 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextBrowser
 from PyQt5.QtGui import QFont
 
 
-class TagCloudPanel(QWidget):
+class WordCloudPanel(QWidget):
     """
-    Panneau affichant une représentation en "nuage" des tags indexés.
-    La taille de chaque tag est proportionnelle à sa fréquence.
+    Panneau affichant une représentation en "nuage" des mots indexés.
+    La taille de chaque mot est proportionnelle à sa fréquence.
     """
 
     def __init__(self, parent=None):
@@ -41,7 +41,7 @@ class TagCloudPanel(QWidget):
         layout.setContentsMargins(0, 5, 0, 0)
         layout.setSpacing(5)
 
-        self.label = QLabel("☁️ Nuage de Tags")
+        self.label = QLabel("📖 Nuage de Mots")
         self.label.setStyleSheet(
             """
             QLabel {
@@ -58,55 +58,63 @@ class TagCloudPanel(QWidget):
         layout.addWidget(self.label)
 
         self.text_browser = QTextBrowser()
-        self.text_browser.setOpenExternalLinks(False)  # Pour le futur cliquable
+        self.text_browser.setOpenExternalLinks(False)
         self.text_browser.setStyleSheet("border: none; background-color: transparent;")
         layout.addWidget(self.text_browser)
 
         self.setLayout(layout)
 
-    def _normalize_tag(self, tag_text: str) -> str:
-        """Convertit un tag en minuscules et sans accents pour la comparaison."""
-        # Convertit en minuscules et décompose les caractères accentués
-        nfkd_form = unicodedata.normalize("NFKD", tag_text.lower())
-        # Conserve uniquement les caractères non-combinants (supprime les accents)
+    def _normalize_word(self, word_text: str) -> str:
+        """Convertit un mot en minuscules et sans accents pour la comparaison."""
+        nfkd_form = unicodedata.normalize("NFKD", word_text.lower())
         return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
-    def update_cloud(self, journal_directory: Path, excluded_tags: set = None):
-        """Met à jour le nuage de tags à partir du fichier d'index."""
+    def update_cloud(self, journal_directory: Path, excluded_words: set = None):
+        """Met à jour le nuage de mots à partir du fichier d'index."""
         if not journal_directory:
             self.text_browser.clear()
             return
 
-        index_file = journal_directory / "index_tags.json"
+        index_file = journal_directory / "index_words.json"
         if not index_file.exists():
-            self.text_browser.setHtml("<p><i>Index des tags non trouvé.</i></p>")
+            self.text_browser.setHtml("<p><i>Index des mots non trouvé.</i></p>")
             return
 
         try:
             with open(index_file, "r", encoding="utf-8") as f:
-                tags_data = json.load(f)
+                words_data = json.load(f)
         except (json.JSONDecodeError, IOError):
             self.text_browser.setHtml("<p><i>Erreur de lecture de l'index.</i></p>")
             return
 
-        if not tags_data:
-            self.text_browser.setHtml("<p><i>Aucun tag à afficher.</i></p>")
+        if not words_data:
+            self.text_browser.setHtml("<p><i>Aucun mot à afficher.</i></p>")
             return
 
-        # Filtrer les tags exclus par l'utilisateur
-        if excluded_tags:
-            normalized_excluded_tags = {self._normalize_tag(t) for t in excluded_tags}
-            tags_data = {
-                tag: data
-                for tag, data in tags_data.items()
-                if self._normalize_tag(tag.lstrip("@")) not in normalized_excluded_tags
+        if excluded_words:
+            normalized_excluded = {self._normalize_word(w) for w in excluded_words}
+            words_data = {
+                word: data
+                for word, data in words_data.items()
+                if self._normalize_word(word) not in normalized_excluded
             }
 
-        # Trier les tags par ordre alphabétique
-        sorted_tags = sorted(tags_data.items(), key=lambda item: item[0])
+        # Trier par occurrence pour ne garder que les 40 plus pertinents
+        sorted_by_occurrence = sorted(
+            words_data.items(), key=lambda item: item[1]["occurrences"], reverse=True
+        )
+        top_words = sorted_by_occurrence[:40]
 
-        # Déterminer les tailles de police
-        occurrences = [data["occurrences"] for _, data in sorted_tags]
+        if not top_words:
+            self.text_browser.setHtml(
+                "<p><i>Aucun mot à afficher après filtrage.</i></p>"
+            )
+            return
+
+        # Retrier par ordre alphabétique pour l'affichage
+        display_words = sorted(top_words, key=lambda item: item[0])
+
+        occurrences = [data["occurrences"] for _, data in display_words]
         min_occ, max_occ = min(occurrences), max(occurrences)
 
         base_font_size = self.font().pointSize() or 10
@@ -119,17 +127,12 @@ class TagCloudPanel(QWidget):
         ]
 
         html_parts = []
-        for tag, data in sorted_tags:
+        for word, data in display_words:
             occ = data["occurrences"]
-            # Normaliser la taille de la police sur 5 niveaux
             level = 0
             if max_occ > min_occ:
                 level = math.floor(4 * (occ - min_occ) / (max_occ - min_occ))
             font_size = font_sizes[level]
-            # Le nom du tag sans '@@'
-            tag_name = tag.lstrip("@")
-            html_parts.append(
-                f'<span style="font-size: {font_size}pt;">{tag_name}</span>'
-            )
+            html_parts.append(f'<span style="font-size: {font_size}pt;">{word}</span>')
 
         self.text_browser.setHtml(" &nbsp; ".join(html_parts))

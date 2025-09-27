@@ -1,3 +1,47 @@
+## V1.6.3 Nuage de mots et tags du journal
+
+- dans la liste des mots à exclure du nuage de tags donné par l'utilisateur i faut appliquer cette exclusion a toutes les formes du mot , quel que sout les majuscules ou minuscules dans le mots ou bien que certains caractères soit accentués ou pas
+
+dans tag_cloud.py
+```
+
+   def _normalize_tag(self, tag_text: str) -> str:
+        """Convertit un tag en minuscules et sans accents pour la comparaison."""
+        # Convertit en minuscules et décompose les caractères accentués
+        nfkd_form = unicodedata.normalize("NFKD", tag_text.lower())
+        # Conserve uniquement les caractères non-combinants (supprime les accents)
+        return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+
+```
+
+- Afficher un nuage de mots en dessous de nuage de tags sur le meme modèle que que nuage de tags.
+- il faut s'appuyer sur le fichier index_words.json qui est dans le repertoire du journal
+- les nuages de tags et mots ne seront reinitialisé qu'au demarrage de l'application 
+- il faut ajouter une préférences utilisateur qui est Mots à exclure du nuage et stocker cette preference dans le fichier settings.json
+- la taille et les contraintes d'affichage seront identiques pour le nuage de mots que celle du nuage de tags
+- le nuage de Mots sera affiché en dessous du nuage de tags
+- Il faut n'afficher dans le nuage de mots que les 40 premiers mots triés par occurence. les tailles de la polices sera calculés uniquement sur les occurences de ces 40 Premiers
+
+
+BlueNotebookV1.6.3beta2
+
+- Il faut maintenat afficher un champ d Recherche qui permette à  l'utilsateur de saisir un tag pour une recherche ultérieure.
+- Ce champ de saisie sera possitionné entre le widget calendrier et le nuage de tags.
+- en grise sera écrit tag dans de champ mais des que l'utilisateur saisi un texte c'est le texte qui s'affiche dans le champ à saisir
+- cette zone de saisie prendra toute la largeur du panneau Navigation
+
+BlueNotebookV1.6.3beta3
+
+- dès que l'utilisateur comment à taper on vien ajouter @@ devant les caracteres qu'il saisi
+- ajourter dans ce champ de saisie sur la droite une icone que l'utilisateur peut cliquer pour lancer la recherche
+
+
+BlueNotebookV1.6.3beta4
+
+- a droite du champ de recherche je veux un bouton ayant pour label "v" pour faire faire apparaitre  une liste déroulante qui contien tous les tags importé du fichier index_tags.json classé par ordre alphabétique. Si un éléments est selectionné (clické)  dans la liste il s'affichera dans le champ de Rechrche de tag
+
+- la hauteur du bouton qui lance la liste déroulante ne prend pas toute la hauteur du panneau de recherche de tag et apparait donc plus petiti que le champ de recher en hauteur
+
 ## V1.6.2 Nuage de tags
 
 - Dans l'oglet navifgation ajourter un panneau de la meme taille que le calendrier (meme largeur et meme hauteur) dans lequel on va afficher une représentation e mode "nuage" des tags indexés.
