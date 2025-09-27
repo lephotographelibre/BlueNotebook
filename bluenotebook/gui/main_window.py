@@ -732,6 +732,7 @@ ______________________________________________________________
             self.update_stats()
             self._set_file_label_color("white")
             self.update_preview()
+            self.expand_outline()
 
     def open_journal(self):
         """Ouvre un dialogue pour sélectionner un nouveau répertoire de journal."""
@@ -779,6 +780,7 @@ ______________________________________________________________
             self.update_stats()
             self._set_file_label_color("white")
             self.update_preview()
+            self.expand_outline()
 
         except Exception as e:
             QMessageBox.critical(
@@ -1484,3 +1486,7 @@ ______________________________________________________________
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
+
+    def expand_outline(self):
+        """Déplie entièrement l'arborescence du plan du document."""
+        self.outline_panel.tree_widget.expandAll()

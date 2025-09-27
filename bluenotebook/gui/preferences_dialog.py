@@ -33,6 +33,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 from PyQt5.QtGui import QFont, QColor
+from PyQt5.QtCore import Qt
 
 
 class PreferencesDialog(QDialog):
@@ -67,9 +68,20 @@ class PreferencesDialog(QDialog):
     def _create_general_tab(self):
         """Crée l'onglet 'Général'."""
         widget = QWidget()
-        layout = QFormLayout(widget)
+        # L'onglet est actuellement vide après le déplacement des éléments.
+        # On le garde pour de futures préférences générales.
+        layout = QVBoxLayout(widget)
+        layout.addWidget(QLabel("Préférences générales de l'application."))
+        layout.addStretch()
+        return widget
 
-        # Police de l'éditeur
+    def _create_display_tab(self):
+        """Crée l'onglet 'Affichage'."""
+        widget = QWidget()
+        layout = QFormLayout(widget)
+        layout.setSpacing(15)
+
+        # Police de l'éditeur (déplacé depuis l'onglet Général)
         font_family = self.settings_manager.get("editor.font_family")
         font_size = self.settings_manager.get("editor.font_size")
         self.current_font = QFont(font_family, font_size)
@@ -78,25 +90,9 @@ class PreferencesDialog(QDialog):
         self.font_button.clicked.connect(self._select_font)
         layout.addRow("Police de l'éditeur:", self.font_button)
 
-        # Bouton de réinitialisation
-        reset_button = QPushButton("Remise à 0")
-        reset_button.setToolTip(
-            "Réinitialise toutes les préférences à leurs valeurs par défaut."
-        )
-        reset_button.clicked.connect(self._reset_settings)
-        layout.addRow(reset_button)
-
-        return widget
-
-    def _create_display_tab(self):
-        """Crée l'onglet 'Affichage'."""
-        widget = QWidget()
-        layout = QFormLayout(widget)
-
         # Couleur de fond de l'éditeur
         color_hex = self.settings_manager.get("editor.background_color")
         self.current_color = QColor(color_hex)
-
         self.color_button = QPushButton()
         self.color_button.setStyleSheet(f"background-color: {color_hex};")
         self.color_button.clicked.connect(self._select_color)
@@ -105,7 +101,6 @@ class PreferencesDialog(QDialog):
         # Couleur du texte de l'éditeur
         text_color_hex = self.settings_manager.get("editor.text_color")
         self.current_text_color = QColor(text_color_hex)
-
         self.text_color_button = QPushButton()
         self.text_color_button.setStyleSheet(f"background-color: {text_color_hex};")
         self.text_color_button.clicked.connect(self._select_text_color)
@@ -114,13 +109,12 @@ class PreferencesDialog(QDialog):
         # Couleur des titres
         heading_color_hex = self.settings_manager.get("editor.heading_color")
         self.current_heading_color = QColor(heading_color_hex)
-
         self.heading_color_button = QPushButton()
         self.heading_color_button.setStyleSheet(
             f"background-color: {heading_color_hex};"
         )
         self.heading_color_button.clicked.connect(self._select_heading_color)
-        layout.addRow("Couleur des titres:", self.heading_color_button)
+        layout.addRow("Couleur des titres Markdown:", self.heading_color_button)
 
         # Couleur du texte sélectionné
         selection_text_color_hex = self.settings_manager.get(
@@ -135,6 +129,17 @@ class PreferencesDialog(QDialog):
             self._select_selection_text_color
         )
         layout.addRow("Couleur du texte sélectionné:", self.selection_text_color_button)
+
+        # Bouton de réinitialisation (déplacé et renommé)
+        reset_button = QPushButton("Valeurs d'affichage par défaut")
+        reset_button.setToolTip(
+            "Réinitialise les préférences d'affichage (police, couleurs) à leurs valeurs par défaut."
+        )
+        reset_button.clicked.connect(self._reset_settings)
+
+        # Ajouter un peu d'espace avant le bouton
+        layout.addRow(QLabel(""))  # Ligne vide pour l'espacement
+        layout.addRow(reset_button)
 
         return widget
 
@@ -232,9 +237,18 @@ class PreferencesDialog(QDialog):
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Question)
         msg_box.setWindowTitle("Confirmation")
+        msg_box.setTextFormat(Qt.RichText)
         msg_box.setText(
-            "Êtes-vous sûr de vouloir réinitialiser toutes les préférences aux valeurs par défaut ?\n"
-            "L'application devra être redémarrée pour appliquer tous les changements."
+            """
+            <p>Êtes-vous sûr de vouloir réinitialiser les préférences de l'interface ?</p>
+            <p>Cela inclut :</p>
+            <ul>
+                <li>La police et les couleurs de l'éditeur.</li>
+                <li>La visibilité par défaut des panneaux (Navigation, Plan, etc.).</li>
+                <li>Les paramètres d'intégrations (ex: citation du jour).</li>
+            </ul>
+            <p>L'application devra être redémarrée pour appliquer les changements.</p>
+        """
         )
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msg_box.button(QMessageBox.Yes).setText("Valider")
@@ -243,7 +257,7 @@ class PreferencesDialog(QDialog):
         reply = msg_box.exec_()
 
         if reply == QMessageBox.Yes:
-            self.settings_manager.reset_to_defaults()
+            self.settings_manager.reset_gui_settings_to_defaults()
             QMessageBox.information(
                 self, "Préférences réinitialisées", "Veuillez redémarrer l'application."
             )

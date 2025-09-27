@@ -101,3 +101,13 @@ class SettingsManager:
         """Réinitialise les paramètres actuels aux valeurs par défaut."""
         self.settings = self.defaults.copy()
         self.save_settings()
+
+    def reset_gui_settings_to_defaults(self):
+        """Réinitialise les paramètres de l'interface graphique (Affichage, Panneaux, Intégrations)."""
+        if "editor" in self.defaults:
+            self.settings["editor"] = self.defaults["editor"].copy()
+        if "ui" in self.defaults:
+            self.settings["ui"] = self.defaults["ui"].copy()
+        if "integrations" in self.defaults:
+            self.settings["integrations"] = self.defaults["integrations"].copy()
+        self.save_settings()
