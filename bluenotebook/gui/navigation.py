@@ -17,16 +17,19 @@
 Panneau de navigation de BlueNotebook
 """
 
-from PyQt5.QtCore import QDate, pyqtSignal
-from PyQt5.QtGui import QTextCharFormat, QColor, QBrush
+from PyQt5.QtCore import QDate, pyqtSignal, Qt
+from PyQt5.QtGui import QTextCharFormat, QColor, QBrush, QFont, QIcon
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QCalendarWidget,
     QLabel,
     QPushButton,
-    QHBoxLayout,
+    QToolBar,
+    QAction,
 )
+from .tag_cloud import TagCloudPanel
 
 
 class NavigationPanel(QWidget):
@@ -54,12 +57,12 @@ class NavigationPanel(QWidget):
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
         layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(5)
+        layout.setContentsMargins(0, 0, 0, 0)  # Pas de marges extérieures
+        layout.setSpacing(0)  # Pas d'espacement entre les widgets principaux
 
-        # Label compact en haut
-        label = QLabel("🧭 Navigation")
-        label.setStyleSheet(
+        # Titre du panneau
+        title_label = QLabel("🧭 Navigation")
+        title_label.setStyleSheet(
             """
             QLabel {
                 font-weight: bold; 
@@ -71,35 +74,58 @@ class NavigationPanel(QWidget):
             }
         """
         )
-        label.setMaximumHeight(35)
-        layout.addWidget(label)
+        title_label.setMaximumHeight(35)
+        layout.addWidget(title_label)
 
-        # Barre de boutons
-        button_layout = QHBoxLayout()
-        button_layout.setSpacing(5)
+        # Barre d'outils de navigation
+        nav_toolbar = self._create_toolbar()
+        layout.addWidget(nav_toolbar)
 
-        self.prev_day_button = QPushButton("⬅️ Jour Précédent")
-        self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
-        self.today_button = QPushButton("📅 Aujourd'hui")
-        self.today_button.clicked.connect(self.today_button_clicked.emit)
-        self.next_day_button = QPushButton("Jour Suivant ➡️")
-        self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
-
-        button_layout.addWidget(self.prev_day_button)
-        button_layout.addWidget(self.today_button)
-        button_layout.addWidget(self.next_day_button)
-
-        layout.addLayout(button_layout)
-
+        # Calendrier
         self.calendar = QCalendarWidget()
-        self.calendar.setFixedHeight(300)
-        # Connecter le signal du calendrier à notre propre signal
+        self.calendar.setGridVisible(True)
+        # Assurer que le calendrier garde une taille constante (carrée)
+        # La largeur du panneau parent est fixée à 400px dans main_window.py
+        self.calendar.setFixedSize(400, 250)
         self.calendar.clicked.connect(self.date_clicked.emit)
-
         layout.addWidget(self.calendar)
 
-        layout.addStretch()  # Pour pousser le calendrier en haut
+        # Nuage de tags
+        self.tag_cloud = TagCloudPanel()
+        self.tag_cloud.setFixedSize(400, 300)
+        layout.addWidget(self.tag_cloud)
+
+        # Ajouter un espace flexible pour pousser tous les widgets vers le haut
+        layout.addStretch()
+
         self.setLayout(layout)
+
+    def _create_toolbar(self):
+        """Crée la barre d'outils de navigation."""
+        # Utiliser un QWidget avec un QHBoxLayout pour un meilleur contrôle du rendu HTML
+        toolbar_widget = QWidget()
+        toolbar_layout = QHBoxLayout(toolbar_widget)
+        toolbar_layout.setContentsMargins(5, 2, 5, 2)
+        toolbar_layout.setSpacing(5)
+
+        self.prev_day_button = QPushButton("Précédent")
+        self.prev_day_button.setIcon(QIcon.fromTheme("go-previous"))
+        self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
+
+        self.today_button = QPushButton("Aujourd'hui")
+        self.today_button.setIcon(QIcon.fromTheme("go-home"))
+        self.today_button.clicked.connect(self.today_button_clicked.emit)
+
+        self.next_day_button = QPushButton("Suivant")
+        self.next_day_button.setIcon(QIcon.fromTheme("go-next"))
+        self.next_day_button.setLayoutDirection(Qt.RightToLeft)
+        self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
+
+        toolbar_layout.addWidget(self.prev_day_button)
+        toolbar_layout.addWidget(self.today_button)
+        toolbar_layout.addWidget(self.next_day_button)
+
+        return toolbar_widget
 
     def highlight_dates(self, dates):
         """

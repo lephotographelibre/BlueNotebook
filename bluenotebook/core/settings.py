@@ -48,6 +48,7 @@ class SettingsManager:
             },
             "indexing": {
                 "user_excluded_words": [],
+                "excluded_tags_from_cloud": [],
             },
         }
 

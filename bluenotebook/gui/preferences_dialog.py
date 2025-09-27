@@ -98,6 +98,23 @@ class PreferencesDialog(QDialog):
         )
         layout.addRow(label, self.excluded_words_edit)
 
+        # V1.6.2 Tags à exclure du nuage
+        excluded_tags_list = self.settings_manager.get(
+            "indexing.excluded_tags_from_cloud", []
+        )
+        self.excluded_tags_edit = QTextEdit()
+        self.excluded_tags_edit.setPlainText(", ".join(sorted(excluded_tags_list)))
+        self.excluded_tags_edit.setToolTip(
+            "Liste de tags (sans @@, séparés par des virgules) à ne pas afficher dans le nuage de tags."
+        )
+        self.excluded_tags_edit.setMaximumHeight(80)
+
+        label_tags = QLabel("Tags à exclure du nuage:")
+        label_tags.setToolTip(
+            "Ces tags n'apparaîtront pas dans le panneau 'Nuage de Tags'."
+        )
+        layout.addRow(label_tags, self.excluded_tags_edit)
+
         return widget
 
     def _create_display_tab(self):

@@ -92,6 +92,7 @@ class MainWindow(QMainWindow):
         self.show_quote_of_the_day()
         self.start_initial_indexing()
         self.update_calendar_highlights()
+        self.update_tag_cloud()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -173,9 +174,9 @@ class MainWindow(QMainWindow):
 
         # Configuration du splitter principal
         # Fixer la largeur du panneau de navigation
-        self.navigation_panel.setFixedWidth(350)
-        self.outline_panel.setFixedWidth(350)
-        main_splitter.setSizes([350, 350, 1000])  # Ajuster les tailles initiales
+        self.navigation_panel.setFixedWidth(400)
+        self.outline_panel.setFixedWidth(400)
+        main_splitter.setSizes([400, 400, 1000])  # Ajuster les tailles initiales
         main_splitter.setCollapsible(0, False)
         main_splitter.setCollapsible(2, False)
 
@@ -755,6 +756,7 @@ ______________________________________________________________
                 )
                 self.start_initial_indexing()  # Relancer l'indexation
                 self.update_calendar_highlights()  # Mettre à jour le calendrier
+                self.update_tag_cloud()
 
     def open_file(self):
         """Ouvrir un fichier"""
@@ -1242,6 +1244,7 @@ ______________________________________________________________
         # Si l'option est décochée, le message est transitoire. Sinon, il est permanent.
         if not self.settings_manager.get("ui.show_indexing_stats", True):
             QTimer.singleShot(15000, lambda: self.tag_index_status_label.clear())
+        self.update_tag_cloud()  # Mettre à jour le nuage après l'indexation
 
     def on_prev_day_button_clicked(self):
         """
@@ -1494,6 +1497,16 @@ ______________________________________________________________
                 if word.strip()
             ]
             self.settings_manager.set("indexing.user_excluded_words", user_words_list)
+            # V1.6.2 Tags à exclure du nuage
+            excluded_tags_text = dialog.excluded_tags_edit.toPlainText()
+            excluded_tags_list = [
+                tag.strip().lower()
+                for tag in excluded_tags_text.split(",")
+                if tag.strip()
+            ]
+            self.settings_manager.set(
+                "indexing.excluded_tags_from_cloud", excluded_tags_list
+            )
 
             self.settings_manager.save_settings()
             self.apply_settings()
@@ -1540,6 +1553,16 @@ ______________________________________________________________
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
+
+    def update_tag_cloud(self):
+        """Met à jour le contenu du nuage de tags."""
+        excluded_tags_list = self.settings_manager.get(
+            "indexing.excluded_tags_from_cloud", []
+        )
+        excluded_tags_set = set(excluded_tags_list)
+        self.navigation_panel.tag_cloud.update_cloud(
+            self.journal_directory, excluded_tags_set
+        )
 
     def expand_outline(self):
         """Déplie entièrement l'arborescence du plan du document."""

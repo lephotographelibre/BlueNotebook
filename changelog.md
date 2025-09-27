@@ -1,3 +1,21 @@
+## V1.6.2 Nuage de tags
+
+- Dans l'oglet navifgation ajourter un panneau de la meme taille que le calendrier (meme largeur et meme hauteur) dans lequel on va afficher une représentation e mode "nuage" des tags indexés.
+- Les informations sur lesquelles est contruit le nuage de tags est le fichier index_tags.json du répertoire du journal courant.
+- l'affichage est textuel et le nombre d'occurences des tags est représenté par la taille de la police de caractère.
+- on définira au max 5 tailles de polices (occurences de 0 à 2)
+- la police utilisée est la meme que Calendier
+- A terme ces tags seront clickables
+
+- filtrer les tags affiché dans le nuage de tag. ajouter dasn préférence général "Tags a exclure du nuage" une liste des tags choisi par l'urilisateur qu'il ne faut pas afficher dans le nuage. et sauvegardé dans le préferences utilisateur
+
+- les differents élements du panneau Naavigation sont de taille fixe 400px en largeur et ils ne doivent pas se deformer si l'on étire le pannean vers le bas . ils sont tous collés les un aux autres meme s'il reste de la place en bas du panneau. La taille du panneau Naviagtion doit faire égalemnt 400 px de largeur et ne pas se déformer
+ 
+- Set taille widget Navigation (largeur fixe de 400)
+        self.calendar.setFixedSize(400, 250)
+        self.tag_cloud.setFixedSize(400, 300)
+
+
 ## V1.6.1  Spécifications Indexation des mots du journal
 
 - de la meme manière que le fichier index_tag.json indexe les tags dans le document je voudrais que soient indexés  les mots dans les notes du journal. Au démarrage lancer indexation des tags et des mots de manière asynchrone
