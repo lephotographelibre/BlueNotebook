@@ -57,6 +57,27 @@ class TagIndexer(QRunnable):
             self.signals.finished.emit(0)
             return
 
+        index_file_path = self.journal_directory / "index_tags.json"
+        last_index_time = 0
+        if index_file_path.exists():
+            last_index_time = index_file_path.stat().st_mtime
+
+        # Vérifier si des fichiers ont été modifiés depuis la dernière indexation
+        files_to_process = [
+            p
+            for p in self.journal_directory.glob("*.md")
+            if p.stat().st_mtime > last_index_time
+        ]
+
+        if not files_to_process and index_file_path.exists():
+            try:
+                with open(index_file_path, "r", encoding="utf-8") as f:
+                    existing_data = json.load(f)
+                self.signals.finished.emit(len(existing_data))
+                return
+            except (json.JSONDecodeError, IOError):
+                pass  # En cas d'erreur, on réindexe tout
+
         all_tags_info = []
         unique_tags = set()
 

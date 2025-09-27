@@ -1,4 +1,22 @@
-## V1.5.4 Reorganisation Préférences
+## V1.6.1  Spécifications Indexation des mots du journal
+
+- de la meme manière que le fichier index_tag.json indexe les tags dans le document je voudrais que soient indexés  les mots dans les notes du journal. Au démarrage lancer indexation des tags et des mots de manière asynchrone
+- A exclure de l'indexation les signes de ponctuation, les pre positions, les caractères spéciaux, les tags précédés de @@
+- Dans Préférence onglet Général permettre à l'utilisateur d'ajourter des mots à exclue
+- Le fichier d'index de mots "index_words.json" sera sauvegardédans le répertoire Journal
+- On ne lancera l'indexation qu s'il existe des notes d'une date supérieure à celle du dernier  fichier index_words.json
+- un fichier index_word.csv sera crée également
+- le fichier index_words.json  et index_words.cvs auront une strucuture similaire à index_tags.json et index_tags.csv Pour chaque mot indexé (Mot, occurences details (contexte, fichier, date))
+- pour chaque mot indexé on stockera le nombre d'occurence
+- A la fin du processus  asyncrone d'indexation indiquer comme aujourd'hui dans la barre d'état les tatistiques  concernant tags et mots
+- ajouter exclure de l'indexarion les mots ne contenant que des chiffres, les mots ne contenant pas des lettres, les adverbes. dasn la liste des mots à exclure de Préférences n'afficher que la liste des mots à exclure rajoutés par l'utilisateur en plus de ceux choisi par le programme
+
+- réorganiser la barre d'état en bas de la fenètre principale
+- A gauche on ne touche pas au nom du fichier mais on vien coller les statistique du document en cours d'édition
+- A droite on affiche les information sur le journal + Les information d'indexation (tags et mots) dans la meme couleur que le nom du journal
+- on rajoute une boite a cocher dans l'onglet Général de Préférences demandant si l'on veut afficher les statistiques de mots et tags
+
+## V1.5.4 Reorganisation Préférences
 preferences_dialog.py  
 
 - Transfert de la police : J'ai déplacé le code de création du bouton de sélection de la police de l'onglet "Général" vers l'onglet "Affichage" et je l'ai placé en première position.

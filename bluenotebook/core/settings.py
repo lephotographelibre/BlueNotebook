@@ -44,6 +44,10 @@ class SettingsManager:
                 "show_navigation_panel": False,
                 "show_outline_panel": True,
                 "show_preview_panel": False,
+                "show_indexing_stats": True,
+            },
+            "indexing": {
+                "user_excluded_words": [],
             },
         }
 
@@ -86,8 +90,11 @@ class SettingsManager:
         keys = key.split(".")
         value = self.settings
         for k in keys:
-            value = value.get(k, {})
-        return value if value else default
+            if isinstance(value, dict):
+                value = value.get(k)
+            else:
+                return default
+        return value if value is not None else default
 
     def set(self, key, value):
         """Définit une valeur de paramètre. Ex: 'editor.font_family'"""

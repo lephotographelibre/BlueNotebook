@@ -15,3 +15,6 @@ et que tu mettes à jour l'aide en ligne  avec cette nouvelle représentation gr
 Il faut rajouter un séparateur dasn le menu Fichier entre Sauvegarde... et Sauvegarde Journal. Il faut regrouper les 3 items concernant le Journal (Ouvrir Journal, Sauvegarder Journal, Restautation Journal
 Dans la boite de confirmation lors de la restauration l'affichage du nom sous lequel le dossier journal va etre sauvegarder ne s'affiche pas correctement la police grasse n'est pas mise en oeuvre et a la place j'ai <b> </b>
 les deux boutons doivent afficher les labels suivant "Valider Restauration" à la place de Yes et "Annuler" à la place de "No"
+
+ARBORESCENCE fichiers
+Je voudrais que tu génremettes a jour la  représentation graphique de l'arborescence des fichiers que l'on trouve dans le fichier de documentation V1.6.1_bluenotebook_technical_doc.md

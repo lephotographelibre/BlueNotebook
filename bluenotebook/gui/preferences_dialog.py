@@ -30,6 +30,7 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
+    QTextEdit,
     QMessageBox,
 )
 from PyQt5.QtGui import QFont, QColor
@@ -68,11 +69,35 @@ class PreferencesDialog(QDialog):
     def _create_general_tab(self):
         """Crée l'onglet 'Général'."""
         widget = QWidget()
-        # L'onglet est actuellement vide après le déplacement des éléments.
-        # On le garde pour de futures préférences générales.
-        layout = QVBoxLayout(widget)
-        layout.addWidget(QLabel("Préférences générales de l'application."))
-        layout.addStretch()
+        layout = QFormLayout(widget)
+        layout.setSpacing(10)
+
+        # Case pour l'affichage des statistiques d'indexation
+        self.show_indexing_stats_checkbox = QCheckBox(
+            "Afficher les statistiques d'indexation (mots et tags) dans la barre d'état"
+        )
+        self.show_indexing_stats_checkbox.setChecked(
+            self.settings_manager.get("ui.show_indexing_stats", True)
+        )
+        layout.addRow(self.show_indexing_stats_checkbox)
+
+        # Mots à exclure de l'indexation
+        user_excluded_words = self.settings_manager.get(
+            "indexing.user_excluded_words", []
+        )
+        self.excluded_words_edit = QTextEdit()
+        self.excluded_words_edit.setPlainText(", ".join(sorted(user_excluded_words)))
+        self.excluded_words_edit.setToolTip(
+            "Ajoutez ici des mots personnalisés (séparés par des virgules) à ignorer lors de l'indexation."
+        )
+        self.excluded_words_edit.setMinimumHeight(150)
+
+        label = QLabel("Mots personnalisés à exclure de l'indexation:")
+        label.setToolTip(
+            "Ces mots (en minuscules) ne seront pas inclus dans les fichiers d'index de mots."
+        )
+        layout.addRow(label, self.excluded_words_edit)
+
         return widget
 
     def _create_display_tab(self):
@@ -131,9 +156,9 @@ class PreferencesDialog(QDialog):
         layout.addRow("Couleur du texte sélectionné:", self.selection_text_color_button)
 
         # Bouton de réinitialisation (déplacé et renommé)
-        reset_button = QPushButton("Valeurs d'affichage par défaut")
+        reset_button = QPushButton("Valeurs par défaut")
         reset_button.setToolTip(
-            "Réinitialise les préférences d'affichage (police, couleurs) à leurs valeurs par défaut."
+            "Réinitialise les préférences de l'interface (affichage, panneaux, intégrations) à leurs valeurs par défaut."
         )
         reset_button.clicked.connect(self._reset_settings)
 

@@ -52,6 +52,8 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher  # noqa
+from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
+from core.word_indexer import start_word_indexing
 
 
 class MainWindow(QMainWindow):
@@ -64,6 +66,8 @@ class MainWindow(QMainWindow):
         self.is_modified = False
         self.daily_quote = None
         self.daily_author = None
+        self.tag_index_count = -1
+        self.word_index_count = -1
         # Importer ici pour éviter les dépendances circulaires si nécessaire
         from core.settings import SettingsManager
 
@@ -73,9 +77,9 @@ class MainWindow(QMainWindow):
         self.thread_pool = QThreadPool()
 
         self.setup_ui()
-        self.apply_settings()  # Appliquer les paramètres au démarrage
         self.setup_menu()
         self.setup_statusbar()
+        self.apply_settings()  # Appliquer les paramètres au démarrage
         self.setup_connections()
         self.setup_journal_directory()
 
@@ -541,27 +545,27 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusbar)
 
-        # Indicateur du fichier actuel
+        # --- Widgets de gauche ---
         self.file_label = QLabel("Nouveau fichier")
         self._set_file_label_color("white")  # Couleur par défaut à l'ouverture
         self.statusbar.addWidget(self.file_label)
 
-        # Label pour le répertoire du journal
-        self.journal_dir_label = QLabel("")
-        self.journal_dir_label.setStyleSheet("color: #3498db;")  # Bleu clair
-        self.statusbar.addWidget(self.journal_dir_label)
-
-        # Indicateur de modification
         self.modified_label = QLabel("")
         self.statusbar.addWidget(self.modified_label)
 
-        # Statistiques du document
         self.stats_label = QLabel("")
-        self.statusbar.addPermanentWidget(self.stats_label)
+        self.statusbar.addWidget(self.stats_label)
+
+        # --- Widgets de droite ---
+        self.journal_dir_label = QLabel("")
+        self.journal_dir_label.setStyleSheet("color: #3498db;")  # Bleu clair
+        self.statusbar.addPermanentWidget(self.journal_dir_label)
 
         # Label pour le statut de l'indexation des tags
         self.tag_index_status_label = QLabel("")
-        self.tag_index_status_label.setStyleSheet("color: green;")
+        self.tag_index_status_label.setStyleSheet(
+            "color: #3498db;"
+        )  # Même couleur que le journal
         self.statusbar.addPermanentWidget(self.tag_index_status_label)
 
     def setup_connections(self):
@@ -1190,22 +1194,54 @@ ______________________________________________________________
         # Importer ici pour éviter les dépendances circulaires si nécessaire
         from core.tag_indexer import start_tag_indexing
 
+        # Lancer l'indexation des tags
         start_tag_indexing(
             self.journal_directory, self.thread_pool, self.on_indexing_finished
         )
 
+        # Lancer l'indexation des mots
+        user_excluded = self.settings_manager.get("indexing.user_excluded_words", [])
+
+        # Combiner les deux listes pour l'indexeur
+        excluded_words_set = set(DEFAULT_EXCLUDED_WORDS) | set(user_excluded)
+        start_word_indexing(
+            self.journal_directory,
+            excluded_words_set,
+            self.thread_pool,
+            self.on_word_indexing_finished,
+        )
+
     def on_indexing_finished(self, unique_tag_count):
         """Callback exécuté à la fin de l'indexation."""
-        if unique_tag_count >= 0:
-            message = f"Index Tags Terminé: {unique_tag_count} tags uniques trouvés."
-            print(f"✅ {message}")
-            self.tag_index_status_label.setText(message)
-            # Optionnel: faire disparaître le message après quelques secondes
-            QTimer.singleShot(10000, lambda: self.tag_index_status_label.clear())
-        else:
-            message = "Erreur d'indexation des tags."
-            print(f"⚠️ {message}")
-            self.tag_index_status_label.setText(message)
+        self.tag_index_count = unique_tag_count
+        self.update_indexing_status_label()
+
+    def on_word_indexing_finished(self, unique_word_count):
+        """Callback exécuté à la fin de l'indexation des mots."""
+        self.word_index_count = unique_word_count
+        self.update_indexing_status_label()
+
+    def update_indexing_status_label(self):
+        """Met à jour la barre de statut avec les résultats des deux indexations."""
+        # Ne rien faire tant que les deux résultats ne sont pas arrivés
+        if self.tag_index_count == -1 or self.word_index_count == -1:
+            return
+
+        tag_msg = "Erreur tags"
+        if self.tag_index_count >= 0:
+            tag_msg = f"{self.tag_index_count} tags"
+
+        word_msg = "Erreur mots"
+        if self.word_index_count >= 0:
+            word_msg = f"{self.word_index_count} mots"
+
+        full_message = f"Index: {tag_msg} | {word_msg}"
+        print(f"✅ {full_message}")
+        self.tag_index_status_label.setText(full_message)
+
+        # Si l'option est décochée, le message est transitoire. Sinon, il est permanent.
+        if not self.settings_manager.get("ui.show_indexing_stats", True):
+            QTimer.singleShot(15000, lambda: self.tag_index_status_label.clear())
 
     def on_prev_day_button_clicked(self):
         """
@@ -1446,6 +1482,18 @@ ______________________________________________________________
             self.settings_manager.set(
                 "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
             )
+            self.settings_manager.set(
+                "ui.show_indexing_stats",
+                dialog.show_indexing_stats_checkbox.isChecked(),
+            )
+            # V1.6.1 Mots à exclure
+            user_words_text = dialog.excluded_words_edit.toPlainText()
+            user_words_list = [
+                word.strip().lower()
+                for word in user_words_text.split(",")
+                if word.strip()
+            ]
+            self.settings_manager.set("indexing.user_excluded_words", user_words_list)
 
             self.settings_manager.save_settings()
             self.apply_settings()
@@ -1461,6 +1509,12 @@ ______________________________________________________________
 
         show_preview = self.settings_manager.get("ui.show_preview_panel", False)
         self.preview.setVisible(show_preview)
+
+        # --- Visibilité des statistiques d'indexation ---
+        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
+        # Si l'option est désactivée, on s'assure que le label est vide au démarrage.
+        if not show_stats:
+            self.tag_index_status_label.clear()
 
         # Appliquer la police
         font_family = self.settings_manager.get("editor.font_family")
