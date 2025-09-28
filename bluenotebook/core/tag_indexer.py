@@ -85,19 +85,20 @@ class TagIndexer(QRunnable):
             # Parcourir tous les fichiers .md du répertoire
             for file_path in self.journal_directory.glob("*.md"):
                 try:
+                    line_number = 0
                     with open(file_path, "r", encoding="utf-8") as f:
-                        for line in f:
+                        for line_number, line in enumerate(f, 1):
                             for match in self.tag_pattern.finditer(line):
                                 tag = match.group(1)
                                 context = match.group(2).strip()
-                                filename = file_path.name
 
                                 # Stocker les données structurées
                                 all_tags_info.append(
                                     {
                                         "tag": tag,
                                         "context": context,
-                                        "filename": filename,
+                                        "filename": file_path.name,
+                                        "line": line_number,
                                     }
                                 )
                                 unique_tags.add(tag)
@@ -151,7 +152,7 @@ class TagIndexer(QRunnable):
                 pass
 
         with open(index_file_path, "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = ["tag", "context", "filename"]
+            fieldnames = ["tag", "context", "filename", "line"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(all_tags_info)
@@ -186,6 +187,7 @@ class TagIndexer(QRunnable):
                     "context": info["context"],
                     "filename": info["filename"],
                     "date": date_str,
+                    "line": info["line"],
                 }
             )
             json_data[tag]["occurrences"] += 1

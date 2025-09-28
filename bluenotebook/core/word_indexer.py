@@ -82,9 +82,10 @@ class WordIndexer(QRunnable):
                 try:
                     with open(file_path, "r", encoding="utf-8") as f:
                         content = f.read().lower()
-                        words = self.word_pattern.findall(content)
+                        # Utiliser finditer pour obtenir des objets match avec les positions
+                        for match in self.word_pattern.finditer(content):
+                            word = match.group(0)
 
-                        for word in words:
                             # Exclure les mots qui ne contiennent aucune lettre (ex: "123", "___")
                             # ou qui sont dans la liste d'exclusion.
                             if (
@@ -93,15 +94,23 @@ class WordIndexer(QRunnable):
                             ):
                                 continue
 
-                            # Pour le contexte, on peut prendre un extrait autour du mot
-                            # (simplifié pour l'instant, on prend le mot lui-même)
-                            context = word
+                            # Calculer le numéro de ligne
+                            line_number = content.count("\n", 0, match.start()) + 1
+
+                            # Capturer les 40 caractères qui suivent le mot
+                            context_start = match.end()
+                            raw_context = content[context_start : context_start + 40]
+                            # Nettoyer le contexte (supprimer les sauts de ligne) et l'ajouter au mot
+                            context = (
+                                word + " " + raw_context.replace("\n", " ")
+                            ).strip()
 
                             all_words_info.append(
                                 {
                                     "word": word,
                                     "context": context,
                                     "filename": file_path.name,
+                                    "line": line_number,
                                 }
                             )
                             unique_words.add(word)
@@ -127,7 +136,7 @@ class WordIndexer(QRunnable):
         """Écrit l'index au format CSV."""
         index_file_path = self.journal_directory / "index_words.csv"
         with open(index_file_path, "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = ["word", "context", "filename"]
+            fieldnames = ["word", "context", "filename", "line"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(all_words_info)
@@ -153,6 +162,7 @@ class WordIndexer(QRunnable):
                     "context": info["context"],
                     "filename": info["filename"],
                     "date": date_str,
+                    "line": info["line"],
                 }
             )
             json_data[word]["occurrences"] += 1

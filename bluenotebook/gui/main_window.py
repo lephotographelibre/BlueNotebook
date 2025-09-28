@@ -1608,10 +1608,20 @@ ______________________________________________________________
             if index_file.exists():
                 with open(index_file, "r", encoding="utf-8") as f:
                     tags_data = json.load(f)
-                if query_lower in tags_data:
-                    for detail in tags_data[query_lower]["details"]:
-                        text = f"<b>{query}</b> - {detail['context']}"
-                        results.append((text, detail["filename"]))
+                # Recherche insensible à la casse
+                for tag_key, tag_value in tags_data.items():
+                    if tag_key.lower() == query_lower:
+                        for detail in tag_value["details"]:
+                            # On passe maintenant le numéro de ligne
+                            results.append(
+                                (
+                                    detail["date"],
+                                    detail["context"],
+                                    detail["filename"],
+                                    detail.get("line", 1),
+                                )  # .get pour la compatibilité
+                            )
+                        break  # Tag trouvé, on peut arrêter de chercher
         # Recherche de mot
         else:
             index_file = self.journal_directory / "index_words.json"
@@ -1620,24 +1630,62 @@ ______________________________________________________________
                     words_data = json.load(f)
                 if query_lower in words_data:
                     for detail in words_data[query_lower]["details"]:
-                        text = f"<b>{query}</b> dans {detail['filename']}"
-                        results.append((text, detail["filename"]))
+                        # On passe maintenant le numéro de ligne
+                        results.append(
+                            (
+                                detail["date"],
+                                detail["context"],
+                                detail["filename"],
+                                detail.get("line", 1),
+                            )  # .get pour la compatibilité
+                        )
 
         self.navigation_panel.show_search_results(results)
 
-    def open_file_from_search(self, filename: str):
-        """Ouvre un fichier sélectionné depuis les résultats de recherche."""
+    def open_file_from_search(self, filename: str, line_number: int):
+        """
+        Ouvre un fichier sélectionné depuis les résultats de recherche et se positionne
+        à la ligne spécifiée.
+        """
         if not self.journal_directory or not filename:
             return
 
         file_path = self.journal_directory / filename
         if file_path.exists():
             if self.check_save_changes():
+                # Ouvrir le fichier sans se soucier du scroll pour l'instant
                 self.open_specific_file(str(file_path))
+                # Maintenant, se positionner à la bonne ligne
+                self.go_to_line(line_number)
         else:
             QMessageBox.warning(
                 self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
             )
+
+    def go_to_line(self, line_number: int):
+        """
+        Déplace le curseur à la ligne spécifiée et la positionne en haut de l'éditeur.
+        """
+        if line_number <= 0:
+            return
+
+        from PyQt5.QtGui import QTextCursor
+
+        text_edit = self.editor.text_edit
+        doc = text_edit.document()
+
+        # Le numéro de bloc correspond au numéro de ligne - 1
+        block = doc.findBlockByNumber(line_number - 1)
+        if block.isValid():
+            cursor = QTextCursor(block)
+            text_edit.setTextCursor(cursor)
+
+            # Forcer le défilement pour que la ligne soit en haut
+            scrollbar = text_edit.verticalScrollBar()
+            cursor_rect = text_edit.cursorRect()
+            scrollbar.setValue(scrollbar.value() + cursor_rect.top())
+
+            text_edit.setFocus()
 
     def update_navigation_panel_data(self):
         """Met à jour les données nécessaires au panneau de navigation, comme la liste des tags."""

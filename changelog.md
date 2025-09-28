@@ -1,3 +1,24 @@
+## V1.6.5 Recherche Tags et Mots - Panneau Résultat de Recherche
+
+- Lors de la recherche d'un tags dans à partir du champ de recherche du panneau Navigation on va  aller chercher les information dans le fichier index_tags.json qui est dans le répertoire du Journal.
+On va alors afficher une liste dans le Panneau Résultats de Recherche. Chaque ligne de la liste est composé de deux champ:
+- Le champ Date: La date de la note de l'occurrence du tag recherché format YYYY-MM-JJ
+- Le champ Texte: qui le le context du fichier JSP de l'occurrence du tag recherché
+
+les lignes de la liste affichée dans le Panneau Résultats de Recherche comportera donc deux colonnes (Date et Texte) et seront triées suvant la date (les plus recentes en premier
+Le header de la colonne date permettra d'in verser le tri des dates
+
+- idem pour les mots + correction Index
+
+Beta3
+
+- enrichir l'indexation des tags et des mots en ajoutant un nouveau champ pour chaque entrée en plus de context, filename, et date qui est le numero de ligne ou se trouve ce tag ou ce mot dans le fichier note.
+
+Beta4
+
+- les fichiers index tags et mots contiennent mainteant le numero de lign eou se trouve le tag ou le mot recherché. Idans la liste "Résultat de recherche lorsqu'un tag ou un mot est sélectionné il faut que la note consernée s'ouvre en positionnat la note dans l'editeur avec la ligne concernée à la premoière ligne de l'editeur. Est ce clair
+
+
 ## V1.6.4 Click Nuage/Mots et Création panneau Résultat de Recherche
 
 - dans le nuage de tag Quand on clique sur un tag , il est inséré dans le champ de recherche de du panneau navigation et il est préfixé par @@

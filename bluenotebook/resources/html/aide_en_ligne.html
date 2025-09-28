@@ -71,7 +71,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook v1.6.4
+            Manuel Utilisateur - BlueNotebook v1.6.5
         </h1>
     </header>
 
@@ -81,11 +81,12 @@
             <li><a href="#introduction">1. Introduction</a></li>
             <li><a href="#lancement">2. Lancement et Configuration</a></li>
             <li><a href="#interface">3. L'interface Principale</a></li>
-            <li><a href="#concept-journal">4. Le concept de "Journal"</a></li>
-            <li><a href="#menus">5. Exploration des Menus</a></li>
-            <li><a href="#backup-restore">6. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">7. Personnalisation via les Préférences</a></li>
-            <li><a href="#raccourcis">8. Raccourcis Clavier</a></li>
+            <li><a href="#recherche-avancee">4. Recherche et Navigation Avancée</a></li>
+            <li><a href="#concept-journal">5. Le concept de "Journal"</a></li>
+            <li><a href="#menus">6. Exploration des Menus</a></li>
+            <li><a href="#backup-restore">7. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">8. Personnalisation via les Préférences</a></li>
+            <li><a href="#raccourcis">9. Raccourcis Clavier</a></li>
         </ul>
     </div>
 
@@ -95,6 +96,7 @@
         <h2>1. Introduction</h2>
         <p>Bienvenue dans BlueNotebook ! Ce guide vous explique comment utiliser l'application pour tenir votre journal personnel en Markdown.</p>
         <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe Markdown et affiche un aperçu en temps réel de votre document.</p>
+        <p>Des fonctionnalités avancées de recherche et navigation permettent aux utilisateurs de retrouver rapidement des informations dans les différentes notes journalières avec les support de tags et une indexation automatique des tous les mots utilisés..</p>
     </section>
 
     <section id="lancement">
@@ -139,8 +141,33 @@
         </ul>
     </section>
 
+    <section id="recherche-avancee">
+        <h2>4. Recherche et Navigation Avancée</h2>
+        <p>Le panneau de Navigation, en plus du calendrier, intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
+        
+        <h3>Les Nuages de Tags et de Mots</h3>
+        <p>Sous le calendrier, vous trouverez deux "nuages" :</p>
+        <ul>
+            <li><strong>Nuage de Tags :</strong> Affiche les tags (<code>@@mot</code>) que vous utilisez le plus souvent. Plus un tag est fréquent, plus il apparaît en grand.</li>
+            <li><strong>Nuage de Mots :</strong> Affiche de la même manière les mots les plus fréquents de votre journal (hors mots courants).</li>
+        </ul>
+        <p><strong>Interaction :</strong> Cliquez sur un tag ou un mot dans l'un des nuages pour l'insérer automatiquement dans le champ de recherche et lancer immédiatement la recherche.</p>
+
+        <h3>Le Champ de Recherche</h3>
+        <p>Situé sous le calendrier, ce champ vous permet de lancer une recherche précise.</p>
+        <ul>
+            <li><strong>Rechercher un mot :</strong> Tapez simplement le mot et appuyez sur <code>Entrée</code> ou cliquez sur l'icône loupe 🔍.</li>
+            <li><strong>Rechercher un tag :</strong> Tapez le tag directement (ex: <code>@@projet</code>). Si vous tapez un mot simple, <code>@@</code> sera ajouté automatiquement.</li>
+            <li><strong>Liste des tags :</strong> Cliquez sur le bouton <code>▼</code> à droite du champ pour afficher la liste de tous vos tags et en sélectionner un.</li>
+        </ul>
+
+        <h3>Le Panneau de Résultats de Recherche</h3>
+        <p>Après une recherche, les nuages sont remplacés par un panneau de résultats. Chaque ligne correspond à une occurrence trouvée et contient deux colonnes : "Date" et "Texte" (le contexte où le mot/tag a été trouvé). Les résultats sont triés par défaut du plus récent au plus ancien.</p>
+        <p><strong>Interaction :</strong> Cliquez sur une ligne de résultat pour ouvrir la note correspondante directement à la bonne ligne dans l'éditeur ! <strong>Si vous effacez le contenu du champ de recherche, les nuages de tags et de mots réapparaîtront.</strong></p>
+    </section>
+
     <section id="concept-journal">
-        <h2>4. Le concept de "Journal" et son fonctionnement</h2>
+        <h2>5. Le concept de "Journal" et son fonctionnement</h2>
         <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
         <h3>La Note du Jour</h3>
         <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
@@ -160,7 +187,7 @@
     </section>
 
     <section id="menus">
-        <h2>5. Exploration Détaillée des Menus</h2>
+        <h2>6. Exploration Détaillée des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 📁 Fichier
@@ -231,7 +258,7 @@
     </section>
 
     <section id="backup-restore">
-        <h2>6. Sauvegarde et Restauration du Journal</h2>
+        <h2>7. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -254,7 +281,7 @@
     </section>
 
     <section id="preferences">
-        <h2>7. Personnalisation via les Préférences</h2>
+        <h2>8. Personnalisation via les Préférences</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -290,7 +317,7 @@
 
 
     <section id="raccourcis">
-        <h2>8. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>9. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -313,7 +340,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.6.4 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.6.5 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

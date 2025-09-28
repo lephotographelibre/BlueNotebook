@@ -21,8 +21,9 @@ from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QLabel,
-    QListWidget,
-    QListWidgetItem,
+    QTreeWidget,
+    QTreeWidgetItem,
+    QHeaderView,
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 
@@ -32,12 +33,12 @@ class SearchResultsPanel(QWidget):
     Panneau affichant les résultats d'une recherche de tag ou de mot.
     """
 
-    item_selected = pyqtSignal(str)  # Émet le nom du fichier à ouvrir
+    item_selected = pyqtSignal(str, int)  # Émet le nom du fichier et le numéro de ligne
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
-        self.results_list.itemClicked.connect(self.on_item_clicked)
+        self.results_tree.itemClicked.connect(self.on_item_clicked)
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
@@ -61,27 +62,38 @@ class SearchResultsPanel(QWidget):
         self.label.setMaximumHeight(35)
         layout.addWidget(self.label)
 
-        self.results_list = QListWidget()
-        self.results_list.setStyleSheet("border: none; background-color: transparent;")
-        layout.addWidget(self.results_list)
+        self.results_tree = QTreeWidget()
+        self.results_tree.setColumnCount(2)
+        self.results_tree.setHeaderLabels(["Date", "Texte"])
+        self.results_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.results_tree.setSortingEnabled(True)
+        self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
+        self.results_tree.setStyleSheet("border: none; background-color: transparent;")
+        layout.addWidget(self.results_tree)
 
         self.setLayout(layout)
 
     def update_results(self, results: list):
         """Met à jour la liste des résultats."""
-        self.results_list.clear()
+        self.results_tree.clear()
         if not results:
-            self.results_list.addItem("Aucun résultat trouvé.")
+            item = QTreeWidgetItem(["Aucun résultat trouvé.", ""])
+            self.results_tree.addTopLevelItem(item)
         else:
-            for item_text, filename in results:
-                item = QListWidgetItem()
-                item.setText(item_text)
-                item.setData(Qt.UserRole, filename)  # Stocker le nom du fichier
-                self.results_list.addItem(item)
+            # results est une liste de tuples (date, text, filename, line_number)
+            for date, text, filename, line_number in results:
+                item = QTreeWidgetItem([date, text])
+                # Stocker le nom du fichier et le numéro de ligne dans les données de l'item
+                item.setData(0, Qt.UserRole, filename)
+                item.setData(1, Qt.UserRole, line_number)
+                self.results_tree.addTopLevelItem(item)
 
-    def on_item_clicked(self, item: QListWidgetItem):
+    def on_item_clicked(self, item: QTreeWidgetItem, column: int):
         """Gère le clic sur un résultat de recherche."""
-        filename = item.data(Qt.UserRole)
-        if filename:
-            self.item_selected.emit(filename)
+        filename = item.data(0, Qt.UserRole)
+        line_number = item.data(1, Qt.UserRole)
 
+        if filename:
+            # Émettre le nom du fichier ET le numéro de ligne
+            self.item_selected.emit(filename, line_number)

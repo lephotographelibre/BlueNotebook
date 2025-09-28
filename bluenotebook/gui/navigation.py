@@ -61,7 +61,7 @@ class NavigationPanel(QWidget):
     tag_search_triggered = pyqtSignal(str)
 
     # Signal pour ouvrir un fichier depuis les résultats de recherche
-    file_open_requested = pyqtSignal(str)
+    file_open_requested = pyqtSignal(str, int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -231,23 +231,20 @@ class NavigationPanel(QWidget):
 
     def on_tag_search_changed(self, text):
         """Ajoute automatiquement '@@' au début du champ de recherche de tag."""
-        # Si le champ est vidé, on réaffiche les nuages
         if not text:
             self.show_clouds()
             return
 
-        # Si le champ est vide ou commence déjà par '@@', ne rien faire.
-        # On vérifie aussi qu'il ne s'agit pas d'un mot seul (sans @@)
-        if text.startswith("@@") or " " in text or not text.isalpha():
+        # Si le texte est un seul mot sans '@@', on l'ajoute.
+        # Ceci est utile pour la saisie manuelle d'un tag.
+        if not text.startswith("@@") and " " not in text and text.isalpha():
+            # Bloquer les signaux pour éviter une boucle récursive
+            self.tag_search_input.blockSignals(True)
+            self.tag_search_input.setText(f"@@{text}")
+            # Débloquer les signaux
+            self.tag_search_input.blockSignals(False)
+        else:
             return
-
-        # Bloquer les signaux pour éviter une boucle récursive
-        self.tag_search_input.blockSignals(True)
-
-        self.tag_search_input.setText(f"@@{text}")
-
-        # Débloquer les signaux
-        self.tag_search_input.blockSignals(False)
 
     def on_search_triggered(self):
         """Déclenché lorsque l'icône de recherche est cliquée ou sur Entrée."""
@@ -280,14 +277,15 @@ class NavigationPanel(QWidget):
     def on_tag_cloud_clicked(self, tag_name: str):
         """Met à jour le champ de recherche lorsqu'un tag est cliqué dans le nuage."""
         self.tag_search_input.setText(f"@@{tag_name}")
+        self.on_search_triggered()
 
     def on_word_cloud_clicked(self, word: str):
         """Met à jour le champ de recherche lorsqu'un mot est cliqué dans le nuage."""
         # Bloquer les signaux pour empêcher l'ajout automatique de '@@'
         self.tag_search_input.blockSignals(True)
         self.tag_search_input.setText(word)
-        # Débloquer les signaux pour le comportement normal
         self.tag_search_input.blockSignals(False)
+        self.on_search_triggered()
 
     def show_search_results(self, results: list):
         """Affiche le panneau de résultats et masque les nuages."""

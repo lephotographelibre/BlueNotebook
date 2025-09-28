@@ -1,4 +1,4 @@
-# BlueNotebook - Documentation Technique V1.6.5
+# BlueNotebook - Documentation Technique V1.5.3
 
 ## Introduction
 
@@ -472,14 +472,12 @@ C'est le cœur du système. Pour permettre une recherche rapide sur l'ensemble d
               {
                 "context": "avancement sur le projet BlueNotebook",
                 "filename": "20240927.md",
-                "date": "2024-09-27",
-                "line": 15
+                "date": "2024-09-27"
               },
               {
                 "context": "réunion de suivi pour le projet Alpha",
                 "filename": "20240928.md",
-                "date": "2024-09-28",
-                "line": 8
+                "date": "2024-09-28"
               }
             ]
           },
@@ -489,8 +487,7 @@ C'est le cœur du système. Pour permettre une recherche rapide sur l'ensemble d
               {
                 "context": "une nouvelle fonctionnalité pour l'app",
                 "filename": "20240927.md",
-                "date": "2024-09-27",
-                "line": 22
+                "date": "2024-09-27"
               }
             ]
           }
@@ -533,16 +530,14 @@ Un index de mots n'est utile que s'il est débarrassé du "bruit". BlueNotebook 
         "occurrences": 2,
         "details": [
           {
-            "context": "bluenotebook est un éditeur de texte",
+            "context": "bluenotebook",
             "filename": "20240927.md",
-            "date": "2024-09-27",
-            "line": 5
+            "date": "2024-09-27"
           },
           {
-            "context": "bluenotebook représente une architecture",
+            "context": "bluenotebook",
             "filename": "20240928.md",
-            "date": "2024-09-28",
-            "line": 12
+            "date": "2024-09-28"
           }
         ]
       },
@@ -550,10 +545,9 @@ Un index de mots n'est utile que s'il est débarrassé du "bruit". BlueNotebook 
         "occurrences": 1,
         "details": [
           {
-            "context": "projet alpha et avancement sur le projet",
+            "context": "projet",
             "filename": "20240927.md",
-            "date": "2024-09-27",
-            "line": 18
+            "date": "2024-09-27"
           }
         ]
       }
@@ -578,7 +572,6 @@ BlueNotebook intègre une fonctionnalité de recherche puissante s'appuyant sur 
     *   Si la requête commence par `@@`, le système recherche un **tag**. Il ouvre le fichier `index_tags.json` du répertoire journal.
     *   Sinon, le système recherche un **mot**. Il ouvre le fichier `index_words.json`.
 3.  **Collecte des Données** : Pour la requête donnée, l'application récupère toutes les "details" (occurrences) correspondantes dans le fichier JSON. Chaque détail contient la date, le contexte et le nom du fichier.
-    *   Chaque "détail" contient la `date`, le `contexte`, le `filename` et le numéro de `line`.
 
 #### 3. Affichage des Résultats
 
@@ -590,7 +583,6 @@ BlueNotebook intègre une fonctionnalité de recherche puissante s'appuyant sur 
     *   Par défaut, les résultats sont triés par date, du plus récent au plus ancien.
     *   Un clic sur l'en-tête de la colonne "Date" permet d'inverser l'ordre de tri.
 *   **Navigation** : Un clic sur une ligne dans les résultats de recherche ouvre le fichier de note correspondant à la bonne date dans l'éditeur principal.
-    *   L'éditeur défile automatiquement pour positionner la ligne de l'occurrence en haut de la vue.
 
 #### 4. Diagramme de Séquence (Recherche de mot)
 
@@ -604,13 +596,10 @@ sequenceDiagram
     User->>WordCloudPanel: Clique sur "projet"
     WordCloudPanel->>NavigationPanel: émet word_clicked("projet")
     NavigationPanel->>NavigationPanel: setText("projet") et on_search_triggered()
-    NavigationPanel->>MainWindow: émet search_triggered("projet")
+    NavigationPanel->>MainWindow: émet tag_search_triggered("projet")
     MainWindow->>MainWindow: perform_search("projet") lit index_words.json
-    MainWindow->>NavigationPanel: show_search_results([(date, context, filename, line), ...])
+    MainWindow->>NavigationPanel: show_search_results([...])
     NavigationPanel->>NavigationPanel: Affiche le panneau de résultats avec les données
-    User->>NavigationPanel: Clique sur un résultat
-    NavigationPanel->>MainWindow: émet file_open_requested("20240927.md", 18)
-    MainWindow->>MainWindow: Ouvre le fichier et défile jusqu'à la ligne 18
 ```
 
 ## Spécification Technique : Panneau de Navigation
