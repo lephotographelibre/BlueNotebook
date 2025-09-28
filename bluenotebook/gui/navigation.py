@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QCalendarWidget,
     QLabel,
+    QStackedWidget,
     QSizePolicy,
     QLineEdit,
     QPushButton,
@@ -33,6 +34,7 @@ from PyQt5.QtWidgets import (
     QAction,
     QToolButton,
 )
+from .search_results_panel import SearchResultsPanel
 from .word_cloud import WordCloudPanel
 from .tag_cloud import TagCloudPanel
 
@@ -58,12 +60,18 @@ class NavigationPanel(QWidget):
     # Signal pour la recherche de tag
     tag_search_triggered = pyqtSignal(str)
 
+    # Signal pour ouvrir un fichier depuis les résultats de recherche
+    file_open_requested = pyqtSignal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.available_tags = []
         self.setup_ui()
         self.tag_search_input.textChanged.connect(self.on_tag_search_changed)
         self.tag_search_input.returnPressed.connect(self.on_search_triggered)
+        self.tag_cloud.tag_clicked.connect(self.on_tag_cloud_clicked)
+        self.word_cloud.word_clicked.connect(self.on_word_cloud_clicked)
+        self.search_results_panel.item_selected.connect(self.file_open_requested.emit)
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
@@ -149,15 +157,30 @@ class NavigationPanel(QWidget):
 
         layout.addWidget(search_container)
 
+        # Stacked widget pour basculer entre les nuages et les résultats de recherche
+        self.stacked_widget = QStackedWidget()
+
+        # Widget conteneur pour les deux nuages
+        clouds_container = QWidget()
+        clouds_layout = QVBoxLayout(clouds_container)
+        clouds_layout.setContentsMargins(0, 0, 0, 0)
+        clouds_layout.setSpacing(0)
+
         # Nuage de tags
         self.tag_cloud = TagCloudPanel()
         self.tag_cloud.setFixedSize(400, 250)
-        layout.addWidget(self.tag_cloud)
+        clouds_layout.addWidget(self.tag_cloud)
 
         # Nuage de mots
         self.word_cloud = WordCloudPanel()
         self.word_cloud.setFixedSize(400, 300)
-        layout.addWidget(self.word_cloud)
+        clouds_layout.addWidget(self.word_cloud)
+
+        self.stacked_widget.addWidget(clouds_container)
+        self.search_results_panel = SearchResultsPanel()
+        self.stacked_widget.addWidget(self.search_results_panel)
+
+        layout.addWidget(self.stacked_widget)
 
         # Ajouter un espace flexible pour pousser tous les widgets vers le haut
         layout.addStretch()
@@ -208,8 +231,14 @@ class NavigationPanel(QWidget):
 
     def on_tag_search_changed(self, text):
         """Ajoute automatiquement '@@' au début du champ de recherche de tag."""
+        # Si le champ est vidé, on réaffiche les nuages
+        if not text:
+            self.show_clouds()
+            return
+
         # Si le champ est vide ou commence déjà par '@@', ne rien faire.
-        if not text or text.startswith("@@"):
+        # On vérifie aussi qu'il ne s'agit pas d'un mot seul (sans @@)
+        if text.startswith("@@") or " " in text or not text.isalpha():
             return
 
         # Bloquer les signaux pour éviter une boucle récursive
@@ -247,3 +276,24 @@ class NavigationPanel(QWidget):
             self.tag_dropdown_button.rect().bottomLeft()
         )
         menu.exec_(button_pos)
+
+    def on_tag_cloud_clicked(self, tag_name: str):
+        """Met à jour le champ de recherche lorsqu'un tag est cliqué dans le nuage."""
+        self.tag_search_input.setText(f"@@{tag_name}")
+
+    def on_word_cloud_clicked(self, word: str):
+        """Met à jour le champ de recherche lorsqu'un mot est cliqué dans le nuage."""
+        # Bloquer les signaux pour empêcher l'ajout automatique de '@@'
+        self.tag_search_input.blockSignals(True)
+        self.tag_search_input.setText(word)
+        # Débloquer les signaux pour le comportement normal
+        self.tag_search_input.blockSignals(False)
+
+    def show_search_results(self, results: list):
+        """Affiche le panneau de résultats et masque les nuages."""
+        self.search_results_panel.update_results(results)
+        self.stacked_widget.setCurrentWidget(self.search_results_panel)
+
+    def show_clouds(self):
+        """Affiche les nuages et masque le panneau de résultats."""
+        self.stacked_widget.setCurrentIndex(0)

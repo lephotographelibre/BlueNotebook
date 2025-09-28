@@ -22,7 +22,19 @@ import math
 import unicodedata
 from pathlib import Path
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextBrowser
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont
+
+
+class NonNavigatingTextBrowser(QTextBrowser):
+    """
+    Un QTextBrowser qui n'essaie pas de naviguer lorsqu'un lien est cliqué.
+    Il émet simplement le signal anchorClicked.
+    """
+
+    def setSource(self, name):
+        # Surcharger pour ne rien faire, empêchant le widget de se vider lors d'un clic.
+        pass
 
 
 class WordCloudPanel(QWidget):
@@ -31,9 +43,12 @@ class WordCloudPanel(QWidget):
     La taille de chaque mot est proportionnelle à sa fréquence.
     """
 
+    word_clicked = pyqtSignal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
+        self.text_browser.anchorClicked.connect(self.on_anchor_clicked)
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
@@ -57,7 +72,7 @@ class WordCloudPanel(QWidget):
         self.label.setMaximumHeight(35)
         layout.addWidget(self.label)
 
-        self.text_browser = QTextBrowser()
+        self.text_browser = NonNavigatingTextBrowser()
         self.text_browser.setOpenExternalLinks(False)
         self.text_browser.setStyleSheet("border: none; background-color: transparent;")
         layout.addWidget(self.text_browser)
@@ -126,6 +141,11 @@ class WordCloudPanel(QWidget):
             base_font_size + 10,
         ]
 
+        # Récupérer la couleur de texte par défaut du thème pour une lisibilité parfaite
+        text_color = (
+            self.text_browser.palette().color(self.text_browser.foregroundRole()).name()
+        )
+
         html_parts = []
         for word, data in display_words:
             occ = data["occurrences"]
@@ -133,6 +153,14 @@ class WordCloudPanel(QWidget):
             if max_occ > min_occ:
                 level = math.floor(4 * (occ - min_occ) / (max_occ - min_occ))
             font_size = font_sizes[level]
-            html_parts.append(f'<span style="font-size: {font_size}pt;">{word}</span>')
+            link_style = f"text-decoration:none; color:{text_color};"
+            html_parts.append(
+                f'<a href="{word}" style="{link_style} font-size: {font_size}pt;">{word}</a>'
+            )
 
         self.text_browser.setHtml(" &nbsp; ".join(html_parts))
+
+    def on_anchor_clicked(self, url):
+        """Gère le clic sur un mot dans le nuage."""
+        word = url.toString()
+        self.word_clicked.emit(word)

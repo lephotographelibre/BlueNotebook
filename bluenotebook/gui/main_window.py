@@ -587,6 +587,8 @@ class MainWindow(QMainWindow):
         self.navigation_panel.today_button_clicked.connect(self.on_today_button_clicked)
         self.navigation_panel.date_clicked.connect(self.on_calendar_date_clicked)
         self.outline_panel.item_clicked.connect(self.on_outline_item_clicked)
+        self.navigation_panel.tag_search_triggered.connect(self.perform_search)
+        self.navigation_panel.file_open_requested.connect(self.open_file_from_search)
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -1590,6 +1592,52 @@ ______________________________________________________________
         self.navigation_panel.word_cloud.update_cloud(
             self.journal_directory, excluded_words_set
         )
+
+    def perform_search(self, query: str):
+        """Effectue une recherche dans les index et affiche les résultats."""
+        if not query or not self.journal_directory:
+            self.navigation_panel.show_clouds()
+            return
+
+        results = []
+        query_lower = query.lower()
+
+        # Recherche de tag
+        if query_lower.startswith("@@"):
+            index_file = self.journal_directory / "index_tags.json"
+            if index_file.exists():
+                with open(index_file, "r", encoding="utf-8") as f:
+                    tags_data = json.load(f)
+                if query_lower in tags_data:
+                    for detail in tags_data[query_lower]["details"]:
+                        text = f"<b>{query}</b> - {detail['context']}"
+                        results.append((text, detail["filename"]))
+        # Recherche de mot
+        else:
+            index_file = self.journal_directory / "index_words.json"
+            if index_file.exists():
+                with open(index_file, "r", encoding="utf-8") as f:
+                    words_data = json.load(f)
+                if query_lower in words_data:
+                    for detail in words_data[query_lower]["details"]:
+                        text = f"<b>{query}</b> dans {detail['filename']}"
+                        results.append((text, detail["filename"]))
+
+        self.navigation_panel.show_search_results(results)
+
+    def open_file_from_search(self, filename: str):
+        """Ouvre un fichier sélectionné depuis les résultats de recherche."""
+        if not self.journal_directory or not filename:
+            return
+
+        file_path = self.journal_directory / filename
+        if file_path.exists():
+            if self.check_save_changes():
+                self.open_specific_file(str(file_path))
+        else:
+            QMessageBox.warning(
+                self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
+            )
 
     def update_navigation_panel_data(self):
         """Met à jour les données nécessaires au panneau de navigation, comme la liste des tags."""
