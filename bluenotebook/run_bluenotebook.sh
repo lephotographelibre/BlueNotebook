@@ -51,8 +51,8 @@ echo "✅ Dépendances à jour."
 
 echo "📘 Lancement de l'application BlueNotebook..."
 # export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
-export JOURNAL_DIRECTORY="/ssd/Dropbox/bluenotebook"
+export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
 # export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
-export BACKUP__DIRECTORY="/home/jm/Work/BlueNotebook/"
+export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
 python main.py "$@"
