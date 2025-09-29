@@ -1,4 +1,25 @@
-## V1.6.7 Surbrillance Jaune texte recherché via boite de recherche
+## V1.6.8 Mécanisme de Sélection du Répertoire de Sauvegarde 
+
+- Mémoriser le dernier répertoire utilisé 
+- Utiliser une variable d’environnement BACKUP__DIRECTORY. 
+- Préférences utilisatur dans settings.json
+
+```json
+    "backup": {
+        "last_directory": "/home/jm/T\u00e9l\u00e9chargements"
+    }
+
+```
+
+- Changement du nom du fichier backup avec l'heure
+```python
+        # Générer un nom de fichier de sauvegarde par défaut
+        backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
+```
+
+## V1.6.7 Surbrillance Jaune texte recherché via boite de recherche (pas mis en oeuvre)
+
+Pas satisfait de la mise en oeuvre compliquée de l-- Avoir plus tard
 
 - Lorsque l'on recherche un mot ou tag via le champ de recherche du Panneau Navigation, lorsque l'on clique dans 
 

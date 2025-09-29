@@ -953,14 +953,27 @@ ______________________________________________________________
             )
             return
 
+        # --- Déterminer le répertoire de départ pour la sauvegarde ---
+        # Priorité 1: Variable d'environnement
+        initial_dir = os.getenv("BACKUP__DIRECTORY")
+        if not initial_dir or not os.path.isdir(initial_dir):
+            # Priorité 2: Dernier répertoire utilisé dans les paramètres
+            initial_dir = self.settings_manager.get("backup.last_directory")
+            if not initial_dir or not os.path.isdir(initial_dir):
+                # Par défaut: le dossier parent du journal
+                initial_dir = str(self.journal_directory.parent)
+
         # Générer un nom de fichier de sauvegarde par défaut
-        backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d')}.zip"
+        backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
+
+        # Construire le chemin complet par défaut
+        default_path = os.path.join(initial_dir, backup_filename_default)
 
         # Ouvrir une boîte de dialogue pour choisir l'emplacement de la sauvegarde
         backup_path, _ = QFileDialog.getSaveFileName(
             self,
             "Sauvegarder le journal",
-            backup_filename_default,
+            default_path,  # Utiliser le chemin complet avec le répertoire initial
             "Archives ZIP (*.zip)",
             options=QFileDialog.DontConfirmOverwrite,
         )
@@ -995,6 +1008,12 @@ ______________________________________________________________
                 root_dir=self.journal_directory,
             )
             self.statusbar.showMessage(f"Journal sauvegardé dans {backup_path}", 5000)
+
+            # Mémoriser le répertoire de la sauvegarde réussie
+            new_backup_dir = os.path.dirname(backup_path)
+            self.settings_manager.set("backup.last_directory", new_backup_dir)
+            self.settings_manager.save_settings()
+
             QMessageBox.information(
                 self,
                 "Sauvegarde terminée",
