@@ -133,12 +133,16 @@ class NavigationPanel(QWidget):
         search_action.setIcon(QIcon.fromTheme("edit-find"))
         search_action.triggered.connect(self.on_search_triggered)
         self.tag_search_input.addAction(search_action, QLineEdit.TrailingPosition)
+        # Assurer que le champ de recherche s'étire verticalement
+        self.tag_search_input.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
+        )
         search_layout.addWidget(self.tag_search_input)
 
         # Bouton pour le menu déroulant des tags
         self.tag_dropdown_button = QPushButton()
         self.tag_dropdown_button.setFixedWidth(30)
-        # Assure que le bouton s'étire verticalement pour correspondre au QLineEdit
+        # Assurer que le bouton s'étire verticalement pour correspondre au QLineEdit
         self.tag_dropdown_button.setSizePolicy(
             QSizePolicy.Preferred, QSizePolicy.Expanding
         )
