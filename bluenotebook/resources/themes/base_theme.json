@@ -1,0 +1,40 @@
+{
+  "name": "BlueNotebook Thème par Défaut",
+  "type": "light",
+  "author": "BlueNotebook",
+  "description": "Le thème de base de BlueNotebook, clair et simple.",
+  "fonts": {
+    "editor": "Droid Sans Mono",
+    "editor_size": 12,
+    "code": "Consolas, Monaco, monospace"
+  },
+  "colors": {
+    "editor": {
+      "background": "#d6ebff",
+      "foreground": "#2c3e50",
+      "selection_text": "#ff0004",
+      "selection_background": "#e9e942"
+    },
+    "text_styles": {
+      "headings": "#208bd7",
+      "lists": "#208bd7",
+      "bold": "#448C27",
+      "italic": "#448C27",
+      "strikethrough": "#448C27",
+      "links": "#0366d6",
+      "quotes": "#2B303B"
+    },
+    "special_elements": {
+      "tags": "#d73a49",
+      "timestamps": "#005cc5"
+    },
+    "code": {
+      "inline_foreground": "#d6336c",
+      "inline_background": "#f2f07f",
+      "block_background": "#f0f0f0"
+    },
+    "highlight": {
+      "background": "#FFC0CB"
+    }
+  }
+}
