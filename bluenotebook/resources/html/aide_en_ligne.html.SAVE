@@ -70,7 +70,7 @@
 
     <header>
         <h1>
-            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
+            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
             Manuel Utilisateur - BlueNotebook v1.6.9
         </h1>
     </header>
@@ -80,11 +80,10 @@
         <ul>
             <li><a href="#introduction">1. Introduction</a></li>
             <li><a href="#lancement">2. Lancement et Configuration</a></li>
-            <li><a href="#interface">3. L'Interface Principale</a></li>
-            <li><a href="#concept-journal">4. Le Concept de "Journal"</a></li>
-            <li><a href="#navigation-temporelle">5. Navigation Temporelle</a></li>
-            <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
-            <li><a href="#menus">7. Exploration des Menus</a></li>
+            <li><a href="#interface">3. L'interface Principale</a></li>
+            <li><a href="#recherche-avancee">4. Recherche et Navigation Avancée</a></li>
+            <li><a href="#concept-journal">5. Le concept de "Journal"</a></li>
+            <li><a href="#menus">6. Exploration des Menus</a></li>
             <li><a href="#backup-restore">7. Sauvegarde et Restauration</a></li>
             <li><a href="#preferences">8. Personnalisation via les Préférences</a></li>
             <li><a href="#raccourcis">9. Raccourcis Clavier</a></li>
@@ -127,53 +126,24 @@
 
     <section id="interface">
         <h2>3. L'interface Principale</h2>
-        <p>L'interface est divisée en plusieurs panneaux redimensionnables pour s'adapter à votre façon de travailler :</p>
+        <p>L'interface est divisée en deux panneaux principaux :</p>
         <ol>
-            <li><strong>Panneau de Navigation (<code>F6</code>) :</strong> Situé à gauche, il contient le calendrier, les outils de recherche et les nuages de mots/tags.</li>
-            <li><strong>Panneau "Plan du document" (<code>F7</code>) :</strong> Affiche la structure des titres (<code>#</code>, <code>##</code>, etc.) de votre note actuelle. Cliquez sur un titre pour naviguer instantanément.</li>
-            <li><strong>L'Éditeur :</strong> La zone centrale où vous écrivez votre texte en utilisant la syntaxe Markdown.</li>
-            <li><strong>La Prévisualisation (<code>F5</code>) :</strong> À droite, ce panneau affiche le rendu final de votre texte, mis en forme en temps réel.</li>
+            <li><strong>L'Éditeur (à gauche) :</strong> C'est ici que vous écrivez votre texte en utilisant la syntaxe Markdown.</li>
+            <li><strong>La Prévisualisation (à droite) :</strong> Affiche le rendu final de votre texte, mis en forme.</li>
         </ol>
-        <p>Vous pouvez afficher ou masquer ces panneaux via le menu <code>Affichage</code> ou avec les raccourcis clavier indiqués.</p>
+        <p>Vous pouvez redimensionner ces panneaux en faisant glisser le séparateur central. Vous pouvez également masquer/afficher la prévisualisation avec la touche <code>F5</code>.</p>
         <p>La <strong>barre de statut</strong>, située tout en bas de la fenêtre, est une source d'information précieuse. De gauche à droite, vous y trouverez :</p>
         <ul>
             <li>Le nom du <strong>fichier actuel</strong> (ex: <code>20250920.md</code>).</li>
             <li>Un indicateur de modification (<code>●</code>) qui apparaît si votre travail n'est pas enregistré.</li>
-            <li>Des statistiques sur votre document (lignes, mots, caractères).</li>
-            <li>À l'extrémité droite, le chemin vers votre <strong>dossier de journal</strong> et les statistiques d'indexation (nombre de tags et de mots uniques).</li>
-        </ul>
-    </section>
-
-    <section id="concept-journal">
-        <h2>4. Le concept de "Journal" et son fonctionnement</h2>
-        <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
-        <h3>La Note du Jour</h3>
-        <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
-        <h3>La Sauvegarde Intelligente</h3>
-        <p>L'action de sauvegarde (<code>Fichier > Sauvegarder</code> ou <code>Ctrl+S</code>) est au cœur de ce système :</p>
-        <ul>
-            <li><strong>Si la note du jour n'existe pas encore</strong>, elle sera simplement créée avec le contenu de l'éditeur dans votre dossier de journal.</li>
-            <li><strong>Si la note du jour existe déjà</strong>, une boîte de dialogue vous proposera deux choix :
-                <ul>
-                    <li><strong>Ajouter à la fin</strong>: Votre nouveau texte sera ajouté à la suite du contenu existant, séparé par une ligne. C'est l'option idéale pour ajouter des pensées ou des notes tout au long de la journée sans perdre les informations précédentes.</li>
-                    <li><strong>Remplacer</strong>: Le contenu original de la note du jour sera entièrement écrasé et remplacé par ce qui se trouve actuellement dans l'éditeur. Soyez prudent avec cette option !</li>
-                </ul>
-            </li>
-        </ul>
-    </section>
-
-    <section id="navigation-temporelle">
-        <h2>5. Navigation Temporelle</h2>
-        <p>Le panneau de Navigation (<code>F6</code>) vous offre plusieurs outils pour voyager dans le temps à travers vos notes.</p>
-        <ul>
-            <li><strong>Le Calendrier :</strong> Les jours pour lesquels une note existe sont mis en évidence. Cliquez sur une date pour ouvrir la note correspondante.</li>
-            <li><strong>Boutons de Navigation :</strong> Juste au-dessus du calendrier, les boutons <code>Précédent</code> et <code>Suivant</code> vous permettent de sauter à la note existante la plus proche, tandis que <code>Aujourd'hui</code> vous ramène à la note du jour.</li>
+            <li>Le chemin vers votre <strong>dossier de journal</strong>, affiché en bleu pour le repérer facilement.</li>
+            <li>À l'extrémité droite, des <strong>statistiques</strong> sur votre document, mises à jour en temps réel : le nombre de lignes, de mots et de caractères.</li>
         </ul>
     </section>
 
     <section id="recherche-avancee">
-        <h2>6. Recherche et Navigation Avancée</h2>
-        <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
+        <h2>4. Recherche et Navigation Avancée</h2>
+        <p>Le panneau de Navigation, en plus du calendrier, intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
         
         <h3>Les Nuages de Tags et de Mots</h3>
         <p>Sous le calendrier, vous trouverez deux "nuages" :</p>
@@ -181,24 +151,43 @@
             <li><strong>Nuage de Tags :</strong> Affiche les tags (<code>@@mot</code>) que vous utilisez le plus souvent. Plus un tag est fréquent, plus il apparaît en grand.</li>
             <li><strong>Nuage de Mots :</strong> Affiche de la même manière les mots les plus fréquents de votre journal (hors mots courants).</li>
         </ul>
-        <p><strong>Interaction :</strong> Cliquez sur un tag ou un mot dans l'un des nuages pour l'insérer automatiquement dans le champ de recherche et <strong>lancer immédiatement la recherche</strong>.</p>
+        <p><strong>Interaction :</strong> Cliquez sur un tag ou un mot dans l'un des nuages pour l'insérer automatiquement dans le champ de recherche et lancer immédiatement la recherche.</p>
 
         <h3>Le Champ de Recherche</h3>
-        <p>Situé sous le calendrier, ce champ vous permet de lancer une recherche précise. Il est conçu pour être rapide et efficace.</p>
+        <p>Situé sous le calendrier, ce champ vous permet de lancer une recherche précise.</p>
         <ul>
-            <li><strong>Rechercher un mot :</strong> Tapez simplement le mot et appuyez sur <code>Entrée</code>.</li>
-            <li><strong>Rechercher un tag :</strong> Vous devez préfixer votre recherche avec <code>@@</code> (ex: <code>@@projet</code>).</li>
-            <li><strong>Liste des tags :</strong> Cliquez sur le bouton <code>▼</code> à droite du champ pour afficher la liste de tous vos tags. Cliquer sur un tag dans cette liste le sélectionne et <strong>lance automatiquement la recherche</strong>.</li>
-            <li><strong>Effacer la recherche :</strong> Cliquez sur l'icône qui apparaît à droite dans le champ pour effacer son contenu et revenir à l'affichage des nuages.</li>
+            <li><strong>Rechercher un mot :</strong> Tapez simplement le mot et appuyez sur <code>Entrée</code> ou cliquez sur l'icône loupe 🔍.</li>
+            <li><strong>Rechercher un tag :</strong> Tapez le tag directement (ex: <code>@@projet</code>). Si vous tapez un mot simple, <code>@@</code> sera ajouté automatiquement.</li>
+            <li><strong>Liste des tags :</strong> Cliquez sur le bouton <code>▼</code> à droite du champ pour afficher la liste de tous vos tags et en sélectionner un.</li>
         </ul>
 
         <h3>Le Panneau de Résultats de Recherche</h3>
-        <p>Après une recherche, les nuages sont remplacés par un panneau de résultats. Chaque ligne correspond à une occurrence trouvée et contient deux colonnes : "Date" et "Texte" (le contexte où le mot/tag a été trouvé). Les résultats sont triés par défaut du plus récent au plus ancien (vous pouvez inverser le tri en cliquant sur l'en-tête "Date").</p>
-        <p><strong>Interaction :</strong> Cliquez sur une ligne de résultat pour ouvrir la note correspondante <strong>directement à la bonne ligne</strong> dans l'éditeur ! Si vous effacez le contenu du champ de recherche, les nuages de tags et de mots réapparaîtront.</p>
+        <p>Après une recherche, les nuages sont remplacés par un panneau de résultats. Chaque ligne correspond à une occurrence trouvée et contient deux colonnes : "Date" et "Texte" (le contexte où le mot/tag a été trouvé). Les résultats sont triés par défaut du plus récent au plus ancien.</p>
+        <p><strong>Interaction :</strong> Cliquez sur une ligne de résultat pour ouvrir la note correspondante directement à la bonne ligne dans l'éditeur ! <strong>Si vous effacez le contenu du champ de recherche, les nuages de tags et de mots réapparaîtront.</strong></p>
+    </section>
+
+    <section id="concept-journal">
+        <h2>5. Le concept de "Journal" et son fonctionnement</h2>
+        <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
+        <h3>La Note du Jour</h3>
+        <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
+        <h3>La Sauvegarde Intelligente</h3>
+        <p>L'action de sauvegarde (<code>Fichier > Sauvegarder</code> ou <code>Ctrl+S</code>) est au cœur de ce système :</p>
+        <ul>
+            <li><strong>Si la note du jour n'existe pas encore</strong>, elle sera simplement créée avec le contenu de l'éditeur.</li>
+            <li><strong>Si la note du jour existe déjà</strong>, une boîte de dialogue vous proposera deux choix cruciaux :
+                <ul>
+                    <li><strong>Ajouter à la fin</strong>: Votre nouveau texte sera ajouté à la suite du contenu existant, séparé par une ligne. C'est l'option idéale pour ajouter des pensées ou des notes tout au long de la journée sans perdre les informations précédentes.</li>
+                    <li><strong>Remplacer</strong>: Le contenu original de la note du jour sera entièrement écrasé et remplacé par ce qui se trouve actuellement dans l'éditeur. Soyez prudent avec cette option !</li>
+                </ul>
+            </li>
+        </ul>
+        <h3>Accéder aux Anciennes Notes</h3>
+        <p>Pour consulter ou modifier une entrée d'un jour précédent, utilisez simplement le menu <code>Fichier > Ouvrir</code> (<code>Ctrl+O</code>). Une fenêtre s'ouvrira, vous permettant de naviguer jusqu'à votre répertoire de journal et de sélectionner le fichier correspondant à la date souhaitée (par exemple, <code>20250919.md</code> pour relire la note de la veille).</p>
     </section>
 
     <section id="menus">
-        <h2>7. Exploration Détaillée des Menus</h2>
+        <h2>6. Exploration Détaillée des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 📁 Fichier
@@ -212,14 +201,13 @@
 ├── 💾 Sauvegarde Journal...: Crée une archive ZIP de tout le journal.
 ├── 🔄 Restauration Journal...: Restaure le journal depuis une archive.
 ├── ---
-├── 🌐 Exporter HTML...: Exporte la note actuelle au format HTML. 
+├── 🌐 Exporter HTML...: Exporte la note actuelle au format HTML.
 ├── ---
-├── ⚙️ Préférences...: Ouvre la fenêtre de personnalisation.
 └── 🚪 Quitter (Ctrl+Q): Ferme l'application.
 
 ✏️ Edition
 ├── ↩️ Annuler (Ctrl+Z): Annule la dernière action.
-├── ↪️ Rétablir (Ctrl+Y): Rétablit la dernière action annulée. 
+├── ↪️ Rétablir (Ctrl+Y): Rétablit la dernière action annulée.
 ├── ---
 └── 🔍 Rechercher (Ctrl+F): Ouvre un dialogue de recherche.
 
@@ -227,7 +215,7 @@
 ├── 🧭 Basculer Navigation (F6): Affiche ou masque le panneau de navigation.
 └── 👁️ Basculer l'aperçu (F5): Affiche ou masque le panneau de prévisualisation.
 
-🎨 Formater 
+🎨 Formater
 ├── 📜 Titres
 │   ├── 1️⃣ Niv 1 (#)
 │   ├── 2️⃣ Niv 2 (##)
@@ -249,25 +237,19 @@
 ├── ---
 └── 🧹 RaZ (Effacer le formatage)
 
-➕ Insérer 
-├── 🔗 Lien (URL ou email) (&lt;url&gt;) 
-├── 🖼️ Image (&lt;img ...&gt;) 
+➕ Insérer
+├── 🔗 Lien (URL ou email) (&lt;url&gt;)
+├── 🖼️ Image (&lt;img ...&gt;)
 ├── 🔗 Lien Markdown (texte)
 ├── 🔗 Fichier
 ├── ---
-├── ➖ Ligne Horizontale 
+├── ➖ Ligne Horizontale
 ├── ▦ Tableau
 ├── 💬 Citation
 ├── ✨ Citation du jour
 ├── ---
 ├── 🏷️ Tag (@@)
-├── 🕒 Heure 
-├── ---
-└── 😊 Emoji
-    ├── 📖 Livre
-    ├── 🎵 Musique
-    ├── 📚 À Lire
-    ├── ... (et bien d'autres)
+└── 🕒 Heure
 
 ❓ Aide
 ├── 🌐 Documentation en ligne
@@ -276,13 +258,13 @@
     </section>
 
     <section id="backup-restore">
-        <h2>8. Sauvegarde et Restauration du Journal</h2>
+        <h2>7. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
         <ol>
             <li>En cliquant sur cette option, une boîte de dialogue s'ouvrira.</li>
-            <li>Choisissez un emplacement et un nom pour votre fichier. Par défaut, un nom intelligent incluant la date et l'heure (ex: <code>BlueNotebook-Backup-MonJournal-2025-09-26-15-45.zip</code>) est proposé pour éviter d'écraser les anciennes sauvegardes. L'application se souvient aussi du dernier dossier que vous avez utilisé pour vous le proposer la prochaine fois.</li>
+            <li>Choisissez un emplacement sur votre ordinateur et un nom pour votre fichier de sauvegarde. Par défaut, l'application vous proposera un nom incluant la date et l'heure (ex: <code>BlueNotebook-Backup-NomDuJournal-2025-09-26-15-45.zip</code>) pour éviter d'écraser les anciennes sauvegardes. L'application se souviendra aussi du dernier dossier que vous avez utilisé pour vous le proposer la prochaine fois.</li>
             <li>BlueNotebook compressera alors tous vos fichiers de notes (<code>.md</code>), ainsi que les fichiers d'index, dans une seule archive <code>.zip</code>.</li>
         </ol>
         <p>C'est une excellente habitude à prendre régulièrement, ou avant de faire de grands changements.</p>
@@ -299,42 +281,43 @@
     </section>
 
     <section id="preferences">
-        <h2>9. Personnalisation via les Préférences</h2>
+        <h2>8. Personnalisation via les Préférences</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
         <ul>
-            <li><strong>Statistiques d'indexation :</strong> Cochez pour afficher en permanence le nombre de mots et tags dans la barre de statut.</li>
-            <li><strong>Mots à exclure de l'indexation :</strong> Ajoutez des mots (séparés par des virgules) que vous ne voulez pas voir apparaître dans l'index de recherche ou le nuage de mots.</li>
-            <li><strong>Tags/Mots à exclure des nuages :</strong> Permet de masquer certains tags ou mots des nuages sans les retirer de l'index de recherche.</li>
+            <li><strong>Police de l'éditeur</strong> : Cliquez sur le bouton pour ouvrir une fenêtre de dialogue et choisir la famille de police (ex: "Droid Sans Mono") et sa taille.</li>
+            <li><strong>Remise à 0</strong> : Ce bouton réinitialise <strong>toutes</strong> les options de l'application à leurs valeurs par défaut. Une confirmation vous sera demandée et un redémarrage de l'application sera nécessaire.</li>
         </ul>
 
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet vous permet de personnaliser l'apparence de la zone d'écriture.</p>
         <ul>
-            <li><strong>Police de l'éditeur :</strong> Choisissez la famille de police et sa taille.</li>
-            <li><strong>Couleurs :</strong> Personnalisez la couleur de fond de l'éditeur, du texte, des titres et du texte sélectionné.</li>
-            <li><strong>Valeurs par défaut :</strong> Un bouton pour réinitialiser uniquement les préférences d'affichage.</li>
+            <li><strong>Couleur de fond de l'éditeur</strong> : Choisissez la couleur de l'arrière-plan de la zone de texte.</li>
+            <li><strong>Couleur de la police de l'éditeur</strong> : Modifiez la couleur du texte principal.</li>
+            <li><strong>Couleur des titres</strong> : Personnalisez la couleur des titres Markdown (<code>#</code>, <code>##</code>, etc.).</li>
+            <li><strong>Couleur du texte sélectionné</strong> : Changez la couleur du texte lorsque vous le surlignez avec la souris.</li>
         </ul>
 
         <h3>Onglet "Panneaux"</h3>
         <p>Contrôlez quels panneaux sont visibles par défaut au démarrage de l'application pour un espace de travail sur mesure.</p>
         <ul>
-            <li><strong>Panneau de Navigation (<code>F6</code>)</strong></li>
-            <li><strong>Panneau 'Plan du document' (<code>F7</code>)</strong></li>
-            <li><strong>Panneau 'Aperçu HTML' (<code>F5</code>)</strong></li>
+            <li><strong>Afficher le panneau de Navigation</strong> : Cochez pour voir le calendrier et les boutons de navigation.</li>
+            <li><strong>Afficher le panneau 'Plan du document'</strong> : Cochez pour afficher la structure hiérarchique de votre note.</li>
+            <li><strong>Afficher le panneau 'Aperçu HTML'</strong> : Cochez pour voir le rendu en temps réel de votre Markdown.</li>
+            <li>Le panneau <strong>Éditeur</strong> est toujours visible et ne peut être désactivé.</li>
         </ul>
 
         <h3>Onglet "Intégrations"</h3>
         <p>Gérez les fonctionnalités additionnelles.</p>
         <ul>
-            <li><strong>Afficher la citation du jour au démarrage :</strong> Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
+            <li><strong>Afficher la citation du jour au démarrage</strong> : Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
         </ul>
     </section>
 
 
     <section id="raccourcis">
-        <h2>10. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>9. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>

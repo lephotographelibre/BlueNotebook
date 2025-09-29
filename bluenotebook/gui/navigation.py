@@ -119,22 +119,27 @@ class NavigationPanel(QWidget):
 
         # Champ de recherche de tag
         self.tag_search_input = QLineEdit()
-        self.tag_search_input.setPlaceholderText("tag")
+        # V 1.6.9 Ajoute le bouton pour effacer le contenu du champ de recherche
+        self.tag_search_input.setClearButtonEnabled(True)
+        self.tag_search_input.setPlaceholderText("@@tag ou mot")
         self.tag_search_input.setStyleSheet(
             """
             QLineEdit {
                 border: 1px solid #ced4da;
-                border-top-left-radius: 4px;
-                border-bottom-left-radius: 4px;
-                border-right: none; /* Fusionne avec le bouton */
+                border-radius: 4px;
+                padding-right: 20px; /* Espace pour l'icône de loupe */
+            }
+            /* Style pour le bouton d'effacement natif */
+            QLineEdit::clear-button {
+                image: url(none); /* Masquer l'image par défaut si nécessaire */
+                background-image: url(none); /* Alternative pour certains thèmes */
+                /* Si vous voulez utiliser une icône de votre thème : */
+                /* image: url(path/to/your/clear-icon.png); */
             }
         """
         )
-        # Action de recherche pour le QLineEdit
-        search_action = QAction(self)
-        search_action.setIcon(QIcon.fromTheme("edit-find"))
-        search_action.triggered.connect(self.on_search_triggered)
-        self.tag_search_input.addAction(search_action, QLineEdit.TrailingPosition)
+        # L'icône de loupe est maintenant gérée par le thème ou peut être ajoutée
+        # via QSS si nécessaire, mais l'action est déclenchée par returnPressed.
         # Assurer que le champ de recherche s'étire verticalement
         self.tag_search_input.setSizePolicy(
             QSizePolicy.Expanding, QSizePolicy.Expanding
@@ -153,8 +158,8 @@ class NavigationPanel(QWidget):
             """
             QPushButton {
                 border: 1px solid #ced4da;
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 4px;
+                border-radius: 4px;
+                margin-left: 2px;
             }
         """
         )
@@ -236,21 +241,9 @@ class NavigationPanel(QWidget):
             self.calendar.setDateTextFormat(date, date_format)
 
     def on_tag_search_changed(self, text):
-        """Ajoute automatiquement '@@' au début du champ de recherche de tag."""
+        """Gère le changement de texte dans le champ de recherche."""
         if not text:
             self.show_clouds()
-            return
-
-        # Si le texte est un seul mot sans '@@', on l'ajoute.
-        # Ceci est utile pour la saisie manuelle d'un tag.
-        if not text.startswith("@@") and " " not in text and text.isalpha():
-            # Bloquer les signaux pour éviter une boucle récursive
-            self.tag_search_input.blockSignals(True)
-            self.tag_search_input.setText(f"@@{text}")
-            # Débloquer les signaux
-            self.tag_search_input.blockSignals(False)
-        else:
-            return
 
     def on_search_triggered(self):
         """Déclenché lorsque l'icône de recherche est cliquée ou sur Entrée."""
@@ -270,7 +263,7 @@ class NavigationPanel(QWidget):
         for tag in self.available_tags:
             action = QAction(tag, self)
             action.triggered.connect(
-                lambda checked, t=tag: self.tag_search_input.setText(t)
+                lambda checked, t=tag: self.on_tag_selected_from_dropdown(t)
             )
             menu.addAction(action)
 
@@ -280,6 +273,11 @@ class NavigationPanel(QWidget):
         )
         menu.exec_(button_pos)
 
+    def on_tag_selected_from_dropdown(self, tag: str):
+        """Met à jour le champ de recherche et lance la recherche."""
+        self.tag_search_input.setText(tag)
+        self.on_search_triggered()
+
     def on_tag_cloud_clicked(self, tag_name: str):
         """Met à jour le champ de recherche lorsqu'un tag est cliqué dans le nuage."""
         self.tag_search_input.setText(f"@@{tag_name}")
@@ -287,10 +285,7 @@ class NavigationPanel(QWidget):
 
     def on_word_cloud_clicked(self, word: str):
         """Met à jour le champ de recherche lorsqu'un mot est cliqué dans le nuage."""
-        # Bloquer les signaux pour empêcher l'ajout automatique de '@@'
-        self.tag_search_input.blockSignals(True)
         self.tag_search_input.setText(word)
-        self.tag_search_input.blockSignals(False)
         self.on_search_triggered()
 
     def show_search_results(self, results: list):

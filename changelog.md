@@ -1,4 +1,17 @@
-## V1.6.8 Mécanisme de Sélection du Répertoire de Sauvegarde 
+## V1.6.9 Issue #14 Impossible de rechercher un mot dans le champ de recherche
+- on va d'abord pour le champ de recherche Supprimer le préfixe @@ automatique 
+- il faudra donc utiliser la boite de recherche à la fois pour les mots ou les tags
+préfixer @@ pour les tags
+- pour rechercher un tags dans le fichier d'index des tags il faudra manuellement saisir @@ devant le nom du tag ou utiliser le dropdown button
+- prou rechercher un mot dans le fichier d'index de mots faudra juste saisir le mot
+- dans la boite de recherche vide mettre en grisé "@@tag ou mot" au lieu
+
+- est il possible de mettre dans la boite de recherche une icone pour effacer le contenue  dans le champ  de recherche juste avant la loupe de recherche qui est déja présente. je ne sais pas comment se nomme cet indicate à cliquer a afficher dans le champ de rechcherche
+
+- Dès que le bouton de recherche dopdown permet de sélectionner un tag dans la liste, et dès qu'il est cliqué vient remplir le champ de recherche avec le tag sélectionné.
+En plus je voudrais lancer la recherche sur ce tag automatiquement des qu'il est cléqué dans la liste en plus de remplir  le champ de recherche avec le tag sélectionné
+
+## V1.6.8 Mécanisme de Sélection du Répertoire de Sauvegarde 
 
 - Mémoriser le dernier répertoire utilisé 
 - Utiliser une variable d’environnement BACKUP__DIRECTORY. 

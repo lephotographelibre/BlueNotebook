@@ -1624,7 +1624,7 @@ ______________________________________________________________
         # Recherche de tag
         if query_lower.startswith("@@"):
             index_file = self.journal_directory / "index_tags.json"
-            if index_file.exists():
+            if index_file.exists() and len(query_lower) > 2:
                 with open(index_file, "r", encoding="utf-8") as f:
                     tags_data = json.load(f)
                 # Recherche insensible à la casse
@@ -1643,7 +1643,7 @@ ______________________________________________________________
                         break  # Tag trouvé, on peut arrêter de chercher
         # Recherche de mot
         else:
-            index_file = self.journal_directory / "index_words.json"
+            index_file = self.journal_directory / "index_words.json"  # noqa
             if index_file.exists():
                 with open(index_file, "r", encoding="utf-8") as f:
                     words_data = json.load(f)
