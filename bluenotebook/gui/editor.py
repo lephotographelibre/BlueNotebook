@@ -165,7 +165,9 @@ class MarkdownHighlighter(QSyntaxHighlighter):
                 match.start(), match.end() - match.start(), self.italic_format
             )
 
-        italic_underscore_pattern = r"(?<!_)_(?!\s)(.*?)(?<!\s)_(?!_)"
+        # Règle améliorée pour l'italique avec underscore, qui ignore les `_` à l'intérieur des mots.
+        # `(?<!\w)` et `(?!\w)` s'assurent que l'underscore n'est pas collé à un caractère alphanumérique.
+        italic_underscore_pattern = r"(?<!\w)_([^_]+)_(?!\w)"
         for match in re.finditer(italic_underscore_pattern, text):
             self.setFormat(
                 match.start(), match.end() - match.start(), self.italic_format

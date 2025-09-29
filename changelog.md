@@ -1,7 +1,46 @@
-## V1.6.10 Ajuste la taille des polices pour les titres Markdown
+## V1.6.XX
+
+## V1.6.11 Issue #5 Edition Markdon mauvaise coloration syntaxique pour les mots  contenant un "_"  
+
+Edition Markdon mauvaise coloration syntaxique pour les mots  contenant un _ 
+
+dans la phrase: "d'un fichier texte nommé index_tags.txt stocké dans le répertoire du journal indexé. si l'utilisateur change de journal une nouvelle indexation sera lancée dans ce nouveau journa. le format du fichier index_tags.txt sera le suivant"
+
+coloration syntaxique inapropriée entre les deux _ c'est à dire de "_tags.txt ...à ... index_" 
+
+Le problème est typique des expressions régulières trop "gourmandes" pour la mise en forme italique. Une regex simple comme `_(.+?)_` va capturer tout le texte entre le premier `_` de `index_tags.txt` et le `_` de `journal_indexé`, ce qui n'est pas le comportement souhaité.
+
+La spécification Markdown (et ses variantes comme GFM) a des règles précises pour l'emphase (italique) afin d'éviter ce genre de faux positifs, notamment pour permettre les `_` à l'intérieur des mots.
+
+Pour corriger cela, il faut affiner l'expression régulière dans votre classe `MarkdownHighlighter` (qui se trouve probablement dans `gui/editor.py`. La solution consiste à utiliser des "lookarounds" (assertions avant et arrière) pour s'assurer que les `_` sont bien des délimiteurs de formatage et non une partie d'un mot.
+
+Une version améliorée de la règle pour l'italique avec des underscores. Dans la méthode `highlightBlock` de   `MarkdownHighlighter`.
+
+```python
+# Dans votre fichier gui/editor.py, classe MarkdownHighlighter
+
+# Règle pour l'italique avec des underscores
+# (?<!\w) : S'assure qu'il n'y a pas de caractère de mot avant le premier '_'
+# _ : Le délimiteur de début
+# ([^_]+) : Capture un ou plusieurs caractères qui ne sont pas des '_'
+# _ : Le délimiteur de fin
+# (?!\w) : S'assure qu'il n'y a pas de caractère de mot après le second '_'
+italic_underscore_rule = r"(?<!\w)_([^_]+)_(?!\w)"
+
+# Appliquer la règle
+for match in re.finditer(italic_underscore_rule, text):
+    self.setFormat(match.start(), match.end() - match.start(), self.italic_format)
+```
+Cette expression régulière garantit que l'italique ne sera appliqué que si les underscores sont entourés par des espaces, de la ponctuation, ou sont au début/fin de la ligne, mais pas s'ils sont au milieu d'un mot.
+
+
+
+## V1.6.10 Ajuste la taille des polices pour les titres Markdown
 
 Ajuste la logique de calcul de la taille des polices pour les titres Markdown dans la classe MarkdownHighlighter. La nouvelle formule se base sur la taille de police de l'éditeur et applique un écart plus prononcé entre chaque niveau de titre, ce qui rend la hiérarchie visuelle beaucoup plus claire.
 Pour marquer encore plus clairement la hiérarchie des titres. Un écart de 2 points entre chaque niveau rendra la structure du document beaucoup plus lisible dans l'éditeur.
+
+
 
 ## V1.6.9 Issue #14 Impossible de rechercher un mot dans le champ de recherche
 - on va d'abord pour le champ de recherche Supprimer le préfixe @@ automatique 
