@@ -61,12 +61,19 @@ class MarkdownHighlighter(QSyntaxHighlighter):
     def setup_formats(self):
         """Configuration des formats de coloration"""
         # Format pour les titres
+        base_font_size = 12  # Valeur par défaut
+        if self.parent() and isinstance(self.parent(), QTextDocument):
+            editor_widget = self.parent().parent()
+            if editor_widget and isinstance(editor_widget, QTextEdit):
+                base_font_size = editor_widget.font().pointSize()
+
         self.title_formats = []
         for i in range(1, 7):
             format = QTextCharFormat()
             format.setForeground(self.heading_color)
             format.setFontWeight(QFont.Bold)
-            format.setFontPointSize(16 - i)
+            # Formule avec un écart de 2 points entre chaque niveau
+            format.setFontPointSize(base_font_size + 2 * (6 - i))
             self.title_formats.append(format)
 
         # Format pour le gras

@@ -1,3 +1,8 @@
+## V1.6.10 Ajuste la taille des polices pour les titres Markdown
+
+Ajuste la logique de calcul de la taille des polices pour les titres Markdown dans la classe MarkdownHighlighter. La nouvelle formule se base sur la taille de police de l'éditeur et applique un écart plus prononcé entre chaque niveau de titre, ce qui rend la hiérarchie visuelle beaucoup plus claire.
+Pour marquer encore plus clairement la hiérarchie des titres. Un écart de 2 points entre chaque niveau rendra la structure du document beaucoup plus lisible dans l'éditeur.
+
 ## V1.6.9 Issue #14 Impossible de rechercher un mot dans le champ de recherche
 - on va d'abord pour le champ de recherche Supprimer le préfixe @@ automatique 
 - il faudra donc utiliser la boite de recherche à la fois pour les mots ou les tags
