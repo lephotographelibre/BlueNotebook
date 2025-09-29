@@ -43,7 +43,7 @@ echo "✅ Environnement virtuel '${VENV_NAME}' activé."
 
 # 5. Installer/vérifier les dépendances
 echo "📦 Vérification et installation des dépendances depuis requirements.txt..."
-pip install -r requirements.txt
+pip install -q -r requirements.txt
 
 echo "✅ Dépendances à jour."
 
