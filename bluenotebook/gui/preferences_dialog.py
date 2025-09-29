@@ -177,6 +177,16 @@ class PreferencesDialog(QDialog):
         self.heading_color_button.clicked.connect(self._select_heading_color)
         layout.addRow("Couleur des titres Markdown:", self.heading_color_button)
 
+        # Couleur des listes
+        list_color_hex = self.settings_manager.get(
+            "editor.list_color", self.settings_manager.get("editor.heading_color")
+        )
+        self.current_list_color = QColor(list_color_hex)
+        self.list_color_button = QPushButton()
+        self.list_color_button.setStyleSheet(f"background-color: {list_color_hex};")
+        self.list_color_button.clicked.connect(self._select_list_color)
+        layout.addRow("Couleur des listes Markdown:", self.list_color_button)
+
         # Couleur du texte sélectionné
         selection_text_color_hex = self.settings_manager.get(
             "editor.selection_text_color"
@@ -190,6 +200,106 @@ class PreferencesDialog(QDialog):
             self._select_selection_text_color
         )
         layout.addRow("Couleur du texte sélectionné:", self.selection_text_color_button)
+
+        # Couleur du texte du code inline
+        inline_code_text_color_hex = self.settings_manager.get(
+            "editor.inline_code_text_color"
+        )
+        self.current_inline_code_text_color = QColor(inline_code_text_color_hex)
+        self.inline_code_text_color_button = QPushButton()
+        self.inline_code_text_color_button.setStyleSheet(
+            f"background-color: {inline_code_text_color_hex};"
+        )
+        self.inline_code_text_color_button.clicked.connect(
+            self._select_inline_code_text_color
+        )
+        layout.addRow("Couleur texte code inline:", self.inline_code_text_color_button)
+
+        # Couleur de fond du code inline
+        inline_code_bg_color_hex = self.settings_manager.get(
+            "editor.inline_code_background_color"
+        )
+        self.current_inline_code_bg_color = QColor(inline_code_bg_color_hex)
+        self.inline_code_bg_color_button = QPushButton()
+        self.inline_code_bg_color_button.setStyleSheet(
+            f"background-color: {inline_code_bg_color_hex};"
+        )
+        self.inline_code_bg_color_button.clicked.connect(
+            self._select_inline_code_bg_color
+        )
+        layout.addRow("Couleur fond code inline:", self.inline_code_bg_color_button)
+
+        # Couleur de fond des blocs de code
+        code_block_bg_color_hex = self.settings_manager.get(
+            "editor.code_block_background_color"
+        )
+        self.current_code_block_bg_color = QColor(code_block_bg_color_hex)
+        self.code_block_bg_color_button = QPushButton()
+        self.code_block_bg_color_button.setStyleSheet(
+            f"background-color: {code_block_bg_color_hex};"
+        )
+        self.code_block_bg_color_button.clicked.connect(
+            self._select_code_block_bg_color
+        )
+        layout.addRow("Couleur fond bloc de code:", self.code_block_bg_color_button)
+
+        # Couleur pour le gras
+        bold_color_hex = self.settings_manager.get("editor.bold_color")
+        self.current_bold_color = QColor(bold_color_hex)
+        self.bold_color_button = QPushButton()
+        self.bold_color_button.setStyleSheet(f"background-color: {bold_color_hex};")
+        self.bold_color_button.clicked.connect(self._select_bold_color)
+        layout.addRow("Couleur du texte en gras:", self.bold_color_button)
+
+        # Couleur pour l'italique
+        italic_color_hex = self.settings_manager.get("editor.italic_color")
+        self.current_italic_color = QColor(italic_color_hex)
+        self.italic_color_button = QPushButton()
+        self.italic_color_button.setStyleSheet(f"background-color: {italic_color_hex};")
+        self.italic_color_button.clicked.connect(self._select_italic_color)
+        layout.addRow("Couleur du texte en italique:", self.italic_color_button)
+
+        # Couleur pour le barré
+        strikethrough_color_hex = self.settings_manager.get(
+            "editor.strikethrough_color"
+        )
+        self.current_strikethrough_color = QColor(strikethrough_color_hex)
+        self.strikethrough_color_button = QPushButton()
+        self.strikethrough_color_button.setStyleSheet(
+            f"background-color: {strikethrough_color_hex};"
+        )
+        self.strikethrough_color_button.clicked.connect(
+            self._select_strikethrough_color
+        )
+        layout.addRow("Couleur du texte barré:", self.strikethrough_color_button)
+
+        # Couleur pour le surlignage
+        highlight_color_hex = self.settings_manager.get("editor.highlight_color")
+        self.current_highlight_color = QColor(highlight_color_hex)
+        self.highlight_color_button = QPushButton()
+        self.highlight_color_button.setStyleSheet(
+            f"background-color: {highlight_color_hex};"
+        )
+        self.highlight_color_button.clicked.connect(self._select_highlight_color)
+        layout.addRow("Couleur de fond du surlignage:", self.highlight_color_button)
+
+        # Couleur pour les tags
+        tag_color_hex = self.settings_manager.get("editor.tag_color")
+        self.current_tag_color = QColor(tag_color_hex)
+        self.tag_color_button = QPushButton()
+        self.tag_color_button.setStyleSheet(f"background-color: {tag_color_hex};")
+        self.tag_color_button.clicked.connect(self._select_tag_color)
+        layout.addRow("Couleur des tags (@@tag):", self.tag_color_button)
+
+        # Couleur pour l'horodatage
+        timestamp_color_hex = self.settings_manager.get("editor.timestamp_color")
+        self.current_timestamp_color = QColor(timestamp_color_hex)
+        self.timestamp_color_button = QPushButton()
+        self.timestamp_color_button.setStyleSheet(
+            f"background-color: {timestamp_color_hex};"
+        )
+        self.timestamp_color_button.clicked.connect(self._select_timestamp_color)
+        layout.addRow("Couleur de l'horodatage (HH:MM):", self.timestamp_color_button)
 
         # Bouton de réinitialisation (déplacé et renommé)
         reset_button = QPushButton("Valeurs par défaut")
@@ -284,11 +394,93 @@ class PreferencesDialog(QDialog):
                 f"background-color: {color.name()};"
             )
 
+    def _select_list_color(self):
+        """Sélectionne la couleur pour les listes."""
+        color = QColorDialog.getColor(self.current_list_color, self)
+        if color.isValid():
+            self.current_list_color = color
+            self.list_color_button.setStyleSheet(f"background-color: {color.name()};")
+
     def _select_selection_text_color(self):
         color = QColorDialog.getColor(self.current_selection_text_color, self)
         if color.isValid():
             self.current_selection_text_color = color
             self.selection_text_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_inline_code_text_color(self):
+        """Sélectionne la couleur pour le texte du code inline."""
+        color = QColorDialog.getColor(self.current_inline_code_text_color, self)
+        if color.isValid():
+            self.current_inline_code_text_color = color
+            self.inline_code_text_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_inline_code_bg_color(self):
+        """Sélectionne la couleur pour le fond du code inline."""
+        color = QColorDialog.getColor(self.current_inline_code_bg_color, self)
+        if color.isValid():
+            self.current_inline_code_bg_color = color
+            self.inline_code_bg_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_code_block_bg_color(self):
+        """Sélectionne la couleur pour le fond des blocs de code."""
+        color = QColorDialog.getColor(self.current_code_block_bg_color, self)
+        if color.isValid():
+            self.current_code_block_bg_color = color
+            self.code_block_bg_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_bold_color(self):
+        """Sélectionne la couleur pour le texte en gras."""
+        color = QColorDialog.getColor(self.current_bold_color, self)
+        if color.isValid():
+            self.current_bold_color = color
+            self.bold_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_italic_color(self):
+        """Sélectionne la couleur pour le texte en italique."""
+        color = QColorDialog.getColor(self.current_italic_color, self)
+        if color.isValid():
+            self.current_italic_color = color
+            self.italic_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_strikethrough_color(self):
+        """Sélectionne la couleur pour le texte barré."""
+        color = QColorDialog.getColor(self.current_strikethrough_color, self)
+        if color.isValid():
+            self.current_strikethrough_color = color
+            self.strikethrough_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_highlight_color(self):
+        """Sélectionne la couleur pour le fond du surlignage."""
+        color = QColorDialog.getColor(self.current_highlight_color, self)
+        if color.isValid():
+            self.current_highlight_color = color
+            self.highlight_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
+
+    def _select_tag_color(self):
+        """Sélectionne la couleur pour les tags."""
+        color = QColorDialog.getColor(self.current_tag_color, self)
+        if color.isValid():
+            self.current_tag_color = color
+            self.tag_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_timestamp_color(self):
+        """Sélectionne la couleur pour l'horodatage."""
+        color = QColorDialog.getColor(self.current_timestamp_color, self)
+        if color.isValid():
+            self.current_timestamp_color = color
+            self.timestamp_color_button.setStyleSheet(
                 f"background-color: {color.name()};"
             )
 

@@ -1,4 +1,63 @@
-## V1.6.XX
+## V1.6.12  Issue #15 Editeur Markdown : change la couleur de police des textes Listes
+
+change la couleur de police des textes Listes du - ou 1. ou - [ jusqu'a la fin de la ligne c'est a dire un retour CR
+meme couleur que les headers
+cela devrait permettre d'identifier plus facilement les listes dans le document Markdown comme VScode  Editeur Markdown
+V1.6.12beta1
+
+Possibilité de modifier la couleur dans préférences Utilisateur et donc settings.json, mais aussi par defaut stockées comme couleur Header
+V1.6.12beta2
+
+Dans l'editeur les couleurs par défaut pour l'éditeur sont :
+
+Couleur de fond (background_color) : #d6ebff (un bleu très clair)
+Couleur du texte (text_color) : #2c3e50 (un gris-bleu foncé)
+Couleur des titres (heading_color) : #208bd7 (un bleu vif)
+Couleur des listes (list_color) : #208bd7 (la même que les titres, comme vous l'aviez demandé)
+Couleur du texte sélectionné (selection_text_color) : #ff0004 (un rouge vif)
+
+Possibilyé de modifier la couleur de  inline
+Couleur du texte (police) : #d6336c (un rose/rouge).
+Couleur de fond : #f2f07f (un jaune pâle).
+
+Ajouter la Possibilité de modifier les couleur  (teste et fond)de  inline dans préférences Utilisateur et donc settings.json, mais aussi par defaut stockées comme les couleurs actuelles
+
+V1.6.12beta3
+
+Ajouter la Possibilité de modifier les couleurs dans l'editeur markdown  dans préférences Utilisateur pour le gras, le italique, le barré et surligné et donc settings.json, mais aussi par defaut stockées comme les couleurs actuelles
+
+
+
+couleur de @@prompt et de l'horodatage
+
+Ajouter la Possibilité de modifier les couleurs dans l'editeur markdown  dans préférences Utilisateur pour les @@prompt et de l'horodatage HH:MM et donc settings.json, mais aussi par defaut stockées comme les couleurs actuelles
+
+V1.6.12beta4
+
+Ajouter la Possibilité de modifier les couleurs dans l'editeur markdown  dans préférences Utilisateur pour les extraits de code et donc settings.json, mais aussi par defaut stockées comme les couleurs actuelles. ces préférences dans le panneau afficghage seront entre Couleur fond inline et Couleur texte en gras
+
+V1.6.12beta4
+
+Couleur Par default
+
+{
+    "editor": {
+        "font_family": "Droid Sans Mono",
+        "font_size": 12,
+        "background_color": "#d6ebff",
+        "text_color": "#2c3e50",
+        "heading_color": "#208bd7",
+        "list_color": "#208bd7",
+        "selection_text_color": "#ff0004",
+        "inline_code_text_color": "#d6336c",
+        "inline_code_background_color": "#f2f07f",
+        "bold_color": "#448C27",
+        "italic_color": "#448C27",
+        "strikethrough_color": "#448C27",
+        "highlight_color": "#FFC0CB",
+        "tag_color": "#d73a49",
+        "timestamp_color": "#005cc5"
+    },
 
 ## V1.6.11 Issue #5 Edition Markdon mauvaise coloration syntaxique pour les mots  contenant un "_"  
 

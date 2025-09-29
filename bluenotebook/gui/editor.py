@@ -52,10 +52,58 @@ class MarkdownHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
         self.heading_color = QColor("#208bd7")
+        # Par défaut, la couleur des listes est la même que celle des titres
+        self.list_color = QColor("#208bd7")
+        # Couleurs par défaut pour le code inline
+        self.inline_code_text_color = QColor("#d6336c")
+        self.inline_code_background_color = QColor("#f2f07f")
+        # Couleurs par défaut pour les styles de texte
+        self.bold_color = QColor("#448C27")
+        self.italic_color = QColor("#448C27")
+        self.strikethrough_color = QColor("#448C27")
+        self.highlight_color = QColor("#FFC0CB")
+        # Couleurs par défaut pour les tags et horodatage
+        self.tag_color = QColor("#d73a49")
+        self.timestamp_color = QColor("#005cc5")
+        # Couleur par défaut pour le fond des blocs de code
+        self.code_block_background_color = QColor("#f0f0f0")
+
         self.setup_formats()
 
     def update_heading_color(self, color):
         self.heading_color = color
+        self.setup_formats()
+
+    def update_list_color(self, color):
+        self.list_color = color
+        self.setup_formats()
+
+    def update_inline_code_colors(self, text_color, background_color):
+        """Met à jour les couleurs pour le code inline."""
+        self.inline_code_text_color = text_color
+        self.inline_code_background_color = background_color
+        self.setup_formats()
+
+    def update_text_style_colors(self, bold, italic, strikethrough, highlight):
+        """Met à jour les couleurs pour les styles de texte."""
+        self.bold_color = bold
+        self.italic_color = italic
+        self.strikethrough_color = strikethrough
+        self.highlight_color = highlight
+        self.setup_formats()
+
+    def update_misc_colors(self, tag_color, timestamp_color):
+        """Met à jour les couleurs pour les tags et l'horodatage."""
+        self.tag_color = tag_color
+        self.timestamp_color = timestamp_color
+        self.setup_formats()
+
+    def update_code_block_background_color(self, color):
+        """Met à jour la couleur de fond pour les blocs de code."""
+        self.code_block_background_color = color
+        self.setup_formats()
+
+    def update_base_font_size(self):
         self.setup_formats()
 
     def setup_formats(self):
@@ -79,23 +127,23 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Format pour le gras
         self.bold_format = QTextCharFormat()
         self.bold_format.setFontWeight(QFont.Bold)
-        self.bold_format.setForeground(QColor("#448C27"))
+        self.bold_format.setForeground(self.bold_color)
 
         # Format pour l'italique
         self.italic_format = QTextCharFormat()
         self.italic_format.setFontItalic(True)
-        self.italic_format.setForeground(QColor("#448C27"))
+        self.italic_format.setForeground(self.italic_color)
 
         # Format pour le code inline
         self.inline_code_format = QTextCharFormat()
         self.inline_code_format.setFontWeight(QFont.Bold)
-        self.inline_code_format.setForeground(QColor("#d6336c"))  # Rose/Rouge
-        self.inline_code_format.setBackground(QColor("#f2f07f"))
+        self.inline_code_format.setForeground(self.inline_code_text_color)
+        self.inline_code_format.setBackground(self.inline_code_background_color)
         self.inline_code_format.setFontFamily("Consolas, Monaco, monospace")
 
         # Format pour les blocs de code
         self.code_block_format = QTextCharFormat()
-        self.code_block_format.setBackground(QColor("#f0f0f0"))  # Gris clair
+        self.code_block_format.setBackground(self.code_block_background_color)
         self.code_block_format.setFontFamily("Consolas, Monaco, monospace")
 
         # Format pour les citations (blockquote)
@@ -105,9 +153,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
 
         # Format pour les listes
         self.list_format = QTextCharFormat()
-        self.list_format.setForeground(QColor("#AA3731"))  # Violet
-        self.list_format.setFontWeight(QFont.Bold)
-
+        self.list_format.setForeground(self.list_color)
         # Format pour les liens Markdown
         self.link_format = QTextCharFormat()
         self.link_format.setForeground(QColor("#0366d6"))  # Bleu
@@ -115,19 +161,22 @@ class MarkdownHighlighter(QSyntaxHighlighter):
 
         # Format pour les tags (#tag)
         self.tag_format = QTextCharFormat()
-        self.tag_format.setForeground(QColor("#d73a49"))  # Rouge
+        self.tag_format.setForeground(self.tag_color)
         self.tag_format.setFontWeight(QFont.Bold)
+
+        # Format pour l'horodatage (HH:MM)
+        self.timestamp_format = QTextCharFormat()
+        self.timestamp_format.setForeground(self.timestamp_color)
+        self.timestamp_format.setFontWeight(QFont.Bold)
 
         # Format pour le texte barré (strikethrough)
         self.strikethrough_format = QTextCharFormat()
-        self.strikethrough_format.setForeground(QColor("#448C27"))  # Gris moyen
+        self.strikethrough_format.setForeground(self.strikethrough_color)
         self.strikethrough_format.setFontStrikeOut(True)
 
         # Format pour le surlignage (highlight)
         self.highlight_format = QTextCharFormat()
-        self.highlight_format.setBackground(
-            QColor("#FFC0CB")
-        )  # Rose clair (Light Pink)
+        self.highlight_format.setBackground(self.highlight_color)
 
     def highlightBlock(self, text):
         """Coloration d'un bloc de texte"""
@@ -201,9 +250,10 @@ class MarkdownHighlighter(QSyntaxHighlighter):
             )
 
         # Listes à puces et numérotées (-, *, +, 1.)
-        list_pattern = r"^\s*([-*+]|\d+\.)\s"
+        list_pattern = r"^\s*([-*+]|\d+\.|\-\s\[[ x]\])\s"
         for match in re.finditer(list_pattern, text):
-            self.setFormat(match.start(), match.end() - match.start(), self.list_format)
+            # Appliquer le format du début du marqueur jusqu'à la fin de la ligne
+            self.setFormat(match.start(), len(text) - match.start(), self.list_format)
 
         # Liens Markdown ([texte](url))
         link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
@@ -219,6 +269,13 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         tag_pattern = r"@@(\w{2,})\b"
         for match in re.finditer(tag_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.tag_format)
+
+        # Horodatage (HH:MM)
+        timestamp_pattern = r"\b([0-1]?[0-9]|2[0-3]):[0-5][0-9]\b"
+        for match in re.finditer(timestamp_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.timestamp_format
+            )
 
         # Images HTML (<img ...>)
         image_pattern = r"<img[^>]+>"
@@ -669,6 +726,7 @@ class MarkdownEditor(QWidget):
     def set_font(self, font):
         """Définit la police de l'éditeur de texte."""
         self.text_edit.setFont(font)
+        self.highlighter.update_base_font_size()
 
     def set_background_color(self, color_hex):
         """Définit la couleur de fond de l'éditeur."""
@@ -715,6 +773,43 @@ class MarkdownEditor(QWidget):
         """Définit la couleur des titres dans le surligneur syntaxique."""
         self.highlighter.update_heading_color(QColor(color_hex))
         # Forcer une nouvelle coloration de tout le document
+        self.highlighter.rehighlight()
+
+    def set_list_color(self, color_hex):
+        """Définit la couleur des listes dans le surligneur syntaxique."""
+        self.highlighter.update_list_color(QColor(color_hex))
+        # Forcer une nouvelle coloration de tout le document
+        self.highlighter.rehighlight()
+
+    def set_inline_code_colors(self, text_color_hex, background_color_hex):
+        """Définit les couleurs pour le code inline dans le surligneur."""
+        self.highlighter.update_inline_code_colors(
+            QColor(text_color_hex), QColor(background_color_hex)
+        )
+        self.highlighter.rehighlight()
+
+    def set_text_style_colors(
+        self, bold_hex, italic_hex, strikethrough_hex, highlight_hex
+    ):
+        """Définit les couleurs pour les styles de texte dans le surligneur."""
+        self.highlighter.update_text_style_colors(
+            QColor(bold_hex),
+            QColor(italic_hex),
+            QColor(strikethrough_hex),
+            QColor(highlight_hex),
+        )
+        self.highlighter.rehighlight()
+
+    def set_misc_colors(self, tag_color_hex, timestamp_color_hex):
+        """Définit les couleurs pour les tags et l'horodatage."""
+        self.highlighter.update_misc_colors(
+            QColor(tag_color_hex), QColor(timestamp_color_hex)
+        )
+        self.highlighter.rehighlight()
+
+    def set_code_block_background_color(self, color_hex):
+        """Définit la couleur de fond pour les blocs de code."""
+        self.highlighter.update_code_block_background_color(QColor(color_hex))
         self.highlighter.rehighlight()
 
     def set_selection_text_color(self, color_hex):

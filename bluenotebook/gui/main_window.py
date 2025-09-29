@@ -1496,9 +1496,45 @@ ______________________________________________________________
                 "editor.heading_color", dialog.current_heading_color.name()
             )
             self.settings_manager.set(
+                "editor.list_color", dialog.current_list_color.name()
+            )
+            self.settings_manager.set(
                 "editor.selection_text_color",
                 dialog.current_selection_text_color.name(),
             )
+            self.settings_manager.set(
+                "editor.inline_code_text_color",
+                dialog.current_inline_code_text_color.name(),
+            )
+            self.settings_manager.set(
+                "editor.inline_code_background_color",
+                dialog.current_inline_code_bg_color.name(),
+            )
+            self.settings_manager.set(
+                "editor.code_block_background_color",
+                dialog.current_code_block_bg_color.name(),
+            )
+            self.settings_manager.set(
+                "editor.bold_color", dialog.current_bold_color.name()
+            )
+            self.settings_manager.set(
+                "editor.italic_color", dialog.current_italic_color.name()
+            )
+            self.settings_manager.set(
+                "editor.strikethrough_color",
+                dialog.current_strikethrough_color.name(),
+            )
+            self.settings_manager.set(
+                "editor.highlight_color",
+                dialog.current_highlight_color.name(),
+            )
+            self.settings_manager.set(
+                "editor.tag_color", dialog.current_tag_color.name()
+            )
+            self.settings_manager.set(
+                "editor.timestamp_color", dialog.current_timestamp_color.name()
+            )
+
             self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
@@ -1585,9 +1621,40 @@ ______________________________________________________________
         heading_color = self.settings_manager.get("editor.heading_color")
         self.editor.set_heading_color(heading_color)
 
+        # Appliquer la couleur des listes
+        list_color = self.settings_manager.get("editor.list_color")
+        self.editor.set_list_color(list_color)
+
         # Appliquer la couleur du texte de sélection
         selection_text_color = self.settings_manager.get("editor.selection_text_color")
         self.editor.set_selection_text_color(selection_text_color)
+
+        # Appliquer les couleurs du code inline
+        inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
+        inline_bg_color = self.settings_manager.get(
+            "editor.inline_code_background_color"
+        )
+        self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
+
+        # Appliquer la couleur de fond des blocs de code
+        code_block_bg_color = self.settings_manager.get(
+            "editor.code_block_background_color"
+        )
+        self.editor.set_code_block_background_color(code_block_bg_color)
+
+        # Appliquer les couleurs des styles de texte
+        bold_color = self.settings_manager.get("editor.bold_color")
+        italic_color = self.settings_manager.get("editor.italic_color")
+        strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
+        highlight_color = self.settings_manager.get("editor.highlight_color")
+        self.editor.set_text_style_colors(
+            bold_color, italic_color, strikethrough_color, highlight_color
+        )
+
+        # Appliquer les couleurs des tags et horodatage
+        tag_color = self.settings_manager.get("editor.tag_color")
+        timestamp_color = self.settings_manager.get("editor.timestamp_color")
+        self.editor.set_misc_colors(tag_color, timestamp_color)
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
