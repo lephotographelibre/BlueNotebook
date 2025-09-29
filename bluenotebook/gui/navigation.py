@@ -111,6 +111,8 @@ class NavigationPanel(QWidget):
 
         # Conteneur pour le champ de recherche et le bouton de menu déroulant
         search_container = QWidget()
+        # Fixer la hauteur du conteneur pour éviter toute déformation verticale
+        search_container.setFixedHeight(35)
         search_layout = QHBoxLayout(search_container)
         search_layout.setContentsMargins(0, 5, 0, 5)
         search_layout.setSpacing(2)
