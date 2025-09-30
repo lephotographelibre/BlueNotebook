@@ -80,7 +80,7 @@ class NavigationPanel(QWidget):
         layout.setSpacing(0)  # Pas d'espacement entre les widgets principaux
 
         # Titre du panneau
-        title_label = QLabel("🧭 Navigation")
+        title_label = QLabel("🧭 Navigation Journal")
         title_label.setStyleSheet(
             """
             QLabel {

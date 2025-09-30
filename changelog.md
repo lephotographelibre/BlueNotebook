@@ -1,10 +1,39 @@
-## V1.7.4 Menu Inserser Suite A FAIRE
-
---------------
+## V1.7.5 Menu Inserser Suite A FAIRE
 
 je voudrai modifier le sous menu Images (<img ..>).
 si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
 Si aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichier et de demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+
+
+## V1.7.4 Qt Support (kde, gnome, gtk)
+
+modification de  run_bluenotebook.sh pour la Détection de l'environnement de bureau pour le thème Qt...
+
+```bash
+echo "🎨 Détection de l'environnement de bureau pour le thème Qt..."
+PLATFORM_THEME=""
+
+# La variable XDG_CURRENT_DESKTOP est la méthode la plus standard.
+# On la vérifie en premier, en ignorant la casse.
+case "${XDG_CURRENT_DESKTOP,,}" in
+  *kde*|*plasma*)
+    PLATFORM_THEME="kde"
+    ;;
+  *gnome*|*cinnamon*|*mate*|*xfce*)
+    PLATFORM_THEME="gtk3"
+    ;;
+esac
+
+if [ -n "$PLATFORM_THEME" ]; then
+    export QT_QPA_PLATFORMTHEME=$PLATFORM_THEME
+    echo "✅ Thème Qt forcé à '$PLATFORM_THEME' pour une meilleure intégration."
+else
+    echo "ℹ️ Environnement de bureau non détecté ou non supporté pour un thème spécifique. Qt choisira par défaut."
+fi
+```
+
+
+
 
 
 ## V1.7.3 Affichage d'images dans l'aperçu HTML

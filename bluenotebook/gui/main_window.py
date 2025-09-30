@@ -353,7 +353,7 @@ class MainWindow(QMainWindow):
         )
 
         self.toggle_navigation_action = QAction(
-            "🧭 Basculer Navigation",
+            "🧭 Basculer Navigation Journal",
             self,
             shortcut="F6",
             triggered=self.toggle_navigation,
