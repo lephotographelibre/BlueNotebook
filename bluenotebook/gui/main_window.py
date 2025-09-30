@@ -458,20 +458,20 @@ class MainWindow(QMainWindow):
     def _setup_insert_menu(self, insert_menu):
         """Configure le menu d'insertion de manière dynamique."""
         insert_actions_data = [
-            ("🔗 Lien (URL ou email) (<url>)", "url"),
+            ("🖼️ Image (<img ...>)", "image", QKeySequence.Italic),
             (
-                "🖼️ Image (<img ...>)",
-                "image",
-                QKeySequence.Italic,
-            ),  # Raccourci Ctrl+I
+                "🖼️ Image Markdown",
+                "markdown_image",
+                QKeySequence("Ctrl+Shift+I"),
+            ),
+            ("🔗 Lien (URL ou email) (<url>)", "url"),
             ("🔗 Lien Markdown (texte)", "markdown_link"),
         ]
 
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
-            action.triggered.connect(
-                lambda checked=False, d=data: self.editor.format_text(d)
-            )
+            # Utilisation de functools.partial pour éviter le problème de closure de lambda dans une boucle
+            action.triggered.connect(functools.partial(self.editor.format_text, data))
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
@@ -507,22 +507,8 @@ class MainWindow(QMainWindow):
 
         insert_time_action = QAction("🕒 Heure", self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
-        insert_menu.addAction(insert_time_action)
-        insert_menu.addSeparator()
-
-        # --- Sous-menu Insérer ---
-        # V1.1.9 Le menu est maintenant créé dans _setup_format_menu
-        # insert_menu = QMenu("➕ Insérer", self)
-        insert_menu = QMenu("➕ Insérer", self)  # noqa
-        insert_actions_data = [
-            ("🔗 Lien (URL ou email) (<url>)", "url"),
-            (
-                "🖼️ Image (<img ...>)",
-                "image",
-                QKeySequence.Italic,
-            ),  # Raccourci Ctrl+I ajouté ici
-            ("🔗 Lien Markdown (texte)", "markdown_link"),
-        ]
+        insert_menu.addAction(insert_time_action)  # noqa
+        insert_menu.addSeparator()  # noqa
 
         # --- Sous-menu Emoji ---
         emoji_menu = QMenu("😊 Emoji", self)

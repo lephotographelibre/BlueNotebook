@@ -1,3 +1,84 @@
+## V1.7.4 Menu Inserser Suite A FAIRE
+
+--------------
+
+je voudrai modifier le sous menu Images (<img ..>).
+si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+Si aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichier et de demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+
+
+## V1.7.3 Affichage d'images dans l'aperçu HTML
+
+Pour des raisons de sécurité, un composant `QWebEngineView` ne peut pas, par défaut, accéder aux fichiers de votre ordinateur (comme les images) lorsque le HTML est chargé directement comme une chaîne de texte.
+
+La bonne nouvelle, c'est qu'il y a une solution simple ! Il suffit d'indiquer à la vue web une "URL de base" pour qu'elle sache comment interpréter les chemins de fichiers locaux.
+
+### Explication du problème
+
+Lorsque vous utilisez `self.web_view.setHtml(html_string)`, le contenu est traité comme s'il venait d'une page vide (`about:blank`). Les chemins de fichiers comme `/home/jm/Images/...` ou `../../../...` n'ont aucun sens dans ce contexte et sont bloqués.
+
+### La solution
+
+La solution consiste à utiliser le deuxième argument de la méthode `setHtml`, qui est `baseUrl`. En lui passant une URL indiquant que le contexte est le système de fichiers local, `QWebEngineView` saura comment charger vos images.
+
+Voici la modification à apporter dans votre fichier `/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/preview.py`.
+
+```diff
+--- a/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/preview.py
++++ b/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/preview.py
+@@ -457,7 +457,9 @@
+             full_html = self.create_html_template(html_content)
+ 
+             # Mettre à jour la vue web
+-            self.web_view.setHtml(full_html)
++            # V1.7.3 Fix: Ajout de baseUrl pour permettre l'affichage des images locales
++            # En passant "file:///", on autorise QWebEngine à charger des fichiers locaux via des chemins absolus.
++            self.web_view.setHtml(full_html, baseUrl=QUrl("file:///"))
+             self.current_html = full_html
+ 
+         except Exception as e:
+```
+ 
+
+V1.7.3 beta1
+
+Ajouter un sous menu dans Inserer: Image Markdown qui insere une image avec le tag markdown c'est a dire par exemple: [](/home/jm/Images/2025_07_09_Pleine_Lune/IMG_7074.jpg)
+si un nom de fichier est selectionné dans l'éditeur inserer le tag à la place directement. Sin aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichier. ce nouveau sous Menu sera positionné dans le menu inserer immediatement dessous Lien. ne pas oublier l'emoji image
+
+V1.7.3beta2
+
+Manque Emoji au menu Inserer Lien MAkdown
+
+je voudrai modifier le sous Menu "Inserer -> Image Markdown"
+si un nom de fichier est selectionné dans l'éditeur , inserer le tag. 
+Si aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichierp uis inserer le tag.
+
+cette fonctionnalité est déjà parfaitement implémentée dans la méthode insert_markdown_image du fichier editor.py.
+
+Voici comment elle fonctionne actuellement :
+
+Si du texte est sélectionné : *Le programme vérifie si ce texte correspond à un chemin de fichier valide sur votre ordinateur*.
+Si c'est le cas, il utilise ce chemin pour créer le tag Markdown !.
+Si ce n'est pas un chemin valide (ou si rien n'est sélectionné), il passe à l'étape 2.
+
+Si aucun texte n'est sélectionné (ou si la sélection n'est pas un fichier) : Une boîte de dialogue s'ouvre, vous permettant de choisir un fichier image. Si vous en sélectionnez un, le tag Markdown correspondant est inséré.
+
+V1.7.3beta3
+
+Je voudrais réordoner les Sous menus de Inserer.. Il faut descendre Lien URL ou Email en troisieme position.
+
+V1.7.3beta4
+
+Il manque une emoji image au presmier sous menu de inserer c'east a dire Image (<img ..>)
+
+V1.7.3beta5
+
+
+
+
+
+
+
 ## V1.7.2 Ajout Paramètre Affichages Couleurs +  Bug Couleurs Liste et double asterisque
 
 Preferences : add Citations Color and Links + police code et Inline

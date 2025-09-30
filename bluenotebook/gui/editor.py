@@ -569,6 +569,11 @@ class MarkdownEditor(QWidget):
         """Applique le formatage Markdown au texte sélectionné."""
         cursor = self.text_edit.textCursor()
 
+        # Traiter en priorité les cas qui doivent fonctionner sans sélection
+        if format_type == "markdown_image":
+            self.insert_markdown_image()
+            return
+
         if format_type == "quote_of_the_day":
             if (
                 self.main_window
@@ -598,14 +603,14 @@ class MarkdownEditor(QWidget):
 
         if not cursor.hasSelection():
             if format_type == "hr":
-                cursor.insertText("\n---\n")
+                self.insert_text("\n---\n")
             elif format_type == "table":
                 table_template = "| En-tête 1 | En-tête 2 |\n|---|---|\n| Cellule 1 | Cellule 2 |\n| Cellule 3 | Cellule 4 |"
-                cursor.insertText(table_template)
+                self.insert_text(table_template)
             elif format_type == "time":
                 from datetime import datetime
 
-                cursor.insertText(f"**{datetime.now().strftime('%H:%M')}**")
+                self.insert_text(f"**{datetime.now().strftime('%H:%M')}**")
             return
 
         selected_text = cursor.selectedText()
@@ -695,9 +700,34 @@ class MarkdownEditor(QWidget):
                 new_text = f"[{text}]({url})"
                 cursor.insertText(new_text)
 
-        elif format_type == "tag":
-            new_text = f"@@{selected_text}"
-            cursor.insertText(new_text)
+    def insert_markdown_image(self):
+        """Insère une image au format Markdown ![](/chemin/vers/image)."""
+        cursor = self.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+
+        image_path = ""
+
+        # Si le texte sélectionné est un chemin de fichier valide
+        if selected_text and Path(selected_text).is_file():
+            image_path = selected_text
+        else:
+            # Sinon, ouvrir une boîte de dialogue
+            file_name, _ = QFileDialog.getOpenFileName(
+                self,
+                "Sélectionner une image",
+                "",
+                "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
+            )
+            if file_name:
+                image_path = file_name
+
+        if image_path:
+            # Utiliser des barres obliques pour la compatibilité web/markdown
+            image_path_md = image_path.replace("\\", "/")
+            # Insérer le tag Markdown
+            self.insert_text(f"![]({image_path_md})")
+
+        self.text_edit.setFocus()
 
     def clear_formatting(self):
         """Supprime le formatage Markdown de la sélection."""
