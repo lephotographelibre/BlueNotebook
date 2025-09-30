@@ -1,0 +1,40 @@
+{
+  "name": "BlueNotebook BlueLight",
+  "type": "light",
+  "author": "BlueNotebook",
+  "description": "Un thème clair léger dans les tonalités de bleu et gris",
+  "fonts": {
+    "editor": "Droid Sans Mono",
+    "editor_size": 12,
+    "code": "Courier New"
+  },
+  "colors": {
+    "editor": {
+      "background": "#ffffff",
+      "foreground": "#253443",
+      "selection_text": "#a4b5cf",
+      "selection_background": "#e9e942"
+    },
+    "text_styles": {
+      "headings": "#4c6eab",
+      "lists": "#a4b5cf",
+      "bold": "#4c6eab",
+      "italic": "#253443",
+      "strikethrough": "#253443",
+      "links": "#4c6eab",
+      "quotes": "#4c6eab"
+    },
+    "special_elements": {
+      "tags": "#4c6eab",
+      "timestamps": "#253443"
+    },
+    "code": {
+      "inline_foreground": "#4c6eab",
+      "inline_background": "#f7f8fa",
+      "block_background": "#f7f8fa"
+    },
+    "highlight": {
+      "background": "#fffec7"
+    }
+  }
+}
