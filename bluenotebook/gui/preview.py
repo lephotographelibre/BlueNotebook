@@ -473,3 +473,16 @@ class MarkdownPreview(QWidget):
     def get_html(self):
         """Récupérer le HTML complet pour l'export"""
         return self.current_html
+
+    def scroll_to_percentage(self, percentage: float):
+        """Fait défiler la vue web à un pourcentage donné de la hauteur totale."""
+        if not (0.0 <= percentage <= 1.0):
+            return
+
+        js_code = f"""
+            var scrollHeight = document.body.scrollHeight;
+            var clientHeight = document.documentElement.clientHeight;
+            var targetY = (scrollHeight - clientHeight) * {percentage};
+            window.scrollTo(0, targetY);
+        """
+        self.web_view.page().runJavaScript(js_code)

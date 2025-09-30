@@ -1,3 +1,32 @@
+## V1.7.2 Ajout Paramètre Affichages Couleurs +  Bug Couleurs Liste et double asterisque
+
+Preferences : add Citations Color and Links + police code et Inline
+
+Ajouter la Possibilité de modifier les couleurs dans l'editeur markdown  dans préférences Utilisateur pour les citations, les liens ainsi que les polices pour le code et inline et donc settings.json, mais aussi par defaut stockées comme les couleurs actuelles
+
+V1.7.2beta1
+
+on avait fait la modif suivante hier: "change la couleur de police des textes Listes du - ou 1. ou - [ jusqu'a la fin de la ligne c'est a dire un retour CR
+meme couleur que les headers
+cela devrait permettre d'identifier plus facilement les listes dans le document Markdown comme VScode  Editeur Markdown
+Je souhaite annuler cette modification et pour toute les listes n'afficher dans la couleur des liste uniquement le signe en début de liste ( - , 1. ou - [ ] ). Le reste de la ligne restera comme du texte standard editeur et pourra faire l'onjet d'enrichissement (gras, italique,...)
+
+V1.72betat2
+
+Issue [#17](https://github.com/lephotographelibre/BlueNotebook/issues/17)
+bug coloration syntaxique
+
+dans l'editeur la lise en gras d'un mot V1.6.12beta2 produit 2 couleurs 1 pour les etoiles ** et une pour le texte V1.6.12beta2 (couleur choisie pour le gras) cela ne se produit pas avec V1.6.12beta2 ni pour V1.6.12beta2 ni pour V1.6.12beta2
+
+**V1.6.12beta2** pas ok
+*V1.6.12beta2* ok 
+_V1.6.12beta2_ ok 
+___V1.6.12beta2___ ok
+
+V1.72betat3
+
+ameliorer la syncro entre editeur et Aperçu HTM.
+Je voudrais que des que je positionne le caret dans l'editeur on essaye de synchroniser l"apercu HTML et que l'on positionne l'apercu HTML à la meme position correspondante en 1 ere ligne, c'est a dire en haut de l'affichage HTML. Est ce assez clair ?
 ## V1.7.1 Génération d'un theme de base à partir  des paramètres actuels (couleur , Police)
 
 ### Éléments avec une couleur de police spécifique
@@ -392,6 +421,7 @@ Cette solution devrait résoudre les deux problèmes que vous avez mentionnés :
 
 - Les headings seront toujours positionnés en première ligne, même s'ils sont déjà visibles
 - Les headings en fin de document seront aussi correctement positionnés en haut quand c'est possible
+
 ## V1.5.1 Panneau "Plan du document" et Préférences d'Affichage des Panneaux
 
 Cette version introduit deux fonctionnalités majeures pour améliorer la navigation dans les documents et la personnalisation de l'espace de travail.

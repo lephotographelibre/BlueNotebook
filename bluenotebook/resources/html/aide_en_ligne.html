@@ -71,7 +71,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V1.7.1
+            Manuel Utilisateur - BlueNotebook V1.7.2
         </h1>
     </header>
 
@@ -85,9 +85,9 @@
             <li><a href="#navigation-temporelle">5. Navigation Temporelle</a></li>
             <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">7. Exploration des Menus</a></li>
-            <li><a href="#backup-restore">7. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">8. Personnalisation via les Préférences</a></li>
-            <li><a href="#raccourcis">9. Raccourcis Clavier</a></li>
+            <li><a href="#backup-restore">8. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">9. Personnalisation via les Préférences</a></li>
+            <li><a href="#raccourcis">10. Raccourcis Clavier</a></li>
         </ul>
     </div>
 
@@ -313,11 +313,12 @@
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet vous permet de personnaliser l'apparence de la zone d'écriture.</p>
         <ul>
-            <li><strong>Police de l'éditeur :</strong> Permet de choisir la famille de police (ex: "Droid Sans Mono") et sa taille.</li>
+            <li><strong>Police de l'éditeur :</strong> Permet de choisir la famille de police (ex: "Droid Sans Mono") et sa taille pour le texte standard.</li>
+            <li><strong>Police des extraits de code :</strong> Permet de choisir la famille de police pour le code <code>`inline`</code> et les blocs de code ```.</li>
             <li><strong>Couleur de fond de l'éditeur :</strong> La couleur de l'arrière-plan de la zone de texte.</li>
             <li><strong>Couleur de la police de l'éditeur :</strong> La couleur par défaut du texte que vous tapez.</li>
             <li><strong>Couleur des titres Markdown :</strong> La couleur des titres (<code>#</code>, <code>##</code>, etc.).</li>
-            <li><strong>Couleur des listes Markdown :</strong> La couleur du texte des listes (<code>-</code>, <code>1.</code>, etc.).</li>
+            <li><strong>Couleur des listes Markdown :</strong> La couleur des marqueurs de listes (<code>-</code>, <code>1.</code>, etc.).</li>
             <li><strong>Couleur du texte sélectionné :</strong> La couleur de la police lorsque vous surlignez du texte avec la souris.</li>
             <li><strong>Couleur texte code inline :</strong> La couleur de la police pour le code <code>`inline`</code> (entouré de backticks).</li>
             <li><strong>Couleur fond code inline :</strong> La couleur de l'arrière-plan pour le code <code>`inline`</code>.</li>
@@ -326,6 +327,8 @@
             <li><strong>Couleur du texte en italique :</strong> La couleur de la police pour le texte en <em>*italique*</em>.</li>
             <li><strong>Couleur du texte barré :</strong> La couleur de la police pour le texte ~~barré~~.</li>
             <li><strong>Couleur de fond du surlignage :</strong> La couleur de l'arrière-plan pour le texte ==surligné==.</li>
+            <li><strong>Couleur des citations :</strong> La couleur du texte pour les citations (<code>> texte</code>).</li>
+            <li><strong>Couleur des liens :</strong> La couleur du texte pour les liens Markdown (<code>[texte](url)</code>).</li>
             <li><strong>Couleur des tags (@@tag) :</strong> La couleur des tags personnalisés comme <code>@@projet</code>.</li>
             <li><strong>Couleur de l'horodatage (HH:MM) :</strong> La couleur des horodatages détectés dans le texte.</li>
             <li><strong>Bouton "Valeurs par défaut" :</strong> Réinitialise toutes les options d'affichage à leurs valeurs d'usine.</li>
@@ -344,6 +347,22 @@
         <ul>
             <li><strong>Afficher la citation du jour au démarrage :</strong> Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
         </ul>
+
+        <h3>Le fichier `settings.json`</h3>
+        <p>Toutes les modifications que vous effectuez dans la fenêtre des Préférences sont sauvegardées dans un fichier texte nommé <code>settings.json</code>. Ce fichier est le gardien de votre configuration personnelle.</p>
+        <h4>À quoi sert-il ?</h4>
+        <p>Il conserve tous vos choix de personnalisation :</p>
+        <ul>
+            <li>Les polices et les couleurs de l'éditeur.</li>
+            <li>La visibilité par défaut des panneaux.</li>
+            <li>Les mots et tags que vous souhaitez exclure des index ou des nuages.</li>
+            <li>Les options d'intégrations, comme l'affichage de la citation du jour.</li>
+        </ul>
+        <p>Grâce à ce fichier, BlueNotebook se souvient de vos préférences à chaque fois que vous le lancez. Vous pouvez même le sauvegarder pour transférer votre configuration sur un autre ordinateur.</p>
+        <h4>Où se trouve-t-il ?</h4>
+        <p>L'emplacement dépend de votre système d'exploitation :</p>
+        <ul><li><strong>Sur Linux :</strong> <code>~/.config/BlueNotebook/settings.json</code> (où <code>~</code> est votre dossier personnel).</li><li><strong>Sur Windows :</strong> <code>C:\Users\VotreNom\.config\BlueNotebook\settings.json</code></li></ul>
+        <p><strong>Attention :</strong> Il est déconseillé de modifier ce fichier manuellement, sauf si vous savez ce que vous faites. Une erreur de syntaxe pourrait entraîner la réinitialisation de vos préférences. Utilisez toujours la fenêtre des Préférences pour modifier les paramètres en toute sécurité.</p>
     </section>
 
 
@@ -371,7 +390,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.7.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.7.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

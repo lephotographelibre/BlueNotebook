@@ -48,6 +48,10 @@ class SettingsManager:
                 "tag_color": "#d73a49",
                 "timestamp_color": "#005cc5",
                 "code_block_background_color": "#f0f0f0",
+                # V1.7.2 Ajout Paramètre Affichages Couleurs
+                "quote_color": "#2B303B",
+                "link_color": "#0366d6",
+                "code_font_family": "Consolas, Monaco, monospace",
             },
             "integrations": {"show_quote_of_the_day": False},
             "ui": {

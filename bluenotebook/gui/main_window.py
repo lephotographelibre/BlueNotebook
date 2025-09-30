@@ -90,6 +90,11 @@ class MainWindow(QMainWindow):
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_preview)
 
+        # V1.7.2beta3 - Timer pour la synchronisation du curseur
+        self.cursor_sync_timer = QTimer()
+        self.cursor_sync_timer.setSingleShot(True)
+        self.cursor_sync_timer.timeout.connect(self.sync_preview_to_cursor)
+
         self.load_initial_file()
         self.show_quote_of_the_day()
         self.start_initial_indexing()
@@ -577,6 +582,9 @@ class MainWindow(QMainWindow):
         self.editor.textChanged.connect(self.on_text_changed)
         self.editor.text_edit.verticalScrollBar().valueChanged.connect(
             self.sync_preview_scroll
+        )
+        self.editor.cursorPositionChanged.connect(
+            lambda: self.cursor_sync_timer.start(100)
         )
         self.navigation_panel.prev_day_button_clicked.connect(
             self.on_prev_day_button_clicked
@@ -1216,6 +1224,26 @@ ______________________________________________________________
         js_code = f"window.scrollTo(0, document.body.scrollHeight * {relative_pos});"
         preview_page.runJavaScript(js_code)
 
+    def sync_preview_to_cursor(self):
+        """
+        Synchronise la vue de l'aperçu sur la position actuelle du curseur
+        dans l'éditeur.
+        """
+        cursor = self.editor.text_edit.textCursor()
+        block = cursor.block()
+        if not block.isValid():
+            return
+
+        total_blocks = self.editor.text_edit.document().blockCount()
+        if total_blocks == 0:
+            return
+
+        # Calculer la position relative du bloc actuel
+        relative_pos = block.blockNumber() / total_blocks
+
+        # Demander à l'aperçu de défiler
+        self.preview.scroll_to_percentage(relative_pos)
+
     def start_initial_indexing(self):
         """Lance l'indexation des tags pour le répertoire de journal actuel."""
         # Importer ici pour éviter les dépendances circulaires si nécessaire
@@ -1534,6 +1562,17 @@ ______________________________________________________________
             self.settings_manager.set(
                 "editor.timestamp_color", dialog.current_timestamp_color.name()
             )
+            # V1.7.2 Ajout Paramètre Affichages Couleurs
+            self.settings_manager.set(
+                "editor.quote_color", dialog.current_quote_color.name()
+            )
+            self.settings_manager.set(
+                "editor.link_color", dialog.current_link_color.name()
+            )
+            self.settings_manager.set(
+                "editor.code_font_family", dialog.current_code_font.family()
+            )
+            # Fin V1.7.2
 
             self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
@@ -1655,6 +1694,14 @@ ______________________________________________________________
         tag_color = self.settings_manager.get("editor.tag_color")
         timestamp_color = self.settings_manager.get("editor.timestamp_color")
         self.editor.set_misc_colors(tag_color, timestamp_color)
+
+        # V1.7.2 Ajout Paramètre Affichages Couleurs
+        quote_color = self.settings_manager.get("editor.quote_color")
+        link_color = self.settings_manager.get("editor.link_color")
+        self.editor.set_quote_link_colors(quote_color, link_color)
+
+        code_font = self.settings_manager.get("editor.code_font_family")
+        self.editor.set_code_font(code_font)
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))

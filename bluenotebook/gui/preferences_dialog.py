@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QTextEdit,
     QMessageBox,
+    QFontComboBox,
 )
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt
@@ -150,6 +151,20 @@ class PreferencesDialog(QDialog):
         self.font_button = QPushButton(f"{font_family}, {font_size}pt")
         self.font_button.clicked.connect(self._select_font)
         layout.addRow("Police de l'éditeur:", self.font_button)
+
+        # V1.7.2 Ajout Paramètre Affichages Couleurs
+        # Police pour le code
+        code_font_family = self.settings_manager.get(
+            "editor.code_font_family", "Consolas, Monaco, monospace"
+        )
+        self.current_code_font = QFont(code_font_family)
+
+        self.code_font_button = QPushButton(f"{code_font_family}")
+        self.code_font_button.setToolTip(
+            "Choisir la police pour le code inline et les blocs de code."
+        )
+        self.code_font_button.clicked.connect(self._select_code_font)
+        layout.addRow("Police des extraits de code:", self.code_font_button)
 
         # Couleur de fond de l'éditeur
         color_hex = self.settings_manager.get("editor.background_color")
@@ -283,6 +298,24 @@ class PreferencesDialog(QDialog):
         self.highlight_color_button.clicked.connect(self._select_highlight_color)
         layout.addRow("Couleur de fond du surlignage:", self.highlight_color_button)
 
+        # V1.7.2 Ajout Paramètre Affichages Couleurs
+        # Couleur des citations
+        quote_color_hex = self.settings_manager.get("editor.quote_color", "#2B303B")
+        self.current_quote_color = QColor(quote_color_hex)
+        self.quote_color_button = QPushButton()
+        self.quote_color_button.setStyleSheet(f"background-color: {quote_color_hex};")
+        self.quote_color_button.clicked.connect(self._select_quote_color)
+        layout.addRow("Couleur des citations:", self.quote_color_button)
+
+        # Couleur des liens
+        link_color_hex = self.settings_manager.get("editor.link_color", "#0366d6")
+        self.current_link_color = QColor(link_color_hex)
+        self.link_color_button = QPushButton()
+        self.link_color_button.setStyleSheet(f"background-color: {link_color_hex};")
+        self.link_color_button.clicked.connect(self._select_link_color)
+        layout.addRow("Couleur des liens:", self.link_color_button)
+        # Fin V1.7.2
+
         # Couleur pour les tags
         tag_color_hex = self.settings_manager.get("editor.tag_color")
         self.current_tag_color = QColor(tag_color_hex)
@@ -373,6 +406,30 @@ class PreferencesDialog(QDialog):
         if ok:
             self.current_font = font
             self.font_button.setText(f"{font.family()}, {font.pointSize()}pt")
+
+    # V1.7.2 Ajout Paramètre Affichages Couleurs
+    def _select_code_font(self):
+        """Sélectionne la police pour le code."""
+        font, ok = QFontDialog.getFont(self.current_code_font, self)
+        if ok:
+            self.current_code_font = font
+            self.code_font_button.setText(font.family())
+
+    def _select_quote_color(self):
+        """Sélectionne la couleur pour les citations."""
+        color = QColorDialog.getColor(self.current_quote_color, self)
+        if color.isValid():
+            self.current_quote_color = color
+            self.quote_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_link_color(self):
+        """Sélectionne la couleur pour les liens."""
+        color = QColorDialog.getColor(self.current_link_color, self)
+        if color.isValid():
+            self.current_link_color = color
+            self.link_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    # Fin V1.7.2
 
     def _select_color(self):
         color = QColorDialog.getColor(self.current_color, self)

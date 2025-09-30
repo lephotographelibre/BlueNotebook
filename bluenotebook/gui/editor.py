@@ -67,6 +67,13 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.timestamp_color = QColor("#005cc5")
         # Couleur par défaut pour le fond des blocs de code
         self.code_block_background_color = QColor("#f0f0f0")
+        # V1.7.2 Ajout Paramètre Affichages Couleurs
+        # Couleurs par défaut pour les citations et les liens
+        self.quote_color = QColor("#2B303B")
+        self.link_color = QColor("#0366d6")
+
+        # Police par défaut pour le code
+        self.code_font_family = "Consolas, Monaco, monospace"
 
         self.setup_formats()
 
@@ -96,6 +103,18 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         """Met à jour les couleurs pour les tags et l'horodatage."""
         self.tag_color = tag_color
         self.timestamp_color = timestamp_color
+        self.setup_formats()
+
+    # V1.7.2 Ajout Paramètre Affichages Couleurs
+    def update_quote_link_colors(self, quote_color, link_color):
+        """Met à jour les couleurs pour les citations et les liens."""
+        self.quote_color = quote_color
+        self.link_color = link_color
+        self.setup_formats()
+
+    def update_code_font(self, font_family):
+        """Met à jour la police pour le code."""
+        self.code_font_family = font_family
         self.setup_formats()
 
     def update_code_block_background_color(self, color):
@@ -139,16 +158,16 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.inline_code_format.setFontWeight(QFont.Bold)
         self.inline_code_format.setForeground(self.inline_code_text_color)
         self.inline_code_format.setBackground(self.inline_code_background_color)
-        self.inline_code_format.setFontFamily("Consolas, Monaco, monospace")
+        self.inline_code_format.setFontFamily(self.code_font_family)
 
         # Format pour les blocs de code
         self.code_block_format = QTextCharFormat()
         self.code_block_format.setBackground(self.code_block_background_color)
-        self.code_block_format.setFontFamily("Consolas, Monaco, monospace")
+        self.code_block_format.setFontFamily(self.code_font_family)
 
         # Format pour les citations (blockquote)
         self.quote_format = QTextCharFormat()
-        self.quote_format.setForeground(QColor("#2B303B"))  # Gris
+        self.quote_format.setForeground(self.quote_color)
         self.quote_format.setFontItalic(True)
 
         # Format pour les listes
@@ -156,7 +175,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.list_format.setForeground(self.list_color)
         # Format pour les liens Markdown
         self.link_format = QTextCharFormat()
-        self.link_format.setForeground(QColor("#0366d6"))  # Bleu
+        self.link_format.setForeground(self.link_color)
         self.link_format.setUnderlineStyle(QTextCharFormat.SingleUnderline)
 
         # Format pour les tags (#tag)
@@ -198,29 +217,33 @@ class MarkdownHighlighter(QSyntaxHighlighter):
                     self.title_formats[level],
                 )
 
+        # V1.7.2 Fix Issue #17 - Ordre d'application pour éviter conflit gras/italique
         # Gras (**text** ou __text__) - version simplifiée
         bold_star_pattern = r"\*\*(?!\s)(.*?)(?<!\s)\*\*"
         for match in re.finditer(bold_star_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
 
+        # Italique (*text*) - ne doit pas être appliqué sur du gras déjà traité
+        italic_star_pattern = r"(?<!\*)\*(?!\s)(.*?)(?<!\s)\*(?!\*)"
+        for match in re.finditer(italic_star_pattern, text):
+            # Vérifier si le format est déjà appliqué pour éviter les conflits
+            if self.format(match.start()) != self.bold_format:
+                self.setFormat(
+                    match.start(), match.end() - match.start(), self.italic_format
+                )
+
         bold_underscore_pattern = r"__(?!\s)(.*?)(?<!\s)__"
         for match in re.finditer(bold_underscore_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.bold_format)
-
-        # Italique (*text* ou _text_) - version simplifiée
-        italic_star_pattern = r"(?<!\*)\*(?!\s)(.*?)(?<!\s)\*(?!\*)"
-        for match in re.finditer(italic_star_pattern, text):
-            self.setFormat(
-                match.start(), match.end() - match.start(), self.italic_format
-            )
 
         # Règle améliorée pour l'italique avec underscore, qui ignore les `_` à l'intérieur des mots.
         # `(?<!\w)` et `(?!\w)` s'assurent que l'underscore n'est pas collé à un caractère alphanumérique.
         italic_underscore_pattern = r"(?<!\w)_([^_]+)_(?!\w)"
         for match in re.finditer(italic_underscore_pattern, text):
-            self.setFormat(
-                match.start(), match.end() - match.start(), self.italic_format
-            )
+            if self.format(match.start()) != self.bold_format:
+                self.setFormat(
+                    match.start(), match.end() - match.start(), self.italic_format
+                )
 
         # Code inline (`code`)
         inline_code_pattern = r"`([^`]+)`"
@@ -252,8 +275,8 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Listes à puces et numérotées (-, *, +, 1.)
         list_pattern = r"^\s*([-*+]|\d+\.|\-\s\[[ x]\])\s"
         for match in re.finditer(list_pattern, text):
-            # Appliquer le format du début du marqueur jusqu'à la fin de la ligne
-            self.setFormat(match.start(), len(text) - match.start(), self.list_format)
+            # Appliquer le format uniquement au marqueur de la liste
+            self.setFormat(match.start(), match.end() - match.start(), self.list_format)
 
         # Liens Markdown ([texte](url))
         link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
@@ -401,6 +424,7 @@ class MarkdownEditor(QWidget):
     """Éditeur de texte avec coloration syntaxique Markdown"""
 
     textChanged = pyqtSignal()
+    cursorPositionChanged = pyqtSignal()
 
     def __init__(self, main_window=None):
         super().__init__()
@@ -485,6 +509,7 @@ class MarkdownEditor(QWidget):
 
         # Connexions
         self.text_edit.textChanged.connect(self.textChanged.emit)
+        self.text_edit.cursorPositionChanged.connect(self.cursorPositionChanged.emit)
 
         # L'éditeur prend tout l'espace disponible
         layout.addWidget(self.text_edit, 1)  # stretch factor = 1
@@ -805,6 +830,19 @@ class MarkdownEditor(QWidget):
         self.highlighter.update_misc_colors(
             QColor(tag_color_hex), QColor(timestamp_color_hex)
         )
+        self.highlighter.rehighlight()
+
+    # V1.7.2 Ajout Paramètre Affichages Couleurs
+    def set_quote_link_colors(self, quote_color_hex, link_color_hex):
+        """Définit les couleurs pour les citations et les liens."""
+        self.highlighter.update_quote_link_colors(
+            QColor(quote_color_hex), QColor(link_color_hex)
+        )
+        self.highlighter.rehighlight()
+
+    def set_code_font(self, font_family):
+        """Définit la police pour les blocs de code et le code inline."""
+        self.highlighter.update_code_font(font_family)
         self.highlighter.rehighlight()
 
     def set_code_block_background_color(self, color_hex):
