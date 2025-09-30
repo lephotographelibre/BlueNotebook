@@ -1,8 +1,20 @@
 ## V1.7.5 Menu Inserser Suite A FAIRE
-
+1.
 je voudrai modifier le sous menu Images (<img ..>).
 si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
 Si aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichier et de demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+
+2.
+travailler le Lien Markdown
+dans tous les cas ouvrir une boite de sialogue avec 2 hamps
+- Texte du Lien:
+- URL:  
+
+
+si rien n'est selectionné ... (rien ne se passe) ouvrir la boite d edialogue avec les deux champs nom remplis
+
+si une texte est selectionné alors ouvrir la boite de dialogue avec  le champ Teste di Mien remplis avec le texte sélectionné, et le champ URL vide
+
 
 
 ## V1.7.4 Qt Support (kde, gnome, gtk)
