@@ -71,7 +71,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V1.7.5
+            Manuel Utilisateur - BlueNotebook V1.7.6
         </h1>
     </header>
 
@@ -88,6 +88,7 @@
             <li><a href="#backup-restore">8. Sauvegarde et Restauration</a></li>
             <li><a href="#preferences">9. Personnalisation via les Préférences</a></li>
             <li><a href="#raccourcis">10. Raccourcis Clavier</a></li>
+            <li><a href="#faq">11. Foire Aux Questions (FAQ)</a></li>
         </ul>
     </div>
 
@@ -203,69 +204,68 @@
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 📁 Fichier
-├── 📄 Nouveau (Ctrl+N): Crée une nouvelle note vierge.
-├── 📂 Ouvrir (Ctrl+O): Ouvre un fichier Markdown existant.
+├── 📄 Nouveau (Ctrl+N) : Crée une nouvelle note vierge avec le modèle par défaut.
+├── 📂 Ouvrir (Ctrl+O) : Ouvre un fichier Markdown existant depuis votre ordinateur.
 ├── ---
-├── 💾 Sauvegarder (Ctrl+S): Enregistre la note dans le fichier du jour.
-├── 💾 Sauvegarder sous... (Ctrl+Shift+S): Enregistre dans un nouveau fichier.
+├── 💾 Sauvegarder (Ctrl+S) : Enregistre la note actuelle. Si c'est une nouvelle note, elle devient la note du jour.
+├── 💾 Sauvegarder sous... (Ctrl+Shift+S) : Enregistre la note actuelle dans un nouveau fichier de votre choix.
 ├── ---
-├── 📓 Ouvrir Journal: Sélectionne le dossier qui sert de journal.
-├── 💾 Sauvegarde Journal...: Crée une archive ZIP de tout le journal.
-├── 🔄 Restauration Journal...: Restaure le journal depuis une archive.
+├── 📓 Ouvrir Journal : Permet de sélectionner un nouveau dossier qui servira de journal.
+├── 💾 Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
+├── 🔄 Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
 ├── ---
-├── 🌐 Exporter HTML...: Exporte la note actuelle au format HTML. 
+├── 🌐 Exporter HTML... : Exporte la note actuelle au format HTML, avec le style appliqué.
 ├── ---
-├── ⚙️ Préférences...: Ouvre la fenêtre de personnalisation.
-└── 🚪 Quitter (Ctrl+Q): Ferme l'application.
+├── ⚙️ Préférences... : Ouvre la fenêtre de personnalisation de l'application.
+└── 🚪 Quitter (Ctrl+Q) : Ferme BlueNotebook.
 
 ✏️ Edition
-├── ↩️ Annuler (Ctrl+Z): Annule la dernière action.
-├── ↪️ Rétablir (Ctrl+Y): Rétablit la dernière action annulée. 
+├── ↩️ Annuler (Ctrl+Z) : Annule la dernière action de frappe ou de formatage.
+├── ↪️ Rétablir (Ctrl+Y) : Rétablit la dernière action annulée.
 ├── ---
-└── 🔍 Rechercher (Ctrl+F): Ouvre un dialogue de recherche.
+└── 🔍 Rechercher (Ctrl+F) : Ouvre une boîte de dialogue pour rechercher du texte dans l'éditeur.
 
 👁️ Affichage
-├── 🧭 Basculer Navigation (F6): Affiche ou masque le panneau de navigation.
-├── 📜 Basculer Plan du document (F7): Affiche ou masque le plan du document.
-└── 👁️ Basculer Aperçu HTML (F5): Affiche ou masque le panneau de prévisualisation.
+├── 🧭 Basculer Navigation Journal (F6) : Affiche ou masque le panneau de gauche (calendrier, recherche, nuages).
+├── 📜 Basculer Plan du document (F7) : Affiche ou masque le panneau central qui liste les titres du document.
+└── 👁️ Basculer Aperçu HTML (F5) : Affiche ou masque le panneau de droite qui montre le rendu de votre note.
 
 🎨 Formater
 ├── 📜 Titres
-│   ├── 1️⃣ Niv 1 (#)
-│   ├── 2️⃣ Niv 2 (##)
-│   ├── 3️⃣ Niv 3 (###)
-│   ├── 4️⃣ Niv 4 (####)
-│   └── 5️⃣ Niv 5 (#####)
+│   ├── 1️⃣ Niv 1 (#) : Applique un titre de niveau 1.
+│   ├── 2️⃣ Niv 2 (##) : Applique un titre de niveau 2.
+│   ├── 3️⃣ Niv 3 (###) : Applique un titre de niveau 3.
+│   ├── 4️⃣ Niv 4 (####) : Applique un titre de niveau 4.
+│   └── 5️⃣ Niv 5 (#####) : Applique un titre de niveau 5.
 ├── 🎨 Style de texte
-│   ├── 🅱️ Gras (**texte**)
-│   ├── *️⃣ Italique (*texte*)
-│   ├── ~ Barré (~~texte~~)
-│   └── 🖍️ Surligné (==texte==)
+│   ├── 🅱️ Gras (**texte**) : Met le texte sélectionné en gras.
+│   ├── *️⃣ Italique (*texte*) : Met le texte sélectionné en italique.
+│   ├── ~ Barré (~~texte~~) : Barre le texte sélectionné.
+│   └── 🖍️ Surligné (==texte==) : Surligne le texte sélectionné.
 ├── 💻 Code
-│   ├── ` Monospace (inline)
-│   └── ``` Bloc de code
+│   ├── ` Monospace (inline) : Formate la sélection comme du code en ligne.
+│   └── ``` Bloc de code : Encadre la sélection dans un bloc de code.
 ├── 📋 Listes
-│   ├── • Liste non ordonnée
-│   ├── 1. Liste ordonnée
-│   └── ☑️ Liste de tâches
+│   ├── • Liste non ordonnée : Transforme les lignes sélectionnées en liste à puces.
+│   ├── 1. Liste ordonnée : Transforme les lignes sélectionnées en liste numérotée.
+│   └── ☑️ Liste de tâches : Transforme les lignes sélectionnées en liste de tâches.
 ├── ---
-└── 🧹 RaZ (Effacer le formatage)
+└── 🧹 RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
 ➕ Insérer
-├── 🖼️ Image (&lt;img ...&gt;) (Ctrl+I)
-├── 🖼️ Image Markdown (Ctrl+Shift+I)
-├── 🔗 Lien (URL ou email) (&lt;url&gt;)
-├── 🔗 Lien Markdown (texte)
-├── 🔗 Fichier
+├── 🖼️ Image (&lt;img ...&gt;) (Ctrl+I) : Insère une image via une balise HTML `&lt;img&gt;`.
+├── 🖼️ Image Markdown (Ctrl+Shift+I) : Insère une image avec la syntaxe Markdown `!`.
+├── 🔗 Lien (URL ou email) (&lt;url&gt;) : Encadre une URL pour la rendre cliquable.
+├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe `texte`.
+├── 🔗 Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
-├── ➖ Ligne Horizontale
-├── 💬 Commentaire HTML
-├── ▦ Tableau
-├── 💬 Citation
-├── ✨ Citation du jour
+├── ➖ Ligne Horizontale : Insère une ligne de séparation (`---`).
+├── 💬 Commentaire HTML : Transforme la sélection en commentaire HTML (`&lt;!-- ... --&gt;`).
+├── ▦ Tableau : Insère un modèle de tableau Markdown.
+├── 💬 Citation : Formate la sélection comme une citation (`&gt; ...`).
 ├── ---
-├── 🏷️ Tag (@@)
-├── 🕒 Heure
+├── 🏷️ Tag (@@) : Insère un tag `@@` ou transforme la sélection en tag.
+├── 🕒 Heure : Insère l'heure actuelle (HH:MM).
 ├── ---
 └── 😊 Emoji
     ├── 📖 Livre
@@ -283,9 +283,12 @@
     ├── 😠 Mécontent
     └── 😢 Triste
 
+🔌 Intégrations
+└── ✨ Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+
 ❓ Aide
-├── 🌐 Documentation en ligne
-└── 💡 À propos
+├── 🌐 Documentation en ligne : Ouvre ce manuel d'aide dans votre navigateur.
+└── 💡 À propos : Affiche les informations sur l'application, sa version et sa licence.
         </code></pre>
     </section>
 
@@ -401,9 +404,64 @@
         </table>
     </section>
 
+    <section id="faq">
+        <h2>11. Foire Aux Questions (FAQ)</h2>
+        <p>Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilisation de l'application.</p>
+
+        <h3>Gestion du Journal et des Notes</h3>
+        <dl>
+            <dt>Q : Comment créer une nouvelle note pour la journée ?</dt>
+            <dd><strong>R :</strong> C'est automatique ! Au lancement, BlueNotebook ouvre ou crée pour vous un fichier pour la date du jour (ex: <code>20250927.md</code>). Vous n'avez qu'à commencer à écrire.</dd>
+
+            <dt>Q : Comment ajouter des informations à une note existante de la journée ?</dt>
+            <dd><strong>R :</strong> Lorsque vous sauvegardez (<code>Ctrl+S</code>) une note pour un jour qui existe déjà, BlueNotebook vous demande si vous voulez <strong>"Ajouter à la fin"</strong> ou <strong>"Remplacer"</strong>. Choisissez "Ajouter à la fin" pour conserver vos écrits précédents et ajouter les nouveaux.</dd>
+
+            <dt>Q : Comment puis-je consulter ou modifier une note d'un autre jour ?</dt>
+            <dd><strong>R :</strong> Vous avez deux options principales :
+                <ol>
+                    <li><strong>Utilisez le calendrier</strong> dans le panneau de Navigation à gauche. Les jours avec une note sont en bleu. Cliquez sur une date pour ouvrir la note correspondante.</li>
+                    <li>Utilisez le menu <code>Fichier > Ouvrir</code> (<code>Ctrl+O</code>) pour parcourir manuellement votre dossier de journal.</li>
+                </ol>
+            </dd>
+        </dl>
+
+        <h3>L'Éditeur Markdown</h3>
+        <dl>
+            <dt>Q : Qu'est-ce que le Markdown ?</dt>
+            <dd><strong>R :</strong> Le Markdown est une syntaxe très simple pour mettre en forme du texte. Au lieu de cliquer sur des boutons, vous utilisez des symboles pour indiquer le formatage, ce qui vous permet de ne pas quitter votre clavier. L'aperçu à droite vous montre le résultat en temps réel.</dd>
+
+            <dt>Q : Comment mettre du texte en gras ou en italique ?</dt>
+            <dd><strong>R :</strong> Pour le <strong>gras</strong>, entourez votre texte de deux astérisques : <code>**texte en gras**</code>. Pour l'<em>italique</em>, entourez-le d'un seul astérisque : <code>*texte en italique*</code>. Vous pouvez aussi utiliser le menu <code>Formater > Style de texte</code>.</dd>
+        </dl>
+
+        <h3>Recherche et Navigation</h3>
+        <dl>
+            <dt>Q : Comment retrouver rapidement une information dans mon journal ?</dt>
+            <dd><strong>R :</strong> Utilisez le champ de recherche situé dans le panneau de Navigation, sous le calendrier. Vous pouvez y rechercher des mots ou des tags.</dd>
+
+            <dt>Q : Comment rechercher un tag spécifique (ex: <code>@@projet</code>) ?</dt>
+            <dd><strong>R :</strong> Tapez simplement <code>@@projet</code> dans le champ de recherche et appuyez sur <code>Entrée</code>. Vous pouvez aussi cliquer sur le bouton <code>▼</code> pour voir la liste de tous vos tags.</dd>
+
+            <dt>Q : À quoi servent les "Nuages de Tags/Mots" ?</dt>
+            <dd><strong>R :</strong> Ils vous montrent les tags et les mots que vous utilisez le plus fréquemment. C'est un excellent moyen de voir les thèmes principaux de votre journal. <strong>Cliquez sur un mot ou un tag dans un nuage pour lancer immédiatement une recherche sur ce terme !</strong></dd>
+
+            <dt>Q : Que se passe-t-il quand je clique sur un résultat de recherche ?</dt>
+            <dd><strong>R :</strong> L'application ouvre la note correspondante et positionne le curseur <strong>directement à la ligne</strong> où l'occurrence a été trouvée. C'est un moyen ultra-rapide de retrouver le contexte exact d'une information.</dd>
+        </dl>
+
+        <h3>Sauvegarde et Sécurité</h3>
+        <dl>
+            <dt>Q : Comment faire une sauvegarde complète de tout mon journal ?</dt>
+            <dd><strong>R :</strong> Allez dans <code>Fichier > Sauvegarde Journal...</code>. Cela créera une archive <code>.zip</code> contenant toutes vos notes et les fichiers d'index. C'est une bonne pratique à faire régulièrement.</dd>
+
+            <dt>Q : Comment restaurer mon journal depuis une sauvegarde ?</dt>
+            <dd><strong>R :</strong> Utilisez <code>Fichier > Restauration Journal...</code>. La procédure est très sécurisée : avant de restaurer, BlueNotebook renomme votre journal actuel pour en faire une sauvegarde (ex: <code>MonJournal.bak-20250927-103000</code>). <strong>Vos données actuelles ne sont jamais supprimées.</strong> Vous devrez simplement redémarrer l'application après la restauration.</dd>
+        </dl>
+    </section>
+
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 1.7.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 1.7.6 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

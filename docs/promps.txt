@@ -6,14 +6,14 @@ GENERE DOC
 Je voudrais que tu crée une documentation au format Markdown et que tu sauvegardes ce fichier  a la racine du projet. dis mois ou tu as sauvegardé ce fichier. 
 
 MAJ DOC 
-  Mets a jour le fichier doc V1.7.X_bluenotebook_technical_doc.md et crée un nouveau fichier avec les modifs V1.7.X_bluenotebook_technical_doc.md
+  Mets a jour le fichier docs/V1.7.5_bluenotebook_technical_doc.md et crée un nouveau fichier avec les modifs docs/V1.7.6_bluenotebook_technical_doc.md en particulier avec la eprésentation graphique de la barre de menu du projet avec tous ses sous Menus complete avec la description de chaque sous menu
 
 MAJ version
 La version courante est la V1.7.5. Peux tu mettre à jour . main.py et l'aide en ligne
 
 
 MENU GRAPHIQUE
-Je voudrais que tu génére une représentation graphique de la barre de menu du projet avec tous ses sous Menu
+Je voudrais que tu généres une représentation graphique de la barre de menu du projet avec tous ses sous Menus complete avec la description de chaque sous menu et sauvegardes cette representation graphique dans le fichier docs/V1.7.6_menus.md
 et que tu mettes à jour l'aide en ligne  avec cette nouvelle représentation graphique 
 et que tu sauvegardes la representation graphique dans un fichier nomme menus.md dans le repertoire
 

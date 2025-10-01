@@ -15,6 +15,31 @@ si rien n'est selectionné ... (rien ne se passe) ouvrir la boite d edialogue av
 
 si une texte est selectionné alors ouvrir la boite de dialogue avec  le champ Teste di Mien remplis avec le texte sélectionné, et le champ URL vide
 
+## V1.7.6 Créer un menu Intégration / Citation du jour
+
+Creer un menu Intégration avec son emoji  dans la barre de Menu princcipale.
+Il sera placé entre Insérer et Aide
+Il aura comme sous menu "Citation du Jour" qui sera déplacé  avec son emoji du menu Inserer vers le Menu Intégration.
+beta1
+
+ si dans préférence "Afficher la citation du jour au demarrage" n'est pas cochée il faudra alors aller chercher la citation au moment de l'appel du menu "Citation du Jour et pas au demarrage.
+ si dans préférence "Afficher la citation du jour au demarrage"  est cochée il faudra alors aller chercher la citation  au demarrage.
+
+ ne faire l'appel réseau pour la citation que lorsque c'est nécessaire, soit au démarrage si l'option est cochée, soit au moment du clic sur le menu si elle ne l'est pas. C'est une approche bien plus optimisée.
+
+beta2
+
+MAJ aide en ligne avec FAQ
+
+beta3
+
+Je voudrais que tu généres une représentation graphique de la barre de menu du projet avec tous ses sous Menus complete avec la description de chaque sous menu et sauvegardes cette representation graphique dans le fichier docs/V1.7.6_menus.md
+
+et la doc V1.7.6_bluenotebook_technical_doc.md
+beta5
+
+
+
 ## V1.7.5 Add HTML Comment 
 
 Je voudrais ajouter un sous menu dans Insérer qui s'appelle Commentaire HTML.

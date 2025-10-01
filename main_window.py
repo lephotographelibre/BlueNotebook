@@ -95,17 +95,12 @@ class MainWindow(QMainWindow):
         self.cursor_sync_timer.setSingleShot(True)
         self.cursor_sync_timer.timeout.connect(self.sync_preview_to_cursor)
 
-        # V1.7.6 - Lancer les tâches de fond après que la fenêtre principale soit prête
-        # Utiliser un QTimer.singleShot(0, ...) garantit que ces opérations
-        # ne bloquent pas l'affichage initial de l'interface.
         self.load_initial_file()
-        QTimer.singleShot(0, self.run_startup_tasks)
-
-    def run_startup_tasks(self):
-        """Exécute les tâches qui peuvent être lancées après l'affichage de l'UI."""
-        self.show_quote_of_the_day()  # Affiche la citation si l'option est activée
-        self.start_initial_indexing()  # Lance l'indexation en arrière-plan
-        self.update_calendar_highlights()  # Met à jour le calendrier
+        self.show_quote_of_the_day()
+        self.start_initial_indexing()
+        self.update_calendar_highlights()
+        self.update_tag_cloud()
+        self.update_word_cloud()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -394,7 +389,7 @@ class MainWindow(QMainWindow):
         self.insert_quote_day_action = QAction(
             "✨ Citation du jour",
             self,
-            triggered=self.insert_quote_of_the_day,
+            triggered=lambda: self.editor.format_text("quote_of_the_day"),
         )
 
     def _setup_format_menu(self, format_menu):
@@ -516,8 +511,6 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_comment_action)
         insert_menu.addAction(insert_table_action)
         insert_menu.addAction(insert_quote_action)
-        # L'action "Citation du jour" est maintenant dans le menu "Intégrations"
-        # insert_menu.addAction(self.insert_quote_day_action)
         insert_menu.addSeparator()
 
         insert_tag_action = QAction("🏷️ Tag (@@)", self)
@@ -1195,8 +1188,6 @@ ______________________________________________________________
         if self.check_save_changes():
             event.accept()
         else:
-            # Sauvegarder les paramètres de visibilité des panneaux
-            self.save_panel_visibility_settings()
             event.ignore()
 
     def show_quote_of_the_day(self):
@@ -1214,20 +1205,6 @@ ______________________________________________________________
                 msg_box.setIcon(QMessageBox.Information)
                 msg_box.setStandardButtons(QMessageBox.Ok)
                 msg_box.exec_()
-
-    def insert_quote_of_the_day(self):
-        """Insère la citation du jour dans l'éditeur, en la récupérant si nécessaire."""
-        # Si la citation n'a pas encore été récupérée (car l'option au démarrage est désactivée),
-        # on la récupère maintenant.
-        if not self.daily_quote:
-            self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
-
-        if self.daily_quote and self.daily_author:
-            self.editor.format_text("quote_of_the_day")
-        else:
-            QMessageBox.warning(
-                self, "Erreur", "Impossible de récupérer la citation du jour."
-            )
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
@@ -1519,8 +1496,6 @@ ______________________________________________________________
             print(
                 f"⚠️ Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
             )
-        self.update_tag_cloud()
-        self.update_word_cloud()
 
     def _set_file_label_color(self, color):
         """Définit la couleur du texte pour le label du nom de fichier."""
@@ -1606,6 +1581,15 @@ ______________________________________________________________
                 dialog.show_quote_checkbox.isChecked(),
             )
             self.settings_manager.set(
+                "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_outline_panel", dialog.show_outline_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
+            )
+            self.settings_manager.set(
                 "ui.show_indexing_stats",
                 dialog.show_indexing_stats_checkbox.isChecked(),
             )
@@ -1641,22 +1625,6 @@ ______________________________________________________________
 
             self.settings_manager.save_settings()
             self.apply_settings()
-            self.save_panel_visibility_settings()
-
-    def save_panel_visibility_settings(self):
-        """Sauvegarde l'état de visibilité actuel des panneaux."""
-        self.settings_manager.set(
-            "ui.show_navigation_panel", self.navigation_panel.isVisible()
-        )
-        self.settings_manager.set(
-            "ui.show_outline_panel", self.outline_panel.isVisible()
-        )
-        self.settings_manager.set("ui.show_preview_panel", self.preview.isVisible())
-        self.settings_manager.save_settings()
-
-    def closeEvent(self, event):
-        self.save_panel_visibility_settings()
-        super().closeEvent(event)
 
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
