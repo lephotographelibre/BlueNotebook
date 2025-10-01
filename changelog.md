@@ -15,6 +15,18 @@ si rien n'est selectionné ... (rien ne se passe) ouvrir la boite d edialogue av
 
 si une texte est selectionné alors ouvrir la boite de dialogue avec  le champ Teste di Mien remplis avec le texte sélectionné, et le champ URL vide
 
+## V1.7.7 Editeur Markdown: Mini Menu Contextuel
+
+Lorsque du texte est sélectionné je voudrais ajouter dans le menu contextuel la possibilité de mettre en gras, italique, barré, surligné, inline et bloc de code.
+beta1
+
+defilement Molette et CTRL-Défilement molette corrigés
+beta2
+
+mis à jour la version de l'application à 1.7.7 dans le point d'entrée main.py ainsi que dans le manuel utilisateur aide_en_ligne.html.
+beta3
+
+
 ## V1.7.6 Créer un menu Intégration / Citation du jour
 
 Creer un menu Intégration avec son emoji  dans la barre de Menu princcipale.

@@ -29,6 +29,7 @@ from PyQt5.QtWidgets import (
     QDialog,
     QHBoxLayout,
     QLineEdit,
+    QMenu,
     QPushButton,
 )
 from PyQt5.QtWidgets import QDialogButtonBox, QFormLayout, QInputDialog
@@ -532,6 +533,11 @@ class MarkdownEditor(QWidget):
         # Connexions
         self.text_edit.textChanged.connect(self.textChanged.emit)
         self.text_edit.cursorPositionChanged.connect(self.cursorPositionChanged.emit)
+        # V1.7.7 - Activer le menu contextuel personnalisé
+        self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.text_edit.customContextMenuRequested.connect(self.show_context_menu)
+        # V1.1.12 Zoom Editeur avec la Molette
+        self.text_edit.wheelEvent = self.wheelEvent
 
         # L'éditeur prend tout l'espace disponible
         layout.addWidget(self.text_edit, 1)  # stretch factor = 1
@@ -545,6 +551,43 @@ class MarkdownEditor(QWidget):
     def set_text(self, text):
         """Définir le texte"""
         self.text_edit.setPlainText(text)
+
+    def show_context_menu(self, position):
+        """Affiche le menu contextuel personnalisé."""
+        # Créer le menu standard (Couper, Copier, Coller, etc.)
+        menu = self.text_edit.createStandardContextMenu()
+
+        # Ajouter des actions personnalisées uniquement si du texte est sélectionné
+        cursor = self.text_edit.textCursor()
+        if cursor.hasSelection():
+            menu.addSeparator()
+
+            # --- Style de texte ---
+            style_menu = QMenu("🎨 Style de texte", self)
+            bold_action = style_menu.addAction("🅱️ Gras")
+            bold_action.triggered.connect(lambda: self.format_text("bold"))
+            italic_action = style_menu.addAction("*️⃣ Italique")
+            italic_action.triggered.connect(lambda: self.format_text("italic"))
+            strikethrough_action = style_menu.addAction("~ Barré")
+            strikethrough_action.triggered.connect(
+                lambda: self.format_text("strikethrough")
+            )
+            highlight_action = style_menu.addAction("🖍️ Surligné")
+            highlight_action.triggered.connect(lambda: self.format_text("highlight"))
+            menu.addMenu(style_menu)
+
+            # --- Code ---
+            code_menu = QMenu("💻 Code", self)
+            inline_code_action = code_menu.addAction("` Monospace (inline)")
+            inline_code_action.triggered.connect(
+                lambda: self.format_text("inline_code")
+            )
+            code_block_action = code_menu.addAction("``` Bloc de code")
+            code_block_action.triggered.connect(lambda: self.format_text("code_block"))
+            menu.addMenu(code_menu)
+
+        # Afficher le menu à la position du curseur
+        menu.exec_(self.text_edit.viewport().mapToGlobal(position))
 
     def undo(self):
         """Annuler"""
@@ -804,7 +847,7 @@ class MarkdownEditor(QWidget):
                 self.text_edit.zoomOut(1)
             event.accept()
         else:
-            super().wheelEvent(event)
+            QTextEdit.wheelEvent(self.text_edit, event)
 
     def set_font(self, font):
         """Définit la police de l'éditeur de texte."""
