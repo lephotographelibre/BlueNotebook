@@ -371,7 +371,7 @@ class MainWindow(QMainWindow):
         )
 
         self.about_action = QAction(
-            "ℹ️ À propos",
+            "💡 À propos",
             self,
             triggered=self.show_about,
         )
@@ -549,7 +549,7 @@ class MainWindow(QMainWindow):
 
         # --- Widgets de gauche ---
         self.file_label = QLabel("Nouveau fichier")
-        self._set_file_label_color("white")  # Couleur par défaut à l'ouverture
+        self._set_file_label_color("gray")  # Couleur par défaut à l'ouverture
         self.statusbar.addWidget(self.file_label)
 
         self.modified_label = QLabel("")
@@ -741,7 +741,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self.update_stats()
-            self._set_file_label_color("white")
+            self._set_file_label_color("gray")
             self.update_preview()
             self.expand_outline()
 
@@ -791,7 +791,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self.update_stats()
-            self._set_file_label_color("white")
+            self._set_file_label_color("gray")
             self.update_preview()
             self.expand_outline()
 
