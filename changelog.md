@@ -1,19 +1,23 @@
-## V1.7.X Menu Inserser Suite A FAIRE
-1.
-je voudrai modifier le sous menu Images (<img ..>).
-si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
-Si aucun texte n'est sélectionné dans l'éditeur ouvrir une boite d dialogue qui permette à l'utilisateur de sélectionner un fichier et de demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+## V1.7.8 Menu Inserser Images (<img ..>) et Image Markdown
 
-2.
-travailler le Lien Markdown
-dans tous les cas ouvrir une boite de sialogue avec 2 hamps
-- Texte du Lien:
-- URL:  
+je voudrai modifier le fonctionnement du sous menu Images (<img ..>).
+- si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
+- Si aucun texte n'est sélectionné dans l'éditeur ouvrir une fenetre de dialogue  dialogue qui permette à l'utilisateur de sélectionner soit un fichier, soit taper une URL puis demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
 
+les deux scénarios  
 
-si rien n'est selectionné ... (rien ne se passe) ouvrir la boite d edialogue avec les deux champs nom remplis
+-Si un nom de fichier est sélectionné, insère la balise.
+-Si rien n'est sélectionné, la boîte de dialogue s'ouvre.
 
-si une texte est selectionné alors ouvrir la boite de dialogue avec  le champ Teste di Mien remplis avec le texte sélectionné, et le champ URL vide
+Puis bug sur les panneaux
+Beta3
+
+comme pour le sous menu Images (<img ..>) je voudrai modifier le fonctionnement du sous menu Inserer Image Markdown
+les deux scénarios  
+
+-Si un nom de fichier est sélectionné, insère la balise. OK celui la fonctionne
+-Si rien n'est sélectionné, la une fenetre de dialogue s'ouvre  qui permette à l'utilisateur de sélectionner soit un fichier, soit taper une URL puis inserer le tag.
+
 
 ## V1.7.7 Editeur Markdown: Mini Menu Contextuel
 

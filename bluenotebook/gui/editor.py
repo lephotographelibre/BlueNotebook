@@ -443,6 +443,57 @@ class LinkDialog(QDialog):
         return None, None
 
 
+class ImageSourceDialog(QDialog):
+    """
+    Boîte de dialogue pour obtenir le chemin d'une image,
+    soit via une URL, soit via un sélecteur de fichier.
+    """
+
+    def __init__(self, parent=None, initial_path=""):
+        super().__init__(parent)
+        self.setWindowTitle("Source de l'image")
+        self.setModal(True)
+        self.resize(500, 120)
+
+        self.layout = QVBoxLayout(self)
+        form_layout = QFormLayout()
+
+        # Champ pour le chemin/URL
+        path_layout = QHBoxLayout()
+        self.path_edit = QLineEdit(self)
+        self.path_edit.setPlaceholderText(
+            "http://example.com/image.png ou /chemin/local"
+        )
+        path_layout.addWidget(self.path_edit)
+
+        browse_button = QPushButton("Parcourir...", self)
+        browse_button.clicked.connect(self._browse_file)
+        path_layout.addWidget(browse_button)
+
+        form_layout.addRow("Chemin ou URL:", path_layout)
+        self.layout.addLayout(form_layout)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.layout.addWidget(self.button_box)
+
+    def _browse_file(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Sélectionner une image",
+            "",
+            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
+        )
+        if path:
+            self.path_edit.setText(path)
+
+    def get_path(self):
+        return self.path_edit.text().strip()
+
+
 class MarkdownEditor(QWidget):
     """Éditeur de texte avec coloration syntaxique Markdown"""
 
@@ -639,6 +690,11 @@ class MarkdownEditor(QWidget):
             self.insert_markdown_image()
             return
 
+        # V1.7.8 - Correction: L'insertion d'image HTML a sa propre logique de sélection
+        if format_type == "image":
+            self.insert_html_image()
+            return
+
         if format_type == "quote_of_the_day":
             if (
                 self.main_window
@@ -757,12 +813,8 @@ class MarkdownEditor(QWidget):
             new_text = f"<{selected_text}>"
             cursor.insertText(new_text)
 
-        elif format_type == "image":
-            new_text = f'<img src="{selected_text}" width="400">'
-            cursor.insertText(new_text)
-
         elif format_type == "markdown_link":
-            text, url = LinkDialog.get_link(self, selected_text)
+            text, url = LinkDialog.get_link(self, selected_text.strip())
             if text and url:
                 new_text = f"[{text}]({url})"
                 cursor.insertText(new_text)
@@ -771,26 +823,62 @@ class MarkdownEditor(QWidget):
             new_text = f"<!-- {selected_text} -->"
             cursor.insertText(new_text)
 
+    def insert_html_image(self):
+        """
+        Insère une balise <img>.
+        - Si un nom de fichier est sélectionné, l'utilise.
+        - Sinon, ouvre une boîte de dialogue pour choisir un fichier.
+        - Demande ensuite la largeur de l'image à l'utilisateur.
+        """
+        cursor = self.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+        file_path = ""
+
+        # Si le texte sélectionné est un chemin de fichier valide, on l'utilise.
+        if selected_text and Path(selected_text).is_file():
+            file_path = selected_text
+        elif not selected_text:
+            # Ouvre une boîte de dialogue pour saisir une URL ou choisir un fichier
+            dialog = ImageSourceDialog(self)
+            if dialog.exec_() == QDialog.Accepted:
+                path = dialog.get_path()
+                if path:
+                    file_path = path
+        else:  # Du texte est sélectionné, mais ce n'est pas un fichier
+            file_path = selected_text
+
+        if file_path:
+            width, ok = QInputDialog.getInt(
+                self,
+                "Largeur de l'image",
+                "Largeur maximale en pixels :",
+                400,
+                1,
+                10000,
+                1,
+            )
+            if ok:
+                cursor.insertText(f'<img src="{file_path}" width="{width}">')
+
     def insert_markdown_image(self):
         """Insère une image au format Markdown ![](/chemin/vers/image)."""
         cursor = self.text_edit.textCursor()
         selected_text = cursor.selectedText().strip()
 
         image_path = ""
-
-        # Si le texte sélectionné est un chemin de fichier valide
+        # V1.7.8 - Harmonisation avec l'insertion d'image HTML
+        # Si le texte sélectionné est un chemin de fichier valide, on l'utilise.
         if selected_text and Path(selected_text).is_file():
             image_path = selected_text
-        else:
-            # Sinon, ouvrir une boîte de dialogue
-            file_name, _ = QFileDialog.getOpenFileName(
-                self,
-                "Sélectionner une image",
-                "",
-                "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
-            )
-            if file_name:
-                image_path = file_name
+        elif not selected_text:
+            # Sinon, si rien n'est sélectionné, ouvrir la boîte de dialogue polyvalente
+            dialog = ImageSourceDialog(self)
+            if dialog.exec_() == QDialog.Accepted:
+                path = dialog.get_path()
+                if path:
+                    image_path = path
+        else:  # Du texte est sélectionné, mais ce n'est pas un fichier (ex: une URL)
+            image_path = selected_text
 
         if image_path:
             # Utiliser des barres obliques pour la compatibilité web/markdown

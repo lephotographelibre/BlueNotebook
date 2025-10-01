@@ -1639,9 +1639,20 @@ ______________________________________________________________
                 "indexing.excluded_words_from_cloud", excluded_words_cloud_list
             )
 
+            # V1.7.8 - Correction régression: Sauvegarder l'état des cases à cocher des panneaux
+            # et non l'état de visibilité actuel des panneaux.
+            self.settings_manager.set(
+                "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_outline_panel", dialog.show_outline_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
+            )
+
             self.settings_manager.save_settings()
             self.apply_settings()
-            self.save_panel_visibility_settings()
 
     def save_panel_visibility_settings(self):
         """Sauvegarde l'état de visibilité actuel des panneaux."""
