@@ -5,9 +5,17 @@ sauvegarde cette reponse complete à la racine du projet en Markdown dans un fic
 GENERE DOC
 Je voudrais que tu crée une documentation au format Markdown et que tu sauvegardes ce fichier  a la racine du projet. dis mois ou tu as sauvegardé ce fichier. 
 
+MAJ DOC 
+  Mets a jour le fichier doc V1.7.X_bluenotebook_technical_doc.md et crée un nouveau fichier avec les modifs V1.7.X_bluenotebook_technical_doc.md
+
+MAJ version
+La version courante est la V1.7.5. Peux tu mettre à jour . main.py et l'aide en ligne
+
+
 MENU GRAPHIQUE
 Je voudrais que tu génére une représentation graphique de la barre de menu du projet avec tous ses sous Menu
 et que tu mettes à jour l'aide en ligne  avec cette nouvelle représentation graphique 
+et que tu sauvegardes la representation graphique dans un fichier nomme menus.md dans le repertoire
 
 
 @BlueNotebook  je voudrais que tu mettes en oeuvre la spectification de la sauvegarde décrite dans le document backup.ms. Attention les option de menue devront s'appeler "Sauvergarde Journal" et "Restauration Journal". Lors de la restauration le fichier Journal existant sera sauvegarder et pas détruit .La fenetre de confirmation lors de la restauration devra donner le nom du fichier dasn lequel on va sauvegarder le dosser Journal existant.

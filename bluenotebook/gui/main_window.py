@@ -486,6 +486,12 @@ class MainWindow(QMainWindow):
         # Actions statiques
         insert_hr_action = QAction("➖ Ligne Horizontale", self)
         insert_hr_action.triggered.connect(lambda: self.editor.format_text("hr"))
+
+        insert_comment_action = QAction("💬 Commentaire HTML", self)
+        insert_comment_action.triggered.connect(
+            lambda: self.editor.format_text("html_comment")
+        )
+
         insert_table_action = QAction("▦ Tableau", self)
         insert_table_action.triggered.connect(lambda: self.editor.format_text("table"))
         insert_quote_action = QAction("💬 Citation", self)
@@ -496,6 +502,7 @@ class MainWindow(QMainWindow):
         )
 
         insert_menu.addAction(insert_hr_action)
+        insert_menu.addAction(insert_comment_action)
         insert_menu.addAction(insert_table_action)
         insert_menu.addAction(insert_quote_action)
         insert_menu.addAction(insert_quote_day_action)
@@ -1558,6 +1565,10 @@ ______________________________________________________________
             self.settings_manager.set(
                 "editor.code_font_family", dialog.current_code_font.family()
             )
+            self.settings_manager.set(
+                "editor.html_comment_color",
+                dialog.current_html_comment_color.name(),
+            )
             # Fin V1.7.2
 
             self.settings_manager.set(
@@ -1688,6 +1699,11 @@ ______________________________________________________________
 
         code_font = self.settings_manager.get("editor.code_font_family")
         self.editor.set_code_font(code_font)
+
+        html_comment_color = self.settings_manager.get(
+            "editor.html_comment_color", "#a4b5cf"
+        )
+        self.editor.set_html_comment_color(html_comment_color)
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))

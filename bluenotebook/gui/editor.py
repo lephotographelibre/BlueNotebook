@@ -71,6 +71,8 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Couleurs par défaut pour les citations et les liens
         self.quote_color = QColor("#2B303B")
         self.link_color = QColor("#0366d6")
+        # Couleur par défaut pour les commentaires HTML
+        self.html_comment_color = QColor("#a4b5cf")
 
         # Police par défaut pour le code
         self.code_font_family = "Consolas, Monaco, monospace"
@@ -110,6 +112,11 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         """Met à jour les couleurs pour les citations et les liens."""
         self.quote_color = quote_color
         self.link_color = link_color
+        self.setup_formats()
+
+    def update_html_comment_color(self, color):
+        """Met à jour la couleur pour les commentaires HTML."""
+        self.html_comment_color = color
         self.setup_formats()
 
     def update_code_font(self, font_family):
@@ -196,6 +203,11 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         # Format pour le surlignage (highlight)
         self.highlight_format = QTextCharFormat()
         self.highlight_format.setBackground(self.highlight_color)
+
+        # Format pour les commentaires HTML
+        self.html_comment_format = QTextCharFormat()
+        self.html_comment_format.setForeground(self.html_comment_color)
+        self.html_comment_format.setFontItalic(True)
 
     def highlightBlock(self, text):
         """Coloration d'un bloc de texte"""
@@ -304,6 +316,16 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         image_pattern = r"<img[^>]+>"
         for match in re.finditer(image_pattern, text, re.IGNORECASE):
             self.setFormat(match.start(), match.end() - match.start(), self.link_format)
+
+        # Commentaires HTML (<!-- ... -->)
+        # Doit être appliqué après les autres pour ne pas être surchargé
+        # par exemple par la coloration de lien si un lien est dans un commentaire.
+        # Mais doit être avant le bloc de code pour ne pas colorer les commentaires dans les blocs.
+        html_comment_pattern = r"<!--.*?-->"
+        for match in re.finditer(html_comment_pattern, text):
+            self.setFormat(
+                match.start(), match.end() - match.start(), self.html_comment_format
+            )
 
 
 class FindDialog(QDialog):
@@ -611,6 +633,8 @@ class MarkdownEditor(QWidget):
                 from datetime import datetime
 
                 self.insert_text(f"**{datetime.now().strftime('%H:%M')}**")
+            elif format_type == "html_comment":
+                self.insert_text("<!-- texte du commentaire -->")
             return
 
         selected_text = cursor.selectedText()
@@ -699,6 +723,10 @@ class MarkdownEditor(QWidget):
             if text and url:
                 new_text = f"[{text}]({url})"
                 cursor.insertText(new_text)
+
+        elif format_type == "html_comment":
+            new_text = f"<!-- {selected_text} -->"
+            cursor.insertText(new_text)
 
     def insert_markdown_image(self):
         """Insère une image au format Markdown ![](/chemin/vers/image)."""
@@ -868,6 +896,12 @@ class MarkdownEditor(QWidget):
         self.highlighter.update_quote_link_colors(
             QColor(quote_color_hex), QColor(link_color_hex)
         )
+        self.highlighter.rehighlight()
+
+    def set_html_comment_color(self, color_hex):
+        """Définit la couleur des commentaires HTML dans le surligneur."""
+        self.highlighter.update_html_comment_color(QColor(color_hex))
+        # Forcer une nouvelle coloration de tout le document
         self.highlighter.rehighlight()
 
     def set_code_font(self, font_family):

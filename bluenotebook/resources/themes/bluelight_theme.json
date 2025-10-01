@@ -26,7 +26,8 @@
     },
     "special_elements": {
       "tags": "#4c6eab",
-      "timestamps": "#253443"
+      "timestamps": "#253443",
+      "html_comment": "#a4b5cf"
     },
     "code": {
       "inline_foreground": "#4c6eab",

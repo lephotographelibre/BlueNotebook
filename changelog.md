@@ -1,4 +1,4 @@
-## V1.7.5 Menu Inserser Suite A FAIRE
+## V1.7.X Menu Inserser Suite A FAIRE
 1.
 je voudrai modifier le sous menu Images (<img ..>).
 si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
@@ -15,7 +15,29 @@ si rien n'est selectionné ... (rien ne se passe) ouvrir la boite d edialogue av
 
 si une texte est selectionné alors ouvrir la boite de dialogue avec  le champ Teste di Mien remplis avec le texte sélectionné, et le champ URL vide
 
+## V1.7.5 Add HTML Comment 
 
+Je voudrais ajouter un sous menu dans Insérer qui s'appelle Commentaire HTML.
+la syntaxe est <!-- texte du commentaire --> 
+
+Si un texte est sélectionné dasn l'éditeur mettre ce texte en commentaire
+Si aucun texte n'est sélectionné insérer <!-- texte du commentaire --> 
+Ne pas oublier une emoli.
+ce sous menu viendra directement sous "Ligne Horzontale"
+
+Ajout aux préférences
+
+V1.7.5beta2
+
+MAJ Aide en lign e+ fichier Menu
+
+V1.7.5beta3
+
+MAJ Doc  Mets a jour le fichier doc V1.7.3_bluenotebook_technical_doc.md et crée un nouveau fichier avec les modifs V1.7.5_bluenotebook_technical_doc.md
+
+V1.7.5beta4
+
+Met a jour themes 
 
 ## V1.7.4 Qt Support (kde, gnome, gtk)
 

@@ -316,6 +316,18 @@ class PreferencesDialog(QDialog):
         layout.addRow("Couleur des liens:", self.link_color_button)
         # Fin V1.7.2
 
+        # Couleur des commentaires HTML
+        html_comment_color_hex = self.settings_manager.get(
+            "editor.html_comment_color", "#a4b5cf"
+        )
+        self.current_html_comment_color = QColor(html_comment_color_hex)
+        self.html_comment_color_button = QPushButton()
+        self.html_comment_color_button.setStyleSheet(
+            f"background-color: {html_comment_color_hex};"
+        )
+        self.html_comment_color_button.clicked.connect(self._select_html_comment_color)
+        layout.addRow("Couleur des commentaires HTML:", self.html_comment_color_button)
+
         # Couleur pour les tags
         tag_color_hex = self.settings_manager.get("editor.tag_color")
         self.current_tag_color = QColor(tag_color_hex)
@@ -428,6 +440,15 @@ class PreferencesDialog(QDialog):
         if color.isValid():
             self.current_link_color = color
             self.link_color_button.setStyleSheet(f"background-color: {color.name()};")
+
+    def _select_html_comment_color(self):
+        """Sélectionne la couleur pour les commentaires HTML."""
+        color = QColorDialog.getColor(self.current_html_comment_color, self)
+        if color.isValid():
+            self.current_html_comment_color = color
+            self.html_comment_color_button.setStyleSheet(
+                f"background-color: {color.name()};"
+            )
 
     # Fin V1.7.2
 
