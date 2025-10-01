@@ -1,41 +1,30 @@
 {
-  "name": "BlueNotebook Thème par Défaut",
+  "name": "Thème de Base",
   "type": "light",
   "author": "BlueNotebook",
-  "description": "Le thème de base de BlueNotebook, clair et simple.",
-  "fonts": {
-    "editor": "Droid Sans Mono",
-    "editor_size": 12,
-    "code": "Consolas, Monaco, monospace"
+  "description": "Le thème par défaut de BlueNotebook, clair et simple.",
+  "font": {
+    "family": "Droid Sans Mono",
+    "size": 12,
+    "code_family": "Consolas, Monaco, monospace"
   },
   "colors": {
-    "editor": {
-      "background": "#d6ebff",
-      "foreground": "#2c3e50",
-      "selection_text": "#ff0004",
-      "selection_background": "#e9e942"
-    },
-    "text_styles": {
-      "headings": "#208bd7",
-      "lists": "#208bd7",
-      "bold": "#448C27",
-      "italic": "#448C27",
-      "strikethrough": "#448C27",
-      "links": "#0366d6",
-      "quotes": "#2B303B"
-    },
-    "special_elements": {
-      "tags": "#d73a49",
-      "timestamps": "#005cc5",
-      "html_comment": "#a4b5cf"
-    },
-    "code": {
-      "inline_foreground": "#d6336c",
-      "inline_background": "#f2f07f",
-      "block_background": "#f0f0f0"
-    },
-    "highlight": {
-      "background": "#FFC0CB"
-    }
+    "background_color": "#d6ebff",
+    "text_color": "#2c3e50",
+    "heading_color": "#208bd7",
+    "list_color": "#208bd7",
+    "selection_text_color": "#ff0004",
+    "inline_code_text_color": "#d6336c",
+    "inline_code_background_color": "#f2f07f",
+    "code_block_background_color": "#f0f0f0",
+    "bold_color": "#448C27",
+    "italic_color": "#448C27",
+    "strikethrough_color": "#448C27",
+    "highlight_color": "#FFC0CB",
+    "quote_color": "#2B303B",
+    "link_color": "#0366d6",
+    "html_comment_color": "#a4b5cf",
+    "tag_color": "#d73a49",
+    "timestamp_color": "#005cc5"
   }
 }

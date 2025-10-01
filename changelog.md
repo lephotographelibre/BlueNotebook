@@ -1,6 +1,148 @@
+
+## V1.8.1  Redesign du panneau Préférences-> Affichage + Theme Management
+
+En fait je voudrais restructurer l'onglet Affichage dans **Préferences**
+Dans cet onglet Affichage je voudrais 3 nouveaux sous-onglets	
+   - Editeur Markdown,
+   - Aperçu HTML
+   - Plan du document
+   - Export PDF
+
+Le Sous-panneau ouvert par défaut sera  "Editeur Markdown"
+
+Tous les champs actuels de Affichage seront maintenant dans le sous panneau Affichage mais affiché sur 3 colonnes:
+- 1 colonne pour les polices
+- 2 colonnes pour les Couleurs
+
+
+
+Pour l'instant il n'y a rien dans les 3 autres sous onglets
+   - Aperçu HTML
+   - Plan du document
+   - Export PDF
+
+
+Le bouton " Valeurs par defaut" reste attaché au panneau Affichage et doit rester visible quel que soit les sous onglet ouvert. Il continue à Réinitialiser toutes les valeurs d'affichage la visibilité des panneaux et les paramètres d'intégration.
+Par défaut aucune Intégration est cochée.
+beta1
+
+Préference Général. Redimentionnement des champs de saisie max 3 lignes de hauteurs les trois champs de saisie sont alignés vers le haut de l'onglet. ce n'est pas grave s'il reste de la place en tre les champs de saisie et le bas de l'onglet
+
+Préference Général. Modifier le texte "Tags à exclure du nuage" en "Tags à exclure du nuage de tags"
+beta2
+
+mettre à jour le numéro de version de l'application à 1.8.1.
+
+modifications dans les deux fichiers que vous avez mentionnés : main.py pour la logique de l'application et aide_en_ligne.html pour la documentation utilisateur.
+
+beta3
+
+En bas de la première colonne dans Préférence -> Affichage -> Editeur Markdown   creer un bouton nommé  "Sauvedarder comme thème"
+Lorsque se bouton sera pressé on viendra sauvegarder les valeurs actuelles dans Préférence -> Affichage -> Editeur Markdown dans un fichier JSON thème répertoire bluenotebook/resources/themes/.
+Le format du thème sera identique à celui nommé base_theme.json déja présent.
+Une fenètre de dialogue permettra de renseigner les champs 
+- "name" label Nom du theme:
+- "type" label Type:  boite deroulante avec 2 choix light ou dark
+les 2 autres camps seront optionnels
+- "author" label Auteur:
+- "description" label Description:  
+le nom du fichier theme sauvegardé sera la valeur saisie pour le champ name (en minuscule e sans blanc ou caracteres speciaux) + _theme.json 
+
+Si name à pour valeur "Thème Bleu" le nom du fichier sera "themebleu_theme.json" sans accent et sans blanc
+les autres champs du fichier thème seront remplis avec les valeurs actuelles affichées dans Préférence -> Affichage -> Editeur Markdown
+
+Confirmer la sauvegarde  du theme
+
+
+Beta 4
+
+Agrandir en largeur la boite de dialogue SaveThemeDialog (multiply par 1,5)
+
+En bas de la première colonne dans Préférences -> Affichage -> Editeur Markdown creer un bouton nommé "Sélectionner un thème"  
+en dessous du bouton "Sauvegarder comme thème"
+Dès que cliqué on fera apparaitre une boite de dialogue qui contient une liste déroulante permettant de sélectionner un theme présent dans le répertoire bluenotebook/resources/themes/.
+Pour chaque theme la liste déroulante affiche une ligne qui contient les 4 champs
+ - "name" label Nom du thème:
+- "type" label Type:   
+- "author" label Auteur:
+- "description" label Description:  
+Lorsque l'utilisatuer clique sur une ligne, il selectionne le theme correspondant qui est chargé dans les differents champs d'affichage de Préférences -> Affichage -> Editeur Markdown pour que l'utilisateur voit ce que contenait le theme selectionné.
+
+Au final lorsque l'utilisateur clique sur le bouton "Valider" de Préferences on sauvegardera les différentes valeurs dans settings.json et on configurara l'editeur avec les valeurs du thème selectionné.
+
+
+Il manque le champ  "type" label Type:   dans la boite de dialogue. et dans cette voite de dialogue il faut remplace OK par Valider et Cancel par Annuler
+
+beta5
+
+Attention pb avec les fontes (affichge incorect)
+le theme sélectionné par un utilisateur doit etre mémorisé dans settings.json et a la prochaine ouvertire de la boite de dialogue de selection de theme, il ser aproposé en premier. Lu'utilsateur pourra en choisir un autre en le selectionnat dans la liste déroulante de la boite de dialogue.S
+
+
+beta6
+
+dans le tab Préférences -> Affichage -> Editeur Markdown je veux replacer les deux boutons
+- Sauvegarder comme theme
+- Sélectionner un theme
+
+je veux qu'ils soient de la meme taille et prendre toute la largeur de la première colonne de ce tab
+je veux que "Sauvegarder comme theme" soit en bas aligné a gache
+je veux que "Sélectionner un theme" soit au dessus collé au bouton "Sauvegarder comme theme"
+
+beta7
+
+------------------------------------------
+Problème de fonte
+dans Préférences -> Affichage -> Editeur Markdown modification de la police  de 12pt a 20pt -> Valider
+le changement 20pt est bien ecrit dans settings.json
+l'editeur ne change pas de police et reste   en 12py
+apres redemarrage settings.json reprend l'ancienne valeur 12pt (lié au theme ?)
+l'editeur ne change pas de police et reste   en 12py
+-----
+beta8 
+
+quand on agrandit la fenetres Préférences les 2 colonnes ne se répartissent pas sur l'espace 1/3,1/3,1/3 la taille des colonnes à l'ai statique ( 1  colonne pour les police, 2 coleonnes pour les couleur) Pas de redimensionnement dynamique
+Elargir préférences (multiply*1,25)  pour  Préférences -> Affichage -> Editeur Markdown car l'affichage du nom des polices est illisible
+
+Claude :
+Voici la version complète et améliorée du fichier preferences_dialog.py.
+Principales améliorations :
+✅ Largeur augmentée : 700px au lieu de 500px (+40%)
+✅ Hauteur minimale : 600px pour éviter le débordement
+✅ Layout en grille : QGridLayout au lieu de QFormLayout pour l'onglet Affichage
+✅ 2 colonnes de couleurs : Répartition équilibrée et redimensionnement dynamique
+✅ Largeur minimale des boutons de police : 250px pour une meilleure lisibilité
+✅ Zone scrollable : Pour gérer tous les paramètres sans débordement
+✅ Code simplifié : Méthode _make_color_selector() qui remplace 17 méthodes redondantes
+Structure de l'onglet Affichage :
+
+Polices (haut, 1 colonne) :
+
+Police de l'éditeur
+Police des extraits de code
+
+
+Couleurs (2 colonnes équilibrées) :
+
+Colonne gauche : Fond, texte, titres, listes, sélection, code...
+Colonne droite : Gras, italique, barré, surlignage, citations, liens...
+
+
+Bouton Valeurs par défaut (bas, pleine largeur)
+
+Les colonnes s'ajusteront automatiquement quand vous redimensionnez la fenêtre grâce à setColumnStretch().
+
+
+Beta9
+-----------------
+
+Dés que le bouton "Valeurs par défaut" est activé, on charge  les valeurs du theme base_theme.json
+beta 6 
+dans Préférence -> Affichage -> Editeur Markdown ajouter un bouton Choisr un theme
+
 ## V1.7.8 Menu Inserser Images (<img ..>) et Image Markdown
 
-je voudrai modifier le fonctionnement du sous menu Images (<img ..>).
+### fonctionnement du sous menu Images (<img ..>).
 - si un nom de fichier est selectionné dans l'éditeur , demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
 - Si aucun texte n'est sélectionné dans l'éditeur ouvrir une fenetre de dialogue  dialogue qui permette à l'utilisateur de sélectionner soit un fichier, soit taper une URL puis demander la largeur max en pixels à l'utilisateur puis inserer le tag. Proposer la valeur 400 px par defaut.
 
@@ -12,7 +154,7 @@ les deux scénarios
 Puis bug sur les panneaux
 Beta3
 
-comme pour le sous menu Images (<img ..>) je voudrai modifier le fonctionnement du sous menu Inserer Image Markdown
+###  fonctionnement du sous menu Inserer Image Markdown
 les deux scénarios  
 
 -Si un nom de fichier est sélectionné, insère la balise. OK celui la fonctionne
@@ -106,9 +248,6 @@ else
     echo "ℹ️ Environnement de bureau non détecté ou non supporté pour un thème spécifique. Qt choisira par défaut."
 fi
 ```
-
-
-
 
 
 ## V1.7.3 Affichage d'images dans l'aperçu HTML

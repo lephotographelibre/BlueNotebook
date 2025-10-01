@@ -98,11 +98,11 @@ class MainWindow(QMainWindow):
         # V1.7.6 - Lancer les tâches de fond après que la fenêtre principale soit prête
         # Utiliser un QTimer.singleShot(0, ...) garantit que ces opérations
         # ne bloquent pas l'affichage initial de l'interface.
-        self.load_initial_file()
         QTimer.singleShot(0, self.run_startup_tasks)
 
     def run_startup_tasks(self):
         """Exécute les tâches qui peuvent être lancées après l'affichage de l'UI."""
+        self.load_initial_file()
         self.show_quote_of_the_day()  # Affiche la citation si l'option est activée
         self.start_initial_indexing()  # Lance l'indexation en arrière-plan
         self.update_calendar_highlights()  # Met à jour le calendrier
@@ -1651,7 +1651,10 @@ ______________________________________________________________
                 "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
             )
 
+            # *** CORRECTION PRINCIPALE : Sauvegarder IMMÉDIATEMENT les paramètres ***
             self.settings_manager.save_settings()
+
+            # Appliquer les paramètres à l'interface
             self.apply_settings()
 
     def save_panel_visibility_settings(self):
@@ -1666,11 +1669,217 @@ ______________________________________________________________
         self.settings_manager.save_settings()
 
     def closeEvent(self, event):
-        self.save_panel_visibility_settings()
-        super().closeEvent(event)
+        """Événement de fermeture de la fenêtre"""
+        if self.check_save_changes():
+            # Sauvegarder UNIQUEMENT l'état de visibilité actuel des panneaux
+            # (pas les autres paramètres qui sont déjà sauvegardés)
+            self.save_panel_visibility_settings()
+            event.accept()
+        else:
+            event.ignore()
 
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
+        # --- Visibilité des panneaux ---
+        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+        self.navigation_panel.setVisible(show_nav)
+
+        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
+        self.outline_panel.setVisible(show_outline)
+
+        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
+        self.preview.setVisible(show_preview)
+
+        # --- Visibilité des statistiques d'indexation ---
+        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
+        if not show_stats:
+            self.tag_index_status_label.clear()
+
+        # --- Appliquer la police de l'éditeur ---
+        font_family = self.settings_manager.get("editor.font_family")
+        font_size = self.settings_manager.get("editor.font_size")
+        font = QFont(font_family, font_size)
+        self.editor.set_font(font)
+
+        # --- Appliquer la couleur de fond ---
+        bg_color = self.settings_manager.get("editor.background_color")
+        self.editor.set_background_color(bg_color)
+
+        # --- Appliquer la couleur du texte ---
+        text_color = self.settings_manager.get("editor.text_color")
+        self.editor.set_text_color(text_color)
+
+        # --- Appliquer la couleur des titres ---
+        heading_color = self.settings_manager.get("editor.heading_color")
+        self.editor.set_heading_color(heading_color)
+
+        # --- Appliquer la couleur des listes ---
+        list_color = self.settings_manager.get("editor.list_color")
+        self.editor.set_list_color(list_color)
+
+        # --- Appliquer la couleur du texte de sélection ---
+        selection_text_color = self.settings_manager.get("editor.selection_text_color")
+        self.editor.set_selection_text_color(selection_text_color)
+
+        # --- Appliquer les couleurs du code inline ---
+        inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
+        inline_bg_color = self.settings_manager.get(
+            "editor.inline_code_background_color"
+        )
+        self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
+
+        # --- Appliquer la couleur de fond des blocs de code ---
+        code_block_bg_color = self.settings_manager.get(
+            "editor.code_block_background_color"
+        )
+        self.editor.set_code_block_background_color(code_block_bg_color)
+
+        # --- Appliquer les couleurs des styles de texte ---
+        bold_color = self.settings_manager.get("editor.bold_color")
+        italic_color = self.settings_manager.get("editor.italic_color")
+        strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
+        highlight_color = self.settings_manager.get("editor.highlight_color")
+        self.editor.set_text_style_colors(
+            bold_color, italic_color, strikethrough_color, highlight_color
+        )
+
+        # --- Appliquer les couleurs des tags et horodatage ---
+        tag_color = self.settings_manager.get("editor.tag_color")
+        timestamp_color = self.settings_manager.get("editor.timestamp_color")
+        self.editor.set_misc_colors(tag_color, timestamp_color)
+
+        # --- Appliquer les couleurs des citations et liens ---
+        quote_color = self.settings_manager.get("editor.quote_color")
+        link_color = self.settings_manager.get("editor.link_color")
+        self.editor.set_quote_link_colors(quote_color, link_color)
+
+        # --- Appliquer la police du code ---
+        code_font = self.settings_manager.get("editor.code_font_family")
+        self.editor.set_code_font(code_font)
+
+        # --- Appliquer la couleur des commentaires HTML ---
+        html_comment_color = self.settings_manager.get(
+            "editor.html_comment_color", "#a4b5cf"
+        )
+        self.editor.set_html_comment_color(html_comment_color)
+
+        # --- Appliquer les styles au panneau de plan ---
+        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
+
+        """Applique les paramètres chargés à l'interface utilisateur."""
+        # --- Visibilité des panneaux ---
+        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+        self.navigation_panel.setVisible(show_nav)
+
+        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
+        self.outline_panel.setVisible(show_outline)
+
+        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
+        self.preview.setVisible(show_preview)
+
+        # --- Visibilité des statistiques d'indexation ---
+        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
+        if not show_stats:
+            self.tag_index_status_label.clear()
+
+        # --- Appliquer la police de l'éditeur ---
+        font_family = self.settings_manager.get("editor.font_family")
+        font_size = self.settings_manager.get("editor.font_size")
+        font = QFont(font_family, font_size)
+        self.editor.set_font(font)
+
+        # --- Appliquer la couleur de fond ---
+        bg_color = self.settings_manager.get("editor.background_color")
+        self.editor.set_background_color(bg_color)
+
+        # --- Appliquer la couleur du texte ---
+        text_color = self.settings_manager.get("editor.text_color")
+        self.editor.set_text_color(text_color)
+
+        # --- Appliquer la couleur des titres ---
+        heading_color = self.settings_manager.get("editor.heading_color")
+        self.editor.set_heading_color(heading_color)
+
+        # --- Appliquer la couleur des listes ---
+        list_color = self.settings_manager.get("editor.list_color")
+        self.editor.set_list_color(list_color)
+
+        # --- Appliquer la couleur du texte de sélection ---
+        selection_text_color = self.settings_manager.get("editor.selection_text_color")
+        self.editor.set_selection_text_color(selection_text_color)
+
+        # --- Appliquer les couleurs du code inline ---
+        inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
+        inline_bg_color = self.settings_manager.get(
+            "editor.inline_code_background_color"
+        )
+        self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
+
+        # --- Appliquer la couleur de fond des blocs de code ---
+        code_block_bg_color = self.settings_manager.get(
+            "editor.code_block_background_color"
+        )
+        self.editor.set_code_block_background_color(code_block_bg_color)
+
+        # --- Appliquer les couleurs des styles de texte ---
+        bold_color = self.settings_manager.get("editor.bold_color")
+        italic_color = self.settings_manager.get("editor.italic_color")
+        strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
+        highlight_color = self.settings_manager.get("editor.highlight_color")
+        self.editor.set_text_style_colors(
+            bold_color, italic_color, strikethrough_color, highlight_color
+        )
+
+        # --- Appliquer les couleurs des tags et horodatage ---
+        tag_color = self.settings_manager.get("editor.tag_color")
+        timestamp_color = self.settings_manager.get("editor.timestamp_color")
+        self.editor.set_misc_colors(tag_color, timestamp_color)
+
+        # --- Appliquer les couleurs des citations et liens ---
+        quote_color = self.settings_manager.get("editor.quote_color")
+        link_color = self.settings_manager.get("editor.link_color")
+        self.editor.set_quote_link_colors(quote_color, link_color)
+
+        # --- Appliquer la police du code ---
+        code_font = self.settings_manager.get("editor.code_font_family")
+        self.editor.set_code_font(code_font)
+
+        # --- Appliquer la couleur des commentaires HTML ---
+        html_comment_color = self.settings_manager.get(
+            "editor.html_comment_color", "#a4b5cf"
+        )
+        self.editor.set_html_comment_color(html_comment_color)
+
+        # --- Appliquer les styles au panneau de plan ---
+        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
+
+    def _apply_theme_to_settings(self, theme_key):
+        """Charge un thème et met à jour les paramètres en mémoire."""
+        if theme_key:
+            base_path = Path(__file__).parent.parent
+            theme_path = base_path / "resources" / "themes" / f"{theme_key}.json"
+            if theme_path.exists():
+                try:
+                    with open(theme_path, "r", encoding="utf-8") as f:
+                        theme_data = json.load(f)
+
+                    # Écraser les paramètres d'affichage avec ceux du thème
+                    font_info = theme_data.get("font", {})
+                    self.settings_manager.set(
+                        "editor.font_family", font_info.get("family")
+                    )
+                    self.settings_manager.set("editor.font_size", font_info.get("size"))
+                    self.settings_manager.set(
+                        "editor.code_font_family", font_info.get("code_family")
+                    )
+
+                    color_info = theme_data.get("colors", {})
+                    for key, value in color_info.items():
+                        self.settings_manager.set(f"editor.{key}", value)
+
+                except (json.JSONDecodeError, IOError) as e:
+                    print(f"⚠️ Erreur lors du chargement du thème au démarrage : {e}")
+
         # --- Visibilité des panneaux ---
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
         self.navigation_panel.setVisible(show_nav)
@@ -1752,6 +1961,11 @@ ______________________________________________________________
             "editor.html_comment_color", "#a4b5cf"
         )
         self.editor.set_html_comment_color(html_comment_color)
+
+        # V1.8.1 - Appliquer le CSS personnalisé à l'aperçu
+        custom_css_path = self.settings_manager.get("preview.custom_css_path", "")
+        if hasattr(self.preview, "set_custom_css"):
+            self.preview.set_custom_css(custom_css_path)
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
