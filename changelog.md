@@ -1,3 +1,52 @@
+## V1.8.2 Reglages préférences
+
+Préference Général. Redimentionnement des champs de saisie max 3 lignes de hauteurs les trois champs de saisie sont alignés vers le haut de l'onglet. ce n'est pas grave s'il reste de la place en tre les champs de saisie et le bas de l'onglet
+beta1
+
+à l'ouverture, la fenètre Préférences n'est pas assez large et assez haute pour contenir tous les éléments de Préférences -> Affichage. Il faut agrandir cette fenètre
+
+- self.setMinimumWidth(1050) : J'ai augmenté la largeur minimale de 800 à 1050 pixels. Cela représente une augmentation substantielle (proche de ce que vous suggériez avec "x1.5" par rapport à la taille d'origine) qui devrait donner amplement d'espace aux trois colonnes de l'onglet "Affichage" pour s'étendre, rendant les libellés et les widgets de sélection de police et de couleur parfaitement lisibles.
+- self.setMinimumHeight(850) : J'ai mis à jour la hauteur minimale de 750 à 850 pixels. Cela ajoute l'espace vertical nécessaire pour que tous les éléments, en particulier dans l'onglet "Affichage", soient bien visibles sans avoir besoin de faire défiler la fenêtre.
+beta2
+
+
+quand l'utilisateur clique sur le bouton Valeurs par defaut --> Il faut :
+- recharge les couleurs de valeur par defaut dans le palette de Préférences -> Affichage
+- Puis afficher la fenetre de confirmation
+
+Maintenant, la séquence d'événements est la suivante :
+
+1. L'utilisateur clique sur le bouton "Valeurs par défaut".
+2. L'interface de l'onglet "Affichage" est immédiatement mise à jour avec les polices et les couleurs par défaut. L'utilisateur peut voir exactement ce qu'il s'apprête à valider.
+3. La boîte de dialogue de confirmation s'affiche.
+    - Si l'utilisateur clique sur "Valider", les paramètres sont réinitialisés en arrière-plan et l'application se prépare à fermer.
+    - S'il clique sur "Annuler", la boîte de dialogue se ferme, mais les couleurs par défaut restent affichées dans la fenêtre des préférences. L'utilisateur peut alors soit "Valider" ces nouveaux réglages, soit "Annuler" pour fermer les préférences sans rien changer.
+
+Beta3
+
+MAJ version V1.8.2
+
+En fait je voudrais restructurer l'onglet Affichage dans **Préferences**
+Dans cet onglet Affichage je voudrais 3 nouveaux sous-onglets	
+   - Editeur Markdown,
+   - Aperçu HTML
+   - Export PDF
+
+Le Sous-panneau ouvert par défaut sera  "Editeur Markdown"
+
+Tous les champs actuels de Affichage seront maintenant dans l"onglet "Editeur Markdown" en gardat le meme arrangement
+Pour l'instant les onlets 
+    - Aperçu HTML
+   - Export PDF  - 
+   seront vides
+
+Beta4
+
+Lorsque l'on fait Quitter s'affiche une boite de dialogue "Modifications non sauvegardées".
+Changer les labels des 3 boutons
+- Save --> Sauvegarder
+- Discard --> Ne pas sauvegarder
+- Cancel --> Annuler
 
 ## V1.8.1  Redesign du panneau Préférences-> Affichage + Theme Management
 

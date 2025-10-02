@@ -44,7 +44,7 @@ def main():
         app = QApplication(sys.argv)
 
         # Définir les informations de l'application
-        version = "1.8.1"
+        version = "1.8.2"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")

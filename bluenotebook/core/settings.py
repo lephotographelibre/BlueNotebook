@@ -134,3 +134,7 @@ class SettingsManager:
         if "integrations" in self.defaults:
             self.settings["integrations"] = self.defaults["integrations"].copy()
         self.save_settings()
+
+    def get_default_settings(self):
+        """Retourne une copie du dictionnaire des paramètres par défaut."""
+        return self.defaults.copy()

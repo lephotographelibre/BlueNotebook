@@ -1174,14 +1174,21 @@ ______________________________________________________________
     def check_save_changes(self):
         """Vérifier si il faut sauvegarder les modifications"""
         if self.is_modified:
-            reply = QMessageBox.question(
-                self,
-                "Modifications non sauvegardées",
-                "Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?",
-                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
-                QMessageBox.Save,
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Question)
+            msg_box.setWindowTitle("Modifications non sauvegardées")
+            msg_box.setText(
+                "Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?"
             )
+            msg_box.setStandardButtons(
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+            )
+            msg_box.button(QMessageBox.Save).setText("Sauvegarder")
+            msg_box.button(QMessageBox.Discard).setText("Ne pas sauvegarder")
+            msg_box.button(QMessageBox.Cancel).setText("Annuler")
+            msg_box.setDefaultButton(QMessageBox.Save)
 
+            reply = msg_box.exec_()
             if reply == QMessageBox.Save:
                 self.save_file()
                 return not self.is_modified  # Retourner False si la sauvegarde a échoué

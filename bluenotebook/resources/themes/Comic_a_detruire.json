@@ -1,0 +1,27 @@
+{
+    "name": "Comic a detruire",
+    "font": {
+        "family": "Comic Sans MS",
+        "size": 12,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#61ff93",
+        "text_color": "#253443",
+        "heading_color": "#4c6eab",
+        "list_color": "#a4b5cf",
+        "selection_text_color": "#a4b5cf",
+        "inline_code_text_color": "#4c6eab",
+        "inline_code_background_color": "#f7f8fa",
+        "code_block_background_color": "#f7f8fa",
+        "bold_color": "#4c6eab",
+        "italic_color": "#253443",
+        "strikethrough_color": "#253443",
+        "highlight_color": "#fffec7",
+        "quote_color": "#4c6eab",
+        "link_color": "#4c6eab",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#4c6eab",
+        "timestamp_color": "#1d4ed8"
+    }
+}

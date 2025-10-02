@@ -50,8 +50,8 @@ class PreferencesDialog(QDialog):
         super().__init__(parent)
         self.settings_manager = settings_manager
         self.setWindowTitle("Préférences")
-        self.setMinimumWidth(700)  # Augmenté pour meilleure lisibilité
-        self.setMinimumHeight(600)  # Hauteur minimale
+        self.setMinimumWidth(1050)  # Largeur augmentée pour un affichage optimal
+        self.setMinimumHeight(850)  # Hauteur minimale augmentée
 
         # Créer les onglets
         self.tabs = QTabWidget()
@@ -99,7 +99,7 @@ class PreferencesDialog(QDialog):
         self.excluded_words_edit.setToolTip(
             "Ajoutez ici des mots personnalisés (séparés par des virgules) à ignorer lors de l'indexation."
         )
-        self.excluded_words_edit.setMinimumHeight(150)
+        self.excluded_words_edit.setMaximumHeight(80)
 
         label = QLabel("Mots personnalisés à exclure de l'indexation:")
         label.setToolTip(
@@ -143,49 +143,69 @@ class PreferencesDialog(QDialog):
         )
         layout.addRow(label_words_cloud, self.excluded_words_cloud_edit)
 
+        # Ajouter un espace extensible pour pousser les éléments vers le haut
+        layout.addRow(QLabel())
         return widget
 
     def _create_display_tab(self):
         """Crée l'onglet 'Affichage' avec layout en grille."""
         widget = QWidget()
-        
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        # Créer le QTabWidget pour les sous-onglets
+        sub_tabs = QTabWidget()
+        sub_tabs.addTab(self._create_markdown_editor_sub_tab(), "Editeur Markdown")
+        sub_tabs.addTab(self._create_html_preview_sub_tab(), "Aperçu HTML")
+        sub_tabs.addTab(self._create_pdf_export_sub_tab(), "Export PDF")
+
+        # "Editeur Markdown" est l'onglet par défaut
+        sub_tabs.setCurrentIndex(0)
+
+        layout.addWidget(sub_tabs)
+        return widget
+
+    def _create_markdown_editor_sub_tab(self):
+        """Crée le sous-onglet pour les paramètres de l'éditeur Markdown."""
         # Créer un widget avec scroll pour gérer le grand nombre de paramètres
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QScrollArea.NoFrame)
-        
+
         content_widget = QWidget()
         # Utiliser un QGridLayout pour mieux contrôler les colonnes
         layout = QGridLayout(content_widget)
         layout.setSpacing(15)
         layout.setColumnStretch(1, 1)  # Colonne des widgets s'étire
         layout.setColumnStretch(3, 1)  # Colonne des widgets s'étire
-        
+
         row = 0
-        
+
         # === SECTION GESTION DES THÈMES ===
         # Boutons pour sauvegarder et charger des thèmes
         theme_layout = QHBoxLayout()
-        
+
         save_theme_button = QPushButton("💾 Sauvegarder comme thème")
-        save_theme_button.setToolTip("Sauvegarder les paramètres actuels comme un nouveau thème")
+        save_theme_button.setToolTip(
+            "Sauvegarder les paramètres actuels comme un nouveau thème"
+        )
         save_theme_button.clicked.connect(self._save_as_theme)
         theme_layout.addWidget(save_theme_button)
-        
+
         load_theme_button = QPushButton("🎨 Sélectionner un thème")
         load_theme_button.setToolTip("Charger un thème existant")
         load_theme_button.clicked.connect(self._load_theme)
         theme_layout.addWidget(load_theme_button)
-        
+
         theme_layout.addStretch()
-        
+
         layout.addLayout(theme_layout, row, 0, 1, 4)
         row += 1
-        
+
         # Ligne de séparation
         layout.addWidget(QLabel(""), row, 0, 1, 4)
         row += 1
-        
+
         # === SECTION POLICES ===
         # Police de l'éditeur
         font_family = self.settings_manager.get("editor.font_family")
@@ -214,7 +234,7 @@ class PreferencesDialog(QDialog):
         layout.addWidget(QLabel("Police des extraits de code:"), row, 0)
         layout.addWidget(self.code_font_button, row, 1)
         row += 1
-        
+
         # Ligne de séparation
         layout.addWidget(QLabel(""), row, 0, 1, 4)
         row += 1
@@ -222,35 +242,115 @@ class PreferencesDialog(QDialog):
         # === SECTION COULEURS (réparties sur 2 colonnes) ===
         col1_row = 0
         col2_row = 0
-        
+
         # Liste des couleurs à afficher (label, clé_paramètre, attribut_widget, button_name)
         colors_config = [
             # Colonne 1
-            ("Fond éditeur:", "editor.background_color", "current_color", "color_button"),
-            ("Police éditeur:", "editor.text_color", "current_text_color", "text_color_button"),
-            ("Titres Markdown:", "editor.heading_color", "current_heading_color", "heading_color_button"),
-            ("Listes Markdown:", "editor.list_color", "current_list_color", "list_color_button"),
-            ("Texte sélectionné:", "editor.selection_text_color", "current_selection_text_color", "selection_text_color_button"),
-            ("Texte code inline:", "editor.inline_code_text_color", "current_inline_code_text_color", "inline_code_text_color_button"),
-            ("Fond code inline:", "editor.inline_code_background_color", "current_inline_code_bg_color", "inline_code_bg_color_button"),
-            ("Fond bloc code:", "editor.code_block_background_color", "current_code_block_bg_color", "code_block_bg_color_button"),
+            (
+                "Fond éditeur:",
+                "editor.background_color",
+                "current_color",
+                "color_button",
+            ),
+            (
+                "Police éditeur:",
+                "editor.text_color",
+                "current_text_color",
+                "text_color_button",
+            ),
+            (
+                "Titres Markdown:",
+                "editor.heading_color",
+                "current_heading_color",
+                "heading_color_button",
+            ),
+            (
+                "Listes Markdown:",
+                "editor.list_color",
+                "current_list_color",
+                "list_color_button",
+            ),
+            (
+                "Texte sélectionné:",
+                "editor.selection_text_color",
+                "current_selection_text_color",
+                "selection_text_color_button",
+            ),
+            (
+                "Texte code inline:",
+                "editor.inline_code_text_color",
+                "current_inline_code_text_color",
+                "inline_code_text_color_button",
+            ),
+            (
+                "Fond code inline:",
+                "editor.inline_code_background_color",
+                "current_inline_code_bg_color",
+                "inline_code_bg_color_button",
+            ),
+            (
+                "Fond bloc code:",
+                "editor.code_block_background_color",
+                "current_code_block_bg_color",
+                "code_block_bg_color_button",
+            ),
             # Colonne 2
-            ("Texte gras:", "editor.bold_color", "current_bold_color", "bold_color_button"),
-            ("Texte italique:", "editor.italic_color", "current_italic_color", "italic_color_button"),
-            ("Texte barré:", "editor.strikethrough_color", "current_strikethrough_color", "strikethrough_color_button"),
-            ("Fond surlignage:", "editor.highlight_color", "current_highlight_color", "highlight_color_button"),
-            ("Citations:", "editor.quote_color", "current_quote_color", "quote_color_button"),
+            (
+                "Texte gras:",
+                "editor.bold_color",
+                "current_bold_color",
+                "bold_color_button",
+            ),
+            (
+                "Texte italique:",
+                "editor.italic_color",
+                "current_italic_color",
+                "italic_color_button",
+            ),
+            (
+                "Texte barré:",
+                "editor.strikethrough_color",
+                "current_strikethrough_color",
+                "strikethrough_color_button",
+            ),
+            (
+                "Fond surlignage:",
+                "editor.highlight_color",
+                "current_highlight_color",
+                "highlight_color_button",
+            ),
+            (
+                "Citations:",
+                "editor.quote_color",
+                "current_quote_color",
+                "quote_color_button",
+            ),
             ("Liens:", "editor.link_color", "current_link_color", "link_color_button"),
-            ("Commentaires HTML:", "editor.html_comment_color", "current_html_comment_color", "html_comment_color_button"),
-            ("Tags (@@tag):", "editor.tag_color", "current_tag_color", "tag_color_button"),
-            ("Horodatage (HH:MM):", "editor.timestamp_color", "current_timestamp_color", "timestamp_color_button"),
+            (
+                "Commentaires HTML:",
+                "editor.html_comment_color",
+                "current_html_comment_color",
+                "html_comment_color_button",
+            ),
+            (
+                "Tags (@@tag):",
+                "editor.tag_color",
+                "current_tag_color",
+                "tag_color_button",
+            ),
+            (
+                "Horodatage (HH:MM):",
+                "editor.timestamp_color",
+                "current_timestamp_color",
+                "timestamp_color_button",
+            ),
         ]
-        
+
         # Séparer en deux colonnes
         mid_point = (len(colors_config) + 1) // 2
         col1_colors = colors_config[:mid_point]
         col2_colors = colors_config[mid_point:]
-        
+
         # Colonne 1
         for label_text, setting_key, attr_name, button_name in col1_colors:
             color_hex = self.settings_manager.get(setting_key)
@@ -260,11 +360,11 @@ class PreferencesDialog(QDialog):
             button.setMinimumHeight(30)
             button.clicked.connect(self._make_color_selector(attr_name, button_name))
             setattr(self, button_name, button)
-            
+
             layout.addWidget(QLabel(label_text), row + col1_row, 0)
             layout.addWidget(button, row + col1_row, 1)
             col1_row += 1
-        
+
         # Colonne 2
         for label_text, setting_key, attr_name, button_name in col2_colors:
             color_hex = self.settings_manager.get(setting_key)
@@ -274,28 +374,46 @@ class PreferencesDialog(QDialog):
             button.setMinimumHeight(30)
             button.clicked.connect(self._make_color_selector(attr_name, button_name))
             setattr(self, button_name, button)
-            
+
             layout.addWidget(QLabel(label_text), row + col2_row, 2)
             layout.addWidget(button, row + col2_row, 3)
             col2_row += 1
-        
+
         row += max(col1_row, col2_row)
-        
+
         # Bouton de réinitialisation
         layout.addWidget(QLabel(""), row, 0)  # Ligne vide
         row += 1
-        
+
         reset_button = QPushButton("🔄 Valeurs par défaut")
         reset_button.setToolTip(
             "Réinitialise les préférences de l'interface à leurs valeurs par défaut."
         )
         reset_button.clicked.connect(self._reset_settings)
         layout.addWidget(reset_button, row, 0, 1, 4)  # Span sur 4 colonnes
-        
+
         scroll.setWidget(content_widget)
-        
-        main_layout = QVBoxLayout(widget)
-        main_layout.addWidget(scroll)
+
+        return scroll  # Retourner le widget scrollable
+
+    def _create_html_preview_sub_tab(self):
+        """Crée le sous-onglet (vide pour l'instant) pour l'aperçu HTML."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.addWidget(
+            QLabel("Les options pour l'aperçu HTML seront disponibles ici.")
+        )
+        layout.addStretch()
+        return widget
+
+    def _create_pdf_export_sub_tab(self):
+        """Crée le sous-onglet (vide pour l'instant) pour l'export PDF."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.addWidget(
+            QLabel("Les options pour l'export PDF seront disponibles ici.")
+        )
+        layout.addStretch()
         return widget
 
     def _create_panels_tab(self):
@@ -367,6 +485,7 @@ class PreferencesDialog(QDialog):
 
     def _make_color_selector(self, attr_name, button_name):
         """Crée une fonction de sélection de couleur pour un attribut donné."""
+
         def selector():
             current_color = getattr(self, attr_name)
             color = QColorDialog.getColor(current_color, self)
@@ -374,35 +493,35 @@ class PreferencesDialog(QDialog):
                 setattr(self, attr_name, color)
                 button = getattr(self, button_name)
                 button.setStyleSheet(f"background-color: {color.name()};")
+
         return selector
 
     def _save_as_theme(self):
         """Sauvegarde les paramètres actuels comme un nouveau thème."""
         theme_name, ok = QInputDialog.getText(
-            self,
-            "Sauvegarder le thème",
-            "Nom du thème:",
-            text="Mon Thème"
+            self, "Sauvegarder le thème", "Nom du thème:", text="Mon Thème"
         )
-        
+
         if not ok or not theme_name:
             return
-        
+
         # Nettoyer le nom du thème pour en faire un nom de fichier valide
-        safe_name = "".join(c for c in theme_name if c.isalnum() or c in (' ', '-', '_')).strip()
-        safe_name = safe_name.replace(' ', '_')
-        
+        safe_name = "".join(
+            c for c in theme_name if c.isalnum() or c in (" ", "-", "_")
+        ).strip()
+        safe_name = safe_name.replace(" ", "_")
+
         if not safe_name:
             QMessageBox.warning(self, "Erreur", "Le nom du thème n'est pas valide.")
             return
-        
+
         # Construire le chemin du fichier thème
         base_path = Path(__file__).parent.parent
         themes_dir = base_path / "resources" / "themes"
         themes_dir.mkdir(parents=True, exist_ok=True)
-        
+
         theme_file = themes_dir / f"{safe_name}.json"
-        
+
         # Vérifier si le fichier existe déjà
         if theme_file.exists():
             reply = QMessageBox.question(
@@ -410,18 +529,18 @@ class PreferencesDialog(QDialog):
                 "Fichier existant",
                 f"Un thème nommé '{safe_name}' existe déjà. Voulez-vous le remplacer?",
                 QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.No,
             )
             if reply == QMessageBox.No:
                 return
-        
+
         # Créer le dictionnaire du thème
         theme_data = {
             "name": theme_name,
             "font": {
                 "family": self.current_font.family(),
                 "size": self.current_font.pointSize(),
-                "code_family": self.current_code_font.family()
+                "code_family": self.current_code_font.family(),
             },
             "colors": {
                 "background_color": self.current_color.name(),
@@ -440,106 +559,94 @@ class PreferencesDialog(QDialog):
                 "link_color": self.current_link_color.name(),
                 "html_comment_color": self.current_html_comment_color.name(),
                 "tag_color": self.current_tag_color.name(),
-                "timestamp_color": self.current_timestamp_color.name()
-            }
+                "timestamp_color": self.current_timestamp_color.name(),
+            },
         }
-        
+
         # Sauvegarder le thème
         try:
-            with open(theme_file, 'w', encoding='utf-8') as f:
+            with open(theme_file, "w", encoding="utf-8") as f:
                 json.dump(theme_data, f, indent=4)
-            
+
             QMessageBox.information(
                 self,
                 "Thème sauvegardé",
-                f"Le thème '{theme_name}' a été sauvegardé avec succès."
+                f"Le thème '{theme_name}' a été sauvegardé avec succès.",
             )
         except Exception as e:
             QMessageBox.critical(
-                self,
-                "Erreur",
-                f"Impossible de sauvegarder le thème:\n{e}"
+                self, "Erreur", f"Impossible de sauvegarder le thème:\n{e}"
             )
 
     def _load_theme(self):
         """Charge un thème existant."""
         base_path = Path(__file__).parent.parent
         themes_dir = base_path / "resources" / "themes"
-        
+
         if not themes_dir.exists():
             QMessageBox.information(
                 self,
                 "Aucun thème",
-                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'."
+                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'.",
             )
             return
-        
+
         # Lister les thèmes disponibles
         theme_files = list(themes_dir.glob("*.json"))
-        
+
         if not theme_files:
             QMessageBox.information(
                 self,
                 "Aucun thème",
-                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'."
+                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'.",
             )
             return
-        
+
         # Créer la liste des noms de thèmes
         theme_names = []
         theme_map = {}
-        
+
         for theme_file in theme_files:
             try:
-                with open(theme_file, 'r', encoding='utf-8') as f:
+                with open(theme_file, "r", encoding="utf-8") as f:
                     theme_data = json.load(f)
                     name = theme_data.get("name", theme_file.stem)
                     theme_names.append(name)
                     theme_map[name] = theme_file
             except:
                 continue
-        
+
         if not theme_names:
-            QMessageBox.warning(
-                self,
-                "Erreur",
-                "Aucun thème valide trouvé."
-            )
+            QMessageBox.warning(self, "Erreur", "Aucun thème valide trouvé.")
             return
-        
+
         # Demander à l'utilisateur de choisir un thème
         theme_name, ok = QInputDialog.getItem(
-            self,
-            "Sélectionner un thème",
-            "Choisissez un thème:",
-            theme_names,
-            0,
-            False
+            self, "Sélectionner un thème", "Choisissez un thème:", theme_names, 0, False
         )
-        
+
         if not ok:
             return
-        
+
         # Charger le thème sélectionné
         theme_file = theme_map[theme_name]
-        
+
         try:
-            with open(theme_file, 'r', encoding='utf-8') as f:
+            with open(theme_file, "r", encoding="utf-8") as f:
                 theme_data = json.load(f)
-            
+
             # Appliquer les polices
             font_info = theme_data.get("font", {})
             self.current_font = QFont(
-                font_info.get("family", "Arial"),
-                font_info.get("size", 12)
+                font_info.get("family", "Arial"), font_info.get("size", 12)
             )
             self.font_button.setText(
                 f"{self.current_font.family()}, {self.current_font.pointSize()}pt"
             )
-            
+
             self.current_code_font = QFont(font_info.get("code_family", "Courier New"))
             self.code_font_button.setText(self.current_code_font.family())
-            
+
             # Appliquer les couleurs
             colors = theme_data.get("colors", {})
             color_mappings = [
@@ -547,43 +654,146 @@ class PreferencesDialog(QDialog):
                 ("text_color", "current_text_color", "text_color_button"),
                 ("heading_color", "current_heading_color", "heading_color_button"),
                 ("list_color", "current_list_color", "list_color_button"),
-                ("selection_text_color", "current_selection_text_color", "selection_text_color_button"),
-                ("inline_code_text_color", "current_inline_code_text_color", "inline_code_text_color_button"),
-                ("inline_code_background_color", "current_inline_code_bg_color", "inline_code_bg_color_button"),
-                ("code_block_background_color", "current_code_block_bg_color", "code_block_bg_color_button"),
+                (
+                    "selection_text_color",
+                    "current_selection_text_color",
+                    "selection_text_color_button",
+                ),
+                (
+                    "inline_code_text_color",
+                    "current_inline_code_text_color",
+                    "inline_code_text_color_button",
+                ),
+                (
+                    "inline_code_background_color",
+                    "current_inline_code_bg_color",
+                    "inline_code_bg_color_button",
+                ),
+                (
+                    "code_block_background_color",
+                    "current_code_block_bg_color",
+                    "code_block_bg_color_button",
+                ),
                 ("bold_color", "current_bold_color", "bold_color_button"),
                 ("italic_color", "current_italic_color", "italic_color_button"),
-                ("strikethrough_color", "current_strikethrough_color", "strikethrough_color_button"),
-                ("highlight_color", "current_highlight_color", "highlight_color_button"),
+                (
+                    "strikethrough_color",
+                    "current_strikethrough_color",
+                    "strikethrough_color_button",
+                ),
+                (
+                    "highlight_color",
+                    "current_highlight_color",
+                    "highlight_color_button",
+                ),
                 ("quote_color", "current_quote_color", "quote_color_button"),
                 ("link_color", "current_link_color", "link_color_button"),
-                ("html_comment_color", "current_html_comment_color", "html_comment_color_button"),
+                (
+                    "html_comment_color",
+                    "current_html_comment_color",
+                    "html_comment_color_button",
+                ),
                 ("tag_color", "current_tag_color", "tag_color_button"),
-                ("timestamp_color", "current_timestamp_color", "timestamp_color_button"),
+                (
+                    "timestamp_color",
+                    "current_timestamp_color",
+                    "timestamp_color_button",
+                ),
             ]
-            
+
             for color_key, attr_name, button_name in color_mappings:
                 if color_key in colors:
                     color = QColor(colors[color_key])
                     setattr(self, attr_name, color)
                     button = getattr(self, button_name)
                     button.setStyleSheet(f"background-color: {color.name()};")
-            
+
             QMessageBox.information(
                 self,
                 "Thème chargé",
-                f"Le thème '{theme_name}' a été appliqué.\nCliquez sur 'Valider' pour enregistrer les modifications."
+                f"Le thème '{theme_name}' a été appliqué.\nCliquez sur 'Valider' pour enregistrer les modifications.",
             )
-            
+
         except Exception as e:
             QMessageBox.critical(
-                self,
-                "Erreur",
-                f"Impossible de charger le thème:\n{e}"
+                self, "Erreur", f"Impossible de charger le thème:\n{e}"
             )
+
+    def _load_defaults_in_ui(self):
+        """Charge les valeurs par défaut dans les widgets de l'onglet Affichage."""
+        # Obtenir une copie des paramètres par défaut
+        defaults = self.settings_manager.get_default_settings()
+
+        # Appliquer les polices par défaut
+        font_info = defaults.get("editor", {})
+        self.current_font = QFont(
+            font_info.get("font_family", "Arial"), font_info.get("font_size", 12)
+        )
+        self.font_button.setText(
+            f"{self.current_font.family()}, {self.current_font.pointSize()}pt"
+        )
+
+        self.current_code_font = QFont(font_info.get("code_font_family", "Courier New"))
+        self.code_font_button.setText(self.current_code_font.family())
+
+        # Appliquer les couleurs par défaut
+        colors = defaults.get("editor", {})
+        color_mappings = [
+            ("background_color", "current_color", "color_button"),
+            ("text_color", "current_text_color", "text_color_button"),
+            ("heading_color", "current_heading_color", "heading_color_button"),
+            ("list_color", "current_list_color", "list_color_button"),
+            (
+                "selection_text_color",
+                "current_selection_text_color",
+                "selection_text_color_button",
+            ),
+            (
+                "inline_code_text_color",
+                "current_inline_code_text_color",
+                "inline_code_text_color_button",
+            ),
+            (
+                "inline_code_background_color",
+                "current_inline_code_bg_color",
+                "inline_code_bg_color_button",
+            ),
+            (
+                "code_block_background_color",
+                "current_code_block_bg_color",
+                "code_block_bg_color_button",
+            ),
+            ("bold_color", "current_bold_color", "bold_color_button"),
+            ("italic_color", "current_italic_color", "italic_color_button"),
+            (
+                "strikethrough_color",
+                "current_strikethrough_color",
+                "strikethrough_color_button",
+            ),
+            ("highlight_color", "current_highlight_color", "highlight_color_button"),
+            ("quote_color", "current_quote_color", "quote_color_button"),
+            ("link_color", "current_link_color", "link_color_button"),
+            (
+                "html_comment_color",
+                "current_html_comment_color",
+                "html_comment_color_button",
+            ),
+            ("tag_color", "current_tag_color", "tag_color_button"),
+            ("timestamp_color", "current_timestamp_color", "timestamp_color_button"),
+        ]
+
+        for color_key, attr_name, button_name in color_mappings:
+            if color_key in colors:
+                color = QColor(colors[color_key])
+                setattr(self, attr_name, color)
+                button = getattr(self, button_name)
+                button.setStyleSheet(f"background-color: {color.name()};")
 
     def _reset_settings(self):
         """Affiche une confirmation et réinitialise les paramètres."""
+        # Recharge les valeurs par défaut dans l'interface pour que l'utilisateur les voie
+        self._load_defaults_in_ui()
+
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Question)
         msg_box.setWindowTitle("Confirmation")
