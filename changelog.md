@@ -1,3 +1,61 @@
+## 1.9.2 CSS Colors
+
+
+Je voudrais que lorque un utilisateur séléctionne une feuille de style CSS dans Préférences -> Affichage -> Aperçu HTML il puisse visualiser le formattage HTML correspondant à cette feuille de style par un mini previever HTML qui s'afficherait un document HTML de test qui est composé de la pluspart des tag HTML majeurs. comme cela l'utilisateur pourra juger cette feuille de style. des que l'utilsateur selection un autre feuille de style on vient remettre a jour le mini previewer HTML
+beta 1
+
+Suprimmer le bouton  "Sauvegarder comme thème CSS" dans Préférences -> Affichage -> Aperçu HTML
+beta 2
+
+dans l'editeur markdown peux t on rajouter un numero de ligne devant chaque ligne de l'éditeur
+
+
+## V1.9.1 Aperçu HTML CSS
+
+Le répertoire bluenotebook/resources/css_preview est destiner a stocker des feuilles de dtyle CSS pour le previewer HTML
+
+1. Extraire les éléments CSS utilisé actuellement par l'aperçu HTML  pou run faire un fichier CSS nommé default_preview.css et stocké dans le répertoire bluenotebook/resources/css_preview
+beta1
+
+2. @github-markdown-dark.css  En respectectant scrictement le meme format que celui de @default_preview.css peut tu convertir github-markdown-dark.css et nommer ce fichier github-markdown-dark_preview.css dans le répertoire bluenotebook/resources/css_preview
+
+3. idem pour github-markdown_preview.css et github-markdown-light_preview.css
+beta2
+
+4. si il y des styles CSS présent dans default_preview.css et pas dans les autres fichiers CSS du répertoire bluenotebook/resources/css_preview ajouter ceux-ci dans les trois autres fichiers css En respectectant scrictement le meme format que celui de default_preview.css
+bet4
+
+4. Dans Préférences -> Affichage -> Editeur Markdown il y a un bouton "Valeurs Par défaut".Je voudrais que se bouton ne soit plus sur Préférences -> Affichage -> Editeur Markdown mais sur Préférences -> Affichage c'est a dire visble sous les 3 onglets (Editeur Markdown, Aperçu HTML, Export PDF ). Il concerve les memes foctionnalités
+
+Beta5
+
+5. Le label sur ce bouton "Valeurs Par défaut" va devenir "Valeurs d'affichage par défaut"
+et modifier le comportement en reinitialisant uniquement les valeurs d'affichage mais plus la visibilité des panneaux et les paramètres d'untégration. La boite de confirmation devra tenir compte de ces modifications.
+
+6. dans Préférences -> Affichage -> Aperçu HTML je voudrais 
+- Un bouton "Sauvegarder comme thème CSS" sans action acteuellement
+- Un bouton "Sélectionner un thème CSS" qui ouvre une liste déroulante qui me permette de sélectionner une feuille de style présente dans le répertoire répertoire bluenotebook/resources/css_preview.  
+
+Ces deux boutons seront placés exactement comme "Sauvegarder comme thème" et "Sélectionner un thème" dans l'onglet Préférences -> Affichage -> Editeur Markdown
+
+Une fois que l'itilisateur aura sélectionné un nouveau thème CSS et validé son utilisation.
+- Stocker le nom du theme choisi dans settings.json
+- Reinitialiser le previewer HTML avec cette feuille de style.
+
+A demarrage de l'application on veillera a bien charger le theme stocké dans settings.json.
+
+Lorsque l'utilisateur cliquera sur le bouton "Valeurs d'affichage par défaut" dans l'onglet Préférences -> Affichage lors de la reinitialisation des valeurs d'affichage, il conviendra de charger le theme css default_preview.css qui est dans le repertoire bluenotebook/resources/css_preview
+beta7
+
+lorsque l'utilisateur appuie sur le bouton "Sélectionner un thème" de Préférences -> Affichage -> Editeur Markdown s'ouvre une boite de dialoque. Multiplier par 2 la largeur de cette boite de dialoque
+
+Beta8
+
+TODO Mettre a jour doc, aide en ligne
+couplet sur la personnalisation de theme d'affichage (Editeur et aperçu HTML)
+
+
+6.
 ## V1.8.2 Reglages préférences
 
 Préference Général. Redimentionnement des champs de saisie max 3 lignes de hauteurs les trois champs de saisie sont alignés vers le haut de l'onglet. ce n'est pas grave s'il reste de la place en tre les champs de saisie et le bas de l'onglet

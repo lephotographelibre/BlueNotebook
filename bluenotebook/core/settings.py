@@ -59,6 +59,7 @@ class SettingsManager:
                 "show_outline_panel": True,
                 "show_preview_panel": False,
                 "show_indexing_stats": True,
+                "css_theme": "default_preview.css",  # Thème par défaut pour l'aperçu
             },
             "indexing": {
                 "user_excluded_words": [],
@@ -66,6 +67,7 @@ class SettingsManager:
                 "excluded_words_from_cloud": [],
             },
         }
+        self.defaults["preview"] = {"css_theme": "default_preview.css"}
 
         # Charger les paramètres
         self.settings = self.load_settings()
@@ -125,14 +127,13 @@ class SettingsManager:
         self.settings = self.defaults.copy()
         self.save_settings()
 
-    def reset_gui_settings_to_defaults(self):
-        """Réinitialise les paramètres de l'interface graphique (Affichage, Panneaux, Intégrations)."""
+    def reset_display_settings_to_defaults(self):
+        """Réinitialise uniquement les paramètres d'affichage (polices, couleurs, etc.)."""
         if "editor" in self.defaults:
             self.settings["editor"] = self.defaults["editor"].copy()
-        if "ui" in self.defaults:
-            self.settings["ui"] = self.defaults["ui"].copy()
-        if "integrations" in self.defaults:
-            self.settings["integrations"] = self.defaults["integrations"].copy()
+        if "preview" in self.defaults:
+            self.settings["preview"] = self.defaults["preview"].copy()
+        # Ne touche pas aux sections "ui" et "integrations"
         self.save_settings()
 
     def get_default_settings(self):

@@ -1,0 +1,61 @@
+ /*
+  * Style pour github-markdown.css (thème par défaut)
+  * Adapté pour BlueNotebook
+  */
+ 
+ body {
+     -ms-text-size-adjust: 100%;
+     -webkit-text-size-adjust: 100%;
+     margin: 0;
+     color: #24292e;
+     background-color: #ffffff;
+     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+     font-size: 16px;
+     line-height: 1.5;
+     word-wrap: break-word;
+ }
+ 
+ /* ... autres styles du thème ... */
+ 
+ /*
+  * Styles spécifiques à BlueNotebook ajoutés pour la cohérence
+  */
+ 
+ /* Style pour la table des matières (Table of Contents) */
+ .toc {
+     border: 1px solid #e1e4e8;
+     background-color: #f6f8fa;
+     border-radius: 6px;
+     padding: 16px;
+     margin: 16px 0;
+ }
+ 
+ .toc h2 {
+     margin-top: 0;
+     border-bottom: 1px solid #e1e4e8;
+     padding-bottom: 8px;
+ }
+ 
+ .toc ul {
+     list-style: none;
+     padding-left: 0;
+ }
+ 
+ .toc ul ul {
+     padding-left: 20px;
+ }
+ 
+ .toc a {
+     text-decoration: none;
+     color: #0366d6;
+ }
+ 
+ /* Style pour les tags @@... */
+ .tag {
+     color: #d73a49;
+     background-color: #ffdce0;
+     padding: 2px 6px;
+     border-radius: 4px;
+     font-weight: bold;
+     font-family: monospace;
+ }

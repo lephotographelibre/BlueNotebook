@@ -45,7 +45,10 @@ class MarkdownPreview(QWidget):
     def __init__(self):
         super().__init__()
         self.current_html = ""
+        self.current_markdown = ""  # Mémoriser le contenu Markdown actuel
         self.setup_ui()
+        self.default_css = self._load_default_css()
+        self.custom_css = ""  # Pour les futurs thèmes
         self.setup_markdown()
 
     def setup_ui(self):
@@ -122,6 +125,37 @@ class MarkdownPreview(QWidget):
             TagInlineProcessor(r"@@(\w{2,})\b", self.md), "tag", 175
         )
 
+    def _load_css_from_file(self, filename):
+        """Charge le contenu d'un fichier CSS depuis le répertoire des thèmes."""
+        try:
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            css_path = os.path.join(
+                base_path, "..", "resources", "css_preview", filename
+            )
+            with open(css_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except (FileNotFoundError, IOError) as e:
+            print(f"⚠️ Erreur: Impossible de charger le fichier CSS '{filename}': {e}")
+            return f"/* CSS '{filename}' non trouvé */"
+
+    def _load_default_css(self):
+        """Charge le contenu du fichier CSS par défaut."""
+        return self._load_css_from_file("default_preview.css")
+
+    def set_css_theme(self, theme_filename):
+        """
+        Définit et applique un nouveau thème CSS pour l'aperçu.
+        """
+        if not theme_filename:
+            theme_filename = "default_preview.css"
+
+        new_css = self._load_css_from_file(theme_filename)
+        if new_css:
+            self.default_css = new_css
+            # Forcer la mise à jour de l'aperçu avec le nouveau style
+            if self.current_html:
+                self.update_content(self.current_markdown)
+
     def create_html_template(self, content):
         """Créer le template HTML complet"""
         # Ajouter la table des matières si elle existe
@@ -130,6 +164,8 @@ class MarkdownPreview(QWidget):
             toc_html = (
                 f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
             )
+        # Combine le CSS par défaut et le CSS personnalisé (pour les thèmes futurs)
+        final_css = self.default_css + self.custom_css
 
         return f"""
         <!DOCTYPE html>
@@ -139,257 +175,7 @@ class MarkdownPreview(QWidget):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>BlueNotebook Preview</title>
             <style>
-                /* Reset et base */
-                * {{
-                    box-sizing: border-box;
-                }}
-                
-                body {{
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #24292e;
-                    max-width: 980px;
-                    margin: 0 auto;
-                    padding: 45px;
-                    background-color: #ffffff;
-                    font-size: 16px;
-                }}
-                
-                /* Titres */
-                h1, h2, h3, h4, h5, h6 {{
-                    margin-top: 24px;
-                    margin-bottom: 16px;
-                    font-weight: 600;
-                    line-height: 1.25;
-                    color: #1f2937;
-                }}
-                
-                h1 {{
-                    font-size: 2em;
-                    border-bottom: 1px solid #eaecef;
-                    padding-bottom: 0.3em;
-                }}
-                
-                h2 {{
-                    font-size: 1.5em;
-                    border-bottom: 1px solid #eaecef;
-                    padding-bottom: 0.3em;
-                }}
-                
-                h3 {{ font-size: 1.25em; }}
-                h4 {{ font-size: 1em; }}
-                h5 {{ font-size: 0.875em; }}
-                h6 {{ font-size: 0.85em; color: #6a737d; }}
-                
-                /* Paragraphes et texte */
-                p {{
-                    margin-top: 0;
-                    margin-bottom: 16px;
-                    text-align: justify;
-                }}
-                
-                /* Mise en forme */
-                strong {{
-                    font-weight: 600;
-                    color: #1f2937;
-                }}
-                
-                em {{
-                    font-style: italic;
-                    color: #374151;
-                }}
-                
-                /* Code */
-                code {{
-                    padding: 0.2em 0.4em;
-                    margin: 0;
-                    font-size: 85%;
-                    background-color: rgba(27, 31, 35, 0.05);
-                    border-radius: 6px;
-                    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-                    color: #e74c3c;
-                }}
-                
-                pre {{
-                    padding: 16px;
-                    overflow: auto;
-                    font-size: 85%;
-                    line-height: 1.45;
-                    background-color: #f6f8fa;
-                    border-radius: 6px;
-                    border: 1px solid #e1e4e8;
-                    margin-bottom: 16px;
-                }}
-                
-                pre code {{
-                    display: inline;
-                    padding: 0;
-                    margin: 0;
-                    overflow: visible;
-                    line-height: inherit;
-                    word-wrap: normal;
-                    background-color: transparent;
-                    border: 0;
-                    color: #24292e;
-                }}
-                
-                /* Citations */
-                blockquote {{
-                    padding: 0 1em;
-                    color: #6a737d;
-                    border-left: 0.25em solid #dfe2e5;
-                    margin: 0 0 16px 0;
-                    font-style: italic;
-                }}
-                
-                /* Listes */
-                ul, ol {{
-                    margin-top: 0;
-                    margin-bottom: 16px;
-                    padding-left: 2em;
-                }}
-                
-                li {{
-                    margin-bottom: 0.25em;
-                }}
-                
-                /* Liens */
-                a {{
-                    color: #0366d6;
-                    text-decoration: none;
-                    font-weight: 500;
-                }}
-                
-                a:hover {{
-                    text-decoration: underline;
-                }}
-                
-                /* Images */
-                img {{
-                    max-width: 100%;
-                    height: auto;
-                    border-radius: 6px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    margin: 10px 0;
-                }}
-                
-                /* Tableaux */
-                table {{
-                    border-collapse: collapse;
-                    width: 100%;
-                    margin-bottom: 16px;
-                    border: 1px solid #e1e4e8;
-                    border-radius: 6px;
-                    overflow: hidden;
-                }}
-                
-                th, td {{
-                    padding: 6px 13px;
-                    border: 1px solid #e1e4e8;
-                    text-align: left;
-                }}
-                
-                th {{
-                    font-weight: 600;
-                    background-color: #f6f8fa;
-                }}
-                
-                tr:nth-child(2n) {{
-                    background-color: #f9f9f9;
-                }}
-                
-                /* Règles horizontales */
-                hr {{
-                    height: 0.25em;
-                    margin: 24px 0;
-                    background-color: #e1e4e8;
-                    border: 0;
-                }}
-                
-                /* Coloration syntaxique */
-                .highlight {{
-                    background: #f8f8f8;
-                    border: 1px solid #e1e4e8;
-                    border-radius: 6px;
-                    padding: 16px;
-                    overflow-x: auto;
-                    margin: 16px 0;
-                }}
-                
-                /* Surlignage */
-                mark {{
-                    background-color: #fff8c5;
-                    padding: 0.1em 0.3em;
-                }}
-                
-                /* Barré */
-                del, s {{
-                    text-decoration: line-through;
-                    color: #6a737d;
-                }}
-                
-                .highlight .k {{ color: #d73a49; font-weight: bold; }}
-                .highlight .s {{ color: #032f62; }}
-                .highlight .c {{ color: #6a737d; font-style: italic; }}
-                .highlight .nb {{ color: #005cc5; }}
-                .highlight .nf {{ color: #6f42c1; }}
-                
-                /* Tags */
-                .tag {{
-                    color: #d73a49; /* Rouge, comme dans l'éditeur */
-                    font-weight: bold;
-                    background-color: rgba(215, 58, 73, 0.1); /* Léger fond rouge */
-                    border-radius: 4px;
-                    padding: 0.1em 0.3em;
-                }}
-
-                /* Table des matières */
-                .toc {{
-                    background-color: #f8f9fa;
-                    border: 1px solid #e1e4e8;
-                    border-radius: 6px;
-                    padding: 16px;
-                    margin: 16px 0;
-                    float: right;
-                    max-width: 300px;
-                    margin-left: 20px;
-                }}
-                
-                .toc h2 {{
-                    margin-top: 0;
-                    font-size: 1em;
-                    border-bottom: none;
-                    padding-bottom: 0;
-                }}
-                
-                .toc ul {{
-                    list-style: none;
-                    padding-left: 0;
-                }}
-                
-                .toc ul ul {{
-                    padding-left: 20px;
-                }}
-                
-                .toc a {{
-                    text-decoration: none;
-                    color: #0366d6;
-                    font-size: 0.9em;
-                }}
-                
-                /* Responsive */
-                @media (max-width: 768px) {{
-                    body {{
-                        padding: 20px;
-                        font-size: 14px;
-                    }}
-                    
-                    .toc {{
-                        float: none;
-                        margin-left: 0;
-                        max-width: 100%;
-                    }}
-                }}
+                {final_css}
             </style>
         </head>
         <body>
@@ -441,6 +227,9 @@ class MarkdownPreview(QWidget):
     def update_content(self, markdown_content):
         """Mettre à jour le contenu de l'aperçu"""
         try:
+            # Mémoriser le contenu pour les futures mises à jour (ex: changement de thème)
+            self.current_markdown = markdown_content
+
             if not markdown_content.strip():
                 self.show_welcome_content()
                 return

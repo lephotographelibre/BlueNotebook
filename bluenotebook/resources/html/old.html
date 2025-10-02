@@ -45,10 +45,6 @@
         .toc ul ul {
             padding-left: 20px;
         }
-        .toc ul ul li {
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
         .toc a {
             text-decoration: none;
             color: #0366d6;
@@ -90,12 +86,7 @@
             <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">7. Exploration des Menus</a></li>
             <li><a href="#backup-restore">8. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">9. Personnalisation Avancée</a>
-                <ul>
-                    <li><a href="#themes-editeur">9.1 Thèmes de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">9.2 Thèmes de l'Aperçu HTML</a></li>
-                </ul>
-            </li>
+            <li><a href="#preferences">9. Personnalisation via les Préférences</a></li>
             <li><a href="#raccourcis">10. Raccourcis Clavier</a></li>
             <li><a href="#faq">11. Foire Aux Questions (FAQ)</a></li>
         </ul>
@@ -325,7 +316,7 @@
     </section>
 
     <section id="preferences">
-        <h2>9. Personnalisation Avancée (Préférences)</h2>
+        <h2>9. Personnalisation via les Préférences</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -336,27 +327,28 @@
         </ul>
 
         <h3>Onglet "Affichage"</h3>
-        <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
-
-        <h4 id="themes-editeur">9.1 Thèmes de l'Éditeur Markdown</h4>
-        <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture (polices, couleurs du texte, du fond, des titres, du code, etc.).</p>
-        <p><strong>✨ NOUVEAU : Gestion des thèmes de l'éditeur</strong></p>
-        <p>Fatigué de régler chaque couleur une par une ? Vous pouvez maintenant sauvegarder et charger des ensembles complets de réglages.</p>
+        <p>Cet onglet vous permet de personnaliser l'apparence de la zone d'écriture.</p>
         <ul>
-            <li><strong>🎨 Sélectionner un thème :</strong> Ce bouton ouvre une fenêtre listant les thèmes d'éditeur disponibles. En sélectionnant un thème, vous verrez immédiatement les couleurs et polices se mettre à jour dans la fenêtre des préférences. Cliquez sur "Valider" pour appliquer ce thème à votre éditeur.</li>
-            <li><strong>💾 Sauvegarder comme thème :</strong> Après avoir personnalisé les couleurs et les polices à votre goût, cliquez sur ce bouton. Une fenêtre vous demandera de donner un nom à votre thème (ex: "Mon Thème Sombre"). Une fois sauvegardé, il apparaîtra dans la liste de sélection pour une utilisation future.</li>
+            <li><strong>Police de l'éditeur :</strong> Permet de choisir la famille de police (ex: "Droid Sans Mono") et sa taille pour le texte standard.</li>
+            <li><strong>Police des extraits de code :</strong> Permet de choisir la famille de police pour le code <code>`inline`</code> et les blocs de code ```.</li>
+            <li><strong>Couleur de fond de l'éditeur :</strong> La couleur de l'arrière-plan de la zone de texte.</li>
+            <li><strong>Couleur de la police de l'éditeur :</strong> La couleur par défaut du texte que vous tapez.</li>
+            <li><strong>Couleur des titres Markdown :</strong> La couleur des titres (<code>#</code>, <code>##</code>, etc.).</li>
+            <li><strong>Couleur des listes Markdown :</strong> La couleur des marqueurs de listes (<code>-</code>, <code>1.</code>, etc.).</li>
+            <li><strong>Couleur du texte sélectionné :</strong> La couleur de la police lorsque vous surlignez du texte avec la souris.</li>
+            <li><strong>Couleur texte code inline :</strong> La couleur de la police pour le code <code>`inline`</code> (entouré de backticks).</li>
+            <li><strong>Couleur fond code inline :</strong> La couleur de l'arrière-plan pour le code <code>`inline`</code>.</li>
+            <li><strong>Couleur fond bloc de code :</strong> La couleur de l'arrière-plan pour les blocs de code (entourés de ```).</li>
+            <li><strong>Couleur du texte en gras :</strong> La couleur de la police pour le texte en <strong>**gras**</strong>.</li>
+            <li><strong>Couleur du texte en italique :</strong> La couleur de la police pour le texte en <em>*italique*</em>.</li>
+            <li><strong>Couleur du texte barré :</strong> La couleur de la police pour le texte ~~barré~~.</li>
+            <li><strong>Couleur de fond du surlignage :</strong> La couleur de l'arrière-plan pour le texte ==surligné==.</li>
+            <li><strong>Couleur des citations :</strong> La couleur du texte pour les citations (<code>> texte</code>).</li>
+            <li><strong>Couleur des liens :</strong> La couleur du texte pour les liens Markdown (<code>[texte](url)</code>).</li>
+            <li><strong>Couleur des tags (@@tag) :</strong> La couleur des tags personnalisés comme <code>@@projet</code>.</li>
+            <li><strong>Couleur de l'horodatage (HH:MM) :</strong> La couleur des horodatages détectés dans le texte.</li>
+            <li><strong>Bouton "Valeurs d'affichage par défaut" :</strong> Réinitialise toutes les options d'affichage à leurs valeurs d'usine.</li>
         </ul>
-
-        <h4 id="themes-apercu">9.2 Thèmes de l'Aperçu HTML</h4>
-        <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation.</p>
-        <p><strong>✨ NOUVEAU : Feuilles de style CSS pour l'aperçu</strong></p>
-        <p>L'apparence de l'aperçu est maintenant contrôlée par des feuilles de style CSS, vous offrant une flexibilité totale.</p>
-        <ul>
-            <li><strong>🎨 Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés. Par exemple, vous pouvez passer d'un thème clair à un thème sombre (comme celui de GitHub) en un seul clic.</li>
-        </ul>
-        <p>Le thème choisi est sauvegardé et sera automatiquement appliqué à chaque démarrage de BlueNotebook.</p>
-
-        <p>Le bouton <strong>"Valeurs d'affichage par défaut"</strong>, présent dans l'onglet "Affichage", réinitialise toutes les options de cet onglet (couleurs de l'éditeur, thème de l'aperçu, etc.) à leurs valeurs d'usine.</p>
 
         <h3>Onglet "Panneaux"</h3>
         <p>Contrôlez quels panneaux sont visibles par défaut au démarrage de l'application pour un espace de travail sur mesure.</p>

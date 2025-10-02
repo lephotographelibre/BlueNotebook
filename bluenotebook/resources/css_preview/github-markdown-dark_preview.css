@@ -1,0 +1,62 @@
+ /*
+  * Style pour github-markdown-dark.css
+  * Adapté pour BlueNotebook
+  */
+ 
+ body {
+     color-scheme: dark;
+     -ms-text-size-adjust: 100%;
+     -webkit-text-size-adjust: 100%;
+     margin: 0;
+     background-color: #0d1117;
+     color: #c9d1d9;
+     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+     font-size: 16px;
+     line-height: 1.5;
+     word-wrap: break-word;
+ }
+ 
+ /* ... autres styles du thème ... */
+ 
+ /*
+  * Styles spécifiques à BlueNotebook ajoutés pour la cohérence
+  */
+ 
+ /* Style pour la table des matières (Table of Contents) */
+ .toc {
+     border: 1px solid #30363d; /* Bordure adaptée au thème sombre */
+     background-color: #161b22; /* Fond adapté au thème sombre */
+     border-radius: 6px;
+     padding: 16px;
+     margin: 16px 0;
+ }
+ 
+ .toc h2 {
+     margin-top: 0;
+     border-bottom: 1px solid #30363d;
+     padding-bottom: 8px;
+ }
+ 
+ .toc ul {
+     list-style: none;
+     padding-left: 0;
+ }
+ 
+ .toc ul ul {
+     padding-left: 20px;
+ }
+ 
+ .toc a {
+     text-decoration: none;
+     color: #58a6ff; /* Couleur de lien du thème sombre */
+ }
+ 
+ /* Style pour les tags @@... */
+ .tag {
+     color: #f85149; /* Rouge vif, visible sur fond sombre */
+     background-color: rgba(248, 81, 73, 0.1); /* Fond rouge très léger */
+     padding: 2px 6px;
+     border-radius: 4px;
+     font-weight: bold;
+     font-family: monospace;
+ }

@@ -1857,6 +1857,12 @@ ______________________________________________________________
         )
         self.editor.set_html_comment_color(html_comment_color)
 
+        # --- Appliquer le thème CSS à l'aperçu HTML ---
+        css_theme = self.settings_manager.get(
+            "preview.css_theme", "default_preview.css"
+        )
+        self.preview.set_css_theme(css_theme)
+
         # --- Appliquer les styles au panneau de plan ---
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
 
@@ -1969,10 +1975,12 @@ ______________________________________________________________
         )
         self.editor.set_html_comment_color(html_comment_color)
 
-        # V1.8.1 - Appliquer le CSS personnalisé à l'aperçu
-        custom_css_path = self.settings_manager.get("preview.custom_css_path", "")
-        if hasattr(self.preview, "set_custom_css"):
-            self.preview.set_custom_css(custom_css_path)
+        # --- Appliquer le thème CSS à l'aperçu HTML ---
+        css_theme = self.settings_manager.get(
+            "preview.css_theme", "default_preview.css"
+        )
+        if hasattr(self.preview, "set_css_theme"):
+            self.preview.set_css_theme(css_theme)
 
         # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
