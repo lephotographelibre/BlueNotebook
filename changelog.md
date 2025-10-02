@@ -1,13 +1,23 @@
-## 1.9.2 CSS Colors
+## V1.9.3 Editor: Line Numbering
 
+Claude: dans l'editeur markdown peux t on rajouter un numero de ligne devant chaque ligne de l'éditeur
+beta1
+
+Peut-on rajouter dans Préférences -> Affichage -> Editeur Markdown une boite à cocher sous les deux boutons du theme: Label de la boite a cocher "Affichage des numéro de lignes ?"
+- Si l'utilisateur coche alors on affiche les numeros de lignes dans l'éditeur
+- Sinon on n'affiche pas les numeros de lignes dans l'éditeur
+Cette préférences est sauvegardée dans settings.json
+
+## V1.9.2 CSS Colors
 
 Je voudrais que lorque un utilisateur séléctionne une feuille de style CSS dans Préférences -> Affichage -> Aperçu HTML il puisse visualiser le formattage HTML correspondant à cette feuille de style par un mini previever HTML qui s'afficherait un document HTML de test qui est composé de la pluspart des tag HTML majeurs. comme cela l'utilisateur pourra juger cette feuille de style. des que l'utilsateur selection un autre feuille de style on vient remettre a jour le mini previewer HTML
 beta 1
 
 Suprimmer le bouton  "Sauvegarder comme thème CSS" dans Préférences -> Affichage -> Aperçu HTML
 beta 2
+d
 
-dans l'editeur markdown peux t on rajouter un numero de ligne devant chaque ligne de l'éditeur
+
 
 
 ## V1.9.1 Aperçu HTML CSS

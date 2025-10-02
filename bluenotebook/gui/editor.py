@@ -44,6 +44,205 @@ from PyQt5.QtGui import (
     QTextCursor,
 )
 
+# V1.9.3 Line numbers
+"""
+Widget de numéros de ligne pour QTextEdit
+À intégrer dans votre editor.py
+"""
+
+from PyQt5.QtWidgets import QWidget, QTextEdit
+from PyQt5.QtCore import Qt, QRect, QSize, QPointF
+from PyQt5.QtGui import QColor, QPainter, QTextFormat
+
+
+# V1.9.3 Line numbers
+
+
+class LineNumberArea(QWidget):
+    """Widget affichant les numéros de ligne"""
+
+    def __init__(self, editor):
+        super().__init__(editor)
+        self.code_editor = editor
+
+    def sizeHint(self):
+        return QSize(self.code_editor.line_number_area_width(), 0)
+
+    def paintEvent(self, event):
+        self.code_editor.line_number_area_paint_event(event)
+
+
+class QTextEditWithLineNumbers(QTextEdit):
+    """QTextEdit avec numéros de ligne"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Créer la zone des numéros de ligne
+        self.line_number_area = LineNumberArea(self)
+
+        # Connecter les signaux disponibles pour QTextEdit
+        self.textChanged.connect(self.update_line_number_area_width)
+        self.cursorPositionChanged.connect(self.update_line_numbers)
+        self.cursorPositionChanged.connect(self.highlight_current_line)
+        self.verticalScrollBar().valueChanged.connect(self.update_line_numbers)
+
+        # Initialiser
+        self.update_line_number_area_width()
+        self.highlight_current_line()
+
+        # Couleurs par défaut
+        self.line_number_bg_color = QColor("#f0f0f0")
+        self.line_number_fg_color = QColor("#808080")
+        self.current_line_number_color = QColor("#000000")
+
+    def line_number_area_width(self):
+        """Calcule la largeur nécessaire pour afficher les numéros de ligne"""
+        # Compter le nombre de lignes dans le document
+        digits = 1
+        max_num = max(1, self.document().blockCount())
+        while max_num >= 10:
+            max_num //= 10
+            digits += 1
+
+        # Largeur : 8px marge + largeur des chiffres + 8px marge
+        space = 8 + self.fontMetrics().horizontalAdvance("9") * digits + 8
+        return space
+
+    def update_line_number_area_width(self):
+        """Met à jour la largeur de la zone des numéros de ligne"""
+        self.setViewportMargins(self.line_number_area_width(), 0, 0, 0)
+
+    def update_line_numbers(self):
+        """Force la mise à jour de l'affichage des numéros"""
+        self.line_number_area.update()
+
+    def resizeEvent(self, event):
+        """Redimensionne la zone des numéros de ligne"""
+        super().resizeEvent(event)
+
+        cr = self.contentsRect()
+        self.line_number_area.setGeometry(
+            QRect(cr.left(), cr.top(), self.line_number_area_width(), cr.height())
+        )
+
+    def scrollContentsBy(self, dx, dy):
+        """Gère le défilement pour mettre à jour les numéros"""
+        super().scrollContentsBy(dx, dy)
+        self.line_number_area.update()
+
+    def highlight_current_line(self):
+        """Surligne la ligne courante"""
+        extra_selections = []
+
+        if not self.isReadOnly():
+            selection = QTextEdit.ExtraSelection()
+
+            line_color = QColor("#e8f4ff")  # Bleu très clair
+            selection.format.setBackground(line_color)
+            selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+            selection.cursor = self.textCursor()
+            selection.cursor.clearSelection()
+            extra_selections.append(selection)
+
+        self.setExtraSelections(extra_selections)
+
+    def line_number_area_paint_event(self, event):
+        """Dessine les numéros de ligne"""
+        painter = QPainter(self.line_number_area)
+
+        # Fond de la zone des numéros
+        painter.fillRect(event.rect(), self.line_number_bg_color)
+
+        # Obtenir le document
+        doc = self.document()
+        layout = doc.documentLayout()
+
+        # Hauteur de la police
+        font_height = self.fontMetrics().height()
+
+        # Position du curseur actuel
+        current_line = self.textCursor().blockNumber()
+
+        # Obtenir le rectangle du viewport
+        viewport_rect = self.viewport().rect()
+
+        # Trouver le premier bloc visible en haut du viewport
+        top_left = viewport_rect.topLeft()
+        cursor_at_top = self.cursorForPosition(top_left)
+        first_visible_block = cursor_at_top.block()
+
+        # Parcourir les blocs à partir du premier visible
+        block = first_visible_block
+        block_number = block.blockNumber()
+
+        while block.isValid():
+            # Obtenir la géométrie du bloc dans les coordonnées du document
+            block_rect = layout.blockBoundingRect(block)
+
+            # Convertir en coordonnées du viewport
+            # Utiliser cursorRect pour obtenir la position visible
+            cursor = self.textCursor()
+            cursor.setPosition(block.position())
+            cursor_rect = self.cursorRect(cursor)
+
+            top = cursor_rect.top()
+            bottom = top + block_rect.height()
+
+            # Si on est en dessous de la zone visible, arrêter
+            if top > viewport_rect.bottom():
+                break
+
+            # Dessiner seulement si visible
+            if bottom >= 0 and top <= viewport_rect.bottom():
+                number = str(block_number + 1)
+
+                # Couleur différente pour la ligne courante
+                if block_number == current_line:
+                    painter.setPen(self.current_line_number_color)
+                    font = painter.font()
+                    font.setBold(True)
+                    painter.setFont(font)
+                else:
+                    painter.setPen(self.line_number_fg_color)
+                    font = painter.font()
+                    font.setBold(False)
+                    painter.setFont(font)
+
+                # Dessiner le numéro aligné à droite
+                painter.drawText(
+                    0,
+                    int(top),
+                    self.line_number_area.width() - 5,
+                    font_height,
+                    Qt.AlignRight | Qt.AlignTop,
+                    number,
+                )
+
+            block = block.next()
+            block_number += 1
+
+    def contentOffset(self):
+        """Obtient le décalage du contenu dû au défilement"""
+        # Cette méthode n'est plus utilisée mais gardée pour compatibilité
+        return QPointF(0, 0)
+
+    def set_line_number_colors(self, bg_color, fg_color, current_color):
+        """Définit les couleurs des numéros de ligne"""
+        self.line_number_bg_color = QColor(bg_color)
+        self.line_number_fg_color = QColor(fg_color)
+        self.current_line_number_color = QColor(current_color)
+        self.line_number_area.update()
+
+    def set_line_numbers_visible(self, visible):
+        """Affiche ou masque la zone des numéros de ligne."""
+        if visible:
+            self.line_number_area.show()
+            self.update_line_number_area_width()
+        else:
+            self.line_number_area.hide()
+            self.setViewportMargins(0, 0, 0, 0)
+
 
 # V1.1.7 Fix Issue #2 Markdown editor - coloration syntaxique nefonctionne pas
 class MarkdownHighlighter(QSyntaxHighlighter):
@@ -530,7 +729,7 @@ class MarkdownEditor(QWidget):
         layout.addWidget(label)
 
         # Zone de texte - prend tout l'espace restant
-        self.text_edit = QTextEdit()
+        self.text_edit = QTextEditWithLineNumbers()
         self.text_edit.setAcceptRichText(False)  # Texte brut seulement
 
         # Configuration de la police
@@ -1044,6 +1243,10 @@ class MarkdownEditor(QWidget):
         """Définit la couleur de fond pour les blocs de code."""
         self.highlighter.update_code_block_background_color(QColor(color_hex))
         self.highlighter.rehighlight()
+
+    def set_line_numbers_visible(self, visible):
+        """Transmet la visibilité des numéros de ligne au widget QTextEdit."""
+        self.text_edit.set_line_numbers_visible(visible)
 
     def set_selection_text_color(self, color_hex):
         """Définit la couleur du texte sélectionné."""

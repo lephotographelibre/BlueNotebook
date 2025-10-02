@@ -252,6 +252,18 @@ class PreferencesDialog(QDialog):
         layout.addWidget(QLabel(""), row, 0, 1, 4)
         row += 1
 
+        # === SECTION AFFICHAGE LIGNES ===
+        self.show_line_numbers_checkbox = QCheckBox("Affichage des numéros de lignes ?")
+        self.show_line_numbers_checkbox.setChecked(
+            self.settings_manager.get("editor.show_line_numbers", False)
+        )
+        layout.addWidget(self.show_line_numbers_checkbox, row, 0, 1, 4)
+        row += 1
+
+        # Ligne de séparation
+        layout.addWidget(QLabel(""), row, 0, 1, 4)
+        row += 1
+
         # === SECTION POLICES ===
         # Police de l'éditeur
         font_family = self.settings_manager.get("editor.font_family")

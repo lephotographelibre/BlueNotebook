@@ -1609,6 +1609,11 @@ ______________________________________________________________
             # Fin V1.7.2
 
             self.settings_manager.set(
+                "editor.show_line_numbers",
+                dialog.show_line_numbers_checkbox.isChecked(),
+            )
+
+            self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
             )
@@ -1857,6 +1862,12 @@ ______________________________________________________________
         )
         self.editor.set_html_comment_color(html_comment_color)
 
+        # --- Appliquer l'affichage des numéros de ligne ---
+        show_line_numbers = self.settings_manager.get("editor.show_line_numbers", False)
+        # La méthode set_line_numbers_visible doit être implémentée dans editor.py
+        if hasattr(self.editor, "set_line_numbers_visible"):
+            self.editor.set_line_numbers_visible(show_line_numbers)
+
         # --- Appliquer le thème CSS à l'aperçu HTML ---
         css_theme = self.settings_manager.get(
             "preview.css_theme", "default_preview.css"
@@ -1974,6 +1985,12 @@ ______________________________________________________________
             "editor.html_comment_color", "#a4b5cf"
         )
         self.editor.set_html_comment_color(html_comment_color)
+
+        # --- Appliquer l'affichage des numéros de ligne ---
+        show_line_numbers = self.settings_manager.get("editor.show_line_numbers", False)
+        # La méthode set_line_numbers_visible doit être implémentée dans editor.py
+        if hasattr(self.editor, "set_line_numbers_visible"):
+            self.editor.set_line_numbers_visible(show_line_numbers)
 
         # --- Appliquer le thème CSS à l'aperçu HTML ---
         css_theme = self.settings_manager.get(
