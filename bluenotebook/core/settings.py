@@ -66,6 +66,11 @@ class SettingsManager:
                 "excluded_tags_from_cloud": [],
                 "excluded_words_from_cloud": [],
             },
+            "pdf": {
+                "last_directory": str(
+                    Path.home()
+                ),  # Chemin par défaut pour l'export PDF
+            },
         }
         self.defaults["preview"] = {"css_theme": "default_preview.css"}
 

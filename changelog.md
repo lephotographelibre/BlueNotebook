@@ -1,3 +1,61 @@
+##  V2.0.1 Export PDF - Make PDF Journal
+
+Je voudrais fabrique une document PDF, paginé, à partir de toutes les notes journalière du journal
+- Premiere page Titre "Journal BlueNoteBook", u "Date de la dernière note" + logo bluenotebook/resources/images/bluenotebook_256-x256_fond_blanc.png
+- Puis pages du journal avec saut de page à chaque nouveau Jour
+
+Creation d'un nouveau sous menu dans Fichier appelé "Exporter Journal PDF" sous "Exporter HTML" qui demande à l'utilisateur de choisr la répertoire de destination du fichier
+- Nom du fichier PDF  du type "Journal-1002204-03102025" pour un journal du 10 Fev 2024 au 03 Oct 2025
+- une mise en page assez proche des  vues HTML de l'aperçu HTML
+
+1. Nouvelle Action de Menu : Une action Exporter Journal PDF... a été ajoutée au menu "Fichier", juste en dessous de "Exporter HTML...".
+2. Logique d'Exportation (export_journal_pdf) :
+- 	La méthode récupère et trie chronologiquement tous les fichiers de notes (YYYYMMDD.md).
+- 	Elle génère un nom de fichier par défaut intelligent, basé sur la date de la première et de la dernière note (ex: Journal-10022024-03102025.pdf).
+- 	Elle construit un grand document HTML en concaténant une page de garde et le contenu de chaque note. Un saut de page (page-break-before: always) est inséré avant chaque nouvelle note pour une pagination correcte.
+- 	Pour assurer une mise en page cohérente, le même parser et le même template CSS que l'aperçu HTML sont utilisés.
+
+- Ajouter en bas des pages du fichier pdf une pagination
+
+
+@@Claude
+Si cette solution ne fonctionne pas non plus (car QWebEngine peut avoir des limitations avec JavaScript lors de l'export PDF), vous pourriez envisager d'utiliser une bibliothèque externe comme `ReportLab` ou `WeasyPrint` qui supportent mieux la pagination CSS. Voulez-vous que je vous montre comment intégrer l'une de ces solutions ?
+
+### Solution 1 : WeasyPrint (Recommandée) ✅
+J'ai créé une nouvelle méthode export_journal_pdf_weasyprint() qui utilise WeasyPrint. Cette bibliothèque supporte parfaitement la directive CSS @page et offre :
+Avantages :
+
+- ✅ Pagination automatique avec counter(page) et counter(pages)
+- ✅ Pieds de page personnalisables (gauche, centre, droite)
+- ✅ Meilleur contrôle des sauts de page
+- ✅ Rendu CSS plus fidèle
+- ✅ Gestion native des images locales
+
+Installation :
+```bash
+pip install weasyprint
+```
+
+Fichiers générés
+1. `main_window.py `(version complète et propre)
+
+1. ✅ Intégration de WeasyPrint pour l'export PDF avec pagination
+2. ✅ Suppression de tout le code obsolète lié à QWebEngine pour le PDF
+3. ✅ Code nettoyé et bien organisé
+4. ✅ Gestion d'erreur si WeasyPrint n'est pas installé
+
+2. `preview.py (`version épurée)
+
+1. ✅ Suppression de toute la logique de pagination PDF (maintenant inutile)
+2. ✅ Code simplifié pour l'aperçu HTML uniquement
+3. ✅ Conservation de la gestion des thèmes CSS
+beta2
+
+- Du fait de la fabrication asynchrone du pdf, afficher en rouge au milieu de la barre d'état "Veillez Patienter ...." en clignotant @preview.py @main_window.py 
+beta3
+
+Memoriser le répertoire de destination d'exportation PDF. Cela évitera à l'utilisateur de naviguer à chaque fois vers le même dossier.
+
 ## V1.9.3 Editor: Line Numbering
 
 Claude: dans l'editeur markdown peux t on rajouter un numero de ligne devant chaque ligne de l'éditeur

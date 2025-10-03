@@ -21,10 +21,13 @@ import webbrowser
 import locale
 import functools
 import os
+import re
 import json
 import shutil
 import zipfile
 from datetime import datetime
+
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from pathlib import Path
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -41,21 +44,54 @@ from PyQt5.QtWidgets import (
     QLabel,
     QDialog,
     QDialogButtonBox,
+    QProgressDialog,
 )
-from PyQt5.QtCore import Qt, QTimer, QDate
+from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
 from PyQt5.QtCore import QThreadPool
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
 from PyQt5.QtGui import QColor
 
+from .custom_widgets import CenteredStatusBarLabel
 from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .preferences_dialog import PreferencesDialog
-from core.quote_fetcher import QuoteFetcher  # noqa
+from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
 from core.word_indexer import start_word_indexing
+
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+
+
+class PdfExportWorker(QRunnable):
+    """Worker pour générer le PDF en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str)
+        error = pyqtSignal(str)
+
+    def __init__(self, html_string, base_url, css_string, output_path):
+        super().__init__()
+        self.signals = self.Signals()
+        self.html_string = html_string
+        self.base_url = base_url
+        self.css_string = css_string
+        self.output_path = output_path
+        from weasyprint import HTML, CSS
+
+        self.HTML = HTML
+        self.CSS = CSS
+
+    def run(self):
+        try:
+            html_doc = self.HTML(string=self.html_string, base_url=self.base_url)
+            css_doc = self.CSS(string=self.css_string)
+            html_doc.write_pdf(self.output_path, stylesheets=[css_doc])
+            self.signals.finished.emit(self.output_path)
+        except Exception as e:
+            self.signals.error.emit(str(e))
 
 
 class MainWindow(QMainWindow):
@@ -70,7 +106,7 @@ class MainWindow(QMainWindow):
         self.daily_author = None
         self.tag_index_count = -1
         self.word_index_count = -1
-        # Importer ici pour éviter les dépendances circulaires si nécessaire
+
         from core.settings import SettingsManager
 
         self.settings_manager = SettingsManager()
@@ -81,50 +117,44 @@ class MainWindow(QMainWindow):
         self.setup_ui()
         self.setup_menu()
         self.setup_statusbar()
-        self.apply_settings()  # Appliquer les paramètres au démarrage
+        self.apply_settings()
         self.setup_connections()
         self.setup_journal_directory()
 
-        # Timer pour mettre à jour l'aperçu (évite les mises à jour trop fréquentes)
+        # Timer pour mettre à jour l'aperçu
         self.update_timer = QTimer()
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_preview)
 
-        # V1.7.2beta3 - Timer pour la synchronisation du curseur
+        # Timer pour la synchronisation du curseur
         self.cursor_sync_timer = QTimer()
         self.cursor_sync_timer.setSingleShot(True)
         self.cursor_sync_timer.timeout.connect(self.sync_preview_to_cursor)
 
-        # V1.7.6 - Lancer les tâches de fond après que la fenêtre principale soit prête
-        # Utiliser un QTimer.singleShot(0, ...) garantit que ces opérations
-        # ne bloquent pas l'affichage initial de l'interface.
+        # Lancer les tâches de fond après que la fenêtre principale soit prête
         QTimer.singleShot(0, self.run_startup_tasks)
 
     def run_startup_tasks(self):
         """Exécute les tâches qui peuvent être lancées après l'affichage de l'UI."""
         self.load_initial_file()
-        self.show_quote_of_the_day()  # Affiche la citation si l'option est activée
-        self.start_initial_indexing()  # Lance l'indexation en arrière-plan
-        self.update_calendar_highlights()  # Met à jour le calendrier
+        self.show_quote_of_the_day()
+        self.start_initial_indexing()
+        self.update_calendar_highlights()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
         self.setWindowTitle(f"BlueNotebook V{self.app_version} - Éditeur Markdown")
         self.setGeometry(100, 100, 1400, 900)
 
-        # Définir l'icône de l'application
         self.set_application_icon()
 
-        # Widget central
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        # Layout principal
         main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(10, 10, 10, 10)
         main_layout.setSpacing(10)
 
-        # Splitter principal pour séparer la navigation du reste
         main_splitter = QSplitter(Qt.Horizontal)
         main_splitter.setHandleWidth(8)
         main_splitter.setStyleSheet(
@@ -140,15 +170,12 @@ class MainWindow(QMainWindow):
         """
         )
 
-        # Panneau de navigation (gauche)
         self.navigation_panel = NavigationPanel()
         main_splitter.addWidget(self.navigation_panel)
 
-        # Panneau du plan (milieu)
         self.outline_panel = OutlinePanel()
         main_splitter.addWidget(self.outline_panel)
 
-        # Splitter secondaire pour séparer éditeur et aperçu
         editor_preview_splitter = QSplitter(Qt.Horizontal)
         editor_preview_splitter.setHandleWidth(8)
         editor_preview_splitter.setStyleSheet(
@@ -162,46 +189,33 @@ class MainWindow(QMainWindow):
         """
         )
 
-        # Zone d'édition (gauche)
         self.editor = MarkdownEditor(main_window=self)
         editor_preview_splitter.addWidget(self.editor)
 
-        # Zone d'aperçu (droite)
         self.preview = MarkdownPreview()
         editor_preview_splitter.addWidget(self.preview)
 
-        # Configuration du splitter
-        # Répartition 50/50 par défaut
         editor_preview_splitter.setSizes([700, 700])
+        editor_preview_splitter.setCollapsible(0, False)
+        editor_preview_splitter.setCollapsible(1, False)
 
-        # Empêcher la fermeture complète des panneaux
-        editor_preview_splitter.setCollapsible(0, False)  # Éditeur
-        editor_preview_splitter.setCollapsible(1, False)  # Aperçu
-
-        # Tailles minimales pour éviter les problèmes d'affichage
         self.editor.setMinimumWidth(300)
         self.preview.setMinimumWidth(300)
 
-        # Ajouter le splitter secondaire au splitter principal
         main_splitter.addWidget(editor_preview_splitter)
 
-        # Configuration du splitter principal
-        # Fixer la largeur du panneau de navigation
         self.navigation_panel.setFixedWidth(400)
         self.outline_panel.setFixedWidth(400)
-        main_splitter.setSizes([400, 400, 1000])  # Ajuster les tailles initiales
+        main_splitter.setSizes([400, 400, 1000])
         main_splitter.setCollapsible(0, False)
         main_splitter.setCollapsible(2, False)
 
-        # Ajouter le splitter au layout principal
         main_layout.addWidget(main_splitter)
 
     def set_application_icon(self):
         """Définir l'icône de l'application"""
-        # Utiliser le chemin du fichier actuel pour construire des chemins absolus
         base_path = os.path.dirname(os.path.abspath(__file__))
 
-        # Chemins possibles pour l'icône
         icon_paths = [
             os.path.join(base_path, "..", "resources", "icons", "bluenotebook.ico"),
             os.path.join(base_path, "..", "resources", "icons", "bluenotebook.png"),
@@ -214,7 +228,6 @@ class MainWindow(QMainWindow):
                     icon = QIcon(icon_path)
                     if not icon.isNull():
                         self.setWindowIcon(icon)
-                        # Définir aussi l'icône de l'application
                         from PyQt5.QtWidgets import QApplication
 
                         QApplication.instance().setWindowIcon(icon)
@@ -245,6 +258,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.restore_journal_action)
         file_menu.addSeparator()
         file_menu.addAction(self.export_action)
+        file_menu.addAction(self.export_journal_pdf_action)
         file_menu.addSeparator()
         file_menu.addAction(self.preferences_action)
         file_menu.addSeparator()
@@ -267,7 +281,7 @@ class MainWindow(QMainWindow):
         format_menu = menubar.addMenu("🎨 F&ormater")
         self._setup_format_menu(format_menu)
 
-        # Menu Insérer (maintenant au premier niveau)
+        # Menu Insérer
         insert_menu = menubar.addMenu("➕ &Insérer")
         self._setup_insert_menu(insert_menu)
 
@@ -282,7 +296,7 @@ class MainWindow(QMainWindow):
 
     def _create_actions(self):
         """Crée toutes les actions de l'application."""
-        self.new_action = QAction(  # noqa
+        self.new_action = QAction(
             "📄 Nouveau",
             self,
             shortcut=QKeySequence.New,
@@ -297,7 +311,7 @@ class MainWindow(QMainWindow):
             triggered=self.open_file,
         )
         self.open_journal_action = QAction(
-            "📓 Ouvrir Journal",
+            "📔 Ouvrir Journal",
             self,
             statusTip="Ouvrir un répertoire de journal",
             triggered=self.open_journal,
@@ -333,6 +347,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Exporter en HTML",
             triggered=self.export_html,
+        )
+        self.export_journal_pdf_action = QAction(
+            "📜 Exporter Journal PDF...",
+            self,
+            statusTip="Exporter le journal complet en PDF",
+            triggered=self.export_journal_pdf,
         )
         self.preferences_action = QAction(
             "⚙️ Préférences...",
@@ -399,7 +419,7 @@ class MainWindow(QMainWindow):
 
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
-        # --- Sous-menu Titre ---
+        # Sous-menu Titre
         title_menu = QMenu("📜 Titres", self)
         title_actions_data = [
             ("1️⃣ Niv 1 (#)", "h1"),
@@ -416,11 +436,11 @@ class MainWindow(QMainWindow):
             title_menu.addAction(action)
         format_menu.addMenu(title_menu)
 
-        # --- Sous-menu Style de texte ---
+        # Sous-menu Style de texte
         style_menu = QMenu("🎨 Style de texte", self)
         style_actions_data = [
             ("🅱️ Gras (**texte**)", "bold", QKeySequence.Bold),
-            ("*️⃣ Italique (*texte*)", "italic"),  # Raccourci Ctrl+I retiré
+            ("*️⃣ Italique (*texte*)", "italic"),
             ("~ Barré (~~texte~~)", "strikethrough"),
             ("🖍️ Surligné (==texte==)", "highlight"),
         ]
@@ -434,7 +454,7 @@ class MainWindow(QMainWindow):
             style_menu.addAction(action)
         format_menu.addMenu(style_menu)
 
-        # --- Sous-menu Code ---
+        # Sous-menu Code
         code_menu = QMenu("💻 Code", self)
         code_actions_data = [
             ("` Monospace (inline)", "inline_code"),
@@ -448,7 +468,7 @@ class MainWindow(QMainWindow):
             code_menu.addAction(action)
         format_menu.addMenu(code_menu)
 
-        # --- Sous-menu Listes ---
+        # Sous-menu Listes
         list_menu = QMenu("📋 Listes", self)
         list_actions_data = [
             ("• Liste non ordonnée", "ul"),
@@ -465,7 +485,6 @@ class MainWindow(QMainWindow):
 
         format_menu.addSeparator()
 
-        # --- Action RaZ ---
         clear_action = QAction("🧹 RaZ (Effacer le formatage)", self)
         clear_action.triggered.connect(self.editor.clear_formatting)
         format_menu.addAction(clear_action)
@@ -485,7 +504,6 @@ class MainWindow(QMainWindow):
 
         for name, data, *shortcut in insert_actions_data:
             action = QAction(name, self)
-            # Utilisation de functools.partial pour éviter le problème de closure de lambda dans une boucle
             action.triggered.connect(functools.partial(self.editor.format_text, data))
             if shortcut:
                 action.setShortcut(shortcut[0])
@@ -498,7 +516,6 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_internal_link_action)
         insert_menu.addSeparator()
 
-        # Actions statiques
         insert_hr_action = QAction("➖ Ligne Horizontale", self)
         insert_hr_action.triggered.connect(lambda: self.editor.format_text("hr"))
 
@@ -516,8 +533,6 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_comment_action)
         insert_menu.addAction(insert_table_action)
         insert_menu.addAction(insert_quote_action)
-        # L'action "Citation du jour" est maintenant dans le menu "Intégrations"
-        # insert_menu.addAction(self.insert_quote_day_action)
         insert_menu.addSeparator()
 
         insert_tag_action = QAction("🏷️ Tag (@@)", self)
@@ -526,10 +541,10 @@ class MainWindow(QMainWindow):
 
         insert_time_action = QAction("🕒 Heure", self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
-        insert_menu.addAction(insert_time_action)  # noqa
-        insert_menu.addSeparator()  # noqa
+        insert_menu.addAction(insert_time_action)
+        insert_menu.addSeparator()
 
-        # --- Sous-menu Emoji ---
+        # Sous-menu Emoji
         emoji_menu = QMenu("😊 Emoji", self)
         emoji_actions_data = [
             ("📖 Livre", "📖"),
@@ -559,9 +574,8 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusbar)
 
-        # --- Widgets de gauche ---
         self.file_label = QLabel("Nouveau fichier")
-        self._set_file_label_color("gray")  # Couleur par défaut à l'ouverture
+        self._set_file_label_color("gray")
         self.statusbar.addWidget(self.file_label)
 
         self.modified_label = QLabel("")
@@ -570,19 +584,24 @@ class MainWindow(QMainWindow):
         self.stats_label = QLabel("")
         self.statusbar.addWidget(self.stats_label)
 
-        # --- Widgets de droite ---
         self.journal_dir_label = QLabel("")
-        self.journal_dir_label.setStyleSheet("color: #3498db;")  # Bleu clair
+        self.journal_dir_label.setStyleSheet("color: #3498db;")
         self.statusbar.addPermanentWidget(self.journal_dir_label)
 
-        # Label pour le statut de l'indexation des tags
         self.tag_index_status_label = QLabel("")
-        self.tag_index_status_label.setStyleSheet(
-            "color: #3498db;"
-        )  # Même couleur que le journal
+        self.tag_index_status_label.setStyleSheet("color: #3498db;")
         self.statusbar.addPermanentWidget(self.tag_index_status_label)
 
     def setup_connections(self):
+        self.pdf_flash_timer = QTimer(self)
+        self.pdf_flash_timer.setInterval(500)
+        self.pdf_flash_timer.timeout.connect(self._toggle_pdf_status_visibility)
+
+        self.pdf_status_label = CenteredStatusBarLabel(self.tr("Veuillez patienter..."))
+        self.pdf_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.pdf_status_label.setVisible(False)
+        self.statusbar.addWidget(self.pdf_status_label, 1)
+
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
         self.editor.text_edit.verticalScrollBar().valueChanged.connect(
@@ -607,23 +626,17 @@ class MainWindow(QMainWindow):
         """Initialise le répertoire du journal au lancement."""
         journal_path = None
 
-        # 1. Argument de la ligne de commande
         if self.journal_dir_arg and Path(self.journal_dir_arg).is_dir():
             journal_path = Path(self.journal_dir_arg).resolve()
-
-        # 2. Variable d'environnement
         elif "JOURNAL_DIRECTORY" in os.environ:
             env_path = Path(os.environ["JOURNAL_DIRECTORY"])
             if env_path.is_dir():
                 journal_path = env_path.resolve()
-
-        # 3. Répertoire par défaut dans le dossier utilisateur
         else:
             default_dir = Path.home() / "bluenotebook"
             if default_dir.is_dir():
                 journal_path = default_dir.resolve()
             else:
-                # 4. Créer le répertoire par défaut s'il n'existe pas
                 try:
                     default_dir.mkdir(parents=True, exist_ok=True)
                     journal_path = default_dir.resolve()
@@ -638,7 +651,7 @@ class MainWindow(QMainWindow):
         self.journal_directory = journal_path
         self.update_journal_dir_label()
         if self.journal_directory:
-            print(f"📓 Répertoire du journal: {self.journal_directory}")
+            print(f"📔 Répertoire du journal: {self.journal_directory}")
         else:
             print("⚠️ Répertoire du journal non défini.")
 
@@ -659,7 +672,6 @@ class MainWindow(QMainWindow):
                 self.open_specific_file(str(journal_file_path))
                 return
 
-        # Si le fichier du jour n'existe pas ou si le répertoire n'est pas défini
         self.new_file()
 
     def on_text_changed(self):
@@ -668,8 +680,7 @@ class MainWindow(QMainWindow):
         self.update_title()
         self.update_stats()
 
-        # Démarrer le timer pour la mise à jour de l'aperçu
-        self.update_timer.start(300)  # 300ms de délai
+        self.update_timer.start(300)
         self.outline_panel.update_outline(self.editor.text_edit.document())
 
     def update_preview(self):
@@ -688,15 +699,10 @@ class MainWindow(QMainWindow):
 
         if self.is_modified:
             self._set_file_label_color("red")
-            self.setWindowTitle(
-                f"BlueNotebook V{self.app_version} - {filename} *"
-            )  # Déjà correct, mais je vérifie
+            self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename} *")
             self.modified_label.setText("●")
         else:
-            # Ne pas changer la couleur ici, elle sera gérée par les actions (save, open)
-            self.setWindowTitle(
-                f"BlueNotebook V{self.app_version} - {filename}"
-            )  # Déjà correct, mais je vérifie
+            self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename}")
             self.modified_label.setText("")
 
     def update_stats(self):
@@ -708,15 +714,13 @@ class MainWindow(QMainWindow):
 
         self.stats_label.setText(f"{lines} lignes | {words} mots | {chars} caractères")
 
-    # V1.1.13 Changement de la page par defaut de l'editeur
     def new_file(self):
         """Créer un nouveau fichier"""
         if self.check_save_changes():
-            # Configurer la locale en français pour avoir les noms des jours/mois
             try:
                 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
             except locale.Error:
-                locale.setlocale(locale.LC_TIME, "")  # Utiliser la locale système
+                locale.setlocale(locale.LC_TIME, "")
 
             today_str = datetime.now().strftime("%A %d %B %Y").title()
             template = f"""______________________________________________________________
@@ -772,8 +776,8 @@ ______________________________________________________________
                     "Journal",
                     f"Le répertoire du journal est maintenant :\n{self.journal_directory}",
                 )
-                self.start_initial_indexing()  # Relancer l'indexation
-                self.update_calendar_highlights()  # Mettre à jour le calendrier
+                self.start_initial_indexing()
+                self.update_calendar_highlights()
                 self.update_word_cloud()
                 self.update_tag_cloud()
 
@@ -814,23 +818,17 @@ ______________________________________________________________
 
     def save_file(self):
         """Sauvegarder le fichier"""
-        # Si aucun répertoire de journal n'est défini, on fait un "Sauvegarder sous"
         if not self.journal_directory:
             self.save_file_as()
             return
 
-        # Déterminer le chemin du fichier à sauvegarder
         file_to_save_path = None
         if self.current_file:
-            # Si un fichier est déjà ouvert, on le sauvegarde
             file_to_save_path = Path(self.current_file)
         else:
-            # Si c'est un nouveau fichier, il devient la note du jour
             today_str = datetime.now().strftime("%Y%m%d")
             file_to_save_path = self.journal_directory / f"{today_str}.md"
 
-        # Si le fichier à sauvegarder n'est pas dans le répertoire du journal,
-        # on fait une sauvegarde simple.
         if not str(file_to_save_path).startswith(str(self.journal_directory)):
             self._save_to_file(str(file_to_save_path))
             return
@@ -838,7 +836,6 @@ ______________________________________________________________
         journal_file_path = file_to_save_path
 
         if journal_file_path.exists():
-            # Le fichier journal du jour existe déjà, demander à l'utilisateur
             dialog = QDialog(self)
             dialog.setWindowTitle("Fichier Journal déjà existant")
             layout = QVBoxLayout()
@@ -857,24 +854,21 @@ ______________________________________________________________
             layout.addWidget(buttons)
             dialog.setLayout(layout)
 
-            # Connecter les boutons aux actions
-            replace_button.clicked.connect(lambda: dialog.done(1))  # 1 pour Remplacer
-            append_button.clicked.connect(lambda: dialog.done(2))  # 2 pour Ajouter
+            replace_button.clicked.connect(lambda: dialog.done(1))
+            append_button.clicked.connect(lambda: dialog.done(2))
             cancel_button.clicked.connect(dialog.reject)
 
             result = dialog.exec_()
 
-            if result == 1:  # Remplacer
+            if result == 1:
                 self._save_to_file(str(journal_file_path))
-            elif result == 2:  # Ajouter
+            elif result == 2:
                 self._append_to_file(str(journal_file_path))
-            else:  # Annuler
+            else:
                 return
         else:
-            # Nouveau fichier journal pour aujourd'hui
             self._save_to_file(str(journal_file_path))
 
-        # Mettre à jour l'état de l'application
         self.current_file = str(journal_file_path)
         self.update_title()
 
@@ -905,8 +899,7 @@ ______________________________________________________________
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            # V1.1.18 Issue #6 2000 -> 2
-            self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2)
+            self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2000)
 
         except Exception as e:
             QMessageBox.critical(
@@ -918,14 +911,12 @@ ______________________________________________________________
         try:
             content = self.editor.get_text()
             with open(filename, "a", encoding="utf-8") as f:
-                f.write(
-                    "\n\n---\n\n" + content
-                )  # Ajoute un séparateur pour la lisibilité
+                f.write("\n\n---\n\n" + content)
 
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2)
+            self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2000)
         except Exception as e:
             QMessageBox.critical(
                 self, "Erreur", f"Impossible d'ajouter au fichier :\n{str(e)}"
@@ -956,6 +947,301 @@ ______________________________________________________________
                     self, "Erreur", f"Impossible d'exporter en HTML :\n{str(e)}"
                 )
 
+    def export_journal_pdf(self):
+        """Exporte l'ensemble du journal dans un unique fichier PDF avec WeasyPrint."""
+        try:
+            from weasyprint import HTML, CSS
+        except ImportError:
+            QMessageBox.critical(
+                self,
+                "Module manquant",
+                "WeasyPrint n'est pas installé.\n\n"
+                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+                "pip install weasyprint",
+            )
+            return
+
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Exportation impossible",
+                "Aucun répertoire de journal n'est actuellement défini.",
+            )
+            return
+
+        # Récupérer et trier toutes les notes du journal
+        note_files = []
+        for filename in os.listdir(self.journal_directory):
+            if filename.endswith(".md") and re.match(r"^\d{8}\.md$", filename):
+                note_files.append(filename)
+
+        if not note_files:
+            QMessageBox.information(
+                self, "Journal vide", "Aucune note à exporter dans le journal."
+            )
+            return
+
+        note_files.sort()
+
+        # Récupérer la dernière destination PDF enregistrée
+        last_pdf_dir = self.settings_manager.get("pdf.last_directory")
+        if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
+            last_pdf_dir = str(self.journal_directory.parent)
+
+        # Déterminer la plage de dates pour le nom de fichier
+        first_date_str = os.path.splitext(note_files[0])[0]
+        last_date_str = os.path.splitext(note_files[-1])[0]
+        first_date = datetime.strptime(first_date_str, "%Y%m%d")
+        last_date = datetime.strptime(last_date_str, "%Y%m%d")
+
+        default_filename = f"Journal-{first_date.strftime('%d%m%Y')}-{last_date.strftime('%d%m%Y')}.pdf"
+
+        # Demander à l'utilisateur où sauvegarder le PDF
+        pdf_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Exporter le journal en PDF",
+            os.path.join(last_pdf_dir, default_filename),
+            "Fichiers PDF (*.pdf)",
+        )
+
+        if not pdf_path:
+            return
+
+        # Construire le document HTML complet
+        all_html_content = ""
+
+        # Page de garde
+        logo_path = (
+            Path(__file__).parent.parent
+            / "resources"
+            / "images"
+            / "bluenotebook_256-x256_fond_blanc.png"
+        )
+
+        logo_abs_path = str(logo_path.resolve()) if logo_path.exists() else ""
+
+        cover_page_html = f"""
+        <div class="cover-page">
+            <img src="{logo_abs_path}" alt="Logo BlueNotebook" style="width: 150px; height: 150px;">
+            <h1>Journal BlueNotebook</h1>
+            <p class="cover-date">Dernière note du : {last_date.strftime('%d %B %Y')}</p>
+        </div>
+        """
+        all_html_content += cover_page_html
+
+        # Contenu des notes
+        for note_file in note_files:
+            try:
+                with open(
+                    self.journal_directory / note_file, "r", encoding="utf-8"
+                ) as f:
+                    markdown_content = f.read()
+
+                self.preview.md.reset()
+                html_note = self.preview.md.convert(markdown_content)
+
+                date_obj = datetime.strptime(os.path.splitext(note_file)[0], "%Y%m%d")
+                date_formatted = date_obj.strftime("%d %B %Y")
+
+                all_html_content += f"""
+                <div class="journal-entry">
+                    <h2 class="entry-date">{date_formatted}</h2>
+                    {html_note}
+                </div>
+                """
+            except Exception as e:
+                print(f"Erreur de lecture du fichier {note_file}: {e}")
+                continue
+
+        # CSS spécifique pour WeasyPrint avec pagination
+        weasyprint_css = """
+        @page {
+            size: A4;
+            margin: 2cm 2cm 3cm 2cm;
+            
+            @bottom-center {
+                content: "Page " counter(page) " / " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+            
+            @bottom-left {
+                content: "BlueNotebook - Journal";
+                font-size: 8pt;
+                color: #999;
+            }
+            
+            @bottom-right {
+                content: string(current-date);
+                font-size: 8pt;
+                color: #999;
+            }
+        }
+        
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .cover-page {
+            text-align: center;
+            padding-top: 30%;
+            page-break-after: always;
+        }
+        
+        .cover-page h1 {
+            font-size: 3em;
+            margin-top: 40px;
+            color: #2c3e50;
+        }
+        
+        .cover-date {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+        
+        .journal-entry {
+            page-break-before: always;
+        }
+        
+        .journal-entry:first-of-type {
+            page-break-before: avoid;
+        }
+        
+        .entry-date {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            string-set: current-date content();
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            page-break-after: avoid;
+        }
+        
+        pre, code {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+        
+        code {
+            padding: 2px 4px;
+            font-family: 'DejaVu Sans Mono', monospace;
+        }
+        
+        pre {
+            padding: 10px;
+            overflow-x: auto;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-left: 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            page-break-inside: avoid;
+        }
+        
+        .tag {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        """
+
+        # Créer le HTML complet
+        full_html = f"""
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <title>Journal BlueNotebook</title>
+        </head>
+        <body>
+            {all_html_content}
+        </body>
+        </html>
+        """
+
+        # Générer le PDF avec WeasyPrint
+        try:
+            self._start_pdf_flashing()
+
+            worker = PdfExportWorker(
+                html_string=full_html,
+                base_url=str(self.journal_directory),
+                css_string=weasyprint_css,
+                output_path=pdf_path,
+            )
+            worker.signals.finished.connect(self._on_pdf_export_finished)
+            worker.signals.error.connect(self._on_pdf_export_error)
+
+            self.thread_pool.start(worker)
+
+            # Mémoriser le répertoire de destination pour la prochaine fois
+            self.settings_manager.set("pdf.last_directory", str(Path(pdf_path).parent))
+            self.settings_manager.save_settings()
+
+        except Exception as e:
+            self._stop_pdf_flashing()
+            QMessageBox.critical(
+                self,
+                "Erreur d'exportation",
+                f"Une erreur est survenue lors de la création du PDF :\n{str(e)}",
+            )
+
+    def _on_pdf_export_finished(self, pdf_path):
+        """Callback pour la fin de l'export PDF."""
+        self._stop_pdf_flashing()
+        QMessageBox.information(
+            self,
+            "Exportation terminée",
+            f"Le journal a été exporté avec succès dans :\n{pdf_path}",
+        )
+
+    def _on_pdf_export_error(self, error_message):
+        """Callback en cas d'erreur d'export PDF."""
+        self._stop_pdf_flashing()
+        QMessageBox.critical(
+            self,
+            "Erreur d'exportation",
+            f"Une erreur est survenue lors de la création du PDF :\n{error_message}",
+        )
+
     def backup_journal(self):
         """Sauvegarde le répertoire du journal dans une archive ZIP."""
         if not self.journal_directory:
@@ -966,35 +1252,26 @@ ______________________________________________________________
             )
             return
 
-        # --- Déterminer le répertoire de départ pour la sauvegarde ---
-        # Priorité 1: Variable d'environnement
-        initial_dir = os.getenv("BACKUP__DIRECTORY")
+        initial_dir = os.getenv("BACKUP_DIRECTORY")
         if not initial_dir or not os.path.isdir(initial_dir):
-            # Priorité 2: Dernier répertoire utilisé dans les paramètres
             initial_dir = self.settings_manager.get("backup.last_directory")
             if not initial_dir or not os.path.isdir(initial_dir):
-                # Par défaut: le dossier parent du journal
                 initial_dir = str(self.journal_directory.parent)
 
-        # Générer un nom de fichier de sauvegarde par défaut
         backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
-
-        # Construire le chemin complet par défaut
         default_path = os.path.join(initial_dir, backup_filename_default)
 
-        # Ouvrir une boîte de dialogue pour choisir l'emplacement de la sauvegarde
         backup_path, _ = QFileDialog.getSaveFileName(
             self,
             "Sauvegarder le journal",
-            default_path,  # Utiliser le chemin complet avec le répertoire initial
+            default_path,
             "Archives ZIP (*.zip)",
             options=QFileDialog.DontConfirmOverwrite,
         )
 
         if not backup_path:
-            return  # L'utilisateur a annulé
+            return
 
-        # Vérifier si le fichier existe et demander confirmation si nécessaire
         if os.path.exists(backup_path):
             msg_box = QMessageBox(self)
             msg_box.setIcon(QMessageBox.Question)
@@ -1014,7 +1291,6 @@ ______________________________________________________________
                 return
 
         try:
-            # Créer l'archive ZIP
             shutil.make_archive(
                 base_name=os.path.splitext(backup_path)[0],
                 format="zip",
@@ -1022,7 +1298,6 @@ ______________________________________________________________
             )
             self.statusbar.showMessage(f"Journal sauvegardé dans {backup_path}", 5000)
 
-            # Mémoriser le répertoire de la sauvegarde réussie
             new_backup_dir = os.path.dirname(backup_path)
             self.settings_manager.set("backup.last_directory", new_backup_dir)
             self.settings_manager.save_settings()
@@ -1047,7 +1322,6 @@ ______________________________________________________________
             )
             return
 
-        # Sélectionner l'archive à restaurer
         zip_path, _ = QFileDialog.getOpenFileName(
             self, "Restaurer le journal", "", "Archives ZIP (*.zip)"
         )
@@ -1055,16 +1329,14 @@ ______________________________________________________________
         if not zip_path:
             return
 
-        # Nom du backup pour le journal existant
         current_journal_backup_path = (
             f"{self.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         )
 
-        # Fenêtre de confirmation personnalisée
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Question)
         msg_box.setWindowTitle("Confirmation de la restauration")
-        msg_box.setTextFormat(Qt.RichText)  # Interpréter le texte comme du HTML
+        msg_box.setTextFormat(Qt.RichText)
         msg_box.setText(
             f"<p>Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.</p>"
             f"<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{current_journal_backup_path}</b></p>"
@@ -1080,13 +1352,9 @@ ______________________________________________________________
             return
 
         try:
-            # 1. Sauvegarder (renommer) le journal actuel
             os.rename(self.journal_directory, current_journal_backup_path)
-
-            # 2. Créer le répertoire de destination vide
             os.makedirs(self.journal_directory)
 
-            # 3. Extraire l'archive
             with zipfile.ZipFile(zip_path, "r") as zip_ref:
                 zip_ref.extractall(self.journal_directory)
 
@@ -1096,7 +1364,6 @@ ______________________________________________________________
                 "La restauration est terminée. L'application va maintenant se fermer.\n"
                 "Veuillez la relancer pour utiliser le journal restauré.",
             )
-            # Fermer l'application pour forcer un rechargement propre
             self.close()
 
         except Exception as e:
@@ -1127,14 +1394,12 @@ ______________________________________________________________
 
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
-        # Construire le chemin vers le fichier d'aide
         base_path = os.path.dirname(os.path.abspath(__file__))
         help_file_path = os.path.join(
             base_path, "..", "resources", "html", "aide_en_ligne.html"
         )
 
         if os.path.exists(help_file_path):
-            # Convertir le chemin en URL de fichier
             url = f"file:///{os.path.abspath(help_file_path)}"
             webbrowser.open(url)
         else:
@@ -1191,7 +1456,7 @@ ______________________________________________________________
             reply = msg_box.exec_()
             if reply == QMessageBox.Save:
                 self.save_file()
-                return not self.is_modified  # Retourner False si la sauvegarde a échoué
+                return not self.is_modified
             elif reply == QMessageBox.Cancel:
                 return False
 
@@ -1200,15 +1465,13 @@ ______________________________________________________________
     def closeEvent(self, event):
         """Événement de fermeture de la fenêtre"""
         if self.check_save_changes():
+            self.save_panel_visibility_settings()
             event.accept()
         else:
-            # Sauvegarder les paramètres de visibilité des panneaux
-            self.save_panel_visibility_settings()
             event.ignore()
 
     def show_quote_of_the_day(self):
         """Affiche la citation du jour dans une boîte de dialogue."""
-        # Vérifier si l'affichage est activé dans les paramètres
         if self.settings_manager.get("integrations.show_quote_of_the_day"):
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
             if self.daily_quote and self.daily_author:
@@ -1224,8 +1487,6 @@ ______________________________________________________________
 
     def insert_quote_of_the_day(self):
         """Insère la citation du jour dans l'éditeur, en la récupérant si nécessaire."""
-        # Si la citation n'a pas encore été récupérée (car l'option au démarrage est désactivée),
-        # on la récupère maintenant.
         if not self.daily_quote:
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
 
@@ -1241,22 +1502,17 @@ ______________________________________________________________
         editor_scrollbar = self.editor.text_edit.verticalScrollBar()
         preview_page = self.preview.web_view.page()
 
-        # Calculer la position relative (0.0 à 1.0)
         scroll_max = editor_scrollbar.maximum()
         if scroll_max == 0:
             relative_pos = 0.0
         else:
             relative_pos = value / scroll_max
 
-        # Exécuter un script JavaScript pour faire défiler la page web
         js_code = f"window.scrollTo(0, document.body.scrollHeight * {relative_pos});"
         preview_page.runJavaScript(js_code)
 
     def sync_preview_to_cursor(self):
-        """
-        Synchronise la vue de l'aperçu sur la position actuelle du curseur
-        dans l'éditeur.
-        """
+        """Synchronise la vue de l'aperçu sur la position actuelle du curseur."""
         cursor = self.editor.text_edit.textCursor()
         block = cursor.block()
         if not block.isValid():
@@ -1266,26 +1522,18 @@ ______________________________________________________________
         if total_blocks == 0:
             return
 
-        # Calculer la position relative du bloc actuel
         relative_pos = block.blockNumber() / total_blocks
-
-        # Demander à l'aperçu de défiler
         self.preview.scroll_to_percentage(relative_pos)
 
     def start_initial_indexing(self):
         """Lance l'indexation des tags pour le répertoire de journal actuel."""
-        # Importer ici pour éviter les dépendances circulaires si nécessaire
         from core.tag_indexer import start_tag_indexing
 
-        # Lancer l'indexation des tags
         start_tag_indexing(
             self.journal_directory, self.thread_pool, self.on_indexing_finished
         )
 
-        # Lancer l'indexation des mots
         user_excluded = self.settings_manager.get("indexing.user_excluded_words", [])
-
-        # Combiner les deux listes pour l'indexeur
         excluded_words_set = set(DEFAULT_EXCLUDED_WORDS) | set(user_excluded)
         start_word_indexing(
             self.journal_directory,
@@ -1306,7 +1554,6 @@ ______________________________________________________________
 
     def update_indexing_status_label(self):
         """Met à jour la barre de statut avec les résultats des deux indexations."""
-        # Ne rien faire tant que les deux résultats ne sont pas arrivés
         if self.tag_index_count == -1 or self.word_index_count == -1:
             return
 
@@ -1322,22 +1569,18 @@ ______________________________________________________________
         print(f"✅ {full_message}")
         self.tag_index_status_label.setText(full_message)
 
-        # Si l'option est décochée, le message est transitoire. Sinon, il est permanent.
         if not self.settings_manager.get("ui.show_indexing_stats", True):
             QTimer.singleShot(15000, lambda: self.tag_index_status_label.clear())
-        self.update_tag_cloud()  # Mettre à jour le nuage après l'indexation
+
+        self.update_tag_cloud()
         self.update_word_cloud()
         self.update_navigation_panel_data()
 
     def on_prev_day_button_clicked(self):
-        """
-        Appelé lors du clic sur 'Jour Précédent'.
-        Trouve la note existante la plus proche avant la date actuelle et l'ouvre.
-        """
+        """Trouve la note existante la plus proche avant la date actuelle et l'ouvre."""
         if not self.journal_directory:
             return
 
-        # Déterminer la date de départ pour la recherche
         start_date = QDate.currentDate()
         if self.current_file:
             try:
@@ -1349,39 +1592,29 @@ ______________________________________________________________
                     current_date_obj.day,
                 )
             except ValueError:
-                # Le fichier actuel n'est pas une note de journal, on part d'aujourd'hui
                 pass
 
-        # Chercher la note précédente en remontant dans le temps
         current_check_date = start_date.addDays(-1)
-        # Limiter la recherche pour éviter une boucle infinie (ex: 5 ans)
         for _ in range(365 * 5):
             filename = current_check_date.toString("yyyyMMdd") + ".md"
             file_path = self.journal_directory / filename
 
             if file_path.exists():
-                # Note trouvée ! On met à jour le calendrier et on l'ouvre.
                 self.navigation_panel.calendar.setSelectedDate(current_check_date)
                 self.on_calendar_date_clicked(current_check_date)
-                return  # Sortir de la fonction
+                return
 
-            # Passer au jour précédent
             current_check_date = current_check_date.addDays(-1)
 
-        # Si on arrive ici, aucune note précédente n'a été trouvée
         self.statusbar.showMessage(
             "Aucune note précédente trouvée dans le journal.", 3000
         )
 
     def on_next_day_button_clicked(self):
-        """
-        Appelé lors du clic sur 'Jour Suivant'.
-        Trouve la note existante la plus proche après la date actuelle et l'ouvre.
-        """
+        """Trouve la note existante la plus proche après la date actuelle et l'ouvre."""
         if not self.journal_directory:
             return
 
-        # Déterminer la date de départ pour la recherche
         start_date = QDate.currentDate()
         if self.current_file:
             try:
@@ -1393,54 +1626,39 @@ ______________________________________________________________
                     current_date_obj.day,
                 )
             except ValueError:
-                # Le fichier actuel n'est pas une note de journal, on part d'aujourd'hui
                 pass
 
-        # Chercher la note suivante en avançant dans le temps
         current_check_date = start_date.addDays(1)
-        # Limiter la recherche pour éviter une boucle infinie (ex: 5 ans)
         for _ in range(365 * 5):
             filename = current_check_date.toString("yyyyMMdd") + ".md"
             file_path = self.journal_directory / filename
 
             if file_path.exists():
-                # Note trouvée ! On met à jour le calendrier et on l'ouvre.
                 self.navigation_panel.calendar.setSelectedDate(current_check_date)
                 self.on_calendar_date_clicked(current_check_date)
-                return  # Sortir de la fonction
+                return
 
-            # Passer au jour suivant
             current_check_date = current_check_date.addDays(1)
 
-        # Si on arrive ici, aucune note suivante n'a été trouvée
         self.statusbar.showMessage(
             "Aucune note suivante trouvée dans le journal.", 3000
         )
 
     def on_today_button_clicked(self):
-        """
-        Appelé lorsque le bouton 'Aujourd'hui' est cliqué.
-        Sélectionne la date du jour et ouvre la note correspondante.
-        """
+        """Sélectionne la date du jour et ouvre la note correspondante."""
         today = QDate.currentDate()
         self.navigation_panel.calendar.setSelectedDate(today)
         self.on_calendar_date_clicked(today)
 
     def on_calendar_date_clicked(self, date):
-        """
-        Appelé lorsqu'une date est cliquée dans le calendrier.
-        Ouvre le fichier journal correspondant.
-        """
+        """Ouvre le fichier journal correspondant à la date cliquée."""
         if not self.journal_directory:
             return
 
-        # Formater la date en nom de fichier (YYYYMMDD.md)
         filename = date.toString("yyyyMMdd") + ".md"
         file_path = self.journal_directory / filename
 
-        # Vérifier si le fichier existe
         if file_path.exists():
-            # Vérifier si le fichier en cours a des modifications non sauvegardées
             if self.check_save_changes():
                 self.open_specific_file(str(file_path))
         else:
@@ -1448,60 +1666,37 @@ ______________________________________________________________
                 f"Aucune note pour le {date.toString('dd/MM/yyyy')}", 3000
             )
 
-    # V1.5.2 Fix Issue #10 Claude - Sync btw Outline and Editor
     def on_outline_item_clicked(self, position):
-        """
-        Déplace le curseur vers la position cliquée dans le plan et fait défiler
-        la vue pour que la ligne du titre soit exactement à la première ligne de l'éditeur.
-        """
-        # Importer QTextCursor si nécessaire
+        """Déplace le curseur vers la position cliquée dans le plan."""
         from PyQt5.QtGui import QTextCursor
 
-        # Déplacer le curseur à la position du titre
         block = self.editor.text_edit.document().findBlock(position)
         cursor = self.editor.text_edit.textCursor()
         cursor.setPosition(block.position())
         self.editor.text_edit.setTextCursor(cursor)
 
-        # Solution robuste : utiliser QTextEdit.scrollToAnchor
-        # Créer un nom d'ancre temporaire basé sur la position
-        anchor_name = f"heading_{block.blockNumber()}"
-
-        # Méthode alternative plus directe :
-        # Forcer le scroll en utilisant la scrollbar directement
         scrollbar = self.editor.text_edit.verticalScrollBar()
-
-        # Obtenir le rectangle du curseur après l'avoir positionné
         text_edit = self.editor.text_edit
 
-        # S'assurer que le curseur est visible d'abord
         text_edit.ensureCursorVisible()
 
-        # Maintenant, ajuster pour que ce soit en haut
-        # On va utiliser une approche itérative pour être sûr
-        for attempt in range(3):  # Maximum 3 tentatives
+        for attempt in range(3):
             cursor_rect = text_edit.cursorRect()
 
-            # Si le curseur est déjà proche du haut (moins de 20 pixels), c'est bon
             if cursor_rect.top() <= 20:
                 break
 
-            # Calculer combien on doit scroller vers le haut
-            scroll_adjustment = cursor_rect.top() - 10  # 10 pixels de marge en haut
-
-            # Appliquer l'ajustement
+            scroll_adjustment = cursor_rect.top() - 10
             current_scroll = scrollbar.value()
             new_scroll = current_scroll + scroll_adjustment
             new_scroll = max(0, min(new_scroll, scrollbar.maximum()))
 
             scrollbar.setValue(new_scroll)
 
-            # Laisser le temps au widget de se mettre à jour
             from PyQt5.QtWidgets import QApplication
 
             QApplication.processEvents()
 
-        # Donner le focus à l'éditeur
         text_edit.setFocus()
 
     def update_calendar_highlights(self):
@@ -1513,18 +1708,16 @@ ______________________________________________________________
         try:
             for filename in os.listdir(self.journal_directory):
                 if filename.endswith(".md"):
-                    # Essayer de parser le nom du fichier en date
                     try:
                         date_str = os.path.splitext(filename)[0]
                         date = datetime.strptime(date_str, "%Y%m%d").date()
                         dates_with_notes.add(QDate(date.year, date.month, date.day))
                     except ValueError:
-                        # Ignorer les fichiers qui ne correspondent pas au format YYYYMMDD.md
                         continue
             self.navigation_panel.highlight_dates(dates_with_notes)
         except FileNotFoundError:
             print(
-                f"⚠️ Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
+                f"Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
             )
         self.update_tag_cloud()
         self.update_word_cloud()
@@ -1533,11 +1726,24 @@ ______________________________________________________________
         """Définit la couleur du texte pour le label du nom de fichier."""
         self.file_label.setStyleSheet(f"color: {color};")
 
+    def _start_pdf_flashing(self):
+        """Démarre le message clignotant pour l'export PDF."""
+        self.pdf_status_label.setVisible(True)
+        self.pdf_flash_timer.start()
+
+    def _stop_pdf_flashing(self):
+        """Arrête le message clignotant."""
+        self.pdf_flash_timer.stop()
+        self.pdf_status_label.setVisible(False)
+
+    def _toggle_pdf_status_visibility(self):
+        """Bascule la visibilité du label de statut PDF."""
+        self.pdf_status_label.setVisible(not self.pdf_status_label.isVisible())
+
     def open_preferences(self):
         """Ouvre la boîte de dialogue des préférences."""
         dialog = PreferencesDialog(self.settings_manager, self)
         if dialog.exec_() == QDialog.Accepted:
-            # Sauvegarder les nouveaux paramètres
             self.settings_manager.set(
                 "editor.font_family", dialog.current_font.family()
             )
@@ -1592,7 +1798,6 @@ ______________________________________________________________
             self.settings_manager.set(
                 "editor.timestamp_color", dialog.current_timestamp_color.name()
             )
-            # V1.7.2 Ajout Paramètre Affichages Couleurs
             self.settings_manager.set(
                 "editor.quote_color", dialog.current_quote_color.name()
             )
@@ -1606,13 +1811,10 @@ ______________________________________________________________
                 "editor.html_comment_color",
                 dialog.current_html_comment_color.name(),
             )
-            # Fin V1.7.2
-
             self.settings_manager.set(
                 "editor.show_line_numbers",
                 dialog.show_line_numbers_checkbox.isChecked(),
             )
-
             self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
@@ -1621,7 +1823,7 @@ ______________________________________________________________
                 "ui.show_indexing_stats",
                 dialog.show_indexing_stats_checkbox.isChecked(),
             )
-            # V1.6.1 Mots à exclure
+
             user_words_text = dialog.excluded_words_edit.toPlainText()
             user_words_list = [
                 word.strip().lower()
@@ -1629,7 +1831,7 @@ ______________________________________________________________
                 if word.strip()
             ]
             self.settings_manager.set("indexing.user_excluded_words", user_words_list)
-            # V1.6.2 Tags à exclure du nuage
+
             excluded_tags_text = dialog.excluded_tags_edit.toPlainText()
             excluded_tags_list = [
                 tag.strip().lower()
@@ -1640,7 +1842,6 @@ ______________________________________________________________
                 "indexing.excluded_tags_from_cloud", excluded_tags_list
             )
 
-            # Mots à exclure du nuage de mots
             excluded_words_cloud_text = dialog.excluded_words_cloud_edit.toPlainText()
             excluded_words_cloud_list = [
                 word.strip().lower()
@@ -1651,8 +1852,6 @@ ______________________________________________________________
                 "indexing.excluded_words_from_cloud", excluded_words_cloud_list
             )
 
-            # V1.7.8 - Correction régression: Sauvegarder l'état des cases à cocher des panneaux
-            # et non l'état de visibilité actuel des panneaux.
             self.settings_manager.set(
                 "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
             )
@@ -1663,10 +1862,7 @@ ______________________________________________________________
                 "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
             )
 
-            # *** CORRECTION PRINCIPALE : Sauvegarder IMMÉDIATEMENT les paramètres ***
             self.settings_manager.save_settings()
-
-            # Appliquer les paramètres à l'interface
             self.apply_settings()
 
     def save_panel_visibility_settings(self):
@@ -1680,19 +1876,8 @@ ______________________________________________________________
         self.settings_manager.set("ui.show_preview_panel", self.preview.isVisible())
         self.settings_manager.save_settings()
 
-    def closeEvent(self, event):
-        """Événement de fermeture de la fenêtre"""
-        if self.check_save_changes():
-            # Sauvegarder UNIQUEMENT l'état de visibilité actuel des panneaux
-            # (pas les autres paramètres qui sont déjà sauvegardés)
-            self.save_panel_visibility_settings()
-            event.accept()
-        else:
-            event.ignore()
-
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
-        # --- Visibilité des panneaux ---
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
         self.navigation_panel.setVisible(show_nav)
 
@@ -1702,51 +1887,41 @@ ______________________________________________________________
         show_preview = self.settings_manager.get("ui.show_preview_panel", False)
         self.preview.setVisible(show_preview)
 
-        # --- Visibilité des statistiques d'indexation ---
         show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
         if not show_stats:
             self.tag_index_status_label.clear()
 
-        # --- Appliquer la police de l'éditeur ---
         font_family = self.settings_manager.get("editor.font_family")
         font_size = self.settings_manager.get("editor.font_size")
         font = QFont(font_family, font_size)
         self.editor.set_font(font)
 
-        # --- Appliquer la couleur de fond ---
         bg_color = self.settings_manager.get("editor.background_color")
         self.editor.set_background_color(bg_color)
 
-        # --- Appliquer la couleur du texte ---
         text_color = self.settings_manager.get("editor.text_color")
         self.editor.set_text_color(text_color)
 
-        # --- Appliquer la couleur des titres ---
         heading_color = self.settings_manager.get("editor.heading_color")
         self.editor.set_heading_color(heading_color)
 
-        # --- Appliquer la couleur des listes ---
         list_color = self.settings_manager.get("editor.list_color")
         self.editor.set_list_color(list_color)
 
-        # --- Appliquer la couleur du texte de sélection ---
         selection_text_color = self.settings_manager.get("editor.selection_text_color")
         self.editor.set_selection_text_color(selection_text_color)
 
-        # --- Appliquer les couleurs du code inline ---
         inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
         inline_bg_color = self.settings_manager.get(
             "editor.inline_code_background_color"
         )
         self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
 
-        # --- Appliquer la couleur de fond des blocs de code ---
         code_block_bg_color = self.settings_manager.get(
             "editor.code_block_background_color"
         )
         self.editor.set_code_block_background_color(code_block_bg_color)
 
-        # --- Appliquer les couleurs des styles de texte ---
         bold_color = self.settings_manager.get("editor.bold_color")
         italic_color = self.settings_manager.get("editor.italic_color")
         strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
@@ -1755,251 +1930,31 @@ ______________________________________________________________
             bold_color, italic_color, strikethrough_color, highlight_color
         )
 
-        # --- Appliquer les couleurs des tags et horodatage ---
         tag_color = self.settings_manager.get("editor.tag_color")
         timestamp_color = self.settings_manager.get("editor.timestamp_color")
         self.editor.set_misc_colors(tag_color, timestamp_color)
 
-        # --- Appliquer les couleurs des citations et liens ---
         quote_color = self.settings_manager.get("editor.quote_color")
         link_color = self.settings_manager.get("editor.link_color")
         self.editor.set_quote_link_colors(quote_color, link_color)
 
-        # --- Appliquer la police du code ---
         code_font = self.settings_manager.get("editor.code_font_family")
         self.editor.set_code_font(code_font)
 
-        # --- Appliquer la couleur des commentaires HTML ---
         html_comment_color = self.settings_manager.get(
             "editor.html_comment_color", "#a4b5cf"
         )
         self.editor.set_html_comment_color(html_comment_color)
 
-        # --- Appliquer les styles au panneau de plan ---
-        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
-
-        """Applique les paramètres chargés à l'interface utilisateur."""
-        # --- Visibilité des panneaux ---
-        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
-        self.navigation_panel.setVisible(show_nav)
-
-        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
-        self.outline_panel.setVisible(show_outline)
-
-        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
-        self.preview.setVisible(show_preview)
-
-        # --- Visibilité des statistiques d'indexation ---
-        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
-        if not show_stats:
-            self.tag_index_status_label.clear()
-
-        # --- Appliquer la police de l'éditeur ---
-        font_family = self.settings_manager.get("editor.font_family")
-        font_size = self.settings_manager.get("editor.font_size")
-        font = QFont(font_family, font_size)
-        self.editor.set_font(font)
-
-        # --- Appliquer la couleur de fond ---
-        bg_color = self.settings_manager.get("editor.background_color")
-        self.editor.set_background_color(bg_color)
-
-        # --- Appliquer la couleur du texte ---
-        text_color = self.settings_manager.get("editor.text_color")
-        self.editor.set_text_color(text_color)
-
-        # --- Appliquer la couleur des titres ---
-        heading_color = self.settings_manager.get("editor.heading_color")
-        self.editor.set_heading_color(heading_color)
-
-        # --- Appliquer la couleur des listes ---
-        list_color = self.settings_manager.get("editor.list_color")
-        self.editor.set_list_color(list_color)
-
-        # --- Appliquer la couleur du texte de sélection ---
-        selection_text_color = self.settings_manager.get("editor.selection_text_color")
-        self.editor.set_selection_text_color(selection_text_color)
-
-        # --- Appliquer les couleurs du code inline ---
-        inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
-        inline_bg_color = self.settings_manager.get(
-            "editor.inline_code_background_color"
-        )
-        self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
-
-        # --- Appliquer la couleur de fond des blocs de code ---
-        code_block_bg_color = self.settings_manager.get(
-            "editor.code_block_background_color"
-        )
-        self.editor.set_code_block_background_color(code_block_bg_color)
-
-        # --- Appliquer les couleurs des styles de texte ---
-        bold_color = self.settings_manager.get("editor.bold_color")
-        italic_color = self.settings_manager.get("editor.italic_color")
-        strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
-        highlight_color = self.settings_manager.get("editor.highlight_color")
-        self.editor.set_text_style_colors(
-            bold_color, italic_color, strikethrough_color, highlight_color
-        )
-
-        # --- Appliquer les couleurs des tags et horodatage ---
-        tag_color = self.settings_manager.get("editor.tag_color")
-        timestamp_color = self.settings_manager.get("editor.timestamp_color")
-        self.editor.set_misc_colors(tag_color, timestamp_color)
-
-        # --- Appliquer les couleurs des citations et liens ---
-        quote_color = self.settings_manager.get("editor.quote_color")
-        link_color = self.settings_manager.get("editor.link_color")
-        self.editor.set_quote_link_colors(quote_color, link_color)
-
-        # --- Appliquer la police du code ---
-        code_font = self.settings_manager.get("editor.code_font_family")
-        self.editor.set_code_font(code_font)
-
-        # --- Appliquer la couleur des commentaires HTML ---
-        html_comment_color = self.settings_manager.get(
-            "editor.html_comment_color", "#a4b5cf"
-        )
-        self.editor.set_html_comment_color(html_comment_color)
-
-        # --- Appliquer l'affichage des numéros de ligne ---
         show_line_numbers = self.settings_manager.get("editor.show_line_numbers", False)
-        # La méthode set_line_numbers_visible doit être implémentée dans editor.py
         if hasattr(self.editor, "set_line_numbers_visible"):
             self.editor.set_line_numbers_visible(show_line_numbers)
 
-        # --- Appliquer le thème CSS à l'aperçu HTML ---
         css_theme = self.settings_manager.get(
             "preview.css_theme", "default_preview.css"
         )
         self.preview.set_css_theme(css_theme)
 
-        # --- Appliquer les styles au panneau de plan ---
-        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
-
-    def _apply_theme_to_settings(self, theme_key):
-        """Charge un thème et met à jour les paramètres en mémoire."""
-        if theme_key:
-            base_path = Path(__file__).parent.parent
-            theme_path = base_path / "resources" / "themes" / f"{theme_key}.json"
-            if theme_path.exists():
-                try:
-                    with open(theme_path, "r", encoding="utf-8") as f:
-                        theme_data = json.load(f)
-
-                    # Écraser les paramètres d'affichage avec ceux du thème
-                    font_info = theme_data.get("font", {})
-                    self.settings_manager.set(
-                        "editor.font_family", font_info.get("family")
-                    )
-                    self.settings_manager.set("editor.font_size", font_info.get("size"))
-                    self.settings_manager.set(
-                        "editor.code_font_family", font_info.get("code_family")
-                    )
-
-                    color_info = theme_data.get("colors", {})
-                    for key, value in color_info.items():
-                        self.settings_manager.set(f"editor.{key}", value)
-
-                except (json.JSONDecodeError, IOError) as e:
-                    print(f"⚠️ Erreur lors du chargement du thème au démarrage : {e}")
-
-        # --- Visibilité des panneaux ---
-        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
-        self.navigation_panel.setVisible(show_nav)
-
-        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
-        self.outline_panel.setVisible(show_outline)
-
-        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
-        self.preview.setVisible(show_preview)
-
-        # --- Visibilité des statistiques d'indexation ---
-        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
-        # Si l'option est désactivée, on s'assure que le label est vide au démarrage.
-        if not show_stats:
-            self.tag_index_status_label.clear()
-
-        # Appliquer la police
-        font_family = self.settings_manager.get("editor.font_family")
-        font_size = self.settings_manager.get("editor.font_size")
-        font = QFont(font_family, font_size)
-        self.editor.set_font(font)
-
-        # Appliquer la couleur de fond
-        bg_color = self.settings_manager.get("editor.background_color")
-        self.editor.set_background_color(bg_color)
-
-        # Appliquer la couleur du texte
-        text_color = self.settings_manager.get("editor.text_color")
-        self.editor.set_text_color(text_color)
-
-        # Appliquer la couleur des titres
-        heading_color = self.settings_manager.get("editor.heading_color")
-        self.editor.set_heading_color(heading_color)
-
-        # Appliquer la couleur des listes
-        list_color = self.settings_manager.get("editor.list_color")
-        self.editor.set_list_color(list_color)
-
-        # Appliquer la couleur du texte de sélection
-        selection_text_color = self.settings_manager.get("editor.selection_text_color")
-        self.editor.set_selection_text_color(selection_text_color)
-
-        # Appliquer les couleurs du code inline
-        inline_text_color = self.settings_manager.get("editor.inline_code_text_color")
-        inline_bg_color = self.settings_manager.get(
-            "editor.inline_code_background_color"
-        )
-        self.editor.set_inline_code_colors(inline_text_color, inline_bg_color)
-
-        # Appliquer la couleur de fond des blocs de code
-        code_block_bg_color = self.settings_manager.get(
-            "editor.code_block_background_color"
-        )
-        self.editor.set_code_block_background_color(code_block_bg_color)
-
-        # Appliquer les couleurs des styles de texte
-        bold_color = self.settings_manager.get("editor.bold_color")
-        italic_color = self.settings_manager.get("editor.italic_color")
-        strikethrough_color = self.settings_manager.get("editor.strikethrough_color")
-        highlight_color = self.settings_manager.get("editor.highlight_color")
-        self.editor.set_text_style_colors(
-            bold_color, italic_color, strikethrough_color, highlight_color
-        )
-
-        # Appliquer les couleurs des tags et horodatage
-        tag_color = self.settings_manager.get("editor.tag_color")
-        timestamp_color = self.settings_manager.get("editor.timestamp_color")
-        self.editor.set_misc_colors(tag_color, timestamp_color)
-
-        # V1.7.2 Ajout Paramètre Affichages Couleurs
-        quote_color = self.settings_manager.get("editor.quote_color")
-        link_color = self.settings_manager.get("editor.link_color")
-        self.editor.set_quote_link_colors(quote_color, link_color)
-
-        code_font = self.settings_manager.get("editor.code_font_family")
-        self.editor.set_code_font(code_font)
-
-        html_comment_color = self.settings_manager.get(
-            "editor.html_comment_color", "#a4b5cf"
-        )
-        self.editor.set_html_comment_color(html_comment_color)
-
-        # --- Appliquer l'affichage des numéros de ligne ---
-        show_line_numbers = self.settings_manager.get("editor.show_line_numbers", False)
-        # La méthode set_line_numbers_visible doit être implémentée dans editor.py
-        if hasattr(self.editor, "set_line_numbers_visible"):
-            self.editor.set_line_numbers_visible(show_line_numbers)
-
-        # --- Appliquer le thème CSS à l'aperçu HTML ---
-        css_theme = self.settings_manager.get(
-            "preview.css_theme", "default_preview.css"
-        )
-        if hasattr(self.preview, "set_css_theme"):
-            self.preview.set_css_theme(css_theme)
-
-        # Appliquer les styles au panneau de plan
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
 
     def update_tag_cloud(self):
@@ -2031,60 +1986,50 @@ ______________________________________________________________
         results = []
         query_lower = query.lower()
 
-        # Recherche de tag
         if query_lower.startswith("@@"):
             index_file = self.journal_directory / "index_tags.json"
             if index_file.exists() and len(query_lower) > 2:
                 with open(index_file, "r", encoding="utf-8") as f:
                     tags_data = json.load(f)
-                # Recherche insensible à la casse
                 for tag_key, tag_value in tags_data.items():
                     if tag_key.lower() == query_lower:
                         for detail in tag_value["details"]:
-                            # On passe maintenant le numéro de ligne
                             results.append(
                                 (
                                     detail["date"],
                                     detail["context"],
                                     detail["filename"],
                                     detail.get("line", 1),
-                                )  # .get pour la compatibilité
+                                )
                             )
-                        break  # Tag trouvé, on peut arrêter de chercher
-        # Recherche de mot
+                        break
         else:
-            index_file = self.journal_directory / "index_words.json"  # noqa
+            index_file = self.journal_directory / "index_words.json"
             if index_file.exists():
                 with open(index_file, "r", encoding="utf-8") as f:
                     words_data = json.load(f)
                 if query_lower in words_data:
                     for detail in words_data[query_lower]["details"]:
-                        # On passe maintenant le numéro de ligne
                         results.append(
                             (
                                 detail["date"],
                                 detail["context"],
                                 detail["filename"],
                                 detail.get("line", 1),
-                            )  # .get pour la compatibilité
+                            )
                         )
 
         self.navigation_panel.show_search_results(results)
 
     def open_file_from_search(self, filename: str, line_number: int):
-        """
-        Ouvre un fichier sélectionné depuis les résultats de recherche et se positionne
-        à la ligne spécifiée.
-        """
+        """Ouvre un fichier sélectionné depuis les résultats de recherche."""
         if not self.journal_directory or not filename:
             return
 
         file_path = self.journal_directory / filename
         if file_path.exists():
             if self.check_save_changes():
-                # Ouvrir le fichier sans se soucier du scroll pour l'instant
                 self.open_specific_file(str(file_path))
-                # Maintenant, se positionner à la bonne ligne
                 self.go_to_line(line_number)
         else:
             QMessageBox.warning(
@@ -2092,9 +2037,7 @@ ______________________________________________________________
             )
 
     def go_to_line(self, line_number: int):
-        """
-        Déplace le curseur à la ligne spécifiée et la positionne en haut de l'éditeur.
-        """
+        """Déplace le curseur à la ligne spécifiée et la positionne en haut de l'éditeur."""
         if line_number <= 0:
             return
 
@@ -2103,13 +2046,11 @@ ______________________________________________________________
         text_edit = self.editor.text_edit
         doc = text_edit.document()
 
-        # Le numéro de bloc correspond au numéro de ligne - 1
         block = doc.findBlockByNumber(line_number - 1)
         if block.isValid():
             cursor = QTextCursor(block)
             text_edit.setTextCursor(cursor)
 
-            # Forcer le défilement pour que la ligne soit en haut
             scrollbar = text_edit.verticalScrollBar()
             cursor_rect = text_edit.cursorRect()
             scrollbar.setValue(scrollbar.value() + cursor_rect.top())
@@ -2117,7 +2058,7 @@ ______________________________________________________________
             text_edit.setFocus()
 
     def update_navigation_panel_data(self):
-        """Met à jour les données nécessaires au panneau de navigation, comme la liste des tags."""
+        """Met à jour les données nécessaires au panneau de navigation."""
         if not self.journal_directory:
             return
 
@@ -2127,10 +2068,9 @@ ______________________________________________________________
             try:
                 with open(index_file, "r", encoding="utf-8") as f:
                     tags_data = json.load(f)
-                # Trier les clés (les tags) par ordre alphabétique
                 tags_list = sorted(tags_data.keys())
             except (json.JSONDecodeError, IOError) as e:
-                print(f"⚠️ Erreur de lecture de l'index des tags pour le menu: {e}")
+                print(f"Erreur de lecture de l'index des tags pour le menu: {e}")
 
         self.navigation_panel.set_available_tags(tags_list)
 

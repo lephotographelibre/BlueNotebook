@@ -17,16 +17,14 @@
 Composant d'aperçu HTML du Markdown avec QWebEngine
 """
 
-import re
+import os
 from xml.etree import ElementTree
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QUrl, QTimer
+from PyQt5.QtCore import QUrl
 from markdown.inlinepatterns import InlineProcessor
 import markdown
-import tempfile
-import os
 
 
 class TagInlineProcessor(InlineProcessor):
@@ -45,10 +43,10 @@ class MarkdownPreview(QWidget):
     def __init__(self):
         super().__init__()
         self.current_html = ""
-        self.current_markdown = ""  # Mémoriser le contenu Markdown actuel
+        self.current_markdown = ""
         self.setup_ui()
         self.default_css = self._load_default_css()
-        self.custom_css = ""  # Pour les futurs thèmes
+        self.custom_css = ""
         self.setup_markdown()
 
     def setup_ui(self):
@@ -57,7 +55,6 @@ class MarkdownPreview(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Label compact en haut
         label = QLabel("👀 Aperçu HTML")
         label.setStyleSheet(
             """
@@ -71,10 +68,9 @@ class MarkdownPreview(QWidget):
             }
         """
         )
-        label.setMaximumHeight(35)  # noqa
+        label.setMaximumHeight(35)
         layout.addWidget(label)
 
-        # Vue web pour l'aperçu HTML - prend tout l'espace restant
         self.web_view = QWebEngineView()
         self.web_view.setStyleSheet(
             """
@@ -86,12 +82,9 @@ class MarkdownPreview(QWidget):
         """
         )
 
-        # La vue web prend tout l'espace disponible
-        layout.addWidget(self.web_view, 1)  # stretch factor = 1
-
+        layout.addWidget(self.web_view, 1)
         self.setLayout(layout)
 
-        # Charger le contenu par défaut
         self.show_welcome_content()
 
     def setup_markdown(self):
@@ -108,19 +101,16 @@ class MarkdownPreview(QWidget):
                 "md_in_html",
                 "sane_lists",
                 "smarty",
-                "pymdownx.tilde",  # Ajout de l'extension pour le barré
-                "pymdownx.mark",  # Ajout de l'extension pour le surlignage
+                "pymdownx.tilde",
+                "pymdownx.mark",
             ],
             extension_configs={
                 "codehilite": {"css_class": "highlight", "use_pygments": True},
                 "toc": {"permalink": True},
             },
         )
-        # Enregistrer l'implémentation ElementTree pour que Markdown l'utilise
         markdown.etree = ElementTree
 
-        # Ajouter le processeur de tags personnalisé
-        # La regex r"@@(\w{2,})\b" correspond à @@ suivi d'au moins 2 caractères de mot
         self.md.inlinePatterns.register(
             TagInlineProcessor(r"@@(\w{2,})\b", self.md), "tag", 175
         )
@@ -143,28 +133,23 @@ class MarkdownPreview(QWidget):
         return self._load_css_from_file("default_preview.css")
 
     def set_css_theme(self, theme_filename):
-        """
-        Définit et applique un nouveau thème CSS pour l'aperçu.
-        """
+        """Définit et applique un nouveau thème CSS pour l'aperçu."""
         if not theme_filename:
             theme_filename = "default_preview.css"
 
-        new_css = self._load_css_from_file(theme_filename)
-        if new_css:
-            self.default_css = new_css
-            # Forcer la mise à jour de l'aperçu avec le nouveau style
-            if self.current_html:
-                self.update_content(self.current_markdown)
+        self.default_css = self._load_css_from_file(theme_filename)
+        
+        if self.current_markdown:
+            self.update_content(self.current_markdown)
 
     def create_html_template(self, content):
         """Créer le template HTML complet"""
-        # Ajouter la table des matières si elle existe
         toc_html = ""
         if hasattr(self.md, "toc") and self.md.toc:
             toc_html = (
                 f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
             )
-        # Combine le CSS par défaut et le CSS personnalisé (pour les thèmes futurs)
+        
         final_css = self.default_css + self.custom_css
 
         return f"""
@@ -172,7 +157,6 @@ class MarkdownPreview(QWidget):
         <html lang="fr">
         <head>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>BlueNotebook Preview</title>
             <style>
                 {final_css}
@@ -227,25 +211,16 @@ class MarkdownPreview(QWidget):
     def update_content(self, markdown_content):
         """Mettre à jour le contenu de l'aperçu"""
         try:
-            # Mémoriser le contenu pour les futures mises à jour (ex: changement de thème)
             self.current_markdown = markdown_content
 
             if not markdown_content.strip():
                 self.show_welcome_content()
                 return
 
-            # Réinitialiser le parser
             self.md.reset()
-
-            # Convertir Markdown en HTML
             html_content = self.md.convert(markdown_content)
-
-            # Créer le HTML complet avec CSS
             full_html = self.create_html_template(html_content)
 
-            # Mettre à jour la vue web
-            # V1.7.3 Fix: Ajout de baseUrl pour permettre l'affichage des images locales
-            # En passant "file:///", on autorise QWebEngine à charger des fichiers locaux via des chemins absolus.
             self.web_view.setHtml(full_html, baseUrl=QUrl("file:///"))
             self.current_html = full_html
 
