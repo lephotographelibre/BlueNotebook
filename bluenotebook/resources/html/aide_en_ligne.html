@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.0.2
+            Manuel Utilisateur - BlueNotebook V2.1.1
         </h1>
     </header>
 
@@ -86,19 +86,20 @@
             <li><a href="#lancement">2. Lancement et Configuration</a></li>
             <li><a href="#interface">3. L'Interface Principale</a></li>
             <li><a href="#concept-journal">4. Le Concept de "Journal"</a></li>
-            <li><a href="#navigation-temporelle">5. Navigation Temporelle</a></li>
-            <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
-            <li><a href="#menus">7. Exploration des Menus</a></li>
-            <li><a href="#export-pdf">8. Exportation du Journal en PDF</a></li>
-            <li><a href="#backup-restore">9. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">10. Personnalisation Avancée</a>
+            <li><a href="#templates">5. Gérer et Utiliser les Modèles</a></li>
+            <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
+            <li><a href="#recherche-avancee">7. Recherche et Navigation Avancée</a></li>
+            <li><a href="#menus">8. Exploration des Menus</a></li>
+            <li><a href="#export-pdf">9. Exportation du Journal en PDF</a></li>
+            <li><a href="#backup-restore">10. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">11. Personnalisation Avancée</a>
                 <ul>
-                    <li><a href="#themes-editeur">10.1 Thèmes de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">10.2 Thèmes de l'Aperçu HTML</a></li>
+                    <li><a href="#themes-editeur">11.1 Thèmes de l'Éditeur</a></li>
+                    <li><a href="#themes-apercu">11.2 Thèmes de l'Aperçu HTML</a></li>
                 </ul>
             </li>
-            <li><a href="#raccourcis">11. Raccourcis Clavier</a></li>
-            <li><a href="#faq">12. Foire Aux Questions (FAQ)</a></li>
+            <li><a href="#raccourcis">12. Raccourcis Clavier</a></li>
+            <li><a href="#faq">13. Foire Aux Questions (FAQ)</a></li>
         </ul>
     </div>
 
@@ -156,7 +157,7 @@
     </section>
 
     <section id="concept-journal">
-        <h2>4. Le concept de "Journal" et son fonctionnement</h2>
+        <h2>4. Le Concept de "Journal" et son fonctionnement</h2>
         <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
         <h3>La Note du Jour</h3>
         <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
@@ -173,8 +174,45 @@
         </ul>
     </section>
 
+    <section id="templates">
+        <h2>5. Gérer et Utiliser les Modèles (Templates)</h2>
+        <p>Les modèles sont des structures de notes pré-remplies qui vous permettent de démarrer rapidement votre travail. BlueNotebook vous offre une gestion complète des modèles pour créer, utiliser et insérer des structures récurrentes.</p>
+        
+        <h3>Utiliser un modèle pour une nouvelle note</h3>
+        <p>Lorsque vous créez un nouveau document via <code>Fichier > Nouveau...</code> (<code>Ctrl+N</code>), une boîte de dialogue s'ouvre et vous propose :</p>
+        <ul>
+            <li><strong>Créer un fichier vierge :</strong> Pour commencer avec une page blanche.</li>
+            <li><strong>Utiliser un modèle :</strong> Une liste déroulante vous présente tous les modèles disponibles (fichiers <code>.md</code>) dans le dossier <code>resources/templates/</code>. En choisissant un modèle, votre nouvelle note sera pré-remplie avec son contenu.</li>
+        </ul>
+
+        <h3>Créer vos propres modèles</h3>
+        <p>Vous avez une structure de note que vous utilisez souvent ? Transformez-la en modèle !</p>
+        <ol>
+            <li>Rédigez ou ouvrez la note que vous souhaitez utiliser comme modèle.</li>
+            <li>Allez dans le menu <code>Fichier > Sauvegarder comme Modèle...</code>.</li>
+            <li>Une boîte de dialogue s'ouvrira, vous invitant à donner un nom à votre modèle (par exemple, <code>rapport_hebdomadaire.md</code>).</li>
+            <li>Validez. Votre modèle est maintenant sauvegardé et sera disponible dans la liste lors de la création d'une nouvelle note.</li>
+        </ol>
+
+        <h3>Insérer un modèle dans une note existante</h3>
+        <p>Besoin d'ajouter une section structurée (comme un compte-rendu de réunion) au milieu de votre note du jour ?</p>
+        <ul>
+            <li>Placez votre curseur à l'endroit où vous souhaitez insérer le contenu.</li>
+            <li>Allez dans le menu <code>Édition > Insérer un modèle...</code>.</li>
+            <li>Choisissez le modèle souhaité dans la boîte de dialogue. Son contenu sera inséré à la position du curseur.</li>
+        </ul>
+
+        <h3>Placeholders dynamiques</h3>
+        <p>Pour rendre vos modèles encore plus puissants, vous pouvez utiliser des "placeholders" qui seront automatiquement remplacés lors de l'utilisation du modèle :</p>
+        <ul>
+            <li><code>{{date}}</code> : Sera remplacé par la date complète du jour (ex: "Lundi 28 Octobre 2025").</li>
+            <li><code>{{horodatage}}</code> : Sera remplacé par l'heure actuelle (ex: "14:32").</li>
+        </ul>
+        <p>N'hésitez pas à modifier les modèles existants (<code>default.md</code>, <code>reunion.md</code>, etc.) ou à créer les vôtres pour adapter BlueNotebook à vos besoins !</p>
+    </section>
+
     <section id="navigation-temporelle">
-        <h2>5. Navigation Temporelle</h2>
+        <h2>6. Navigation Temporelle</h2>
         <p>Le panneau de Navigation (<code>F6</code>) vous offre plusieurs outils pour voyager dans le temps à travers vos notes.</p>
         <ul>
             <li><strong>Le Calendrier :</strong> Les jours pour lesquels une note existe sont mis en évidence. Cliquez sur une date pour ouvrir la note correspondante.</li>
@@ -183,7 +221,7 @@
     </section>
 
     <section id="recherche-avancee">
-        <h2>6. Recherche et Navigation Avancée</h2>
+        <h2>7. Recherche et Navigation Avancée</h2>
         <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
         
         <h3>Les Nuages de Tags et de Mots</h3>
@@ -210,27 +248,31 @@
     </section>
 
     <section id="menus">
-        <h2>7. Exploration Détaillée des Menus</h2>
+        <h2>8. Exploration Détaillée des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 📁 Fichier
-├── 📄 Nouveau (Ctrl+N) : Crée une nouvelle note vierge avec le modèle par défaut.
+├── 📄 Nouveau (Ctrl+N) : Créer un nouveau fichier, en proposant un document vierge ou un modèle.
 ├── 📂 Ouvrir (Ctrl+O) : Ouvre un fichier Markdown existant depuis votre ordinateur.
 ├── ---
-├── 💾 Sauvegarder (Ctrl+S) : Enregistre la note actuelle. Si c'est une nouvelle note, elle devient la note du jour.
+├── 💾 Sauvegarder dans Journal (Ctrl+S) : Sauvegarde la note actuelle dans le répertoire du journal.
+├── 💾 Sauvegarder comme Modèle... : Sauvegarde le document actuel comme un nouveau modèle réutilisable.
 ├── 💾 Sauvegarder sous... (Ctrl+Shift+S) : Enregistre la note actuelle dans un nouveau fichier de votre choix.
 ├── ---
-├── 📓 Ouvrir Journal : Permet de sélectionner un nouveau dossier qui servira de journal.
+├── 📔 Ouvrir Journal : Permet de sélectionner un nouveau dossier qui servira de journal.
 ├── 💾 Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
 ├── 🔄 Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
 ├── ---
-├── 📄 Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates.
 ├── 🌐 Exporter HTML... : Exporte la note actuelle au format HTML, avec le style appliqué.
+├── 📜 Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates, titre et auteur.
 ├── ---
 ├── ⚙️ Préférences... : Ouvre la fenêtre de personnalisation de l'application.
+├── ---
 └── 🚪 Quitter (Ctrl+Q) : Ferme BlueNotebook.
 
 ✏️ Edition
+├── 📋 Insérer un modèle... : Insère le contenu d'un modèle à la position du curseur.
+├── ---
 ├── ↩️ Annuler (Ctrl+Z) : Annule la dernière action de frappe ou de formatage.
 ├── ↪️ Rétablir (Ctrl+Y) : Rétablit la dernière action annulée.
 ├── ---
@@ -264,35 +306,21 @@
 └── 🧹 RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
 ➕ Insérer
-├── 🖼️ Image (&lt;img ...&gt;) (Ctrl+I) : Insère une image via une balise HTML `&lt;img&gt;`.
-├── 🖼️ Image Markdown (Ctrl+Shift+I) : Insère une image avec la syntaxe Markdown `!`.
-├── 🔗 Lien (URL ou email) (&lt;url&gt;) : Encadre une URL pour la rendre cliquable.
-├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe `texte`.
+├── 🖼️ Image (<img ...>) : Insère une image via une balise HTML `<img>`.
+├── 🖼️ Image Markdown : Insère une image avec la syntaxe Markdown `!`.
+├── 🔗 Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
+├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe ``.
 ├── 🔗 Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
 ├── ➖ Ligne Horizontale : Insère une ligne de séparation (`---`).
-├── 💬 Commentaire HTML : Transforme la sélection en commentaire HTML (`&lt;!-- ... --&gt;`).
+├── 💬 Commentaire HTML : Transforme la sélection en commentaire HTML (`<!-- ... -->`).
 ├── ▦ Tableau : Insère un modèle de tableau Markdown.
-├── 💬 Citation : Formate la sélection comme une citation (`&gt; ...`).
+├── 💬 Citation : Formate la sélection comme une citation (`> ...`).
 ├── ---
 ├── 🏷️ Tag (@@) : Insère un tag `@@` ou transforme la sélection en tag.
 ├── 🕒 Heure : Insère l'heure actuelle (HH:MM).
 ├── ---
-└── 😊 Emoji
-    ├── 📖 Livre
-    ├── 🎵 Musique
-    ├── 📚 À Lire
-    ├── 🎬 À Regarder
-    ├── 🎧 A Ecouter
-    ├── ✈️ Voyage
-    ├── ❤️ Santé
-    ├── ☀️ Soleil
-    ├── ☁️ Nuage
-    ├── 🌧️ Pluie
-    ├── 🌬️ Vent
-    ├── 😊 Content
-    ├── 😠 Mécontent
-    └── 😢 Triste
+└── 😊 Emoji : Ouvre un sous-menu pour insérer rapidement des emojis courants.
 
 🔌 Intégrations
 └── ✨ Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
@@ -304,7 +332,7 @@
     </section>
 
     <section id="export-pdf">
-        <h2>8. Exportation du Journal en PDF</h2>
+        <h2>9. Exportation du Journal en PDF</h2>
         <p>BlueNotebook vous permet de créer un document PDF professionnel et paginé de votre journal, idéal pour l'archivage, l'impression ou le partage. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal PDF...</code>.</p>
         <p>Lorsque vous lancez cette action, une boîte de dialogue apparaît, vous donnant un contrôle total sur le contenu de l'export :</p>
         <ul>
@@ -324,7 +352,7 @@
     </section>
 
     <section id="backup-restore">
-        <h2>9. Sauvegarde et Restauration du Journal</h2>
+        <h2>10. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -347,7 +375,7 @@
     </section>
 
     <section id="preferences">
-        <h2>10. Personnalisation Avancée (Préférences)</h2>
+        <h2>11. Personnalisation Avancée (Préférences)</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -360,7 +388,7 @@
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">10.1 Thèmes de l'Éditeur Markdown</h4>
+        <h4 id="themes-editeur">11.1 Thèmes de l'Éditeur Markdown</h4>
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture.</p>
         
         <p><strong>✨ Options d'affichage</strong></p>
@@ -375,7 +403,7 @@
             <li><strong>💾 Sauvegarder comme thème :</strong> Après avoir personnalisé les couleurs et les polices à votre goût, cliquez sur ce bouton. Une fenêtre vous demandera de donner un nom à votre thème (ex: "Mon Thème Sombre"). Une fois sauvegardé, il apparaîtra dans la liste de sélection pour une utilisation future.</li>
         </ul>
 
-        <h4 id="themes-apercu">10.2 Thèmes de l'Aperçu HTML</h4>
+        <h4 id="themes-apercu">11.2 Thèmes de l'Aperçu HTML</h4>
         <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation.</p>
         <p><strong>✨ NOUVEAU : Prévisualisation des thèmes CSS</strong></p>
         <p>L'apparence de l'aperçu est contrôlée par des feuilles de style CSS, vous offrant une flexibilité totale. Pour vous aider à choisir, une prévisualisation est intégrée directement dans la fenêtre des préférences.</p>
@@ -420,7 +448,7 @@
 
 
     <section id="raccourcis">
-        <h2>11. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>12. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -442,7 +470,7 @@
     </section>
 
     <section id="faq">
-        <h2>12. Foire Aux Questions (FAQ)</h2>
+        <h2>13. Foire Aux Questions (FAQ)</h2>
         <p>Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilisation de l'application.</p>
 
         <h3>Gestion du Journal et des Notes</h3>
@@ -501,7 +529,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.0.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.1.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

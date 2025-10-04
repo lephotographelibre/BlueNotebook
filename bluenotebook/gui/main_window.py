@@ -45,6 +45,8 @@ from PyQt5.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QProgressDialog,
+    QRadioButton,
+    QComboBox,
 )
 from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
 from PyQt5.QtCore import QThreadPool
@@ -93,6 +95,95 @@ class PdfExportWorker(QRunnable):
             self.signals.finished.emit(self.output_path)
         except Exception as e:
             self.signals.error.emit(str(e))
+
+
+class NewFileDialog(QDialog):
+    """Boîte de dialogue pour choisir le type de nouveau fichier à créer."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Créer un nouveau document")
+        self.setMinimumWidth(400)
+
+        self.layout = QVBoxLayout(self)
+
+        self.blank_radio = QRadioButton("Créer un fichier vierge")
+        self.template_radio = QRadioButton("Utiliser un modèle :")
+        self.template_combo = QComboBox()
+
+        self.layout.addWidget(self.blank_radio)
+        self.layout.addWidget(self.template_radio)
+        self.layout.addWidget(self.template_combo)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
+        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.layout.addWidget(self.button_box)
+
+        self.blank_radio.toggled.connect(self.template_combo.setDisabled)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self._populate_templates()
+        self.blank_radio.setChecked(True)
+
+    def _populate_templates(self):
+        """Remplit le combobox avec les modèles trouvés."""
+        base_path = Path(__file__).parent.parent
+        templates_dir = base_path / "resources" / "templates"
+        if templates_dir.is_dir():
+            template_files = sorted([f.name for f in templates_dir.glob("*.md")])
+            self.template_combo.addItems(template_files)
+
+    def get_selection(self):
+        """Retourne le choix de l'utilisateur."""
+        if self.blank_radio.isChecked():
+            return "blank", None
+        else:
+            if self.template_combo.count() > 0:
+                return "template", self.template_combo.currentText()
+            else:
+                # Fallback si aucun template n'est trouvé
+                return "blank", None
+
+
+class InsertTemplateDialog(QDialog):
+    """Boîte de dialogue pour choisir un modèle à insérer."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Insérer un modèle")
+        self.setMinimumWidth(400)
+
+        self.layout = QVBoxLayout(self)
+
+        self.label = QLabel("Choisir un modèle à insérer :")
+        self.template_combo = QComboBox()
+
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.template_combo)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.button(QDialogButtonBox.Ok).setText("Insérer")
+        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.layout.addWidget(self.button_box)
+
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self._populate_templates()
+
+    def _populate_templates(self):
+        """Remplit le combobox avec les modèles trouvés."""
+        base_path = Path(__file__).parent.parent
+        templates_dir = base_path / "resources" / "templates"
+        if templates_dir.is_dir():
+            template_files = sorted([f.name for f in templates_dir.glob("*.md")])
+            self.template_combo.addItems(template_files)
 
 
 class MainWindow(QMainWindow):
@@ -252,6 +343,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.open_action)
         file_menu.addSeparator()
         file_menu.addAction(self.save_action)
+        file_menu.addAction(self.save_as_template_action)
         file_menu.addAction(self.save_as_action)
         file_menu.addSeparator()
         file_menu.addAction(self.open_journal_action)
@@ -267,6 +359,8 @@ class MainWindow(QMainWindow):
 
         # Menu Edition
         edit_menu = menubar.addMenu("✏️ &Edition")
+        edit_menu.addAction(self.insert_template_action)
+        edit_menu.addSeparator()
         edit_menu.addAction(self.undo_action)
         edit_menu.addAction(self.redo_action)
         edit_menu.addSeparator()
@@ -318,10 +412,10 @@ class MainWindow(QMainWindow):
             triggered=self.open_journal,
         )
         self.save_action = QAction(
-            "💾 Sauvegarder",
+            "💾 Sauvegarder dans Journal",
             self,
             shortcut=QKeySequence.Save,
-            statusTip="Sauvegarder le fichier",
+            statusTip="Sauvegarder le fichier dans le journal",
             triggered=self.save_file,
         )
         self.save_as_action = QAction(
@@ -330,6 +424,12 @@ class MainWindow(QMainWindow):
             shortcut=QKeySequence.SaveAs,
             statusTip="Sauvegarder sous un nouveau nom",
             triggered=self.save_file_as,
+        )
+        self.save_as_template_action = QAction(
+            "💾 Sauvegarder comme Modèle...",
+            self,
+            statusTip="Sauvegarder le document actuel comme un nouveau modèle",
+            triggered=self.save_as_template,
         )
         self.backup_journal_action = QAction(
             "💾 Sauvegarde Journal...",
@@ -416,6 +516,13 @@ class MainWindow(QMainWindow):
             "✨ Citation du jour",
             self,
             triggered=self.insert_quote_of_the_day,
+        )
+
+        self.insert_template_action = QAction(
+            "📋 Insérer un modèle...",
+            self,
+            statusTip="Insérer le contenu d'un modèle à la position du curseur",
+            triggered=self.insert_template,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -717,50 +824,55 @@ class MainWindow(QMainWindow):
 
     def new_file(self):
         """Créer un nouveau fichier"""
-        if self.check_save_changes():
+        if not self.check_save_changes():
+            return
+
+        dialog = NewFileDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        choice, template_name = dialog.get_selection()
+        content = ""
+
+        try:
+            locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+        except locale.Error:
+            locale.setlocale(locale.LC_TIME, "")
+
+        today_str = datetime.now().strftime("%A %d %B %Y").title()
+        timestamp_str = datetime.now().strftime("%H:%M")
+
+        if choice == "blank":
+            content = ""
+        elif choice == "template" and template_name:
             try:
-                locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-            except locale.Error:
-                locale.setlocale(locale.LC_TIME, "")
+                base_path = Path(__file__).parent.parent
+                template_path = base_path / "resources" / "templates" / template_name
 
-            today_str = datetime.now().strftime("%A %d %B %Y").title()
-            template = f"""______________________________________________________________
+                if not template_path.exists():
+                    raise FileNotFoundError(
+                        f"Le fichier template '{template_name}' est introuvable."
+                    )
 
-# {today_str}
+                with open(template_path, "r", encoding="utf-8") as f:
+                    template_content = f.read()
 
-______________________________________________________________
+                # Remplacer les placeholders
+                content = template_content.replace("{{date}}", today_str)
+                content = content.replace("{{horodatage}}", timestamp_str)
 
-# TODO
+            except FileNotFoundError as e:
+                QMessageBox.warning(self, "Template manquant", str(e))
+                content = f"# {today_str}\n\n"
 
-- [ ] tache 1
-- [ ] tache 2
-- [ ] tache 3
-- [ ] tache 4
-
-______________________________________________________________
-# Activités & Notes
-
-
-
-
-# Pour Demain
-
-
-
-# Liens
-
-
-
-
-"""
-            self.editor.set_text(template)
-            self.current_file = None
-            self.is_modified = False
-            self.update_title()
-            self.update_stats()
-            self._set_file_label_color("gray")
-            self.update_preview()
-            self.expand_outline()
+        self.editor.set_text(content)
+        self.current_file = None
+        self.is_modified = False
+        self.update_title()
+        self.update_stats()
+        self._set_file_label_color("gray")
+        self.update_preview()
+        self.expand_outline()
 
     def open_journal(self):
         """Ouvre un dialogue pour sélectionner un nouveau répertoire de journal."""
@@ -889,6 +1001,77 @@ ______________________________________________________________
             self._save_to_file(filename)
             self.current_file = filename
             self.update_title()
+
+    def save_as_template(self):
+        """Sauvegarde le contenu actuel comme un nouveau modèle."""
+        base_path = Path(__file__).parent.parent
+        templates_dir = base_path / "resources" / "templates"
+        templates_dir.mkdir(parents=True, exist_ok=True)
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            "Sauvegarder comme modèle",
+            str(templates_dir),
+            "Fichiers Markdown (*.md)",
+        )
+
+        if not filename:
+            return
+
+        if not filename.endswith(".md"):
+            filename += ".md"
+
+        try:
+            content = self.editor.get_text()
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write(content)
+            self.statusbar.showMessage(
+                f"Modèle sauvegardé : {Path(filename).name}", 3000
+            )
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur", f"Impossible de sauvegarder le modèle :\n{str(e)}"
+            )
+
+    def insert_template(self):
+        """Ouvre une dialogue pour insérer un modèle à la position du curseur."""
+        dialog = InsertTemplateDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        template_name = dialog.template_combo.currentText()
+        if not template_name:
+            return
+
+        try:
+            base_path = Path(__file__).parent.parent
+            template_path = base_path / "resources" / "templates" / template_name
+
+            if not template_path.exists():
+                raise FileNotFoundError(
+                    f"Le fichier modèle '{template_name}' est introuvable."
+                )
+
+            with open(template_path, "r", encoding="utf-8") as f:
+                template_content = f.read()
+
+            # Remplacer les placeholders
+            try:
+                locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+            except locale.Error:
+                locale.setlocale(locale.LC_TIME, "")
+
+            today_str = datetime.now().strftime("%A %d %B %Y").title()
+            timestamp_str = datetime.now().strftime("%H:%M")
+
+            content = template_content.replace("{{date}}", today_str)
+            content = content.replace("{{horodatage}}", timestamp_str)
+
+            # Insérer le contenu dans l'éditeur
+            self.editor.insert_text(content)
+
+        except FileNotFoundError as e:
+            QMessageBox.warning(self, "Modèle manquant", str(e))
 
     def _save_to_file(self, filename):
         """Sauvegarder dans un fichier spécifique"""

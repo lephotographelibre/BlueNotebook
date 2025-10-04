@@ -1,3 +1,40 @@
+## V2.1.1 Templates Management
+
+@@prompt
+BlueNotebook peux tu extraires le texte qui sert de template à la note du jour et le stocker sour le nom bluenotebook/resources/templates/default.md
+
+1- La note du jour est crée avec le template par nommé bluenotebook/resources/templates/default.md
+
+- Extraction du modèle : J'ai extrait le contenu de votre modèle de note journalière.
+- Création du fichier : J'ai créé un nouveau fichier default.md dans un nouveau répertoire bluenotebook/resources/templates/. Le nouveau fichier de template est nommé bluenotebook/resources/templates/default.md e tutilise {{date}} comme espace réservé pour la date, qui sera remplacé dynamiquement par le programme.
+- Mise à jour du code : Modification de la méthode new_file dans main_window.py pour qu'elle lise ce nouveau fichier, remplace la date, puis l'affiche dans l'éditeur
+beta1
+
+Lorsque l'utilisateur Active le Menu Fichier -> Nouveau ... il faut proposer à l'utilisateur de creer un fichier vierge, une sélection de modèles via une liste dérourante qui présente à l'utilisateur la liste des fichiers templates du répertoire bluenotebook/resources/templates/.
+
+Si la template contient {{date}} il faudra faire la substitution et inserer dans le document afficher dans l'éditeur la date du jour. 
+Si la template contient {{horodatage}} il faudra faire la substitution et inserer dans le document afficher dans l'éditeur la heure actuelle sous le format HH:MM
+beta2
+
+AjouT d'un sous-menu dans Fichier.. "Sauvegarder comme Modèle" entre "Sauvegarder" et "Sauvegarder comme..". Il permet de sauvegarder le document en cours d'édition dans le répertoire bluenotebook/resources/templates/ en demandant à l'utilisatuer de donner un nom de fichier avec md.comme extension.
+
+renommer le menu "Fichiers -> "Sauvegarder" en "Sauvegarder dans Journal"
+
+beta3
+
+Ajouter Nouveau sous menu "Insérer un modèle" à l'empalcement du curseur dans l'éditeur dans le document en cours d'edition. ce sous menu sera le premier de la liste du menu "Edition".
+Lorsque l'utilisateur Active le Menu "Edition -> "Insérer un modèle"  il faut proposer à l'utilisateur d'inserer un  modèle dans le document en cours d'édition via une liste dérourante qui présente à l'utilisateur la liste des fichiers templates du répertoire bluenotebook/resources/templates/.
+
+beta4
+
+doc en ligne + mise a jour de la doc technique
+
+
+
+
+
+
+
 ## V2.0.2 Export PDF du Journal par plage de dates
 
 Lorsque l'utilisateur lance "Exporter Journal PDF", une nouvelle boîte de dialogue lui permet de sélectionner une plage de dates.
