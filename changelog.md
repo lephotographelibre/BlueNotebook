@@ -1,3 +1,9 @@
+## V2.1.2 Bug Export PDF: pied de page
+
+l'export PDF permet Pied de page personnalisé ce que je veux c'est 
+  - Gauche : Titre du rapport choisi poar l'utilisateur lors du lancement de l'export par l'utilisateur
+  or ce que j'obtiens est toujours le meme titre de rapport "BlueNotebook - Journal"
+
 ## V2.1.1 Templates Management
 
 @@prompt

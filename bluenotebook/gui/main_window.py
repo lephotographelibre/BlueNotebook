@@ -1304,140 +1304,143 @@ class MainWindow(QMainWindow):
                 print(f"Erreur de lecture du fichier {note_file}: {e}")
                 continue
 
+        # Échapper les guillemets dans le titre pour le CSS
+        escaped_pdf_title = pdf_title.replace('"', '\\"')
+
         # CSS spécifique pour WeasyPrint avec pagination
-        weasyprint_css = """
-        @page {
+        weasyprint_css = f"""
+        @page {{
             size: A4;
             margin: 2cm 2cm 3cm 2cm;
             
-            @bottom-center {
+            @bottom-center {{
                 content: "Page " counter(page) " / " counter(pages);
                 font-size: 9pt;
                 color: #666;
-            }
+            }}
             
-            @bottom-left {
-                content: "BlueNotebook - Journal";
+            @bottom-left {{
+                content: "{escaped_pdf_title}";
                 font-size: 8pt;
                 color: #999;
-            }
+            }}
             
-            @bottom-right {
+            @bottom-right {{
                 content: string(current-date);
                 font-size: 8pt;
                 color: #999;
-            }
-        }
+            }}
+        }}
         
-        body {
+        body {{
             font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 11pt;
             line-height: 1.6;
             color: #333;
-        }
+        }}
         
-        .cover-page {
+        .cover-page {{
             text-align: center;
             padding-top: 30%;
             page-break-after: always;
-        }
+        }}
         
-        .cover-page h1 {
+        .cover-page h1 {{
             font-size: 3em;
             margin-top: 40px;
             color: #2c3e50;
-        }
+        }}
         
-        .cover-date {
+        .cover-date {{
             font-size: 1.2em;
             margin-top: 20px;
             color: #7f8c8d;
-        }
+        }}
         
-        .cover-author {
+        .cover-author {{
             font-size: 1.1em;
             margin-top: 15px;
             color: #34495e;
-        }
+        }}
 
-        .journal-entry {
+        .journal-entry {{
             page-break-before: always;
-        }
+        }}
         
-        .journal-entry:first-of-type {
+        .journal-entry:first-of-type {{
             page-break-before: avoid;
-        }
+        }}
         
-        .entry-date {
+        .entry-date {{
             color: #3498db;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
             margin-bottom: 20px;
             string-set: current-date content();
-        }
+        }}
         
-        h1, h2, h3, h4, h5, h6 {
+        h1, h2, h3, h4, h5, h6 {{
             color: #2c3e50;
             page-break-after: avoid;
-        }
+        }}
         
-        pre, code {
+        pre, code {{
             background-color: #f5f5f5;
             border: 1px solid #ddd;
             border-radius: 3px;
             font-size: 9pt;
             page-break-inside: avoid;
-        }
+        }}
         
-        code {
+        code {{
             padding: 2px 4px;
             font-family: 'DejaVu Sans Mono', monospace;
-        }
+        }}
         
-        pre {
+        pre {{
             padding: 10px;
             overflow-x: auto;
-        }
+        }}
         
-        blockquote {
+        blockquote {{
             border-left: 4px solid #3498db;
             padding-left: 15px;
             margin-left: 0;
             color: #555;
             font-style: italic;
-        }
+        }}
         
-        table {
+        table {{
             border-collapse: collapse;
             width: 100%;
             margin: 15px 0;
             page-break-inside: avoid;
-        }
+        }}
         
-        th, td {
+        th, td {{
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
-        }
+        }}
         
-        th {
+        th {{
             background-color: #f5f5f5;
             font-weight: bold;
-        }
+        }}
         
-        img {
+        img {{
             max-width: 100%;
             height: auto;
             page-break-inside: avoid;
-        }
+        }}
         
-        .tag {
+        .tag {{
             background-color: #e3f2fd;
             color: #1976d2;
             padding: 2px 8px;
             border-radius: 3px;
             font-size: 0.9em;
-        }
+        }}
         """
 
         # Créer le HTML complet
