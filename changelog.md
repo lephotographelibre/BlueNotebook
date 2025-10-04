@@ -1,3 +1,40 @@
+## V2.0.2 Export PDF du Journal par plage de dates
+
+Lorsque l'utilisateur lance "Exporter Journal PDF", une nouvelle boîte de dialogue lui permet de sélectionner une plage de dates.
+
+- **Date de début** : Par défaut, la date de la plus ancienne note du journal.
+- **Date de fin** : Par défaut, la date du jour.
+
+L'export PDF ne contiendra que les notes comprises dans l'intervalle de dates sélectionné (inclus). Si l'utilisateur valide sans rien changer, toutes les notes du journal sont exportées.
+beta1
+
+1. Toujours mémoriser la dernière destination de L'export pdf dans settings.json par exemple: "destination_dir": "/home/jm/Work/BlueNotebook/pdf"
+
+2.Proposer une nom de fichier composé de Journal+datedebbut+datefin.pdf
+
+3. En plus des date l'utilisateur doit pouvoir choisir :
+- Un Titre par defaut "BlueNotebook Journal" comme titre du Journal en Page 0
+- Un nom d'auteur: "" pas de défaut
+beta2
+
+le nom d'auteur s'il est saisi une fois par l'utilisateur doit etre rendu persistant dans setting.json et utilisé comme valeur par defaut dans le editions pdf ultérieur
+
+la taille de la photo affichée peu etre au max 400px x 400 px
+beta3
+
+Persistance du titre et du nom de l'auteur
+
+Beta4  -------- TDOD cela ne marche pas -- meme après suppression manuelle
+
+
+Supprimer infos redondantes settings.json (SettingManager dans core/settings.py)
+
+    "pdf_export": {
+        "title": "Mon Journal1",
+        "full_journal": false,
+        "destination_dir": "/home/jm/Work/BlueNotebook/pdf"
+    }
+
 ##  V2.0.1 Export PDF - Make PDF Journal
 
 Je voudrais fabrique une document PDF, paginé, à partir de toutes les notes journalière du journal

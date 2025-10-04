@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.0.1
+            Manuel Utilisateur - BlueNotebook V2.0.2
         </h1>
     </header>
 
@@ -89,15 +89,16 @@
             <li><a href="#navigation-temporelle">5. Navigation Temporelle</a></li>
             <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">7. Exploration des Menus</a></li>
-            <li><a href="#backup-restore">8. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">9. Personnalisation Avancée</a>
+            <li><a href="#export-pdf">8. Exportation du Journal en PDF</a></li>
+            <li><a href="#backup-restore">9. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">10. Personnalisation Avancée</a>
                 <ul>
-                    <li><a href="#themes-editeur">9.1 Thèmes de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">9.2 Thèmes de l'Aperçu HTML</a></li>
+                    <li><a href="#themes-editeur">10.1 Thèmes de l'Éditeur</a></li>
+                    <li><a href="#themes-apercu">10.2 Thèmes de l'Aperçu HTML</a></li>
                 </ul>
             </li>
-            <li><a href="#raccourcis">10. Raccourcis Clavier</a></li>
-            <li><a href="#faq">11. Foire Aux Questions (FAQ)</a></li>
+            <li><a href="#raccourcis">11. Raccourcis Clavier</a></li>
+            <li><a href="#faq">12. Foire Aux Questions (FAQ)</a></li>
         </ul>
     </div>
 
@@ -223,6 +224,7 @@
 ├── 💾 Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
 ├── 🔄 Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
 ├── ---
+├── 📄 Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates.
 ├── 🌐 Exporter HTML... : Exporte la note actuelle au format HTML, avec le style appliqué.
 ├── ---
 ├── ⚙️ Préférences... : Ouvre la fenêtre de personnalisation de l'application.
@@ -301,8 +303,28 @@
         </code></pre>
     </section>
 
+    <section id="export-pdf">
+        <h2>8. Exportation du Journal en PDF</h2>
+        <p>BlueNotebook vous permet de créer un document PDF professionnel et paginé de votre journal, idéal pour l'archivage, l'impression ou le partage. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal PDF...</code>.</p>
+        <p>Lorsque vous lancez cette action, une boîte de dialogue apparaît, vous donnant un contrôle total sur le contenu de l'export :</p>
+        <ul>
+            <li><strong>Plage de dates :</strong> Vous pouvez choisir une date de début et une date de fin pour n'exporter qu'une période spécifique de votre journal. Par défaut, l'application propose d'exporter l'intégralité de vos notes.</li>
+            <li><strong>Titre du document :</strong> Personnalisez le titre qui apparaîtra sur la page de garde de votre PDF. Par défaut, "BlueNotebook Journal" est utilisé.</li>
+            <li><strong>Nom de l'auteur :</strong> Vous pouvez ajouter votre nom sur la page de garde.</li>
+            <li><strong>Photo de couverture :</strong> Ajoutez une touche personnelle en sélectionnant une image (PNG, JPG) qui s'affichera sur la page de garde (taille max 400x400px).</li>
+        </ul>
+        <p><strong>Mémorisation intelligente :</strong> Pour vous faire gagner du temps, BlueNotebook mémorise le dernier dossier de destination utilisé, ainsi que le titre et le nom d'auteur que vous avez saisis pour les exports futurs.</p>
+        <h4>Structure du PDF généré :</h4>
+        <ol>
+            <li><strong>Page de garde :</strong> Affiche le titre, le nom de l'auteur, votre photo (si choisie), le logo de BlueNotebook et la plage de dates concernée.</li>
+            <li><strong>Notes du journal :</strong> Chaque note journalière est ajoutée sur une nouvelle page, en respectant le formatage de l'aperçu HTML.</li>
+            <li><strong>Pagination :</strong> Toutes les pages sont numérotées en bas de page pour une lecture facile.</li>
+        </ol>
+        <p>Une fois les options choisies, l'application génère le fichier PDF en arrière-plan. Une notification clignotante "Veuillez patienter..." apparaît dans la barre de statut pendant le processus.</p>
+    </section>
+
     <section id="backup-restore">
-        <h2>8. Sauvegarde et Restauration du Journal</h2>
+        <h2>9. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -325,7 +347,7 @@
     </section>
 
     <section id="preferences">
-        <h2>9. Personnalisation Avancée (Préférences)</h2>
+        <h2>10. Personnalisation Avancée (Préférences)</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -338,7 +360,7 @@
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">9.1 Thèmes de l'Éditeur Markdown</h4>
+        <h4 id="themes-editeur">10.1 Thèmes de l'Éditeur Markdown</h4>
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture.</p>
         
         <p><strong>✨ Options d'affichage</strong></p>
@@ -353,7 +375,7 @@
             <li><strong>💾 Sauvegarder comme thème :</strong> Après avoir personnalisé les couleurs et les polices à votre goût, cliquez sur ce bouton. Une fenêtre vous demandera de donner un nom à votre thème (ex: "Mon Thème Sombre"). Une fois sauvegardé, il apparaîtra dans la liste de sélection pour une utilisation future.</li>
         </ul>
 
-        <h4 id="themes-apercu">9.2 Thèmes de l'Aperçu HTML</h4>
+        <h4 id="themes-apercu">10.2 Thèmes de l'Aperçu HTML</h4>
         <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation.</p>
         <p><strong>✨ NOUVEAU : Prévisualisation des thèmes CSS</strong></p>
         <p>L'apparence de l'aperçu est contrôlée par des feuilles de style CSS, vous offrant une flexibilité totale. Pour vous aider à choisir, une prévisualisation est intégrée directement dans la fenêtre des préférences.</p>
@@ -398,7 +420,7 @@
 
 
     <section id="raccourcis">
-        <h2>10. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>11. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -420,7 +442,7 @@
     </section>
 
     <section id="faq">
-        <h2>11. Foire Aux Questions (FAQ)</h2>
+        <h2>12. Foire Aux Questions (FAQ)</h2>
         <p>Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilisation de l'application.</p>
 
         <h3>Gestion du Journal et des Notes</h3>
@@ -479,7 +501,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.0.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.0.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

@@ -36,30 +36,32 @@ class SettingsManager:
                 "font_size": 12,
                 "background_color": "#d6ebff",
                 "text_color": "#2c3e50",
+                "selection_text_color": "#ff0004",
+                "show_line_numbers": False,
+                # Couleurs de syntaxe
                 "heading_color": "#208bd7",
                 "list_color": "#208bd7",
-                "selection_text_color": "#ff0004",
                 "inline_code_text_color": "#d6336c",
                 "inline_code_background_color": "#f2f07f",
+                "code_block_background_color": "#f0f0f0",
                 "bold_color": "#448C27",
                 "italic_color": "#448C27",
                 "strikethrough_color": "#448C27",
                 "highlight_color": "#FFC0CB",
                 "tag_color": "#d73a49",
                 "timestamp_color": "#005cc5",
-                "code_block_background_color": "#f0f0f0",
-                # V1.7.2 Ajout Paramètre Affichages Couleurs
                 "quote_color": "#2B303B",
                 "link_color": "#0366d6",
                 "code_font_family": "Consolas, Monaco, monospace",
+                "html_comment_color": "#a4b5cf",
             },
+            "preview": {"css_theme": "default_preview.css"},
             "integrations": {"show_quote_of_the_day": False},
             "ui": {
                 "show_navigation_panel": False,
                 "show_outline_panel": True,
                 "show_preview_panel": False,
                 "show_indexing_stats": True,
-                "css_theme": "default_preview.css",  # Thème par défaut pour l'aperçu
             },
             "indexing": {
                 "user_excluded_words": [],
@@ -67,12 +69,14 @@ class SettingsManager:
                 "excluded_words_from_cloud": [],
             },
             "pdf": {
-                "last_directory": str(
-                    Path.home()
-                ),  # Chemin par défaut pour l'export PDF
+                "last_directory": str(Path.home()),
+                "last_author": "",
+                "last_title": "BlueNotebook Journal",
+            },
+            "backup": {
+                "last_directory": "",
             },
         }
-        self.defaults["preview"] = {"css_theme": "default_preview.css"}
 
         # Charger les paramètres
         self.settings = self.load_settings()

@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.0.1
+            Manuel Utilisateur - BlueNotebook V2.0.2
         </h1>
     </header>
 
@@ -89,6 +89,7 @@
             <li><a href="#navigation-temporelle">5. Navigation Temporelle</a></li>
             <li><a href="#recherche-avancee">6. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">7. Exploration des Menus</a></li>
+            <li><a href="#export-pdf">8. Exportation du Journal en PDF</a></li>
             <li><a href="#backup-restore">8. Sauvegarde et Restauration</a></li>
             <li><a href="#preferences">9. Personnalisation Avancée</a>
                 <ul>
@@ -223,6 +224,7 @@
 ├── 💾 Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
 ├── 🔄 Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
 ├── ---
+├── 📄 Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates.
 ├── 🌐 Exporter HTML... : Exporte la note actuelle au format HTML, avec le style appliqué.
 ├── ---
 ├── ⚙️ Préférences... : Ouvre la fenêtre de personnalisation de l'application.
@@ -299,6 +301,26 @@
 ├── 🌐 Documentation en ligne : Ouvre ce manuel d'aide dans votre navigateur.
 └── 💡 À propos : Affiche les informations sur l'application, sa version et sa licence.
         </code></pre>
+    </section>
+
+    <section id="export-pdf">
+        <h2>8. Exportation du Journal en PDF</h2>
+        <p>BlueNotebook vous permet de créer un document PDF professionnel et paginé de votre journal, idéal pour l'archivage, l'impression ou le partage. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal PDF...</code>.</p>
+        <p>Lorsque vous lancez cette action, une boîte de dialogue apparaît, vous donnant un contrôle total sur le contenu de l'export :</p>
+        <ul>
+            <li><strong>Plage de dates :</strong> Vous pouvez choisir une date de début et une date de fin pour n'exporter qu'une période spécifique de votre journal. Par défaut, l'application propose d'exporter l'intégralité de vos notes.</li>
+            <li><strong>Titre du document :</strong> Personnalisez le titre qui apparaîtra sur la page de garde de votre PDF. Par défaut, "BlueNotebook Journal" est utilisé.</li>
+            <li><strong>Nom de l'auteur :</strong> Vous pouvez ajouter votre nom sur la page de garde.</li>
+            <li><strong>Photo de couverture :</strong> Ajoutez une touche personnelle en sélectionnant une image (PNG, JPG) qui s'affichera sur la page de garde (taille max 400x400px).</li>
+        </ul>
+        <p><strong>Mémorisation intelligente :</strong> Pour vous faire gagner du temps, BlueNotebook mémorise le dernier dossier de destination utilisé, ainsi que le titre et le nom d'auteur que vous avez saisis pour les exports futurs.</p>
+        <h4>Structure du PDF généré :</h4>
+        <ol>
+            <li><strong>Page de garde :</strong> Affiche le titre, le nom de l'auteur, votre photo (si choisie), le logo de BlueNotebook et la plage de dates concernée.</li>
+            <li><strong>Notes du journal :</strong> Chaque note journalière est ajoutée sur une nouvelle page, en respectant le formatage de l'aperçu HTML.</li>
+            <li><strong>Pagination :</strong> Toutes les pages sont numérotées en bas de page pour une lecture facile.</li>
+        </ol>
+        <p>Une fois les options choisies, l'application génère le fichier PDF en arrière-plan. Une notification clignotante "Veuillez patienter..." apparaît dans la barre de statut pendant le processus.</p>
     </section>
 
     <section id="backup-restore">
@@ -479,7 +501,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.0.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.0.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

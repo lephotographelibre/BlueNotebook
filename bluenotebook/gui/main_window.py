@@ -56,6 +56,7 @@ from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
 from .outline import OutlinePanel
+from .date_range_dialog import DateRangeDialog
 from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
@@ -988,49 +989,116 @@ ______________________________________________________________
         if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
             last_pdf_dir = str(self.journal_directory.parent)
 
-        # Déterminer la plage de dates pour le nom de fichier
-        first_date_str = os.path.splitext(note_files[0])[0]
-        last_date_str = os.path.splitext(note_files[-1])[0]
-        first_date = datetime.strptime(first_date_str, "%Y%m%d")
-        last_date = datetime.strptime(last_date_str, "%Y%m%d")
+        # Déterminer les dates min/max pour la boîte de dialogue
+        first_note_date_str = os.path.splitext(note_files[0])[0]
+        first_note_date_obj = datetime.strptime(first_note_date_str, "%Y%m%d")
+        min_date_q = QDate(
+            first_note_date_obj.year,
+            first_note_date_obj.month,
+            first_note_date_obj.day,
+        )
+        today_q = QDate.currentDate()
 
-        default_filename = f"Journal-{first_date.strftime('%d%m%Y')}-{last_date.strftime('%d%m%Y')}.pdf"
+        # Récupérer le dernier nom d'auteur utilisé
+        last_author = self.settings_manager.get("pdf.last_author", "")
+
+        # Récupérer le dernier titre utilisé, avec "BlueNotebook Journal" comme valeur par défaut
+        last_title = self.settings_manager.get("pdf.last_title", "BlueNotebook Journal")
+
+        # Définir l'image de couverture par défaut
+        default_logo_path = (
+            Path(__file__).parent.parent
+            / "resources"
+            / "images"
+            / "bluenotebook_256-x256_fond_blanc.png"
+        )
+        # Afficher la boîte de dialogue de sélection de dates
+        date_dialog = DateRangeDialog(
+            start_date_default=min_date_q,
+            end_date_default=today_q,
+            min_date=min_date_q,
+            max_date=today_q,
+            default_title=last_title,
+            default_cover_image=str(default_logo_path),
+            default_author=last_author,
+            parent=self,
+        )
+
+        if date_dialog.exec_() != QDialog.Accepted:
+            return  # L'utilisateur a annulé
+
+        options = date_dialog.get_export_options()
+        start_date_q = options["start_date"]
+        end_date_q = options["end_date"]
+        pdf_title = options["title"]
+        pdf_author = options["author"]
+        cover_image_path = options["cover_image"]
+
+        # Proposer un nom de fichier par défaut
+        default_filename = f"Journal-{start_date_q.toString('ddMMyyyy')}-{end_date_q.toString('ddMMyyyy')}.pdf"
+        default_path = os.path.join(last_pdf_dir, default_filename)
 
         # Demander à l'utilisateur où sauvegarder le PDF
         pdf_path, _ = QFileDialog.getSaveFileName(
             self,
             "Exporter le journal en PDF",
-            os.path.join(last_pdf_dir, default_filename),
+            default_path,
             "Fichiers PDF (*.pdf)",
         )
 
         if not pdf_path:
             return
 
-        # Construire le document HTML complet
+        # Filtrer les notes en fonction de la plage de dates sélectionnée
+        filtered_notes = []
+        for note_file in note_files:
+            note_date_str = os.path.splitext(note_file)[0]
+            note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
+            if start_date_q.toPyDate() <= note_date_obj <= end_date_q.toPyDate():
+                filtered_notes.append(note_file)
+
+        if not filtered_notes:
+            QMessageBox.information(
+                self,
+                "Aucune note",
+                "Aucune note trouvée dans la plage de dates sélectionnée.",
+            )
+            return
+
         all_html_content = ""
 
         # Page de garde
-        logo_path = (
-            Path(__file__).parent.parent
-            / "resources"
-            / "images"
-            / "bluenotebook_256-x256_fond_blanc.png"
+        image_abs_path = ""
+        if cover_image_path and Path(cover_image_path).exists():
+            image_abs_path = str(Path(cover_image_path).resolve())
+
+        last_note_in_range_date = datetime.strptime(
+            os.path.splitext(filtered_notes[-1])[0], "%Y%m%d"
         )
 
-        logo_abs_path = str(logo_path.resolve()) if logo_path.exists() else ""
+        image_html = (
+            f'<img src="{image_abs_path}" alt="Image de couverture" style="max-width: 400px; max-height: 400px; width: auto; height: auto;">'
+            if image_abs_path
+            else ""
+        )
+
+        author_html = (
+            f'<p class="cover-author">Auteur : {pdf_author}</p>' if pdf_author else ""
+        )
 
         cover_page_html = f"""
         <div class="cover-page">
-            <img src="{logo_abs_path}" alt="Logo BlueNotebook" style="width: 150px; height: 150px;">
-            <h1>Journal BlueNotebook</h1>
-            <p class="cover-date">Dernière note du : {last_date.strftime('%d %B %Y')}</p>
+            {image_html}
+            <h1>{pdf_title}</h1>
+            {author_html}
+            <p class="cover-date">Période du {start_date_q.toString('d MMMM yyyy')} au {end_date_q.toString('d MMMM yyyy')}</p>
+            <p class="cover-date">Dernière note incluse : {last_note_in_range_date.strftime('%d %B %Y')}</p>
         </div>
         """
         all_html_content += cover_page_html
 
-        # Contenu des notes
-        for note_file in note_files:
+        # Contenu des notes filtrées
+        for note_file in filtered_notes:
             try:
                 with open(
                     self.journal_directory / note_file, "r", encoding="utf-8"
@@ -1103,6 +1171,12 @@ ______________________________________________________________
             color: #7f8c8d;
         }
         
+        .cover-author {
+            font-size: 1.1em;
+            margin-top: 15px;
+            color: #34495e;
+        }
+
         .journal-entry {
             page-break-before: always;
         }
@@ -1214,6 +1288,11 @@ ______________________________________________________________
 
             # Mémoriser le répertoire de destination pour la prochaine fois
             self.settings_manager.set("pdf.last_directory", str(Path(pdf_path).parent))
+            # Mémoriser le nom de l'auteur pour la prochaine fois
+            if pdf_author:
+                self.settings_manager.set("pdf.last_author", pdf_author)
+            # Mémoriser le titre pour la prochaine fois (toujours, même s'il est vide)
+            self.settings_manager.set("pdf.last_title", pdf_title)
             self.settings_manager.save_settings()
 
         except Exception as e:
