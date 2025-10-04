@@ -1,3 +1,11 @@
+## V2.1.3 2-Thèmes Classic from ghostwriter (light and dark)
+
+From: https://ghostwriter.kde.org/fr/
+
+<img src="/home/jm/Dropbox/BlueNotebookJournal/images/light_mode.jpg" width="400">
+<img src="/home/jm/Dropbox/BlueNotebookJournal/images/dark_mode.jpg" width="400">
+
+
 ## V2.1.2 Bug Export PDF: pied de page
 
 l'export PDF permet Pied de page personnalisé ce que je veux c'est 

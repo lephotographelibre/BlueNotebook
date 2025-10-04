@@ -1,0 +1,30 @@
+{
+    "name": "Dark_Classic_Turquoise",
+    "type": "dark",
+    "author": "ghostwriter",
+    "description": "Un thème sombre  dans les tonalités de turquoise et de rose",
+    "font": {
+        "family": "Courier New",
+        "size": 14,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#1a1a1a",
+        "text_color": "#d0d0d0",
+        "heading_color": "#009bc8",
+        "list_color": "#009bc8",
+        "selection_text_color": "#b31771",
+        "inline_code_text_color": "#009bc8",
+        "inline_code_background_color": "#b8e3f0",
+        "code_block_background_color": "#515151",
+        "bold_color": "#009bc8",
+        "italic_color": "#009bc8",
+        "strikethrough_color": "#009bc8",
+        "highlight_color": "#fffec7",
+        "quote_color": "#d0d0d0",
+        "link_color": "#b31771",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#b31771",
+        "timestamp_color": "#b31771"
+    }
+}
