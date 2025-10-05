@@ -700,6 +700,12 @@ class MainWindow(QMainWindow):
         self.tag_index_status_label.setStyleSheet("color: #3498db;")
         self.statusbar.addPermanentWidget(self.tag_index_status_label)
 
+        # Label pour les messages de sauvegarde, centré et vert
+        self.save_status_label = CenteredStatusBarLabel("")
+        self.save_status_label.setStyleSheet("color: green; font-weight: bold;")
+        self.save_status_label.setVisible(False)
+        self.statusbar.addWidget(self.save_status_label, 1)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1083,7 +1089,7 @@ class MainWindow(QMainWindow):
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self.statusbar.showMessage(f"Fichier sauvegardé : {filename}", 2000)
+            self._show_transient_save_status(f"Fichier sauvegardé : {filename}")
 
         except Exception as e:
             QMessageBox.critical(
@@ -1100,7 +1106,7 @@ class MainWindow(QMainWindow):
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self.statusbar.showMessage(f"Contenu ajouté à : {filename}", 2000)
+            self._show_transient_save_status(f"Contenu ajouté à : {filename}")
         except Exception as e:
             QMessageBox.critical(
                 self, "Erreur", f"Impossible d'ajouter au fichier :\n{str(e)}"
@@ -1108,10 +1114,28 @@ class MainWindow(QMainWindow):
 
     def export_html(self):
         """Exporter en HTML"""
+        # Construire un nom de fichier par défaut
+        if self.current_file:
+            base_name = os.path.basename(self.current_file)
+            file_stem = os.path.splitext(base_name)[0]
+            clean_filename = file_stem.lower().replace(" ", "-")
+        else:
+            clean_filename = "nouveau-fichier"
+
+        date_str = datetime.now().strftime("%Y_%m_%d")
+
+        # Récupérer le dernier répertoire utilisé pour l'export HTML
+        last_html_dir = self.settings_manager.get("html.last_directory")
+        if not last_html_dir or not Path(last_html_dir).is_dir():
+            last_html_dir = str(Path.home())
+
+        default_filename = f"BlueNotebook-{clean_filename}-{date_str}.html"
+        default_path = os.path.join(last_html_dir, default_filename)
+
         filename, _ = QFileDialog.getSaveFileName(
             self,
             "Exporter en HTML",
-            "",
+            default_path,
             "Fichiers HTML (*.html);;Tous les fichiers (*)",
         )
 
@@ -1125,6 +1149,11 @@ class MainWindow(QMainWindow):
                     f.write(html_content)
 
                 self.statusbar.showMessage(f"Exporté en HTML : {filename}", 3000)
+
+                # Mémoriser le répertoire de destination pour la prochaine fois
+                new_html_dir = str(Path(filename).parent)
+                self.settings_manager.set("html.last_directory", new_html_dir)
+                self.settings_manager.save_settings()
 
             except Exception as e:
                 QMessageBox.critical(
@@ -2004,6 +2033,12 @@ class MainWindow(QMainWindow):
     def _toggle_pdf_status_visibility(self):
         """Bascule la visibilité du label de statut PDF."""
         self.pdf_status_label.setVisible(not self.pdf_status_label.isVisible())
+
+    def _show_transient_save_status(self, message, timeout=3000):
+        """Affiche un message de sauvegarde vert et centré pendant un temps donné."""
+        self.save_status_label.setText(message)
+        self.save_status_label.setVisible(True)
+        QTimer.singleShot(timeout, lambda: self.save_status_label.setVisible(False))
 
     def open_preferences(self):
         """Ouvre la boîte de dialogue des préférences."""

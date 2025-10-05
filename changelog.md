@@ -1,3 +1,18 @@
+## V2.1.4 Bug fix Améliorer visibilité du message de sauvegarde + export HTML
+
+Améliorer la visibilité du message de sauvegarde. C'est une excellente idée pour l'ergonomie de l'application. Pour le centrer et le colorer en vert, nous allons créer un QLabel personnalisé qui s'affichera temporairement au milieu de la barre d'état.
+beta1
+
+Lorsque l'on demande "Export HTML" aucun nom de fichier n'est porposer dans la boite de dialogue.
+Il faudrait proposer BlueNotebook+nomdufichier+datedujour.html
+- Nomdufichier --> enminuscules, sans blanc, sans extension
+- Datedujour -> sous le format YYYY_MM__DD
+
+
+beta2
+
+Il faudrait memoriser la destination (répertoire) choisi par l'utilisateur lors de l'export HTML et le reproposer lors d'un appel ulterieur. Persistance dans settings.json
+
 ## V2.1.3 2-Thèmes Classic from ghostwriter (light and dark)
 
 From: https://ghostwriter.kde.org/fr/

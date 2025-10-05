@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.1.1
+            Manuel Utilisateur - BlueNotebook V2.1.4
         </h1>
     </header>
 
@@ -90,12 +90,13 @@
             <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
             <li><a href="#recherche-avancee">7. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">8. Exploration des Menus</a></li>
-            <li><a href="#export-pdf">9. Exportation du Journal en PDF</a></li>
-            <li><a href="#backup-restore">10. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">11. Personnalisation Avancée</a>
+            <li><a href="#export-html">9. Exportation en HTML</a></li>
+            <li><a href="#export-pdf">10. Exportation du Journal en PDF</a></li>
+            <li><a href="#backup-restore">11. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">12. Personnalisation Avancée</a>
                 <ul>
-                    <li><a href="#themes-editeur">11.1 Thèmes de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">11.2 Thèmes de l'Aperçu HTML</a></li>
+                    <li><a href="#themes-editeur">12.1 Personnalisation de l'Éditeur</a></li>
+                    <li><a href="#themes-apercu">12.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
                 </ul>
             </li>
             <li><a href="#raccourcis">12. Raccourcis Clavier</a></li>
@@ -263,7 +264,7 @@
 ├── 💾 Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
 ├── 🔄 Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
 ├── ---
-├── 🌐 Exporter HTML... : Exporte la note actuelle au format HTML, avec le style appliqué.
+├── 🌐 Exporter HTML... : Exporte la note actuelle en fichier HTML, avec un nommage intelligent.
 ├── 📜 Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates, titre et auteur.
 ├── ---
 ├── ⚙️ Préférences... : Ouvre la fenêtre de personnalisation de l'application.
@@ -388,35 +389,39 @@
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">11.1 Thèmes de l'Éditeur Markdown</h4>
-        <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture.</p>
-        
-        <p><strong>✨ Options d'affichage</strong></p>
+        <h4 id="themes-editeur">12.1 Personnalisation de l'Éditeur</h4>
+        <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture. BlueNotebook vous offre une flexibilité totale, que vous souhaitiez utiliser un thème prêt à l'emploi ou créer le vôtre.</p>
+
+        <p> <strong>Affichage des numéros de lignes ? :</strong> </p> 
+        <p>Cochez cette case pour afficher une marge avec les numéros de ligne à gauche de l'éditeur. C'est très pratique pour se repérer dans de longs documents.</p>
+
+        <p><strong>Thèmes de l'éditeur (Clair & Sombre)</strong></p>
+        <p>Pour une mise en place rapide, BlueNotebook inclut des thèmes développé par BlueNotebook ainsi que des thèmes inspirés de l'excellent éditeur Markdown <a href="https://ghostwriter.kde.org/fr/" target="_blank">Ghostwriter</a>.</p>
         <ul>
-            <li><strong>Affichage des numéros de lignes ? :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne à gauche de l'éditeur. C'est très pratique pour se repérer dans de longs documents.</li>
+
+            <li><strong>🎨 Sélectionner un thème :</strong> Cliquez sur ce bouton pour choisir un thème prêt à l'emploi (comme "Classic Light" ou "Classic Dark"). La sélection met instantanément à jour les couleurs dans la fenêtre des préférences pour que vous puissiez prévisualiser le résultat.</li>
         </ul>
 
-        <p><strong>✨ Gestion des thèmes de l'éditeur</strong></p>
-        <p>Fatigué de régler chaque couleur une par une ? Vous pouvez maintenant sauvegarder et charger des ensembles complets de réglages.</p>
+        <p><strong>Personnalisation avancée et création de thèmes</strong></p>
+        <p>Si vous souhaitez aller plus loin, vous pouvez ajuster chaque couleur individuellement (fond, texte, titres, code, etc.) et même la police de caractères.</p>
         <ul>
-            <li><strong>🎨 Sélectionner un thème :</strong> Ce bouton ouvre une fenêtre listant les thèmes d'éditeur disponibles. En sélectionnant un thème, vous verrez immédiatement les couleurs et polices se mettre à jour dans la fenêtre des préférences. Cliquez sur "Valider" pour appliquer ce thème à votre éditeur.</li>
-            <li><strong>💾 Sauvegarder comme thème :</strong> Après avoir personnalisé les couleurs et les polices à votre goût, cliquez sur ce bouton. Une fenêtre vous demandera de donner un nom à votre thème (ex: "Mon Thème Sombre"). Une fois sauvegardé, il apparaîtra dans la liste de sélection pour une utilisation future.</li>
+            <li><strong>💾 Sauvegarder comme thème :</strong> Une fois que vous avez créé une palette de couleurs qui vous plaît, cliquez sur ce bouton pour la sauvegarder comme un nouveau thème. Il sera alors disponible dans la liste de sélection.</li>
+            <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, très pratique pour se repérer dans de longs documents.</li>
         </ul>
 
-        <h4 id="themes-apercu">11.2 Thèmes de l'Aperçu HTML</h4>
-        <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation.</p>
-        <p><strong>✨ NOUVEAU : Prévisualisation des thèmes CSS</strong></p>
-        <p>L'apparence de l'aperçu est contrôlée par des feuilles de style CSS, vous offrant une flexibilité totale. Pour vous aider à choisir, une prévisualisation est intégrée directement dans la fenêtre des préférences.</p>
+        <h4 id="themes-apercu">12.2 Personnalisation de l'Aperçu HTML (et des Exports)</h4>
+        <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>.</p>
+        <p>L'apparence est contrôlée par des feuilles de style CSS. Pour vous aider à choisir, une prévisualisation du rendu est intégrée directement dans la fenêtre des préférences.</p>
         <ul>
-            <li><strong>🎨 Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés (par exemple, un thème clair, un thème sombre de type GitHub, etc.).</li>
-            <li><strong>👁️ Prévisualisation instantanée :</strong> Dès que vous sélectionnez un thème dans la liste, une mini-fenêtre d'aperçu située en dessous se met à jour pour vous montrer le rendu des titres, paragraphes, liens et blocs de code avec ce style. Cela vous permet de juger de l'apparence avant de valider votre choix.</li>
+            <li><strong>🎨 Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés. Vous trouverez des thèmes clairs et sombres inspirés de l'apparence de GitHub.</li>
+            <li><strong>👁️ Prévisualisation instantanée :</strong> Dès que vous sélectionnez un thème dans la liste, une mini-fenêtre d'aperçu située en dessous se met à jour pour vous montrer le rendu des titres, paragraphes, liens et blocs de code. Cela vous permet de juger de l'apparence avant de valider votre choix.</li>
         </ul>
         <p>Le thème que vous validez est sauvegardé et sera automatiquement appliqué à chaque démarrage de BlueNotebook.</p>
         
         <p>Le bouton <strong>"Valeurs d'affichage par défaut"</strong>, présent dans l'onglet "Affichage", réinitialise toutes les options de cet onglet (couleurs de l'éditeur, thème de l'aperçu, etc.) à leurs valeurs d'usine.</p>
 
         <h3>Onglet "Panneaux"</h3>
-        <p>Contrôlez quels panneaux sont visibles par défaut au démarrage de l'application pour un espace de travail sur mesure.</p>
+        <p>Contrôlez quels panneaux sont visibles par défaut au démarrage de l'application pour un espace de travail sur mesure :</p>
         <ul>
             <li><strong>Panneau de Navigation (<code>F6</code>)</strong></li>
             <li><strong>Panneau 'Plan du document' (<code>F7</code>)</strong></li>
@@ -525,14 +530,51 @@
             <dt>Q : Comment restaurer mon journal depuis une sauvegarde ?</dt>
             <dd><strong>R :</strong> Utilisez <code>Fichier > Restauration Journal...</code>. La procédure est très sécurisée : avant de restaurer, BlueNotebook renomme votre journal actuel pour en faire une sauvegarde (ex: <code>MonJournal.bak-20250927-103000</code>). <strong>Vos données actuelles ne sont jamais supprimées.</strong> Vous devrez simplement redémarrer l'application après la restauration.</dd>
         </dl>
+
+        <h3>Export et Partage</h3>
+        <dl>
+            <dt>Q : Comment puis-je partager une de mes notes ?</dt>
+            <dd><strong>R :</strong> La meilleure façon de partager une note est de l'exporter en HTML. Allez dans <code>Fichier > Exporter HTML...</code>. Une boîte de dialogue s'ouvrira en vous proposant un nom de fichier intelligent (<code>BlueNotebook-nom-date.html</code>) et se souviendra du dernier dossier que vous avez utilisé. Le fichier HTML généré utilisera le même thème visuel que votre aperçu dans l'application.</dd>
+
+            <dt>Q : Comment puis-je créer un PDF de tout ou partie de mon journal ?</dt>
+            <dd><strong>R :</strong> Utilisez la fonction <code>Fichier > Exporter Journal PDF...</code>. C'est un outil puissant qui vous permet de créer un document PDF professionnel. Une boîte de dialogue vous permettra de :
+                <ul>
+                    <li>Sélectionner une <strong>plage de dates</strong> pour n'inclure que certaines notes.</li>
+                    <li>Définir un <strong>titre</strong>, un <strong>nom d'auteur</strong> et même une <strong>image de couverture</strong> pour la page de garde.</li>
+                </ul>
+            L'application mémorise vos choix (dossier, titre, auteur) pour vous faire gagner du temps lors des prochains exports. Le résultat est un document paginé, parfait pour l'archivage ou l'impression.</dd>
+        </dl>
+
+        <h3>Personnalisation et Thèmes</h3>
+        <dl>
+            <dt>Q : Comment puis-je créer mon propre thème de couleurs pour l'éditeur Markdown de BlueNotebook ?</dt>
+            <dd><strong>R :</strong> C'est très simple !
+                <ol>
+                    <li>Allez dans <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
+                    <li>Ajustez les différentes couleurs (fond, texte, titres, etc.) et la police jusqu'à obtenir un résultat qui vous plaît.</li>
+                    <li>Cliquez sur le bouton <code>💾 Sauvegarder comme thème</code>.</li>
+                    <li>Donnez un nom à votre thème (ex: "Mon Thème Sombre") et validez.</li>
+                </ol>
+                Votre thème est maintenant sauvegardé et vous pouvez le sélectionner à tout moment depuis le bouton <code>🎨 Sélectionner un thème</code>.
+            </dd>
+
+            <dt>Q : Comment modifier un thème existant ?</dt>
+            <dd><strong>R :</strong>
+                <ol>
+                    <li>Ouvrez les <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
+                    <li>Cliquez sur <code>🎨 Sélectionner un thème</code> et choisissez le thème que vous souhaitez modifier. Ses couleurs sont alors chargées dans l'interface.</li>
+                    <li>Changez les couleurs ou la police que vous voulez ajuster.</li>
+                    <li>Cliquez sur <code>💾 Sauvegarder comme thème</code>. Vous pouvez soit lui donner un nouveau nom pour créer une variation, soit utiliser le même nom pour écraser et mettre à jour le thème existant.</li>
+                </ol>
+            </dd>
+        </dl>
     </section>
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.1.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.1.4 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>
 
-</body>
-</html>
+ 
