@@ -1,0 +1,27 @@
+{
+    "name": "Midnight_light",
+    "font": {
+        "family": "Ubuntu",
+        "size": 14,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#e9fcff",
+        "text_color": "#1f1f1f",
+        "heading_color": "#095764",
+        "list_color": "#1a8499",
+        "selection_text_color": "#a4b5cf",
+        "inline_code_text_color": "#095764",
+        "inline_code_background_color": "#e2f4f7",
+        "code_block_background_color": "#e2f4f7",
+        "bold_color": "#095764",
+        "italic_color": "#095764",
+        "strikethrough_color": "#095764",
+        "highlight_color": "#fffec7",
+        "quote_color": "#1a8499",
+        "link_color": "#641609",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#1a8499",
+        "timestamp_color": "#1a8499"
+    }
+}

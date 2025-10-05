@@ -1,0 +1,27 @@
+{
+    "name": "Brown_Light",
+    "font": {
+        "family": "Courier New",
+        "size": 14,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#fffbeb",
+        "text_color": "#1f1f1f",
+        "heading_color": "#644a09",
+        "list_color": "#cc4b24",
+        "selection_text_color": "#99771a",
+        "inline_code_text_color": "#644a09",
+        "inline_code_background_color": "#f8edd9",
+        "code_block_background_color": "#f8edd9",
+        "bold_color": "#644a09",
+        "italic_color": "#644a09",
+        "strikethrough_color": "#644a09",
+        "highlight_color": "#fffec7",
+        "quote_color": "#363c42",
+        "link_color": "#cc4b24",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#cc4b24",
+        "timestamp_color": "#cc4b24"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "name": "Emerald_Green_Light",
+    "font": {
+        "family": "Courier New",
+        "size": 14,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#fffbeb",
+        "text_color": "#202327",
+        "heading_color": "#317939",
+        "list_color": "#cc4b24",
+        "selection_text_color": "#f1be49",
+        "inline_code_text_color": "#cc4b24",
+        "inline_code_background_color": "#f8edd9",
+        "code_block_background_color": "#f8edd9",
+        "bold_color": "#317939",
+        "italic_color": "#317939",
+        "strikethrough_color": "#317939",
+        "highlight_color": "#fffec7",
+        "quote_color": "#616b76",
+        "link_color": "#cc4b24",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#cc4b24",
+        "timestamp_color": "#cc4b24"
+    }
+}

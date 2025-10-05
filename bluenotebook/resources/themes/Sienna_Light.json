@@ -1,0 +1,30 @@
+{
+    "name": "Sienna_Light",
+    "type": "light",
+    "author": "BlueNotebook",
+    "description": "Un thème clair léger dans les tonalités de Terre de Sienne",
+    "font": {
+        "family": "Droid Sans Mono",
+        "size": 12,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#fff1e9",
+        "text_color": "#1f1f1f",
+        "heading_color": "#e67346",
+        "list_color": "#e67346",
+        "selection_text_color": "#efac93",
+        "inline_code_text_color": "#e67346",
+        "inline_code_background_color": "#efe1da",
+        "code_block_background_color": "#efe1da",
+        "bold_color": "#e67346",
+        "italic_color": "#e67346",
+        "strikethrough_color": "#e67346",
+        "highlight_color": "#fffec7",
+        "quote_color": "#595959",
+        "link_color": "#e67346",
+        "html_comment_color": "#bec7d5",
+        "tag_color": "#e67346",
+        "timestamp_color": "#e67346"
+    }
+}

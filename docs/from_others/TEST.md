@@ -1,5 +1,5 @@
 # Markdown: Syntax
-<-- From : https://github.com/mxstbr/markdown-test-file?tab=readme-ov-file-->
+<!--  cwxcwx -->
 
 *   [Overview](#overview)
     *   [Philosophy](#philosophy)
@@ -252,6 +252,8 @@ A code block continues until it reaches a line that is not indented
 
 Within a code block, ampersands (`&`) and angle brackets (`<` and `>`)
 are automatically converted into HTML entities. This makes it very
+
+
 easy to include example HTML source code using Markdown -- just paste
 it and indent it, and Markdown will handle the hassle of encoding the
 ampersands and angle brackets. For example, this:
@@ -268,6 +270,28 @@ it's also easy to use Markdown to write about Markdown's own syntax.
 tell application "Foo"
     beep
 end tell
+```
+
+
+```python
+def main():
+    """Fonction principale"""
+    parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
+    parser.add_argument(
+        "-j", "--journal", dest="journal_dir", help="Spécifie le répertoire du journal."
+    )
+    args = parser.parse_args()
+
+    try:
+        # Créer l'application Qt
+        app = QApplication(sys.argv)
+
+        # Définir les informations de l'application
+        version = "2.1.1"
+        app.setApplicationName("BlueNotebook")
+        app.setApplicationVersion(version)
+        app.setOrganizationName("BlueNotebook")
+
 ```
 
 ## Span Elements
@@ -311,4 +335,3 @@ normal paragraph. For example:
 Use the `printf()` function.
 
 
-file:///home/jm/PycharmProjects/BlueNotebook/bluenotebook/resources/themes/Dark_Classic_Turquoise.json
