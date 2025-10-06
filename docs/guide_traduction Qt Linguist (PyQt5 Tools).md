@@ -45,11 +45,22 @@ Voici les étapes détaillées pour intégrer la traduction dans ton application
 
 #### Étape 1 : Installation des Outils
 
-Tu as besoin de `pyqt5-tools`, qui contient `pylupdate5` et `linguist`.
+Le paquet `pyqt5-tools` est obsolète et n'est pas compatible avec les versions récentes de Python (3.11+). La méthode recommandée est d'installer les outils directement via le gestionnaire de paquets de votre système.
+
+**Pour Debian/Ubuntu et dérivés :**
 
 ```bash
-pip install pyqt5-tools
+sudo apt-get update
+sudo apt-get install qttools5-dev pyqt5-dev-tools
 ```
+*   `qttools5-dev` fournit l'application graphique **Qt Linguist**.
+*   `pyqt5-dev-tools` fournit les outils en ligne de commande `pylupdate5` et `lrelease`.
+
+**Pour d'autres distributions Linux :**
+
+Recherchez des paquets similaires comme `qt5-tools` ou `python3-pyqt5-devel`.
+
+Une fois installés, ces outils seront disponibles sur votre système, même à l'intérieur de votre environnement virtuel.
 
 #### Étape 2 : Marquer les Chaînes à Traduire dans le Code
 

@@ -1,3 +1,33 @@
+## V2.2.1 Qt internationalization i18n (Phase 1)
+
+Certaines boîtes de dialogue standards de l'application (par exemple, le sélecteur de fichiers `QFileDialog` ou les messages de confirmation `QMessageBox`) affichent des boutons en anglais ("Open", "Save", "Cancel", "Yes", "No") alors que le système d'exploitation est configuré en français.
+que faire
+
+Le framework Qt est livré avec des fichiers de traduction pour ses composants standard (boutons "Open", "Save", "Cancel", etc.). Votre application doit simplement charger le fichier de traduction correspondant à la langue du système de l'utilisateur.
+
+La procédure consiste à :
+
+1. Créer un objet `QTranslator`.
+2. Déterminer la langue du système (`QLocale.system()`).
+3. Trouver le chemin où sont stockées les traductions de Qt (`QLibraryInfo`).
+4. Charger le bon fichier de traduction (par exemple, `qt_fr.qm` pour le français).
+5. Installer ce traducteur dans l'application.
+
+Cette opération doit être effectuée juste après la création de QApplication et avant l'affichage de la fenêtre principale.
+
+Modification de `main.py` :
+
+**Ne pas oublier les imports**: from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo
+beta1
+
+**L'utilsation de cette variable d'envirionnemnt sera réservée au developpement et de debugging**
+
+Forcer la locale par une variable d'envirionnement BLUENOTEBOOK_LOCALE. qui sera passé en parametre du script de lancement de l'application. Par defaut cette variable d'environnement sera "fr_FR". peux tu ecrire un tel script de lancement du programme python main.py et modifier le code pour extraire et forcer cette variable d'environement BLUENOTEBOOK_LOCALE
+beta2
+ 
+
+
+
 ## V2.1.4 Bug fix Améliorer visibilité du message de sauvegarde + export HTML
 
 Améliorer la visibilité du message de sauvegarde. C'est une excellente idée pour l'ergonomie de l'application. Pour le centrer et le colorer en vert, nous allons créer un QLabel personnalisé qui s'affichera temporairement au milieu de la barre d'état.

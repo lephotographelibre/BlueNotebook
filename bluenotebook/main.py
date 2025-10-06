@@ -28,11 +28,39 @@ import argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo
 from gui.main_window import MainWindow
 
 
 def main():
     """Fonction principale"""
+    # Créer l'application Qt
+    app = QApplication(sys.argv)
+
+    # --- Internationalisation (i18n) des composants standards Qt ---
+    # Cette section doit être après la création de l'app
+    qt_translator = QTranslator()
+
+    # Priorité : variable d'environnement, sinon locale système
+    forced_locale_str = os.getenv("BLUENOTEBOOK_LOCALE")
+    if forced_locale_str:
+        locale = QLocale(forced_locale_str)
+        print(f"🌍 Locale forcée par l'environnement : {locale.name()}")
+    else:
+        locale = QLocale.system()
+        print(f"🌍 Locale système détectée : {locale.name()}")
+
+    # Chemin vers les traductions Qt intégrées
+    qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+    # Charger le fichier de traduction (ex: qtbase_fr.qm)
+    if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
+        app.installTranslator(qt_translator)
+        print(f"✅ Traduction Qt standard '{locale.name()}' chargée.")
+    else:
+        print(
+            f"⚠️ Traduction Qt standard pour '{locale.name()}' non trouvée. Les dialogues système resteront en anglais."
+        )
+
     parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
     parser.add_argument(
         "-j", "--journal", dest="journal_dir", help="Spécifie le répertoire du journal."
@@ -40,16 +68,13 @@ def main():
     args = parser.parse_args()
 
     try:
-        # Créer l'application Qt
-        app = QApplication(sys.argv)
-
         # Définir les informations de l'application
-        version = "2.1.4"
+        version = "2.2.1"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
 
-        print(f"*** Lancement de l'application BlueNotebook V{version} ***")
+        print(f"🚀 Lancement de l'application BlueNotebook V{version}...")
 
         # Créer et afficher la fenêtre principale
         window = MainWindow(journal_dir_arg=args.journal_dir, app_version=version)

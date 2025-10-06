@@ -73,12 +73,6 @@ fi
 
 echo "" # Ligne vide pour l'aération
 echo "📘 Lancement de l'application BlueNotebook..."
-
-
-# Définir la locale pour l'application, avec 'fr_FR' comme valeur par défaut
-export BLUENOTEBOOK_LOCALE="${BLUENOTEBOOK_LOCALE:-fr_FR}"
-
-echo "🌍 Locale forcée pour l'application : '${BLUENOTEBOOK_LOCALE}'"
 # export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
 export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
