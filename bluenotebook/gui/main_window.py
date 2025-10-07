@@ -45,6 +45,7 @@ from PyQt5.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QProgressDialog,
+    QInputDialog,
     QRadioButton,
     QComboBox,
 )
@@ -63,6 +64,8 @@ from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
+import requests
+from bs4 import BeautifulSoup
 from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
@@ -383,6 +386,7 @@ class MainWindow(QMainWindow):
         # Menu Intégrations
         integrations_menu = menubar.addMenu("🔌 &Intégrations")
         integrations_menu.addAction(self.insert_quote_day_action)
+        integrations_menu.addAction(self.insert_youtube_video_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("❓ &Aide")
@@ -518,6 +522,12 @@ class MainWindow(QMainWindow):
             triggered=self.insert_quote_of_the_day,
         )
 
+        self.insert_youtube_video_action = QAction(
+            "🎬 Vidéo YouTube",
+            self,
+            statusTip="Insérer une vidéo YouTube",
+            triggered=self.insert_youtube_video,
+        )
         self.insert_template_action = QAction(
             "📋 Insérer un modèle...",
             self,
@@ -1791,6 +1801,74 @@ class MainWindow(QMainWindow):
                 self, "Erreur", "Impossible de récupérer la citation du jour."
             )
 
+    def insert_youtube_video(self):
+        """Gère la logique d'insertion d'une vidéo YouTube."""
+        cursor = self.editor.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+
+        video_url = ""
+        if selected_text:
+            video_url = selected_text
+        else:
+            url, ok = QInputDialog.getText(
+                self, "Vidéo YouTube", "Entrez l'URL de la vidéo YouTube:"
+            )
+            if ok and url:
+                video_url = url.strip()
+
+        if not video_url:
+            return
+
+        self._process_youtube_url(video_url)
+
+    def _process_youtube_url(self, url: str):
+        """Extrait l'ID, récupère le titre, vérifie la vidéo et l'insère."""
+        video_id = self._extract_youtube_id(url)
+
+        if not video_id:
+            QMessageBox.warning(
+                self, "URL invalide", "L'URL YouTube fournie n'est pas valide."
+            )
+            return
+
+        video_title = "Vidéo YouTube"  # Titre par défaut
+        try:
+            # Récupérer la page pour extraire le titre et vérifier l'existence
+            response = requests.get(url, timeout=10)
+            if response.status_code != 200:
+                QMessageBox.warning(
+                    self,
+                    "Vidéo introuvable",
+                    "Attention: La vidéo YouTube demandée n'existe pas ou est privée !",
+                )
+                return
+
+            # Extraire le titre de la page HTML
+            soup = BeautifulSoup(response.text, "html.parser")
+            if soup.title and soup.title.string:
+                title_text = soup.title.string
+                # Nettoyer le titre (ex: "Mon Titre - YouTube" -> "Mon Titre")
+                if " - YouTube" in title_text:
+                    video_title = title_text.rsplit(" - YouTube", 1)[0]
+                else:
+                    video_title = title_text
+
+        except requests.RequestException as e:
+            QMessageBox.warning(
+                self, "Erreur réseau", f"Impossible de vérifier la vidéo : {e}"
+            )
+            return
+
+        # Insérer le bloc Markdown dans l'éditeur
+        self.editor.insert_youtube_video(video_id, url, video_title)
+
+    @staticmethod
+    def _extract_youtube_id(url: str) -> str | None:
+        """Extrait l'ID de la vidéo à partir de différentes formes d'URL YouTube."""
+        regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
+        match = re.search(regex, url)
+        return match.group(1) if match else None
+
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
         editor_scrollbar = self.editor.text_edit.verticalScrollBar()
@@ -2120,6 +2198,11 @@ class MainWindow(QMainWindow):
                 dialog.show_quote_checkbox.isChecked(),
             )
             self.settings_manager.set(
+                "integrations.youtube_enabled",
+                dialog.youtube_integration_checkbox.isChecked(),
+            )
+
+            self.settings_manager.set(
                 "ui.show_indexing_stats",
                 dialog.show_indexing_stats_checkbox.isChecked(),
             )
@@ -2254,6 +2337,11 @@ class MainWindow(QMainWindow):
             "preview.css_theme", "default_preview.css"
         )
         self.preview.set_css_theme(css_theme)
+
+        youtube_enabled = self.settings_manager.get(
+            "integrations.youtube_enabled", True
+        )
+        self.insert_youtube_video_action.setEnabled(youtube_enabled)
 
         self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
 

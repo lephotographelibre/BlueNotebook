@@ -1022,6 +1022,12 @@ class MarkdownEditor(QWidget):
             new_text = f"<!-- {selected_text} -->"
             cursor.insertText(new_text)
 
+    def insert_youtube_video(self, video_id, video_url, video_title="Vidéo YouTube"):
+        """Insère le bloc de texte formaté pour une vidéo YouTube."""
+        thumbnail_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+        markdown_text = f"\n\n@@Video @@Youtube {video_title} <{video_url}>\n\n[![{video_title}]({thumbnail_url})]({video_url})\n\n⬆️**Cliquez sur l'image pour lancer la vidéo**⬆️\n"
+        self.insert_text(markdown_text)
+
     def insert_html_image(self):
         """
         Insère une balise <img>.

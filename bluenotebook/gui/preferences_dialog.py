@@ -604,6 +604,15 @@ class PreferencesDialog(QDialog):
         self.show_quote_checkbox.setChecked(is_checked)
         layout.addWidget(self.show_quote_checkbox)
 
+        self.youtube_integration_checkbox = QCheckBox(
+            "Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown"
+        )
+        is_youtube_enabled = self.settings_manager.get(
+            "integrations.youtube_enabled", True
+        )
+        self.youtube_integration_checkbox.setChecked(is_youtube_enabled)
+        layout.addWidget(self.youtube_integration_checkbox)
+
         layout.addStretch()
         return widget
 

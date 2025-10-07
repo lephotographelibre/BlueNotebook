@@ -1,3 +1,43 @@
+## V2.3.1 Integration Video Youtube
+Je voudrait ajouter un sous menu au Menu" Intégrations" appelé "Vidéo YouTube" avec un emoji.
+Quand ce menu est appelé :
+- Soit une chaine de caractère (URL de la vidéo YouTube ) est déja sélectionnée dans l'éditeur Markdown
+- Soit on demande à l'utilisateur de saisir   l'URL de la vidéo YouTube  
+
+On va ensuite
+- 1 Verifier que cette vidéo YouTube existe bien à testant son URL et si la viéo n'existe pas un message   "Attention: La vidéo YouTube demandée n'existe pas !"
+- 2 générer un tag du type
+"@@Video
+Clickez sur l'image pour lancer la vidéo @@Youtube  <https://www.youtube.com/watch?v=ZD6F_zOpuSg>
+
+[![alt text](https://img.youtube.com/vi/ZD6F_zOpuSg/0.jpg)](https://www.youtube.com/watch?v=ZD6F_zOpuSg)
+"
+
+Par exemple:
+
+- L'URL de la vidéo Youtube est : https://www.youtube.com/watch?v=ZD6F_zOpuSg
+- Le video ID extrait de l'URL est ZD6F_zOpuSg
+- L'adresse de l'image YouTube Thumbnail est https://img.youtube.com/vi/ZD6F_zOpuSg/0.jpg construit à partir du Video ID extrait de l'URL
+
+@@Video @@Youtube <https://www.youtube.com/watch?v=pRESLH7YHBg>
+
+[![alt text](https://img.youtube.com/vi/pRESLH7YHBg/0.jpg)](https://www.youtube.com/watch?v=pRESLH7YHBg)
+
+⬆️**Cliquez sur l'image pour lancer la vidéo**⬆️
+
+beta1
+
+
+
+Ajouter une boite à cocher dans le panneau "Intégrations" des Préférences
+"Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown"
+
+Dans le cas ou ce choix est décoché alors le sous Menu "Vidéo YouTube" du Menu "Integrations" sera grisé et non activable
+ 
+beta2 
+
+Peux-tu mettre à jour la documentation en ligne pour refléter ce nouveau format d'intégration vidéo ?
+
 ## V2.2.1 Qt internationalization i18n (Phase 1)
 
 Certaines boîtes de dialogue standards de l'application (par exemple, le sélecteur de fichiers `QFileDialog` ou les messages de confirmation `QMessageBox`) affichent des boutons en anglais ("Open", "Save", "Cancel", "Yes", "No") alors que le système d'exploitation est configuré en français.

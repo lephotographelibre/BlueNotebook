@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.1.4
+            Manuel Utilisateur - BlueNotebook V2.3.1
         </h1>
     </header>
 
@@ -88,12 +88,13 @@
             <li><a href="#concept-journal">4. Le Concept de "Journal"</a></li>
             <li><a href="#templates">5. Gérer et Utiliser les Modèles</a></li>
             <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
-            <li><a href="#recherche-avancee">7. Recherche et Navigation Avancée</a></li>
-            <li><a href="#menus">8. Exploration des Menus</a></li>
-            <li><a href="#export-html">9. Exportation en HTML</a></li>
-            <li><a href="#export-pdf">10. Exportation du Journal en PDF</a></li>
-            <li><a href="#backup-restore">11. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">12. Personnalisation Avancée</a>
+            <li><a href="#integrations">7. Intégrations (YouTube, etc.)</a></li>
+            <li><a href="#recherche-avancee">8. Recherche et Navigation Avancée</a></li>
+            <li><a href="#menus">9. Exploration des Menus</a></li>
+            <li><a href="#export-html">10. Exportation en HTML</a></li>
+            <li><a href="#export-pdf">11. Exportation du Journal en PDF</a></li>
+            <li><a href="#backup-restore">12. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">13. Personnalisation Avancée</a>
                 <ul>
                     <li><a href="#themes-editeur">12.1 Personnalisation de l'Éditeur</a></li>
                     <li><a href="#themes-apercu">12.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
@@ -221,6 +222,26 @@
         </ul>
     </section>
 
+    <section id="integrations">
+        <h2>7. Intégrations (YouTube, etc.)</h2>
+        <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>🔌 Intégrations</code>.</p>
+
+        <h3>Intégrer une Vidéo YouTube</h3>
+        <p>Vous pouvez facilement intégrer une vidéo YouTube dans vos notes, avec une miniature cliquable.</p>
+        <ol>
+            <li>Allez dans le menu <code>🔌 Intégrations > 🎬 Vidéo YouTube</code>.</li>
+            <li>Si vous avez déjà sélectionné une URL YouTube dans l'éditeur, elle sera utilisée automatiquement. Sinon, une boîte de dialogue vous demandera de coller l'URL.</li>
+            <li>L'application va alors :
+                <ul>
+                    <li>Vérifier si la vidéo existe.</li>
+                    <li>Récupérer automatiquement son titre.</li>
+                    <li>Générer et insérer un bloc de texte Markdown formaté dans votre note.</li>
+                </ul>
+            </li>
+        </ol>
+        <p><strong>Astuce :</strong> Vous pouvez activer ou désactiver cette fonctionnalité dans <code>Préférences > Intégrations</code>.</p>
+    </section>
+
     <section id="recherche-avancee">
         <h2>7. Recherche et Navigation Avancée</h2>
         <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
@@ -324,8 +345,11 @@
 └── 😊 Emoji : Ouvre un sous-menu pour insérer rapidement des emojis courants.
 
 🔌 Intégrations
-└── ✨ Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+├── ✨ Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+└── 🎬 Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
 
+---
+        
 ❓ Aide
 ├── 🌐 Documentation en ligne : Ouvre ce manuel d'aide dans votre navigateur.
 └── 💡 À propos : Affiche les informations sur l'application, sa version et sa licence.
@@ -431,6 +455,7 @@
         <h3>Onglet "Intégrations"</h3>
         <p>Gérez les fonctionnalités additionnelles.</p>
         <ul>
+            <li><strong>Intégration vidéo Youtube :</strong> Cochez cette case pour activer ou désactiver le sous-menu permettant d'insérer des vidéos YouTube.</li>
             <li><strong>Afficher la citation du jour au démarrage :</strong> Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
         </ul>
 
@@ -572,7 +597,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.1.4 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.3.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>
