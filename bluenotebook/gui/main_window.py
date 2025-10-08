@@ -1100,6 +1100,8 @@ class MainWindow(QMainWindow):
             self.update_title()
             self._set_file_label_color("green")
             self._show_transient_save_status(f"Fichier sauvegardé : {filename}")
+            # Mettre à jour le calendrier pour refléter la nouvelle note
+            self.update_calendar_highlights()
 
         except Exception as e:
             QMessageBox.critical(
@@ -1117,6 +1119,8 @@ class MainWindow(QMainWindow):
             self.update_title()
             self._set_file_label_color("green")
             self._show_transient_save_status(f"Contenu ajouté à : {filename}")
+            # Mettre à jour le calendrier pour refléter la nouvelle note
+            self.update_calendar_highlights()
         except Exception as e:
             QMessageBox.critical(
                 self, "Erreur", f"Impossible d'ajouter au fichier :\n{str(e)}"

@@ -1,3 +1,24 @@
+## V2.3.2 Fix Issue [#7](https://github.com/lephotographelibre/BlueNotebook/issues/7)
+
+Dans le widget calendrier dans le panneau Navigation Journal mettre le chiffre de la journée d'aujourd'hui   dans une police jaune vif si une note journalière existe dans le journal pour aujourd'hui bluenotebook navigation.py
+
+Pour améliorer la visibilité de la note du jour directement dans le calendrier. Pour ce faire, nous allons modifier la méthode highlight_dates dans le fichier bluenotebook/gui/navigation.py afin qu'elle applique un style différent pour la date d'aujourd'hui si une note existe.
+
+Explication des modifications
+
+Récupération de la date du jour : J'ai ajouté today = QDate.currentDate() pour obtenir la date actuelle.
+Création d'un format pour "aujourd'hui" : Un nouvel objet QTextCharFormat (today_format) est créé spécifiquement pour la date du jour.
+setForeground(QBrush(QColor("#FFFF00"))) applique la couleur jaune vif que vous souhaitiez.
+Ajout  d'uune couleur de fond bleue (setBackground QBrush(QColor("#3498db")) pour que le jaune soit bien lisible, quel que soit le thème de votre système.
+
+Logique conditionnelle : Dans la boucle qui parcourt les dates ayant une note, je vérifie si la date correspond à celle d'aujourd'hui.
+Si c'est le cas, j'applique le nouveau today_format (jaune sur fond bleu).
+Sinon, je conserve l'ancien date_format (bleu).
+
+Avec cette modification, la date du jour sera bien mise en évidence en jaune vif dans le calendrier si une note a été créée pour aujourd'hui, tout en conservant la mise en forme bleue pour les autres jours.
+
+Dès que le fichier de la note du jour est créé ou modifié, la fonction update_calendar_highlights est immédiatement exécutée. Elle va alors scanner le répertoire, voir que la note pour aujourd'hui existe, et demander au panneau de navigation de mettre à jour l'affichage du calendrier, faisant ainsi passer le chiffre du jour en jaune vif, et ce, sans avoir besoin de redémarrer l'application.
+
 ## V2.3.1 Integration Video Youtube
 Je voudrait ajouter un sous menu au Menu" Intégrations" appelé "Vidéo YouTube" avec un emoji.
 Quand ce menu est appelé :

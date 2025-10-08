@@ -231,26 +231,14 @@ class NavigationPanel(QWidget):
 
         :param dates: Une liste ou un set d'objets QDate à surligner.
         """
-        # Format pour les dates avec une note (non-aujourd'hui)
+        # Format pour les dates avec une note
         date_format = QTextCharFormat()
         # Utilise la même couleur bleue que le label du journal
         date_format.setForeground(QBrush(QColor("#3498db")))
         date_format.setFontWeight(700)  # Gras
 
-        # Format pour la date d'aujourd'hui avec une note
-        today_format = QTextCharFormat()
-        today_format.setForeground(QBrush(QColor("#FFFF00")))  # Jaune vif
-        today_format.setFontWeight(QFont.Bold)
-        # On peut aussi ajouter un fond pour améliorer la lisibilité
-        today_format.setBackground(QBrush(QColor("#3498db")))
-
-        today = QDate.currentDate()
-
         for date in dates:
-            if date == today:
-                self.calendar.setDateTextFormat(date, today_format)
-            else:
-                self.calendar.setDateTextFormat(date, date_format)
+            self.calendar.setDateTextFormat(date, date_format)
 
     def on_tag_search_changed(self, text):
         """Gère le changement de texte dans le champ de recherche."""
