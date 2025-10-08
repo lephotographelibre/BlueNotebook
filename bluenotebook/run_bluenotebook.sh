@@ -74,7 +74,7 @@ fi
 echo "" # Ligne vide pour l'aération
 echo "📘 Lancement de l'application BlueNotebook..."
 
-
+# export BLUENOTEBOOK_LOCALE=de_DE
 # Définir la locale pour l'application, avec 'fr_FR' comme valeur par défaut
 export BLUENOTEBOOK_LOCALE="${BLUENOTEBOOK_LOCALE:-fr_FR}"
 

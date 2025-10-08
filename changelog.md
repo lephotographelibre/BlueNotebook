@@ -1,3 +1,22 @@
+## V2.3.3 Fix Issue [#19](https://github.com/lephotographelibre/BlueNotebook/issues/19)
+
+Lors du lancement la première fois de l'application (c'est a dire qu'il n'existe pas encore de note journalière à la date d'Aujourd'hui) a journée un boite de dialogue s'ouvre "Créer un nouveau document".
+
+2 choix sont:
+
+Créer un fichier Vierge (coché par défaut)
+Utiliser un modèle
+
+Je voudrais que par defaut soit sélectionné "Utiliser un modèle" avec  le template [Fr]Page_Journal_Standard.md si la locale de l'utilisatuer est "fr_FR"
+
+Pour toutes les autres locales Je voudrais que par defaut soit sélectionné "Utiliser un modèle" avec  le template [en-US]default.md
+
+les templates sont stockées dans le répertoire bluenotebook/resources/templates/
+
+Pour les autres utilisattions (c'est a dire qu'il  existe une note journalière à la date d'Aujourd'hui) il faudra continuer a faire comme fit actuellement:
+-Créer un fichier Vierge (coché par défaut) sans sélection de modèle
+
+
 ## V2.3.2 Fix Issue [#7](https://github.com/lephotographelibre/BlueNotebook/issues/7)
 
 Dans le widget calendrier dans le panneau Navigation Journal mettre le chiffre de la journée d'aujourd'hui   dans une police jaune vif si une note journalière existe dans le journal pour aujourd'hui bluenotebook navigation.py

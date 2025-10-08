@@ -103,7 +103,9 @@ class PdfExportWorker(QRunnable):
 class NewFileDialog(QDialog):
     """Boîte de dialogue pour choisir le type de nouveau fichier à créer."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self, parent=None, use_template_by_default=False, default_template_name=None
+    ):
         super().__init__(parent)
         self.setWindowTitle("Créer un nouveau document")
         self.setMinimumWidth(400)
@@ -130,7 +132,17 @@ class NewFileDialog(QDialog):
         self.button_box.rejected.connect(self.reject)
 
         self._populate_templates()
-        self.blank_radio.setChecked(True)
+
+        if use_template_by_default and default_template_name:
+            index = self.template_combo.findText(default_template_name)
+            if index != -1:
+                self.template_combo.setCurrentIndex(index)
+                self.template_radio.setChecked(True)
+            else:
+                # Fallback si le template par défaut n'est pas trouvé
+                self.blank_radio.setChecked(True)
+        else:
+            self.blank_radio.setChecked(True)
 
     def _populate_templates(self):
         """Remplit le combobox avec les modèles trouvés."""
@@ -843,7 +855,31 @@ class MainWindow(QMainWindow):
         if not self.check_save_changes():
             return
 
-        dialog = NewFileDialog(self)
+        # Déterminer si la note du jour existe déjà
+        today_note_exists = False
+        if self.journal_directory:
+            today_str = datetime.now().strftime("%Y%m%d")
+            journal_file_path = self.journal_directory / f"{today_str}.md"
+            if journal_file_path.exists():
+                today_note_exists = True
+
+        # Configurer la boîte de dialogue en fonction de l'existence de la note du jour
+        if not today_note_exists:
+            # Première note de la journée : proposer un template par défaut
+            current_locale = locale.getlocale(locale.LC_TIME)[0]
+            if current_locale and current_locale.startswith("fr"):
+                default_template = "[Fr]Page_Journal_Standard.md"
+            else:
+                default_template = "[en-US]default.md"
+            dialog = NewFileDialog(
+                self,
+                use_template_by_default=True,
+                default_template_name=default_template,
+            )
+        else:
+            # La note existe déjà : proposer un fichier vierge
+            dialog = NewFileDialog(self)
+
         if dialog.exec_() != QDialog.Accepted:
             return
 
