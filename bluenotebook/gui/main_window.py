@@ -50,6 +50,8 @@ from PyQt5.QtWidgets import (
     QRadioButton,
     QComboBox,
 )
+from PyQt5.QtWidgets import QSplitterHandle, QToolButton
+
 from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
 from PyQt5.QtCore import QThreadPool
 from PyQt5.QtGui import QKeySequence, QIcon, QFont
@@ -165,6 +167,95 @@ class NewFileDialog(QDialog):
                 return "blank", None
 
 
+class CollapsibleSplitterHandle(QSplitterHandle):
+    """Poignée de splitter avec des boutons pour réduire/restaurer les panneaux."""
+
+    def __init__(self, orientation, parent):
+        super().__init__(orientation, parent)
+        self.splitter = parent
+
+        layout = (
+            QHBoxLayout(self) if orientation == Qt.Horizontal else QVBoxLayout(self)
+        )
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
+        self.button_left = QToolButton(self)
+        self.button_right = QToolButton(self)
+
+        if orientation == Qt.Horizontal:
+            self.button_left.setArrowType(Qt.LeftArrow)
+            self.button_right.setArrowType(Qt.RightArrow)
+            layout.addWidget(self.button_left)
+            layout.addStretch()
+            layout.addWidget(self.button_right)
+        else:  # Vertical
+            self.button_left.setArrowType(Qt.UpArrow)
+            self.button_right.setArrowType(Qt.DownArrow)
+            layout.addWidget(self.button_left)
+            layout.addStretch()
+            layout.addWidget(self.button_right)
+
+        self.button_left.setFixedSize(20, 40)
+        self.button_right.setFixedSize(20, 40)
+
+        # Style pour rendre les flèches plus visibles
+        button_style = """
+            QToolButton {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                background-color: rgba(0, 0, 0, 0.4);
+                color: white;
+                border-radius: 10px;
+            }
+            QToolButton:hover {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+        """
+        self.button_left.setStyleSheet(button_style)
+        self.button_right.setStyleSheet(button_style)
+
+        self.button_left.clicked.connect(self.collapse_or_expand)
+        self.button_right.clicked.connect(self.collapse_or_expand)
+
+    def collapse_or_expand(self):
+        """Réduit ou restaure les panneaux adjacents."""
+        sizes = self.splitter.sizes()
+        handle_index = self.splitter.indexOf(self)
+
+        if self.sender() == self.button_left:
+            # Collapse left widget
+            if sizes[handle_index - 1] > 0:
+                sizes[handle_index - 1] = 0
+            else:  # Restore
+                total = sum(sizes)
+                if total > 0:
+                    sizes[handle_index - 1] = int(total * 0.25)  # Restore to 25%
+        else:  # button_right
+            # Collapse right widget
+            if sizes[handle_index] > 0:
+                sizes[handle_index] = 0
+            else:  # Restore
+                total = sum(sizes)
+                if total > 0:
+                    sizes[handle_index] = int(total * 0.25)  # Restore to 25%
+
+        # Redistribute remaining space
+        total = sum(sizes)
+        non_zero_widgets = [i for i, size in enumerate(sizes) if size > 0]
+        if non_zero_widgets:
+            extra_space = self.splitter.width() - total
+            per_widget_extra = extra_space / len(non_zero_widgets)
+            for i in non_zero_widgets:
+                sizes[i] += per_widget_extra
+
+        self.splitter.setSizes([int(s) for s in sizes])
+
+
+class CollapsibleSplitter(QSplitter):
+    def createHandle(self):
+        return CollapsibleSplitterHandle(self.orientation(), self)
+
+
 class InsertTemplateDialog(QDialog):
     """Boîte de dialogue pour choisir un modèle à insérer."""
 
@@ -263,8 +354,8 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(10, 10, 10, 10)
         main_layout.setSpacing(10)
 
-        main_splitter = QSplitter(Qt.Horizontal)
-        main_splitter.setHandleWidth(8)
+        main_splitter = CollapsibleSplitter(Qt.Horizontal)
+        main_splitter.setHandleWidth(12)
         main_splitter.setStyleSheet(
             """
             QSplitter::handle {
@@ -284,8 +375,8 @@ class MainWindow(QMainWindow):
         self.outline_panel = OutlinePanel()
         main_splitter.addWidget(self.outline_panel)
 
-        editor_preview_splitter = QSplitter(Qt.Horizontal)
-        editor_preview_splitter.setHandleWidth(8)
+        editor_preview_splitter = CollapsibleSplitter(Qt.Horizontal)
+        editor_preview_splitter.setHandleWidth(12)
         editor_preview_splitter.setStyleSheet(
             """
             QSplitter::handle {
@@ -307,14 +398,14 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.setCollapsible(0, False)
         editor_preview_splitter.setCollapsible(1, False)
 
-        self.editor.setMinimumWidth(300)
-        self.preview.setMinimumWidth(300)
+        # self.editor.setMinimumWidth(300)
+        # self.preview.setMinimumWidth(300)
 
         main_splitter.addWidget(editor_preview_splitter)
 
         self.navigation_panel.setFixedWidth(400)
         self.outline_panel.setFixedWidth(400)
-        main_splitter.setSizes([400, 400, 1000])
+        main_splitter.setSizes([400, 400, 1400])
         main_splitter.setCollapsible(0, False)
         main_splitter.setCollapsible(2, False)
 

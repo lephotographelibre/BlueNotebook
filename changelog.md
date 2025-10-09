@@ -1,3 +1,13 @@
+## V2.3.5 QSplitter
+
+sur les bordures verticales de la fenetre editeur je voudrais un petit composants un handle au milier qui permette d'ouvre ou fermer un panneau latéral. je ne connais pas le nom de ce type de widget graphique qui existe par exemple dans Libreoffice Calc. nous pouvons ajouter de petits boutons (flèches) directement sur la poignée du `QSplitter`. Un clic sur ces boutons permettra de masquer ou de réafficher le panneau adjacent.
+
+Une poignée entre editeur et Aperçu et une poignée entre Editeur et Plandu Document
+
+beta1
+
+
+
 ## V2.3.4 Fix image path for preview
 
 
