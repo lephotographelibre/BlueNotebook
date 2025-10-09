@@ -19,6 +19,8 @@ Composant éditeur de texte BlueNotebook avec coloration syntaxique PyQt5
 
 from pathlib import Path
 import os
+import shutil
+from datetime import datetime
 import re
 from PyQt5.QtWidgets import (
     QWidget,
@@ -1053,6 +1055,8 @@ class MarkdownEditor(QWidget):
             file_path = selected_text
 
         if file_path:
+            relative_path = self._copy_image_to_journal(file_path)
+
             width, ok = QInputDialog.getInt(
                 self,
                 "Largeur de l'image",
@@ -1063,7 +1067,7 @@ class MarkdownEditor(QWidget):
                 1,
             )
             if ok:
-                cursor.insertText(f'<img src="{file_path}" width="{width}">')
+                cursor.insertText(f'<img src="{relative_path}" width="{width}">')
 
     def insert_markdown_image(self):
         """Insère une image au format Markdown ![](/chemin/vers/image)."""
@@ -1086,12 +1090,44 @@ class MarkdownEditor(QWidget):
             image_path = selected_text
 
         if image_path:
+            relative_path = self._copy_image_to_journal(image_path)
             # Utiliser des barres obliques pour la compatibilité web/markdown
-            image_path_md = image_path.replace("\\", "/")
+            image_path_md = relative_path.replace("\\", "/")
             # Insérer le tag Markdown
             self.insert_text(f"![]({image_path_md})")
 
         self.text_edit.setFocus()
+
+    def _copy_image_to_journal(self, source_path: str) -> str:
+        """
+        Copie une image locale dans le répertoire 'images' du journal,
+        la renomme avec un horodatage et retourne le chemin relatif.
+        Si le chemin est une URL, le retourne inchangé.
+        """
+        if not source_path or source_path.lower().startswith(("http://", "https://")):
+            return source_path
+
+        if not self.main_window or not self.main_window.journal_directory:
+            return source_path  # Pas de journal défini, on utilise le chemin original
+
+        source_file = Path(source_path)
+        if not source_file.is_file():
+            return source_path  # Ce n'est pas un fichier valide
+
+        journal_images_dir = self.main_window.journal_directory / "images"
+        journal_images_dir.mkdir(exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        new_filename = f"{timestamp}_{source_file.name}"
+        destination_file = journal_images_dir / new_filename
+
+        try:
+            shutil.copy2(source_file, destination_file)
+            # Retourne le chemin relatif pour l'insertion dans le Markdown
+            return f"images/{new_filename}"
+        except Exception as e:
+            print(f"Erreur lors de la copie de l'image : {e}")
+            return source_path  # En cas d'erreur, on retourne le chemin original
 
     def clear_formatting(self):
         """Supprime le formatage Markdown de la sélection."""

@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.3.3
+            Manuel Utilisateur - BlueNotebook V2.3.4
         </h1>
     </header>
 
@@ -88,16 +88,16 @@
             <li><a href="#concept-journal">4. Le Concept de "Journal"</a></li>
             <li><a href="#templates">5. Gérer et Utiliser les Modèles</a></li>
             <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
-            <li><a href="#integrations">7. Intégrations (YouTube, etc.)</a></li>
-            <li><a href="#recherche-avancee">8. Recherche et Navigation Avancée</a></li>
-            <li><a href="#menus">9. Exploration des Menus</a></li>
-            <li><a href="#export-html">10. Exportation en HTML</a></li>
+            <li><a href="#images-locales">7. Gestion des Images Locales</a></li>
+            <li><a href="#integrations">8. Intégrations (YouTube, etc.)</a></li>
+            <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
+            <li><a href="#menus">10. Exploration des Menus</a></li>
             <li><a href="#export-pdf">11. Exportation du Journal en PDF</a></li>
             <li><a href="#backup-restore">12. Sauvegarde et Restauration</a></li>
             <li><a href="#preferences">13. Personnalisation Avancée</a>
                 <ul>
-                    <li><a href="#themes-editeur">12.1 Personnalisation de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">12.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
+                    <li><a href="#themes-editeur">13.1 Personnalisation de l'Éditeur</a></li>
+                    <li><a href="#themes-apercu">13.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
                 </ul>
             </li>
             <li><a href="#raccourcis">12. Raccourcis Clavier</a></li>
@@ -222,8 +222,28 @@
         </ul>
     </section>
 
+    <section id="images-locales">
+        <h2>7. Gestion des Images Locales</h2>
+        <p>Pour garantir que votre journal reste complet et portable, BlueNotebook gère intelligemment les images que vous insérez depuis votre ordinateur.</p>
+        <h3>Le Processus Automatique</h3>
+        <p>Lorsque vous insérez une image locale (via <code>➕ Insérer > 🖼️ Image</code> ou <code>🖼️ Image Markdown</code>), l'application effectue les actions suivantes en arrière-plan :</p>
+        <ol>
+            <li><strong>Copie de l'image :</strong> Une copie de votre image est créée dans un sous-dossier nommé <code>images</code> à l'intérieur de votre répertoire de journal. Si ce dossier n'existe pas, il est créé automatiquement.</li>
+            <li><strong>Renommage intelligent :</strong> Pour éviter les conflits de noms et garder une trace chronologique, l'image copiée est renommée avec un horodatage, par exemple : <code>202510090805_votre_image.jpg</code>.</li>
+            <li><strong>Insertion d'un lien relatif :</strong> Le code inséré dans votre note (que ce soit une balise <code>&lt;img&gt;</code> ou une syntaxe Markdown) utilisera un chemin relatif vers cette nouvelle image (ex: <code>src="images/202510090805_votre_image.jpg"</code>).</li>
+        </ol>
+        <h3>Les Avantages</h3>
+        <ul>
+            <li><strong>Portabilité :</strong> Votre journal devient entièrement autonome. Vous pouvez déplacer ou copier le dossier de votre journal sur un autre ordinateur, et toutes vos images continueront de s'afficher car elles sont incluses.</li>
+            <li><strong>Sécurité :</strong> L'image originale sur votre ordinateur n'est pas modifiée.</li>
+            <li><strong>Organisation :</strong> Toutes les images de votre journal sont centralisées dans un seul et même dossier.</li>
+        </ul>
+        <p>Si vous insérez une image depuis une URL internet (<code>http://...</code>), elle ne sera pas copiée et le lien restera externe.</p>
+    </section>
+
+
     <section id="integrations">
-        <h2>7. Intégrations (YouTube, etc.)</h2>
+        <h2>8. Intégrations (YouTube, etc.)</h2>
         <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>🔌 Intégrations</code>.</p>
 
         <h3>Intégrer une Vidéo YouTube</h3>
@@ -243,7 +263,7 @@
     </section>
 
     <section id="recherche-avancee">
-        <h2>7. Recherche et Navigation Avancée</h2>
+        <h2>9. Recherche et Navigation Avancée</h2>
         <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
         
         <h3>Les Nuages de Tags et de Mots</h3>
@@ -270,7 +290,7 @@
     </section>
 
     <section id="menus">
-        <h2>8. Exploration Détaillée des Menus</h2>
+        <h2>10. Exploration Détaillée des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 📁 Fichier
@@ -328,9 +348,9 @@
 └── 🧹 RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
 ➕ Insérer
-├── 🖼️ Image (<img ...>) : Insère une image via une balise HTML `<img>`.
-├── 🖼️ Image Markdown : Insère une image avec la syntaxe Markdown `!`.
-├── 🔗 Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
+├── 🖼️ Image (<img ...>) : Insère une image via une balise HTML. Copie les images locales dans le journal.
+├── 🖼️ Image Markdown : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
+├── � Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
 ├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe ``.
 ├── 🔗 Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
@@ -357,7 +377,7 @@
     </section>
 
     <section id="export-pdf">
-        <h2>9. Exportation du Journal en PDF</h2>
+        <h2>11. Exportation du Journal en PDF</h2>
         <p>BlueNotebook vous permet de créer un document PDF professionnel et paginé de votre journal, idéal pour l'archivage, l'impression ou le partage. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal PDF...</code>.</p>
         <p>Lorsque vous lancez cette action, une boîte de dialogue apparaît, vous donnant un contrôle total sur le contenu de l'export :</p>
         <ul>
@@ -377,7 +397,7 @@
     </section>
 
     <section id="backup-restore">
-        <h2>10. Sauvegarde et Restauration du Journal</h2>
+        <h2>12. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -400,7 +420,7 @@
     </section>
 
     <section id="preferences">
-        <h2>11. Personnalisation Avancée (Préférences)</h2>
+        <h2>13. Personnalisation Avancée (Préférences)</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -413,7 +433,7 @@
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">12.1 Personnalisation de l'Éditeur</h4>
+        <h4 id="themes-editeur">13.1 Personnalisation de l'Éditeur</h4>
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture. BlueNotebook vous offre une flexibilité totale, que vous souhaitiez utiliser un thème prêt à l'emploi ou créer le vôtre.</p>
 
         <p> <strong>Affichage des numéros de lignes ? :</strong> </p> 
@@ -433,7 +453,7 @@
             <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, très pratique pour se repérer dans de longs documents.</li>
         </ul>
 
-        <h4 id="themes-apercu">12.2 Personnalisation de l'Aperçu HTML (et des Exports)</h4>
+        <h4 id="themes-apercu">13.2 Personnalisation de l'Aperçu HTML (et des Exports)</h4>
         <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>.</p>
         <p>L'apparence est contrôlée par des feuilles de style CSS. Pour vous aider à choisir, une prévisualisation du rendu est intégrée directement dans la fenêtre des préférences.</p>
         <ul>
@@ -597,7 +617,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.3.3 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.3.4 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

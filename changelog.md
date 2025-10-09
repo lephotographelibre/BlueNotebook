@@ -1,3 +1,61 @@
+## V2.3.4 Fix image path for preview
+
+
+## Gestion des l'URL relative pour les images locales
+
+@@Prompt
+Pour que les images avec des chemins relatifs comme images/qr-code-svg.jpg s'affichent à la fois dans l'aperçu HTML et dans l'export PDF, il faut indiquer à l'aperçu (QWebEngineView) quel est le dossier de base pour résoudre ces chemins.
+
+La solution consiste à passer l'URL du répertoire de votre journal comme baseUrl lors de la mise à jour du contenu HTML.
+
+Actuellement, votre fichier preview.py utilise baseUrl=QUrl("file:///"). Cela autorise le chargement de fichiers locaux, mais uniquement avec des chemins absolus (ex: /home/user/Journal/images/photo.jpg). Un chemin relatif comme images/photo.jpg est interprété comme /images/photo.jpg, ce qui est incorrect.
+
+Solution
+Nous allons modifier la méthode update_content dans bluenotebook/gui/preview.py pour qu'elle accepte le chemin du répertoire du journal et l'utilise comme base pour les chemins relatifs.
+
+nous allons maintenant intégrer la modification dans main_window.py pour qu'il transmette le chemin du répertoire du journal à l'aperçu.
+
+Cela permettra à l'aperçu HTML de résoudre correctement les chemins relatifs des images (comme images/mon-image.jpg) et de les afficher.
+
+Modification du fichier main_window.py
+L'objectif est de passer self.journal_directory lors de l'appel à self.preview.update_content(). Cette méthode est appelée à plusieurs endroits, mais principalement via la méthode update_preview(). C'est donc cette dernière que nous allons modifier.
+
+
+Avec cette modification, chaque fois que l'aperçu HTML est rafraîchi, il reçoit le chemin du répertoire de votre journal. Il peut alors l'utiliser comme base pour résoudre les chemins relatifs des images, comme src="images/qr-code-svg.jpg".
+
+beta1
+
+### Récuperer les images locales dans le dossier images du Journal
+
+@@Prompt
+quand je veux inserer une image locale que se soit :
+- Avec le Menu Image (<img ...>)
+- Avec le menu Image Markdown
+
+Si je sélectionne un chemin local,  par exemple  /home/jm/Images/2025_06_26_img_8128.jpg il faudra
+- Copier cette image dans le dossier images du Journal
+- Renommer cette image YYYYMMJJHHSS+ancien_nom.extention
+par exemple 
+
+si je selection  /home/jm/Images/2025_06_26_img_8128.jpg
+l'imege sera copiée comme 202510090805_2025_06_26_img_8128.jpg dans le dossier images du journal
+- on génerera le tag HTML ou markdown  en utilisant ce chemin relatif: "images/202510090805_2025_06_26_img_8128.jpg"
+
+- dans le cas du tag HTML 
+<img src="images/202510090805_2025_06_26_img_8128.jpg" width="100"> on demandera comme actuellement La largeur en pixels de l'image
+- dans le cas d'une image Markdown 
+ ![image](images/202510090805_2025_06_26_img_8128.jpg)
+
+
+beta2
+
+Gérer les images locales de cette manière rendra votre journal beaucoup plus portable et robuste. En copiant les images dans un répertoire local au journal, vous vous assurez de ne jamais perdre les liens, même si vous déplacez le dossier de votre journal.
+
+1. Création d'une méthode centralisée (`_copy_image_to_journal`) dans MarkdownEditor pour gérer la copie et le renommage des images locales.
+2. Cette méthode vérifie si un chemin est local, crée le répertoire images dans le journal s'il n'existe pas, génère un nouveau nom de fichier avec un horodatage, copie l'image, et retourne le nouveau chemin relatif.
+3. Si le chemin est une URL (commençant par http), il est retourné sans modification.
+4. Les méthodes insert_html_image et insert_markdown_image sont mises à jour pour utiliser cette nouvelle logique avant de générer les balises <img> ou Markdown.
+
 ## V2.3.3 Fix Issue [#19](https://github.com/lephotographelibre/BlueNotebook/issues/19)
 
 Lors du lancement la première fois de l'application (c'est a dire qu'il n'existe pas encore de note journalière à la date d'Aujourd'hui) a journée un boite de dialogue s'ouvre "Créer un nouveau document".

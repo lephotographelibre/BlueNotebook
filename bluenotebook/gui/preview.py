@@ -138,7 +138,7 @@ class MarkdownPreview(QWidget):
             theme_filename = "default_preview.css"
 
         self.default_css = self._load_css_from_file(theme_filename)
-        
+
         if self.current_markdown:
             self.update_content(self.current_markdown)
 
@@ -149,7 +149,7 @@ class MarkdownPreview(QWidget):
             toc_html = (
                 f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
             )
-        
+
         final_css = self.default_css + self.custom_css
 
         return f"""
@@ -208,7 +208,7 @@ class MarkdownPreview(QWidget):
         """
         self.web_view.setHtml(welcome_content)
 
-    def update_content(self, markdown_content):
+    def update_content(self, markdown_content: str, journal_dir: str = None):
         """Mettre à jour le contenu de l'aperçu"""
         try:
             self.current_markdown = markdown_content
@@ -221,7 +221,11 @@ class MarkdownPreview(QWidget):
             html_content = self.md.convert(markdown_content)
             full_html = self.create_html_template(html_content)
 
-            self.web_view.setHtml(full_html, baseUrl=QUrl("file:///"))
+            if journal_dir:
+                base_url = QUrl.fromLocalFile(journal_dir + os.path.sep)
+            else:
+                base_url = QUrl("file:///")
+            self.web_view.setHtml(full_html, baseUrl=base_url)
             self.current_html = full_html
 
         except Exception as e:

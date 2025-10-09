@@ -24,6 +24,7 @@ import os
 import re
 import json
 import shutil
+from datetime import datetime
 import zipfile
 from datetime import datetime
 
@@ -822,7 +823,10 @@ class MainWindow(QMainWindow):
     def update_preview(self):
         """Mettre à jour l'aperçu"""
         content = self.editor.get_text()
-        self.preview.update_content(content)
+        journal_dir_str = (
+            str(self.journal_directory) if self.journal_directory else None
+        )
+        self.preview.update_content(content, journal_dir=journal_dir_str)
 
     def update_title(self):
         """Mettre à jour le titre de la fenêtre"""
