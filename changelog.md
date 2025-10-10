@@ -1,3 +1,60 @@
+## V2.3.6 Integration GPS -> Maps
+
+    # pip install py-staticmaps[cairo]
+    # sudo apt install libcairo2-dev
+
+je voudrais créer une nouvelle integration qui à partir de coordonées GPS affichue une carte statique sous la forme d'une image HTML.
+
+ 
+- ajouter un sous menu au Menu" Intégrations" appelé "Maps GPS" avec un emoji. Quand ce menu est appelé : - Soit une chaine de caractère (les coordonées GPS de la carte à créer) est  déja sélectionnée dans l'éditeur Markdown - Soit on demande à l'utilisateur de saisir  les coordonées GPS de la carte à créer Latitude: Longitude:
+- On va verfier que ces coordonées existent Sinon message d'erreur
+
+- Le code nécessaire à l'integration sera stocké dans le dossiers bluenotebook/integrations
+- Les coordonnées GPS seront dans l'éditeur Markdown sous la forme [46.569317, 0.346048]
+- Il faudra récherche la ville la plus proche des ces coordonées GPS
+- Carte fabriquée au format PNG sera stockée dans le dossier images du Journal. On demandra a l'utilisateur la taille de la largueur de l'affichage en Pixels
+- si les coordonnées GPS sont [46.569317, 0.346048] le code généré par l'intégration sera du type::
+
+
+<img src="images/YYYYMMJJHHSS_carte+lieu.jpg" width="800">
+
+|   | [46.569317, 0.346048]  |
+|---|---|
+| Lieu | Poitiers |
+| OpenSteetMap | <https://www.openstreetmap.org/#map=16/46.569317/0.346048>|
+
+le code pour fabriquer la carte sera inspiré de 
+```python
+import staticmaps
+
+context = staticmaps.Context()
+context.set_tile_provider(staticmaps.tile_provider_OSM)
+
+place = staticmaps.create_latlng(float("46.569317"), float("0.346048"))
+context.add_object(staticmaps.Marker(place, size=5))
+
+# render png via cairo
+if staticmaps.cairo_is_supported():
+    cairo_image = context.render_cairo(800, 500)
+    cairo_image.write_to_png("imagesYYYYMMJJHHSS_carte+lieu.png")
+```
+
+beta1
+
+
+modifier pour un code HTML du type
+
+```html
+<figure style="text-align: center;">
+    <a href="https://www.openstreetmap.org/#map=16/46.569317/0.346048">
+         <img src="images/20251010181131_carte_Poitiers.png" alt="Carte de Poitiers, coordonnées 46.569317, 0.346048" width="800">
+    </a>
+    <figcaption style="font-weight: bold;">GPS: [46.569317, 0.346048]  Poitiers</figcaption>
+</figure>
+```
+Beta2
+
+
 ## VX.Y Image --> Coord GPS -- Map - Side bt Side Image and Ma
 
 ## Integration: Image OpenSteetMap

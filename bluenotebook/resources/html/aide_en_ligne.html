@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.3.5
+            Manuel Utilisateur - BlueNotebook V2.3.6
         </h1>
     </header>
 
@@ -88,8 +88,13 @@
             <li><a href="#concept-journal">4. Le Concept de "Journal"</a></li>
             <li><a href="#templates">5. Gérer et Utiliser les Modèles</a></li>
             <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
-            <li><a href="#images-locales">7. Gestion des Images Locales</a></li>
-            <li><a href="#integrations">8. Intégrations (YouTube, etc.)</a></li>
+            <li><a href="#images-locales">7. Gestion des Images et Fichiers</a>
+                <ul>
+                    <li><a href="#images-locales">7.1 Images Locales</a></li>
+                    <li><a href="#cartes-gps">7.2 Cartes GPS</a></li>
+                </ul>
+            </li>
+            <li><a href="#integrations">8. Intégrations (YouTube, Citation)</a></li>
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">10. Exploration des Menus</a></li>
             <li><a href="#export-pdf">11. Exportation du Journal en PDF</a></li>
@@ -222,13 +227,14 @@
         </ul>
     </section>
 
-    <section id="images-locales">
-        <h2>7. Gestion des Images Locales</h2>
+    <section id="images-fichiers">
+        <h2>7. Gestion des Images et Fichiers</h2>
+        <h3 id="images-locales">7.1 Gestion des Images Locales</h3>
         <p>Pour garantir que votre journal reste complet et portable, BlueNotebook gère intelligemment les images que vous insérez depuis votre ordinateur.</p>
         <h3>Le Processus Automatique</h3>
         <p>Lorsque vous insérez une image locale (via <code>➕ Insérer > 🖼️ Image</code> ou <code>🖼️ Image Markdown</code>), l'application effectue les actions suivantes en arrière-plan :</p>
         <ol>
-            <li><strong>Copie de l'image :</strong> Une copie de votre image est créée dans un sous-dossier nommé <code>images</code> à l'intérieur de votre répertoire de journal. Si ce dossier n'existe pas, il est créé automatiquement.</li>
+            <li><strong>Copie de l'image :</strong> Une copie de votre image est créée dans un sous-dossier nommé <code>images</code> à l'intérieur de votre répertoire de journal.</li>
             <li><strong>Renommage intelligent :</strong> Pour éviter les conflits de noms et garder une trace chronologique, l'image copiée est renommée avec un horodatage, par exemple : <code>202510090805_votre_image.jpg</code>.</li>
             <li><strong>Insertion d'un lien relatif :</strong> Le code inséré dans votre note (que ce soit une balise <code>&lt;img&gt;</code> ou une syntaxe Markdown) utilisera un chemin relatif vers cette nouvelle image (ex: <code>src="images/202510090805_votre_image.jpg"</code>).</li>
         </ol>
@@ -240,10 +246,33 @@
         </ul>
         <p>Si vous insérez une image depuis une URL internet (<code>http://...</code>), elle ne sera pas copiée et le lien restera externe.</p>
     </section>
-
+    
+    <section id="cartes-gps">
+        <h3 id="cartes-gps">7.2 Intégrer une Carte Statique (GPS)</h3>
+        <p>Vous pouvez générer et insérer une carte statique directement dans vos notes à partir de coordonnées GPS. Cette fonctionnalité est idéale pour documenter des lieux de voyage, des randonnées ou des points d'intérêt.</p>
+        <ol>
+            <li>Allez dans le menu <code>🔌 Intégrations > 🗺️ Maps GPS</code>.</li>
+            <li>Une boîte de dialogue vous demandera de saisir la <strong>Latitude</strong> et la <strong>Longitude</strong>. Vous pouvez aussi sélectionner du texte au format <code>[46.514, 0.338]</code> dans l'éditeur avant de lancer l'action pour pré-remplir les champs.</li>
+            <li>Choisissez ensuite la <strong>largeur</strong> de l'image de la carte en pixels.</li>
+            <li>L'application va alors :
+                <ul>
+                    <li>Contacter un service de géolocalisation pour trouver le nom du lieu le plus proche (ex: "Ligugé").</li>
+                    <li>Générer une image de carte statique (un fichier <code>.png</code>) et la sauvegarder dans le dossier <code>images/</code> de votre journal.</li>
+                    <li>Insérer un bloc HTML propre et sémantique dans votre note.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Le résultat est une image cliquable qui renvoie vers OpenStreetMap, avec une légende claire indiquant les coordonnées et le nom du lieu.
+        <pre><code>&lt;figure style="text-align: center;"&gt;
+    &lt;a href="https://www.openstreetmap.org/..."&gt;
+        &lt;img src="images/20251010175513_carte_Ligug.png" alt="..."&gt;
+    &lt;/a&gt;
+    &lt;figcaption style="font-weight: bold;"&gt;GPS: [46.569, 0.346] Ligugé&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+    </section>
 
     <section id="integrations">
-        <h2>8. Intégrations (YouTube, etc.)</h2>
+        <h2>8. Intégrations (YouTube, Citation)</h2>
         <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>🔌 Intégrations</code>.</p>
 
         <h3>Intégrer une Vidéo YouTube</h3>
@@ -350,8 +379,8 @@
 ➕ Insérer
 ├── 🖼️ Image (<img ...>) : Insère une image via une balise HTML. Copie les images locales dans le journal.
 ├── 🖼️ Image Markdown : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
-├── � Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
-├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe ``.
+├── 🔗 Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
+├── 🔗 Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe `texte`.
 ├── 🔗 Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
 ├── ➖ Ligne Horizontale : Insère une ligne de séparation (`---`).
@@ -366,10 +395,9 @@
 
 🔌 Intégrations
 ├── ✨ Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+├── 🗺️ Maps GPS : Génère et insère une carte statique à partir de coordonnées GPS.
 └── 🎬 Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
 
----
-        
 ❓ Aide
 ├── 🌐 Documentation en ligne : Ouvre ce manuel d'aide dans votre navigateur.
 └── 💡 À propos : Affiche les informations sur l'application, sa version et sa licence.
@@ -617,7 +645,7 @@
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.3.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.3.6 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

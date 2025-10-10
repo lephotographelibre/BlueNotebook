@@ -50,6 +50,7 @@ from PyQt5.QtWidgets import (
     QRadioButton,
     QComboBox,
 )
+from PyQt5.QtWidgets import QFormLayout, QLineEdit
 from PyQt5.QtWidgets import QSplitterHandle, QToolButton
 
 from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
@@ -69,6 +70,7 @@ from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
 import requests
 from bs4 import BeautifulSoup
+from integrations.gps_map_generator import get_location_name, create_gps_map
 from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
@@ -165,6 +167,42 @@ class NewFileDialog(QDialog):
             else:
                 # Fallback si aucun template n'est trouvé
                 return "blank", None
+
+
+class GpsInputDialog(QDialog):
+    """Boîte de dialogue pour saisir les coordonnées GPS."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Coordonnées GPS")
+        self.setMinimumWidth(300)
+
+        self.layout = QFormLayout(self)
+
+        self.lat_edit = QLineEdit(self)
+        self.lon_edit = QLineEdit(self)
+
+        self.layout.addRow("Latitude:", self.lat_edit)
+        self.layout.addRow("Longitude:", self.lon_edit)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
+        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.layout.addRow(self.button_box)
+
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+    def get_coordinates(self):
+        """Retourne la latitude et la longitude saisies."""
+        lat_str = self.lat_edit.text().strip().replace(",", ".")
+        lon_str = self.lon_edit.text().strip().replace(",", ".")
+        try:
+            return float(lat_str), float(lon_str)
+        except (ValueError, TypeError):
+            return None, None
 
 
 class CollapsibleSplitterHandle(QSplitterHandle):
@@ -490,6 +528,7 @@ class MainWindow(QMainWindow):
         # Menu Intégrations
         integrations_menu = menubar.addMenu("🔌 &Intégrations")
         integrations_menu.addAction(self.insert_quote_day_action)
+        integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
 
         # Menu Aide
@@ -637,6 +676,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer le contenu d'un modèle à la position du curseur",
             triggered=self.insert_template,
+        )
+        self.insert_gps_map_action = QAction(
+            "🗺️ Maps GPS",
+            self,
+            statusTip="Insérer une carte statique à partir de coordonnées GPS",
+            triggered=self.insert_gps_map,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -1996,6 +2041,114 @@ class MainWindow(QMainWindow):
 
         # Insérer le bloc Markdown dans l'éditeur
         self.editor.insert_youtube_video(video_id, url, video_title)
+
+    def insert_gps_map(self):
+        """Gère la logique d'insertion d'une carte GPS."""
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Journal non défini",
+                "Veuillez définir un répertoire de journal avant d'insérer une carte.",
+            )
+            return
+
+        cursor = self.editor.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+
+        lat, lon = None, None
+
+        if selected_text:
+            try:
+                # Essayer de parser le format [lat, lon]
+                coords = json.loads(selected_text)
+                if isinstance(coords, list) and len(coords) == 2:
+                    lat, lon = float(coords[0]), float(coords[1])
+            except (json.JSONDecodeError, ValueError, TypeError):
+                QMessageBox.warning(
+                    self,
+                    "Format invalide",
+                    "Le texte sélectionné n'est pas au format [latitude, longitude].",
+                )
+                return
+        else:
+            dialog = GpsInputDialog(self)
+            if dialog.exec_() == QDialog.Accepted:
+                lat, lon = dialog.get_coordinates()
+
+        if lat is None or lon is None:
+            return
+
+        # Valider les coordonnées
+        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+            QMessageBox.warning(
+                self,
+                "Coordonnées invalides",
+                "La latitude doit être entre -90 et 90, et la longitude entre -180 et 180.",
+            )
+            return
+
+        # Demander la largeur de l'image
+        width, ok = QInputDialog.getInt(
+            self,
+            "Taille de la carte",
+            "Largeur de l'image (en pixels):",
+            800,
+            200,
+            2000,
+            50,
+        )
+        if not ok:
+            return
+
+        # Calculer la hauteur (ratio 16:10)
+        height = int(width * (10 / 16))
+
+        # Créer le sous-dossier 'images' s'il n'existe pas
+        images_dir = self.journal_directory / "images"
+        images_dir.mkdir(exist_ok=True)
+
+        # Trouver le nom du lieu
+        location_name = get_location_name(lat, lon)
+        # Nettoyer le nom pour le nom de fichier
+        safe_location_name = re.sub(
+            r"[^a-zA-Z0-9_-]", "", location_name.replace(" ", "_")
+        )
+
+        # Générer le nom de fichier de l'image
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        image_filename = f"{timestamp}_carte_{safe_location_name}.png"
+        image_path = images_dir / image_filename
+
+        # Générer la carte
+        success = create_gps_map(lat, lon, width, height, str(image_path))
+
+        if not success:
+            QMessageBox.critical(
+                self,
+                "Erreur de création",
+                "Impossible de générer l'image de la carte. Vérifiez que Cairo est installé.",
+            )
+            return
+
+        # Construire le bloc HTML à insérer
+        relative_image_path = f"images/{image_filename}"
+        osm_link = f"https://www.openstreetmap.org/#map=16/{lat}/{lon}"
+        alt_text = f"Carte de {location_name}, coordonnées {lat}, {lon}"
+
+        html_block = f"""
+<figure style="text-align: center;">
+    <a href="{osm_link}">
+         <img src="{relative_image_path}" alt="{alt_text}" width="{width}">
+    </a>
+    <figcaption style="font-weight: bold;">GPS: [{lat}, {lon}]  {location_name}</figcaption>
+</figure>
+"""
+
+        self.editor.insert_text(html_block)
+
+        self.statusbar.showMessage(
+            f"Carte pour '{location_name}' insérée avec succès.", 5000
+        )
 
     @staticmethod
     def _extract_youtube_id(url: str) -> str | None:

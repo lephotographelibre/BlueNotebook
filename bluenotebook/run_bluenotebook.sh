@@ -38,9 +38,12 @@ if ! pyenv virtualenvs --bare | grep -q "^${VENV_NAME}$"; then
     pyenv virtualenv "${PYTHON_VERSION}" "${VENV_NAME}"
 fi
 
-# 4. Activer l'environnement virtuel
-export PYENV_VERSION="${VENV_NAME}"
-echo "✅ Environnement virtuel '${VENV_NAME}' activé."
+# 4. Activer l'environnement virtuel de manière robuste
+echo "🔌 Activation de l'environnement virtuel '${VENV_NAME}'..."
+source "$(pyenv root)/versions/${VENV_NAME}/bin/activate"
+echo "✅ Environnement virtuel activé. Python : $(which python)"
+echo "✅ Environnement virtuel activé. Pip : $(pip -V)"
+
 
 # 5. Installer/vérifier les dépendances
 echo "📦 Vérification et installation des dépendances depuis requirements.txt..."
@@ -70,6 +73,8 @@ if [ -n "$PLATFORM_THEME" ]; then
 else
     echo "ℹ️ Environnement de bureau non détecté ou non supporté pour un thème spécifique. Qt choisira par défaut."
 fi
+
+
 
 echo "" # Ligne vide pour l'aération
 echo "📘 Lancement de l'application BlueNotebook..."
