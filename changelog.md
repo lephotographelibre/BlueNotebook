@@ -1,3 +1,15 @@
+## VX.Y Image --> Coord GPS -- Map - Side bt Side Image and Ma
+
+## Integration: Image OpenSteetMap
+Je voudrait ajouter un sous menu au Menu" Intégrations" appelé "Maps" avec un emoji.
+Quand ce menu est appelé :
+- Soit une chaine de caractère (URL de la vidéo YouTube ) est déja sélectionnée dans l'éditeur Markdown
+- Soit on demande à l'utilisateur de saisir   l'URL de la vidéo YouTube  
+
+On va ensuite
+- 1 Verifier que cette vidéo YouTube existe bien à testant son URL et si la viéo n'existe pas un message   "Attention: La vidéo YouTube demandée n'existe pas !"
+- 2 générer un tag du type
+
 ## V2.3.5 QSplitter
 
 sur les bordures verticales de la fenetre editeur je voudrais un petit composants un handle au milier qui permette d'ouvre ou fermer un panneau latéral. je ne connais pas le nom de ce type de widget graphique qui existe par exemple dans Libreoffice Calc. nous pouvons ajouter de petits boutons (flèches) directement sur la poignée du `QSplitter`. Un clic sur ces boutons permettra de masquer ou de réafficher le panneau adjacent.
