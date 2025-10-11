@@ -235,33 +235,33 @@ class CollapsibleSplitterHandle(QSplitterHandle):
             layout.addStretch()
             layout.addWidget(self.button_right)
 
-        self.button_left.setFixedSize(20, 40)
-        self.button_right.setFixedSize(20, 40)
+        self.button_left.setFixedSize(12, 12)
+        self.button_right.setFixedSize(12, 12)
 
         # Style pour rendre les flèches plus visibles
         button_style = """
             QToolButton {
-                border: 1px solid rgba(0, 0, 0, 0.2);
-                background-color: rgba(0, 0, 0, 0.4);
-                color: white;
-                border-radius: 10px;
+                border: none;
+                background-color: #e0e0e0;
+                border-radius: 6px;
             }
             QToolButton:hover {
-                background-color: rgba(0, 0, 0, 0.6);
+                background-color: #3498db;
             }
         """
         self.button_left.setStyleSheet(button_style)
         self.button_right.setStyleSheet(button_style)
 
-        self.button_left.clicked.connect(self.collapse_or_expand)
-        self.button_right.clicked.connect(self.collapse_or_expand)
+        self.button_left.clicked.connect(lambda: self.collapse_or_expand(is_left=True))
+        self.button_right.clicked.connect(
+            lambda: self.collapse_or_expand(is_left=False)
+        )
 
-    def collapse_or_expand(self):
+    def collapse_or_expand(self, is_left):
         """Réduit ou restaure les panneaux adjacents."""
         sizes = self.splitter.sizes()
         handle_index = self.splitter.indexOf(self)
-
-        if self.sender() == self.button_left:
+        if is_left:
             # Collapse left widget
             if sizes[handle_index - 1] > 0:
                 sizes[handle_index - 1] = 0
@@ -389,44 +389,44 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
+        # Appliquer un fond neutre à la fenêtre principale
+        central_widget.setStyleSheet("background-color: #f0f2f5;")
+
         main_layout = QHBoxLayout(central_widget)
-        main_layout.setContentsMargins(10, 10, 10, 10)
-        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(5, 5, 5, 5)
+        main_layout.setSpacing(5)
 
         main_splitter = CollapsibleSplitter(Qt.Horizontal)
-        main_splitter.setHandleWidth(12)
+        main_splitter.setHandleWidth(4)
         main_splitter.setStyleSheet(
             """
             QSplitter::handle {
-                background-color: #dee2e6;
-                border: 1px solid #adb5bd;
-                border-radius: 3px;
+                background-color: transparent;
             }
             QSplitter::handle:hover {
                 background-color: #3498db;
             }
         """
         )
-
         self.navigation_panel = NavigationPanel()
         main_splitter.addWidget(self.navigation_panel)
 
         self.outline_panel = OutlinePanel()
         main_splitter.addWidget(self.outline_panel)
 
+        # --- Splitter interne ---
         editor_preview_splitter = CollapsibleSplitter(Qt.Horizontal)
-        editor_preview_splitter.setHandleWidth(12)
+        editor_preview_splitter.setHandleWidth(4)
         editor_preview_splitter.setStyleSheet(
             """
             QSplitter::handle {
-                background-color: #dee2e6;
+                background-color: transparent;
             }
             QSplitter::handle:hover {
                 background-color: #3498db;
             }
         """
         )
-
         self.editor = MarkdownEditor(main_window=self)
         editor_preview_splitter.addWidget(self.editor)
 
@@ -436,10 +436,6 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.setSizes([700, 700])
         editor_preview_splitter.setCollapsible(0, False)
         editor_preview_splitter.setCollapsible(1, False)
-
-        # self.editor.setMinimumWidth(300)
-        # self.preview.setMinimumWidth(300)
-
         main_splitter.addWidget(editor_preview_splitter)
 
         self.navigation_panel.setFixedWidth(400)
@@ -484,7 +480,7 @@ class MainWindow(QMainWindow):
         self._create_actions()
 
         # Menu Fichier
-        file_menu = menubar.addMenu("📁 &Fichier")
+        file_menu = menubar.addMenu("&Fichier")
         file_menu.addAction(self.new_action)
         file_menu.addAction(self.open_action)
         file_menu.addSeparator()
@@ -504,7 +500,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.quit_action)
 
         # Menu Edition
-        edit_menu = menubar.addMenu("✏️ &Edition")
+        edit_menu = menubar.addMenu("&Edition")
         edit_menu.addAction(self.insert_template_action)
         edit_menu.addSeparator()
         edit_menu.addAction(self.undo_action)
@@ -513,104 +509,104 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(self.find_action)
 
         # Menu Affichage
-        view_menu = menubar.addMenu("👁️ &Affichage")
+        view_menu = menubar.addMenu("&Affichage")
         view_menu.addAction(self.toggle_navigation_action)
         view_menu.addAction(self.toggle_outline_action)
         view_menu.addAction(self.toggle_preview_action)
 
         # Menu Formatter
-        format_menu = menubar.addMenu("🎨 F&ormater")
+        format_menu = menubar.addMenu("F&ormater")
         self._setup_format_menu(format_menu)
 
         # Menu Insérer
-        insert_menu = menubar.addMenu("➕ &Insérer")
+        insert_menu = menubar.addMenu("&Insérer")
         self._setup_insert_menu(insert_menu)
 
         # Menu Intégrations
-        integrations_menu = menubar.addMenu("🔌 &Intégrations")
+        integrations_menu = menubar.addMenu("&Intégrations")
         integrations_menu.addAction(self.insert_quote_day_action)
         integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
 
         # Menu Aide
-        help_menu = menubar.addMenu("❓ &Aide")
+        help_menu = menubar.addMenu("&Aide")
         help_menu.addAction(self.online_help_action)
         help_menu.addAction(self.about_action)
 
     def _create_actions(self):
         """Crée toutes les actions de l'application."""
         self.new_action = QAction(
-            "📄 Nouveau",
+            "Nouveau",
             self,
             shortcut=QKeySequence.New,
             statusTip="Créer un nouveau fichier",
             triggered=self.new_file,
         )
         self.open_action = QAction(
-            "📂 Ouvrir",
+            "Ouvrir",
             self,
             shortcut=QKeySequence.Open,
             statusTip="Ouvrir un fichier existant",
             triggered=self.open_file,
         )
         self.open_journal_action = QAction(
-            "📔 Ouvrir Journal",
+            "Ouvrir Journal",
             self,
             statusTip="Ouvrir un répertoire de journal",
             triggered=self.open_journal,
         )
         self.save_action = QAction(
-            "💾 Sauvegarder dans Journal",
+            "Sauvegarder dans Journal",
             self,
             shortcut=QKeySequence.Save,
             statusTip="Sauvegarder le fichier dans le journal",
             triggered=self.save_file,
         )
         self.save_as_action = QAction(
-            "💾 Sauvegarder sous...",
+            "Sauvegarder sous...",
             self,
             shortcut=QKeySequence.SaveAs,
             statusTip="Sauvegarder sous un nouveau nom",
             triggered=self.save_file_as,
         )
         self.save_as_template_action = QAction(
-            "💾 Sauvegarder comme Modèle...",
+            "Sauvegarder comme Modèle...",
             self,
             statusTip="Sauvegarder le document actuel comme un nouveau modèle",
             triggered=self.save_as_template,
         )
         self.backup_journal_action = QAction(
-            "💾 Sauvegarde Journal...",
+            "Sauvegarde Journal...",
             self,
             statusTip="Sauvegarder le journal complet dans une archive ZIP",
             triggered=self.backup_journal,
         )
         self.restore_journal_action = QAction(
-            "🔄 Restauration Journal...",
+            "Restauration Journal...",
             self,
             statusTip="Restaurer le journal depuis une archive ZIP",
             triggered=self.restore_journal,
         )
         self.export_action = QAction(
-            "🌐 Exporter HTML...",
+            "Exporter HTML...",
             self,
             statusTip="Exporter en HTML",
             triggered=self.export_html,
         )
         self.export_journal_pdf_action = QAction(
-            "📜 Exporter Journal PDF...",
+            "Exporter Journal PDF...",
             self,
             statusTip="Exporter le journal complet en PDF",
             triggered=self.export_journal_pdf,
         )
         self.preferences_action = QAction(
-            "⚙️ Préférences...",
+            "Préférences...",
             self,
             statusTip="Ouvrir les préférences de l'application",
             triggered=self.open_preferences,
         )
         self.quit_action = QAction(
-            "🚪 Quitter",
+            "Quitter",
             self,
             shortcut=QKeySequence.Quit,
             statusTip="Quitter l'application",
@@ -618,68 +614,68 @@ class MainWindow(QMainWindow):
         )
 
         self.undo_action = QAction(
-            "↩️ Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
+            "Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
         )
         self.redo_action = QAction(
-            "↪️ Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
+            "Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
         )
         self.find_action = QAction(
-            "🔍 Rechercher",
+            "Rechercher",
             self,
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
         )
 
         self.toggle_navigation_action = QAction(
-            "🧭 Basculer Navigation Journal",
+            "Basculer Navigation Journal",
             self,
             shortcut="F6",
             triggered=self.toggle_navigation,
         )
 
         self.toggle_outline_action = QAction(
-            "📜 Basculer Plan du document",
+            "Basculer Plan du document",
             self,
             shortcut="F7",
             triggered=self.toggle_outline,
         )
 
         self.toggle_preview_action = QAction(
-            "👁️ Basculer Aperçu HTML", self, shortcut="F5", triggered=self.toggle_preview
+            "Basculer Aperçu HTML", self, shortcut="F5", triggered=self.toggle_preview
         )
 
         self.about_action = QAction(
-            "💡 À propos",
+            "À propos",
             self,
             triggered=self.show_about,
         )
 
         self.online_help_action = QAction(
-            "🌐 Documentation en ligne",
+            "Documentation en ligne",
             self,
             triggered=self.show_online_help,
         )
 
         self.insert_quote_day_action = QAction(
-            "✨ Citation du jour",
+            "Citation du jour",
             self,
             triggered=self.insert_quote_of_the_day,
         )
 
         self.insert_youtube_video_action = QAction(
-            "🎬 Vidéo YouTube",
+            "Vidéo YouTube",
             self,
             statusTip="Insérer une vidéo YouTube",
             triggered=self.insert_youtube_video,
         )
         self.insert_template_action = QAction(
-            "📋 Insérer un modèle...",
+            "Insérer un modèle...",
             self,
             statusTip="Insérer le contenu d'un modèle à la position du curseur",
             triggered=self.insert_template,
         )
         self.insert_gps_map_action = QAction(
-            "🗺️ Carte GPS",
+            "Carte GPS",
             self,
             statusTip="Insérer une carte statique à partir de coordonnées GPS",
             triggered=self.insert_gps_map,
@@ -688,13 +684,13 @@ class MainWindow(QMainWindow):
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
         # Sous-menu Titre
-        title_menu = QMenu("📜 Titres", self)
+        title_menu = QMenu("Titres", self)
         title_actions_data = [
-            ("1️⃣ Niv 1 (#)", "h1"),
-            ("2️⃣ Niv 2 (##)", "h2"),
-            ("3️⃣ Niv 3 (###)", "h3"),
-            ("4️⃣ Niv 4 (####)", "h4"),
-            ("5️⃣ Niv 5 (#####)", "h5"),
+            ("Niv 1 (#)", "h1"),
+            ("Niv 2 (##)", "h2"),
+            ("Niv 3 (###)", "h3"),
+            ("Niv 4 (####)", "h4"),
+            ("Niv 5 (#####)", "h5"),
         ]
         for name, data in title_actions_data:
             action = QAction(name, self)
@@ -705,12 +701,12 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(title_menu)
 
         # Sous-menu Style de texte
-        style_menu = QMenu("🎨 Style de texte", self)
+        style_menu = QMenu("Style de texte", self)
         style_actions_data = [
-            ("🅱️ Gras (**texte**)", "bold", QKeySequence.Bold),
-            ("*️⃣ Italique (*texte*)", "italic"),
-            ("~ Barré (~~texte~~)", "strikethrough"),
-            ("🖍️ Surligné (==texte==)", "highlight"),
+            ("Gras (**texte**)", "bold", QKeySequence.Bold),
+            ("Italique (*texte*)", "italic"),
+            ("Barré (~~texte~~)", "strikethrough"),
+            ("Surligné (==texte==)", "highlight"),
         ]
         for name, data, *shortcut in style_actions_data:
             action = QAction(name, self)
@@ -723,10 +719,10 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(style_menu)
 
         # Sous-menu Code
-        code_menu = QMenu("💻 Code", self)
+        code_menu = QMenu("Code", self)
         code_actions_data = [
-            ("` Monospace (inline)", "inline_code"),
-            ("``` Bloc de code", "code_block"),
+            ("Monospace (inline)", "inline_code"),
+            ("Bloc de code", "code_block"),
         ]
         for name, data in code_actions_data:
             action = QAction(name, self)
@@ -737,7 +733,7 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(code_menu)
 
         # Sous-menu Listes
-        list_menu = QMenu("📋 Listes", self)
+        list_menu = QMenu("Listes", self)
         list_actions_data = [
             ("• Liste non ordonnée", "ul"),
             ("1. Liste ordonnée", "ol"),
@@ -753,21 +749,21 @@ class MainWindow(QMainWindow):
 
         format_menu.addSeparator()
 
-        clear_action = QAction("🧹 RaZ (Effacer le formatage)", self)
+        clear_action = QAction("RaZ (Effacer le formatage)", self)
         clear_action.triggered.connect(self.editor.clear_formatting)
         format_menu.addAction(clear_action)
 
     def _setup_insert_menu(self, insert_menu):
         """Configure le menu d'insertion de manière dynamique."""
         insert_actions_data = [
-            ("🖼️ Image (<img ...>)", "image", QKeySequence.Italic),
+            ("Image (<img ...>)", "image", QKeySequence.Italic),
             (
-                "🖼️ Image Markdown",
+                "Image Markdown",
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("🔗 Lien (URL ou email) (<url>)", "url"),
-            ("🔗 Lien Markdown (texte)", "markdown_link"),
+            ("Lien (URL ou email) (<url>)", "url"),
+            ("Lien Markdown (texte)", "markdown_link"),
         ]
 
         for name, data, *shortcut in insert_actions_data:
@@ -777,24 +773,24 @@ class MainWindow(QMainWindow):
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
 
-        insert_internal_link_action = QAction("🔗 Fichier", self)
+        insert_internal_link_action = QAction("Fichier", self)
         insert_internal_link_action.triggered.connect(
             lambda: self.editor.format_text("internal_link")
         )
         insert_menu.addAction(insert_internal_link_action)
         insert_menu.addSeparator()
 
-        insert_hr_action = QAction("➖ Ligne Horizontale", self)
+        insert_hr_action = QAction("Ligne Horizontale", self)
         insert_hr_action.triggered.connect(lambda: self.editor.format_text("hr"))
 
-        insert_comment_action = QAction("💬 Commentaire HTML", self)
+        insert_comment_action = QAction("Commentaire HTML", self)
         insert_comment_action.triggered.connect(
             lambda: self.editor.format_text("html_comment")
         )
 
-        insert_table_action = QAction("▦ Tableau", self)
+        insert_table_action = QAction("Tableau", self)
         insert_table_action.triggered.connect(lambda: self.editor.format_text("table"))
-        insert_quote_action = QAction("💬 Citation", self)
+        insert_quote_action = QAction("Citation", self)
         insert_quote_action.triggered.connect(lambda: self.editor.format_text("quote"))
 
         insert_menu.addAction(insert_hr_action)
@@ -803,17 +799,17 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_quote_action)
         insert_menu.addSeparator()
 
-        insert_tag_action = QAction("🏷️ Tag (@@)", self)
+        insert_tag_action = QAction("Tag (@@)", self)
         insert_tag_action.triggered.connect(lambda: self.editor.format_text("tag"))
         insert_menu.addAction(insert_tag_action)
 
-        insert_time_action = QAction("🕒 Heure", self)
+        insert_time_action = QAction("Heure", self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
         insert_menu.addAction(insert_time_action)
         insert_menu.addSeparator()
 
         # Sous-menu Emoji
-        emoji_menu = QMenu("😊 Emoji", self)
+        emoji_menu = QMenu("Emoji", self)
         emoji_actions_data = [
             ("📖 Livre", "📖"),
             ("🎵 Musique", "🎵"),
@@ -2442,6 +2438,12 @@ class MainWindow(QMainWindow):
                 "editor.code_font_family", dialog.current_code_font.family()
             )
             self.settings_manager.set(
+                "outline.font_family", dialog.current_outline_font.family()
+            )
+            self.settings_manager.set(
+                "outline.font_size", dialog.current_outline_font.pointSize()
+            )
+            self.settings_manager.set(
                 "editor.html_comment_color",
                 dialog.current_html_comment_color.name(),
             )
@@ -2599,7 +2601,16 @@ class MainWindow(QMainWindow):
         )
         self.insert_youtube_video_action.setEnabled(youtube_enabled)
 
-        self.outline_panel.apply_styles(font, QColor(heading_color), QColor(bg_color))
+        # Appliquer les styles au panneau du plan
+        outline_font_family = self.settings_manager.get(
+            "outline.font_family", font_family
+        )
+        outline_font_size = self.settings_manager.get("outline.font_size", font_size)
+        outline_font = QFont(outline_font_family, outline_font_size)
+
+        self.outline_panel.apply_styles(
+            outline_font, QColor(heading_color), QColor(bg_color)
+        )
 
     def update_tag_cloud(self):
         """Met à jour le contenu du nuage de tags."""

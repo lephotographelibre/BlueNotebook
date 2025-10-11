@@ -1,3 +1,35 @@
+## V2.4.3 New Look
+
+1. Modernisation des Panneaux (editor.py, preview.py, outline.py)
+Les en-têtes des panneaux "Éditeur", "Aperçu" et "Plan" étaient lourds. Je les ai remplacés par de simples labels en gras, sans fond ni bordure, pour un look beaucoup plus épuré.
+
+2. Affinement des Séparateurs et de l'Interface (main_window.py)
+J'ai rendu les séparateurs (QSplitter) plus fins et discrets. Ils ne s'affichent en couleur qu'au survol de la souris. Les boutons pour réduire les panneaux ont également été redessinés pour être plus modernes et moins intrusifs.
+
+Résultat
+Ces changements combinés donnent à BlueNotebook une apparence plus professionnelle et minimaliste. L'interface est moins chargée, les séparations sont plus subtiles et l'ensemble est plus agréable à l'œil, vous permettant de mieux vous concentrer sur votre écriture.
+beta1
+
+Supprimer les Emoticones de tous les menus e dans les Préférences
+Beta2
+
+Affiner encore les séparateurs entre panneaux
+diminuer la taille de la police de caractères dans le panneau Plan du documen
+beta3
+
+ Permettre à l'utilisateur d'ajuster la taille de la police du plan du document indépendamment de celle de l'éditeur améliorera grandement le confort de lecture.
+
+J'ai implémenté cette fonctionnalité en ajoutant un nouveau champ dans les préférences et en mettant à jour la logique pour l'appliquer.
+beta4
+
+
+Transformer les en-têtes de panneaux pour qu'ils ressemblent à des onglets donnera à l'application une apparence plus intégrée et professionnelle, très similaire à celle des éditeurs de code modernes.
+
+
+
+Refaire la doc en ligne avec le menu
+Beta3
+
 ## V2.4.2 Bugs Fixing Coloration syntaxique Bloc de code
 
 Bug dans l'editeur Markdown. Quand dans un bloc de code il y a un caractère # comme premier caractère d'une ligne, ce # est pris comme un caractère de header markdown. s'il est en deuxieme colonne ou plus c'est ok. bien sur c'est vrai pour ## ou ###. Comment eviter qu'il soit interprété comme Header

@@ -195,7 +195,7 @@ class PreferencesDialog(QDialog):
         sub_tabs.setCurrentIndex(0)
 
         # Bouton de réinitialisation, maintenant visible pour tous les sous-onglets
-        reset_button = QPushButton("🔄 Valeurs d'affichage par défaut")
+        reset_button = QPushButton("Valeurs d'affichage par défaut")
         reset_button.setToolTip(
             "Réinitialise les préférences de l'interface à leurs valeurs par défaut."
         )
@@ -231,14 +231,14 @@ class PreferencesDialog(QDialog):
         # Boutons pour sauvegarder et charger des thèmes
         theme_layout = QHBoxLayout()
 
-        save_theme_button = QPushButton("💾 Sauvegarder comme thème")
+        save_theme_button = QPushButton("Sauvegarder comme thème")
         save_theme_button.setToolTip(
             "Sauvegarder les paramètres actuels comme un nouveau thème"
         )
         save_theme_button.clicked.connect(self._save_as_theme)
         theme_layout.addWidget(save_theme_button)
 
-        load_theme_button = QPushButton("🎨 Sélectionner un thème")
+        load_theme_button = QPushButton("Sélectionner un thème")
         load_theme_button.setToolTip("Charger un thème existant")
         load_theme_button.clicked.connect(self._load_theme)
         theme_layout.addWidget(load_theme_button)
@@ -291,6 +291,25 @@ class PreferencesDialog(QDialog):
         self.code_font_button.clicked.connect(self._select_code_font)
         layout.addWidget(QLabel("Police des extraits de code:"), row, 0)
         layout.addWidget(self.code_font_button, row, 1)
+        row += 1
+
+        # Police du Plan du Document
+        outline_font_family = self.settings_manager.get(
+            "outline.font_family", font_family
+        )
+        outline_font_size = self.settings_manager.get("outline.font_size", font_size)
+        self.current_outline_font = QFont(outline_font_family, outline_font_size)
+
+        self.outline_font_button = QPushButton(
+            f"{outline_font_family}, {outline_font_size}pt"
+        )
+        self.outline_font_button.setMinimumWidth(250)
+        self.outline_font_button.setToolTip(
+            "Choisir la police pour le plan du document."
+        )
+        self.outline_font_button.clicked.connect(self._select_outline_font)
+        layout.addWidget(QLabel("Police du Plan du Document:"), row, 0)
+        layout.addWidget(self.outline_font_button, row, 1)
         row += 1
 
         # Ligne de séparation
@@ -454,7 +473,7 @@ class PreferencesDialog(QDialog):
         # === SECTION GESTION DES THÈMES CSS ===
         theme_layout = QHBoxLayout()
 
-        self.html_theme_button = QPushButton("🎨 Sélectionner un thème CSS")
+        self.html_theme_button = QPushButton("Sélectionner un thème CSS")
         self.html_theme_button.setToolTip("Sélectionner un thème CSS pour l'aperçu")
         self.html_theme_button.clicked.connect(self._select_css_theme)
         theme_layout.addWidget(self.html_theme_button)
@@ -630,6 +649,13 @@ class PreferencesDialog(QDialog):
             self.current_code_font = font
             self.code_font_button.setText(font.family())
 
+    def _select_outline_font(self):
+        """Sélectionne la police pour le plan du document."""
+        font, ok = QFontDialog.getFont(self.current_outline_font, self)
+        if ok:
+            self.current_outline_font = font
+            self.outline_font_button.setText(f"{font.family()}, {font.pointSize()}pt")
+
     def _make_color_selector(self, attr_name, button_name):
         """Crée une fonction de sélection de couleur pour un attribut donné."""
 
@@ -688,6 +714,10 @@ class PreferencesDialog(QDialog):
                 "family": self.current_font.family(),
                 "size": self.current_font.pointSize(),
                 "code_family": self.current_code_font.family(),
+            },
+            "outline": {
+                "family": self.current_outline_font.family(),
+                "size": self.current_outline_font.pointSize(),
             },
             "colors": {
                 "background_color": self.current_color.name(),
@@ -802,6 +832,17 @@ class PreferencesDialog(QDialog):
             self.current_code_font = QFont(font_info.get("code_family", "Courier New"))
             self.code_font_button.setText(self.current_code_font.family())
 
+            # Appliquer la police du plan
+            outline_font_info = theme_data.get(
+                "outline", font_info
+            )  # Fallback sur la police éditeur
+            self.current_outline_font = QFont(
+                outline_font_info.get("family", self.current_font.family()),
+                outline_font_info.get("size", self.current_font.pointSize()),
+            )
+            self.outline_font_button.setText(
+                f"{self.current_outline_font.family()}, {self.current_outline_font.pointSize()}pt"
+            )
             # Appliquer les couleurs
             colors = theme_data.get("colors", {})
             color_mappings = [
@@ -891,6 +932,15 @@ class PreferencesDialog(QDialog):
         self.current_code_font = QFont(font_info.get("code_font_family", "Courier New"))
         self.code_font_button.setText(self.current_code_font.family())
 
+        # Appliquer la police du plan par défaut
+        outline_font_info = defaults.get("outline", font_info)
+        self.current_outline_font = QFont(
+            outline_font_info.get("font_family", self.current_font.family()),
+            outline_font_info.get("font_size", self.current_font.pointSize()),
+        )
+        self.outline_font_button.setText(
+            f"{self.current_outline_font.family()}, {self.current_outline_font.pointSize()}pt"
+        )
         # Appliquer les couleurs par défaut
         colors = defaults.get("editor", {})
         color_mappings = [

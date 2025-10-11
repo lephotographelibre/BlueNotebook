@@ -20,7 +20,7 @@ Composant d'aperçu HTML du Markdown avec QWebEngine
 import os
 from xml.etree import ElementTree
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 from pygments.formatters import HtmlFormatter
@@ -60,27 +60,36 @@ class MarkdownPreview(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        label = QLabel("👀 Aperçu HTML")
+        # Layout pour l'en-tête pour contrôler son alignement
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+
+        # En-tête de panneau (style onglet)
+        label = QLabel("Aperçu HTML")
         label.setStyleSheet(
             """
             QLabel {
-                font-weight: bold; 
-                padding: 8px; 
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
+                background-color: #f6f8fa;
+                padding: 8px 12px;
+                font-weight: bold;
+                color: #24292e;
+                border: 1px solid #d1d5da;
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
             }
         """
         )
-        label.setMaximumHeight(35)
-        layout.addWidget(label)
+        header_layout.addWidget(label)
+        header_layout.addStretch()
+
+        layout.addLayout(header_layout)
 
         self.web_view = QWebEngineView()
         self.web_view.setStyleSheet(
             """
             QWebEngineView {
-                border: 1px solid #dee2e6;
+                border: 1px solid #d1d5da;
                 border-radius: 4px;
                 background-color: white;
             }

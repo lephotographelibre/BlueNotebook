@@ -1,0 +1,27 @@
+{
+    "name": "Brique2_Light",
+    "font": {
+        "family": "Ubuntu",
+        "size": 14,
+        "code_family": "Courier New"
+    },
+    "colors": {
+        "background_color": "#f0f2f5",
+        "text_color": "#16191b",
+        "heading_color": "#d06146",
+        "list_color": "#d06146",
+        "selection_text_color": "#d0c9c8",
+        "inline_code_text_color": "#6a4041",
+        "inline_code_background_color": "#edf0e9",
+        "code_block_background_color": "#f0f2f5",
+        "bold_color": "#6a4041",
+        "italic_color": "#6a4041",
+        "strikethrough_color": "#6a4041",
+        "highlight_color": "#fffec7",
+        "quote_color": "#363c42",
+        "link_color": "#6a4041",
+        "html_comment_color": "#9ca3af",
+        "tag_color": "#6a4041",
+        "timestamp_color": "#6a4041"
+    }
+}

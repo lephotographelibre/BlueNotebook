@@ -722,22 +722,30 @@ class MarkdownEditor(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Label compact en haut
-        label = QLabel("📝 Éditeur Markdown")
+        # Layout pour l'en-tête pour contrôler son alignement
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+
+        # En-tête de panneau (style onglet)
+        label = QLabel("Éditeur Markdown")
         label.setStyleSheet(
             """
             QLabel {
-                font-weight: bold; 
-                padding: 8px; 
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
+                background-color: #f6f8fa;
+                padding: 8px 12px;
+                font-weight: bold;
+                color: #24292e;
+                border: 1px solid #d1d5da;
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
             }
         """
         )
-        label.setMaximumHeight(35)
-        layout.addWidget(label)
+        header_layout.addWidget(label)
+        header_layout.addStretch()  # Pousse le label vers la gauche
+
+        layout.addLayout(header_layout)
 
         # Zone de texte - prend tout l'espace restant
         self.text_edit = QTextEditWithLineNumbers()
@@ -752,14 +760,12 @@ class MarkdownEditor(QWidget):
         # V1.4.4 Editeur Surlignage en Jaune lors de sélection
         self.text_edit.setStyleSheet(
             """
-            QTextEdit {
-                border: 1px solid #dee2e6;
+            QTextEdit, QTextEditWithLineNumbers {
+                border: 1px solid #d1d5da;
                 border-radius: 4px;
                 padding: 10px;
-                background-color: #d6ebff;
-                selection-background-color: #e9e942; /* V1.4.2 Very light yellow for selection background */
+                background-color: #fdfdfd;
                 color: #2c3e50;
-                selection-color: #ff0004;
             }
             
             QTextEdit:focus {
@@ -824,34 +830,34 @@ class MarkdownEditor(QWidget):
             menu.addSeparator()
 
             # --- Style de texte ---
-            style_menu = QMenu("🎨 Style de texte", self)
-            bold_action = style_menu.addAction("🅱️ Gras")
+            style_menu = QMenu("Style de texte", self)
+            bold_action = style_menu.addAction("Gras")
             bold_action.triggered.connect(lambda: self.format_text("bold"))
-            italic_action = style_menu.addAction("*️⃣ Italique")
+            italic_action = style_menu.addAction("Italique")
             italic_action.triggered.connect(lambda: self.format_text("italic"))
-            strikethrough_action = style_menu.addAction("~ Barré")
+            strikethrough_action = style_menu.addAction("Barré")
             strikethrough_action.triggered.connect(
                 lambda: self.format_text("strikethrough")
             )
-            highlight_action = style_menu.addAction("🖍️ Surligné")
+            highlight_action = style_menu.addAction("Surligné")
             highlight_action.triggered.connect(lambda: self.format_text("highlight"))
             menu.addMenu(style_menu)
 
             # --- Code ---
-            code_menu = QMenu("💻 Code", self)
-            inline_code_action = code_menu.addAction("` Monospace (inline)")
+            code_menu = QMenu("Code", self)
+            inline_code_action = code_menu.addAction("Monospace (inline)")
             inline_code_action.triggered.connect(
                 lambda: self.format_text("inline_code")
             )
-            code_block_action = code_menu.addAction("``` Bloc de code")
+            code_block_action = code_menu.addAction("Bloc de code")
             code_block_action.triggered.connect(lambda: self.format_text("code_block"))
             menu.addMenu(code_menu)
 
             # --- Liens ---
-            link_menu = QMenu("🔗 Liens", self)
-            url_link_action = link_menu.addAction("🔗 Lien (URL ou email)")
+            link_menu = QMenu("Liens", self)
+            url_link_action = link_menu.addAction("Lien (URL ou email)")
             url_link_action.triggered.connect(lambda: self.format_text("url"))
-            markdown_link_action = link_menu.addAction("🔗 Lien Markdown")
+            markdown_link_action = link_menu.addAction("Lien Markdown")
             markdown_link_action.triggered.connect(
                 lambda: self.format_text("markdown_link")
             )

@@ -21,6 +21,7 @@ import re
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QLabel,
     QTreeWidget,
     QTreeWidgetItem,
@@ -48,21 +49,30 @@ class OutlinePanel(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(5)
 
-        self.label = QLabel("📝 Plan du document")
+        # Layout pour l'en-tête pour contrôler son alignement
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+
+        # En-tête de panneau (style onglet)
+        self.label = QLabel("Plan du document")
         self.label.setStyleSheet(
             """
             QLabel {
-                font-weight: bold; 
-                padding: 8px; 
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
+                background-color: #f6f8fa;
+                padding: 8px 12px;
+                font-weight: bold;
+                color: #24292e;
+                border: 1px solid #d1d5da;
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
             }
         """
         )
-        self.label.setMaximumHeight(35)
-        layout.addWidget(self.label)
+        header_layout.addWidget(self.label)
+        header_layout.addStretch()
+
+        layout.addLayout(header_layout)
 
         self.tree_widget = QTreeWidget()
         self.tree_widget.setHeaderHidden(True)
