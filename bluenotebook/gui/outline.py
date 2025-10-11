@@ -75,11 +75,18 @@ class OutlinePanel(QWidget):
         self.tree_widget.clear()
         parent_items = [self.tree_widget] * 6  # Pour gérer les niveaux d'indentation
 
-        for i in range(document.blockCount()):
-            block = document.findBlockByNumber(i)
-            text = block.text()
-            match = re.match(r"^(#{1,6})\s+(.*)", text)
+        block = document.firstBlock()
+        while block.isValid():
+            # V2.4.2 Fix: Ignorer les titres à l'intérieur des blocs de code
+            # On vérifie que le bloc précédent est valide avant de lire son état.
+            previous_block = block.previous()
+            if previous_block.isValid() and previous_block.userState() == 1:
+                # Ce bloc est à l'intérieur d'un bloc de code, on l'ignore.
+                block = block.next()
+                continue
 
+            text = block.text().strip()
+            match = re.match(r"^(#{1,6})\s*(.*)", text)
             if match:
                 level = len(match.group(1))
                 title = match.group(2).strip()
@@ -97,6 +104,8 @@ class OutlinePanel(QWidget):
                 # Mettre à jour les parents pour les niveaux inférieurs
                 for j in range(level, 6):
                     parent_items[j] = item
+
+            block = block.next()
 
     def on_item_clicked(self, item, column):
         """Gère le clic sur un élément du plan."""

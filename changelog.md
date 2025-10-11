@@ -1,4 +1,37 @@
-## V2.4.1 Refactoring Extension
+## V2.4.2 Bugs Fixing Coloration syntaxique Bloc de code
+
+Bug dans l'editeur Markdown. Quand dans un bloc de code il y a un caractère # comme premier caractère d'une ligne, ce # est pris comme un caractère de header markdown. s'il est en deuxieme colonne ou plus c'est ok. bien sur c'est vrai pour ## ou ###. Comment eviter qu'il soit interprété comme Header
+
+Pou illuster mon propos si j'ai le bloc de code suivant
+ 
+```txt
+qsqs# # sdsd
+## dsds
+# sdsd
+ ### sdqsd
+```
+ 
+les ligne 2 et 3 sont interprétées comme header, pour les ligne 1 et 4 c'est bon
+
+J'ai ajusté la logique dans la méthode `highlightBlock` du fichier `bluenotebook/gui/editor.py`. Le code va maintenant :
+
+- Détecter correctement le début et la fin d'un bloc de code.
+- Appliquer le formatage du bloc de code.
+- Réinitialiser l'état (setCurrentBlockState(0)) lorsque la balise de fin ``` est trouvée, pour que le surligneur puisse recommencer à analyser normalement les lignes suivantes.
+- Continuer à ignorer les autres règles de formatage (comme les titres #) à l'intérieur des blocs de code.
+
+beta1
+
+Cela a resolu le problème de coloration syntaxique dans l'editeur mais pas dans le panneau plan du document. Dans ce panneau qui presente une vue arborescente du document les les ligne 2 et 3 sont interprétées comme header, pour les ligne 1 et 4 c'est bon l'exemple est:
+
+```txt
+qsqs# # sdsd
+## dsds
+# sdsd
+ ### sdqsd
+```
+
+## V2.4.1 Refactoring Extension
 
 Déplacer la logique des intégrations dans des fichiers dédiés rend le projet beaucoup plus propre, maintenable et facile à faire évoluer.
 

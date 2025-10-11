@@ -413,13 +413,22 @@ class MarkdownHighlighter(QSyntaxHighlighter):
 
     def highlightBlock(self, text):
         """Coloration d'un bloc de texte"""
-        # Gestion des blocs de code (```...```)
-        self.setCurrentBlockState(0)
-        if self.previousBlockState() == 1 or text.strip().startswith("```"):
-            self.setFormat(0, len(text), self.code_block_format)
-            if not text.strip().endswith("```"):
-                self.setCurrentBlockState(1)
+        is_in_code_block = self.previousBlockState() == 1
+        starts_with_ticks = text.strip().startswith("```")
+        ends_with_ticks = text.strip().endswith("```")
 
+        # Gestion des blocs de code (```...```)
+        if is_in_code_block or starts_with_ticks:
+            self.setFormat(0, len(text), self.code_block_format)
+            # Si on est dans un bloc et que la ligne ne termine pas le bloc,
+            # ou si la ligne commence un bloc sans le fermer, on continue le bloc.
+            if (is_in_code_block and not ends_with_ticks) or (
+                starts_with_ticks and not ends_with_ticks
+            ):
+                self.setCurrentBlockState(1)
+            else:
+                self.setCurrentBlockState(0)  # Fin du bloc
+            return  # Arrêter le traitement pour ce bloc
         title_pattern = r"^(#{1,6})\s*(.*)$"
         for match in re.finditer(title_pattern, text):
             level = len(match.group(1)) - 1

@@ -23,6 +23,7 @@ from xml.etree import ElementTree
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
+from pygments.formatters import HtmlFormatter
 from markdown.inlinepatterns import InlineProcessor
 import markdown
 
@@ -46,6 +47,10 @@ class MarkdownPreview(QWidget):
         self.current_markdown = ""
         self.setup_ui()
         self.default_css = self._load_default_css()
+        # self.pygments_css = HtmlFormatter(style="default").get_style_defs(".highlight")
+        # **Thèmes clairs** : default, solarized-light, vs, xcode.
+        # **Thèmes sombres** : `monokai`, `solarized-dark`, `dracula`, `material`.
+        self.pygments_css = HtmlFormatter(style="default").get_style_defs(".highlight")
         self.custom_css = ""
         self.setup_markdown()
 
@@ -150,7 +155,7 @@ class MarkdownPreview(QWidget):
                 f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
             )
 
-        final_css = self.default_css + self.custom_css
+        final_css = self.default_css + self.pygments_css + self.custom_css
 
         return f"""
         <!DOCTYPE html>
