@@ -838,6 +838,16 @@ class MarkdownEditor(QWidget):
             code_block_action.triggered.connect(lambda: self.format_text("code_block"))
             menu.addMenu(code_menu)
 
+            # --- Liens ---
+            link_menu = QMenu("🔗 Liens", self)
+            url_link_action = link_menu.addAction("🔗 Lien (URL ou email)")
+            url_link_action.triggered.connect(lambda: self.format_text("url"))
+            markdown_link_action = link_menu.addAction("🔗 Lien Markdown")
+            markdown_link_action.triggered.connect(
+                lambda: self.format_text("markdown_link")
+            )
+            menu.addMenu(link_menu)
+
         # Afficher le menu à la position du curseur
         menu.exec_(self.text_edit.viewport().mapToGlobal(position))
 

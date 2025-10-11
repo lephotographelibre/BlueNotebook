@@ -74,6 +74,7 @@ from integrations.gps_map_generator import get_location_name, create_gps_map
 from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+from integrations.youtube_video import get_youtube_video_details
 
 
 class PdfExportWorker(QRunnable):
@@ -678,7 +679,7 @@ class MainWindow(QMainWindow):
             triggered=self.insert_template,
         )
         self.insert_gps_map_action = QAction(
-            "🗺️ Maps GPS",
+            "🗺️ Carte GPS",
             self,
             statusTip="Insérer une carte statique à partir de coordonnées GPS",
             triggered=self.insert_gps_map,
@@ -1999,48 +2000,22 @@ class MainWindow(QMainWindow):
         if not video_url:
             return
 
-        self._process_youtube_url(video_url)
+        # Déléguer le traitement au module d'intégration
+        result = get_youtube_video_details(video_url)
 
-    def _process_youtube_url(self, url: str):
-        """Extrait l'ID, récupère le titre, vérifie la vidéo et l'insère."""
-        video_id = self._extract_youtube_id(url)
-
-        if not video_id:
+        # Gérer le résultat
+        if isinstance(result, str):  # C'est une chaîne d'erreur
             QMessageBox.warning(
-                self, "URL invalide", "L'URL YouTube fournie n'est pas valide."
+                self,
+                "Erreur d'intégration YouTube",
+                result,
             )
             return
 
-        video_title = "Vidéo YouTube"  # Titre par défaut
-        try:
-            # Récupérer la page pour extraire le titre et vérifier l'existence
-            response = requests.get(url, timeout=10)
-            if response.status_code != 200:
-                QMessageBox.warning(
-                    self,
-                    "Vidéo introuvable",
-                    "Attention: La vidéo YouTube demandée n'existe pas ou est privée !",
-                )
-                return
-
-            # Extraire le titre de la page HTML
-            soup = BeautifulSoup(response.text, "html.parser")
-            if soup.title and soup.title.string:
-                title_text = soup.title.string
-                # Nettoyer le titre (ex: "Mon Titre - YouTube" -> "Mon Titre")
-                if " - YouTube" in title_text:
-                    video_title = title_text.rsplit(" - YouTube", 1)[0]
-                else:
-                    video_title = title_text
-
-        except requests.RequestException as e:
-            QMessageBox.warning(
-                self, "Erreur réseau", f"Impossible de vérifier la vidéo : {e}"
-            )
-            return
-
-        # Insérer le bloc Markdown dans l'éditeur
-        self.editor.insert_youtube_video(video_id, url, video_title)
+        # Si c'est un dictionnaire, l'insertion a réussi
+        self.editor.insert_youtube_video(
+            result["video_id"], result["url"], result["title"]
+        )
 
     def insert_gps_map(self):
         """Gère la logique d'insertion d'une carte GPS."""
@@ -2149,13 +2124,6 @@ class MainWindow(QMainWindow):
         self.statusbar.showMessage(
             f"Carte pour '{location_name}' insérée avec succès.", 5000
         )
-
-    @staticmethod
-    def _extract_youtube_id(url: str) -> str | None:
-        """Extrait l'ID de la vidéo à partir de différentes formes d'URL YouTube."""
-        regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
-        match = re.search(regex, url)
-        return match.group(1) if match else None
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""

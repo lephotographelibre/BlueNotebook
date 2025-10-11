@@ -1,3 +1,35 @@
+## V2.4.1 Refactoring Extension
+
+Déplacer la logique des intégrations dans des fichiers dédiés rend le projet beaucoup plus propre, maintenable et facile à faire évoluer.
+
+J'ai effectué le refactoring que vous avez demandé. Voici le détail des modifications :
+
+1. Création d'un nouveau fichier pour l'intégration YouTube
+J'ai créé un nouveau fichier bluenotebook/integrations/youtube_video.py qui contient maintenant toute la logique de traitement d'une URL YouTube (extraction de l'ID, récupération du titre, etc.).
+
+2. Mise à jour de main_window.py
+La fenêtre principale utilise maintenant la nouvelle fonction get_youtube_video_details. La logique de l'interface (boîtes de dialogue) reste ici, mais le traitement de l'URL est délégué au nouveau module.
+
+Avantages de ce refactoring
+
+- Séparation des préoccupations : La logique de l'interface (main_window.py) est maintenant distincte de la logique métier de l'intégration (youtube_video.py).
+- Réutilisabilité : La fonction get_youtube_video_details pourrait être utilisée ailleurs dans l'application si nécessaire, sans dépendre de l'interface graphique.
+- Testabilité : Il est beaucoup plus facile d'écrire des tests unitaires pour la fonction get_youtube_video_details maintenant qu'elle ne dépend plus de QMessageBox.
+- Clarté : Le code de main_window.py est allégé et plus facile à lire.
+
+beta1
+
+Je voudrais renommer le menu "Maps GPS" en" Carte GPS"
+
+beta2
+
+Lorsque du texte est sélectionné je voudrais ajouter dans le menu contextuel la possibilité de mettre en lien URL ou Markadown comme je l'ai fait dans le menu insérer
+
+Dans la méthode show_context_menu du fichier bluenotebook/gui/editor.py, j'ai ajouté un nouveau sous-menu "🔗 Liens". Ce menu n'apparaît que si vous avez sélectionné du texte et contient deux actions :
+
+- Lien (URL ou email) : Encadre le texte sélectionné avec des chevrons (< >), le transformant en un lien cliquable.
+- Lien Markdown : Ouvre la boîte de dialogue pour créer un lien Markdown complet (texte), en pré-remplissant le champ "Texte du lien" avec votre sélection.
+ 
 ## V2.3.6 Integration GPS -> Maps
 
     # pip install py-staticmaps[cairo]
