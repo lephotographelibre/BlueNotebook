@@ -1123,6 +1123,30 @@ class MarkdownEditor(QWidget):
 
         self.text_edit.setFocus()
 
+    def get_image_path_from_user(self):
+        """
+        Ouvre une boîte de dialogue pour obtenir un chemin d'image (local ou URL).
+        Si le chemin est local, l'image est copiée dans le journal.
+        Retourne le chemin relatif/URL et un booléen indiquant si c'est local.
+        """
+        cursor = self.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+        image_path = ""
+
+        if selected_text:
+            image_path = selected_text
+        else:
+            dialog = ImageSourceDialog(self)
+            if dialog.exec_() == QDialog.Accepted:
+                image_path = dialog.get_path()
+
+        if not image_path:
+            return None, False
+
+        is_local = not image_path.lower().startswith(("http://", "https://"))
+        relative_path = self._copy_image_to_journal(image_path)
+        return relative_path, is_local
+
     def _copy_image_to_journal(self, source_path: str) -> str:
         """
         Copie une image locale dans le répertoire 'images' du journal,

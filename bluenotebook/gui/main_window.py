@@ -76,6 +76,8 @@ from core.word_indexer import start_word_indexing
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
 from integrations.youtube_video import get_youtube_video_details
 
+from integrations.image_exif import format_exif_as_markdown
+
 
 class PdfExportWorker(QRunnable):
     """Worker pour générer le PDF en arrière-plan."""
@@ -333,7 +335,7 @@ class InsertTemplateDialog(QDialog):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, journal_dir_arg=None, app_version="1.0.0"):
+    def __init__(self, journal_dir_arg=None, app_version="2.4.4"):
         super().__init__()
         self.journal_dir_arg = journal_dir_arg
         self.app_version = app_version
@@ -755,8 +757,12 @@ class MainWindow(QMainWindow):
 
     def _setup_insert_menu(self, insert_menu):
         """Configure le menu d'insertion de manière dynamique."""
+        action_img_html = QAction("Image (<img ...>)", self)
+        action_img_html.setShortcut(QKeySequence.Italic)
+        action_img_html.triggered.connect(self.insert_html_image)
+        insert_menu.addAction(action_img_html)
+
         insert_actions_data = [
-            ("Image (<img ...>)", "image", QKeySequence.Italic),
             (
                 "Image Markdown",
                 "markdown_image",
@@ -766,7 +772,7 @@ class MainWindow(QMainWindow):
             ("Lien Markdown (texte)", "markdown_link"),
         ]
 
-        for name, data, *shortcut in insert_actions_data:
+        for name, data, *shortcut in insert_actions_data:  # type: ignore
             action = QAction(name, self)
             action.triggered.connect(functools.partial(self.editor.format_text, data))
             if shortcut:
@@ -2120,6 +2126,41 @@ class MainWindow(QMainWindow):
         self.statusbar.showMessage(
             f"Carte pour '{location_name}' insérée avec succès.", 5000
         )
+
+    def insert_html_image(self):
+        """Gère la logique d'insertion d'une image HTML avec gestion EXIF."""
+        image_path, is_local = self.editor.get_image_path_from_user()
+        if not image_path:
+            return
+
+        width, ok = QInputDialog.getInt(
+            self, "Taille de l'image", "Largeur maximale en pixels:", 400, 100, 2000, 50
+        )
+        if not ok:
+            return
+
+        img_tag = f'<img src="{image_path}" width="{width}">'
+        exif_table = None
+
+        if is_local and self.journal_directory:
+            full_image_path = self.journal_directory / image_path
+            exif_table = format_exif_as_markdown(str(full_image_path))
+
+        if exif_table:
+            reply = QMessageBox.question(
+                self,
+                "Données EXIF trouvées",
+                "Des données EXIF ont été trouvées dans l'image. "
+                "Voulez-vous les insérer sous l'image ?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            if reply == QMessageBox.Yes:
+                self.editor.insert_text(img_tag + "\n" + exif_table)
+            else:
+                self.editor.insert_text(img_tag)
+        else:
+            self.editor.insert_text(img_tag)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""

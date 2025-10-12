@@ -74,8 +74,8 @@
 
     <header>
         <h1>
-            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Manuel Utilisateur - BlueNotebook V2.4.3
+            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
+            Manuel Utilisateur - BlueNotebook V2.4.4
     </header>
 
     <div class="toc">
@@ -90,6 +90,7 @@
             <li><a href="#images-locales">7. Gestion des Images et Fichiers</a>
                 <ul>
                     <li><a href="#images-locales">7.1 Images Locales</a></li>
+                    <li><a href="#exif-data">7.3 Insertion d'images avec données EXIF</a></li>
                     <li><a href="#cartes-gps">7.2 Cartes GPS</a></li>
                 </ul>
             </li>
@@ -244,6 +245,27 @@
             <li><strong>Organisation :</strong> Toutes les images de votre journal sont centralisées dans un seul et même dossier.</li>
         </ul>
         <p>Si vous insérez une image depuis une URL internet (<code>http://...</code>), elle ne sera pas copiée et le lien restera externe.</p>
+    </section>
+
+    <section id="exif-data">
+        <h3>7.3 Insertion d'images avec données EXIF</h3>
+        <p>Pour enrichir encore plus vos notes, notamment pour un journal de voyage, BlueNotebook peut extraire et afficher les données EXIF (Exchangeable image file format) contenues dans vos photos.</p>
+        <h4>Comment ça marche ?</h4>
+        <ol>
+            <li>Utilisez le menu <code>Insérer > Image (&lt;img ...&gt;)</code> pour choisir une image locale.</li>
+            <li>Après avoir choisi la taille de l'image, l'application analyse le fichier.</li>
+            <li>Si des données EXIF pertinentes (coordonnées GPS, date, modèle d'appareil photo, etc.) sont trouvées, une boîte de dialogue vous demandera : <strong>"Voulez-vous les insérer sous l'image ?"</strong></li>
+            <li>Si vous acceptez, un tableau Markdown sera généré et inséré juste après votre image, présentant les informations de manière claire et structurée.</li>
+        </ol>
+        <h4>Quelles informations sont affichées ?</h4>
+        <p>Si elles sont disponibles dans l'image, vous pourrez voir :</p>
+        <ul>
+            <li><strong>Lieu :</strong> La ville ou le village est automatiquement retrouvé à partir des coordonnées GPS.</li>
+            <li><strong>Coordonnées GPS :</strong> Avec un lien direct vers OpenStreetMap.</li>
+            <li><strong>Date et heure</strong> de la prise de vue.</li>
+            <li><strong>Informations techniques :</strong> Modèle de l'appareil, ouverture, vitesse, focale et sensibilité ISO.</li>
+        </ul>
+        <p>Cette fonctionnalité transforme une simple image en une fiche d'information complète, parfaite pour se souvenir des détails de chaque moment capturé.</p>
     </section>
     
     <section id="cartes-gps">
@@ -644,7 +666,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.4.3 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.4.4 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

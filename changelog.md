@@ -1,3 +1,30 @@
+## 2.4.4 Integration Insert Image with Exif
+
+Je voudrait modifier l'action du menu Insérer --> Image (<img ...>)
+A la fin de du processus après avoir demandé "La taille maximale en pixels", il faudrait analyser si l'image contient des données Exif et dans le cas positif demander à l'utilisateur s'il souhaite afficher ces données Exif en dessous de l'image.
+
+Si ces données  existent dans l'image et que l'utilisateur souhaite les afficher. Il faudra afficher le résultat sous la forme
+
+```markdown
+<img src="images/20251012085153_PXL_20240121_083252469.NIGHT.jpg" width="400">
+
+| Lieu | Poitiers |
+|---|---|
+|Coordonnées GPS| [46.569317, 0.346048] |
+| OpenStreetMap | <https://www.openstreetmap.org/#map=16/46.569317/0.346048> |
+|Date et Heure de la prise de vue|25/10/2025 12:10|
+| Appareil|Google Pixel 6a|
+| Ouverture|ƒ/1,73|
+| Vitesse|1/487|
+| Focale|84 ISO|
+| ISO |84 ISO |
+
+```
+
+Cela veut dire qu'il faut retourver la Ville (Lieur) à partir des coordonnées GPS si elles existent.
+ 
+
+
 ## V2.4.3 New Look
 
 1. Modernisation des Panneaux (editor.py, preview.py, outline.py)
