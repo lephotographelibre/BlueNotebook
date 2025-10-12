@@ -1,3 +1,14 @@
+## V2.4.5 Bug Editor: Coloration Menu Contextuel
+1
+@bluenotebook @editor.py a chaque remedemarrage la couleur de fond de l'editeur reprends la couleur par defaut et perd celle choisie par l'utilisateur avec son theme. Lorsque l'utilisateur selectionne son theme les couleurs et la couleur de fond sont bien persister dans settings.json.
+Mais au redemarrage l'application utilise la couleur de fond par defaut. le probleme es uniquement sur la couleur de fond (SettingsManager ?)
+beta1
+
+2
+Lorsque je passe la souris sur un élément du Menu contextuel de l'éditeur, l'élément change de couleur.
+La couleur actuelle est une couleur tres claire qui n'es pas tres visible avec des themes clairs.
+Je voudrais que l'element choisi ne change pas de couleur mais soit mis en surbrillance. a la fois pour le menu et ses sous menus
+
 ## 2.4.4 Integration Insert Image with Exif
 
 Je voudrait modifier l'action du menu Insérer --> Image (<img ...>)

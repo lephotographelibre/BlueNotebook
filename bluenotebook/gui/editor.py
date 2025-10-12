@@ -714,6 +714,10 @@ class MarkdownEditor(QWidget):
         super().__init__()
         self.main_window = main_window
         self.setup_ui()
+        # Dictionnaire pour gérer les styles dynamiques de manière robuste
+        self.dynamic_styles = {
+            "QTextEdit, QTextEditWithLineNumbers": {},
+        }
         self.find_dialog = None
 
     def setup_ui(self):
@@ -824,6 +828,21 @@ class MarkdownEditor(QWidget):
         # Créer le menu standard (Couper, Copier, Coller, etc.)
         menu = self.text_edit.createStandardContextMenu()
 
+        # V2.4.5 - Améliorer la visibilité du survol dans le menu contextuel
+        menu_stylesheet = """
+            QMenu {
+                border: 1px solid #d1d5da;
+                border-radius: 4px;
+            }
+            QMenu::item:selected {
+                background-color: #3498db;
+                color: white;
+            }
+        """
+        menu.setStyleSheet(menu_stylesheet)
+        # Appliquer le style à tous les sous-menus qui seront créés
+        self.menu_stylesheet = menu_stylesheet
+
         # Ajouter des actions personnalisées uniquement si du texte est sélectionné
         cursor = self.text_edit.textCursor()
         if cursor.hasSelection():
@@ -831,6 +850,7 @@ class MarkdownEditor(QWidget):
 
             # --- Style de texte ---
             style_menu = QMenu("Style de texte", self)
+            style_menu.setStyleSheet(self.menu_stylesheet)
             bold_action = style_menu.addAction("Gras")
             bold_action.triggered.connect(lambda: self.format_text("bold"))
             italic_action = style_menu.addAction("Italique")
@@ -845,6 +865,7 @@ class MarkdownEditor(QWidget):
 
             # --- Code ---
             code_menu = QMenu("Code", self)
+            code_menu.setStyleSheet(self.menu_stylesheet)
             inline_code_action = code_menu.addAction("Monospace (inline)")
             inline_code_action.triggered.connect(
                 lambda: self.format_text("inline_code")
@@ -855,6 +876,7 @@ class MarkdownEditor(QWidget):
 
             # --- Liens ---
             link_menu = QMenu("Liens", self)
+            link_menu.setStyleSheet(self.menu_stylesheet)
             url_link_action = link_menu.addAction("Lien (URL ou email)")
             url_link_action.triggered.connect(lambda: self.format_text("url"))
             markdown_link_action = link_menu.addAction("Lien Markdown")
@@ -1232,46 +1254,37 @@ class MarkdownEditor(QWidget):
         self.text_edit.setFont(font)
         self.highlighter.update_base_font_size()
 
+    def _update_stylesheet(self):
+        """Reconstruit et applique la feuille de style à partir des styles dynamiques."""
+        style_parts = []
+        for selector, properties in self.dynamic_styles.items():
+            props_str = "; ".join(
+                f"{key}: {value}" for key, value in properties.items()
+            )
+            if props_str:
+                style_parts.append(f"{selector} {{ {props_str}; }}")
+
+        # Ajouter les styles statiques (focus, scrollbar, etc.)
+        static_style = self.text_edit.styleSheet()
+        # On retire les anciennes règles dynamiques pour ne pas les dupliquer
+        static_style = re.sub(
+            r"QTextEdit,\s*QTextEditWithLineNumbers\s*\{[^}]*\}", "", static_style
+        )
+
+        final_style = "\n".join(style_parts) + "\n" + static_style.strip()
+        self.text_edit.setStyleSheet(final_style)
+
     def set_background_color(self, color_hex):
         """Définit la couleur de fond de l'éditeur."""
-        current_style = self.text_edit.styleSheet()
-        if "background-color:" in current_style:
-            new_style = re.sub(
-                r"background-color:\s*[^;]+;",
-                f"background-color: {color_hex};",
-                current_style,
-            )
-        else:
-            if "QTextEdit {" in current_style:
-                new_style = current_style.replace(
-                    "QTextEdit {",
-                    f"QTextEdit {{\n                background-color: {color_hex};",
-                )
-            else:
-                new_style = f"QTextEdit {{ background-color: {color_hex}; }}"
-        self.text_edit.setStyleSheet(new_style)
+        self.dynamic_styles["QTextEdit, QTextEditWithLineNumbers"][
+            "background-color"
+        ] = color_hex
+        self._update_stylesheet()
 
     def set_text_color(self, color_hex):
         """Définit la couleur du texte de l'éditeur."""
-        current_style = self.text_edit.styleSheet()
-        if (
-            "color:" in current_style
-            and "background-color:"
-            not in current_style.split("color:")[1].split(";")[0]
-        ):
-            new_style = re.sub(
-                r"(?<!background-)(?<!selection-)color:\s*[^;]+;",
-                f"color: {color_hex};",
-                current_style,
-            )
-        else:
-            if "QTextEdit {" in current_style:
-                new_style = current_style.replace(
-                    "QTextEdit {", f"QTextEdit {{\n                color: {color_hex};"
-                )
-            else:
-                new_style = f"QTextEdit {{ color: {color_hex}; }}"
-        self.text_edit.setStyleSheet(new_style)
+        self.dynamic_styles["QTextEdit, QTextEditWithLineNumbers"]["color"] = color_hex
+        self._update_stylesheet()
 
     def set_heading_color(self, color_hex):
         """Définit la couleur des titres dans le surligneur syntaxique."""
@@ -1341,19 +1354,7 @@ class MarkdownEditor(QWidget):
 
     def set_selection_text_color(self, color_hex):
         """Définit la couleur du texte sélectionné."""
-        current_style = self.text_edit.styleSheet()
-        if "selection-color:" in current_style:
-            new_style = re.sub(
-                r"selection-color:\s*[^;]+;",
-                f"selection-color: {color_hex};",
-                current_style,
-            )
-        else:
-            if "QTextEdit {" in current_style:
-                new_style = current_style.replace(
-                    "QTextEdit {",
-                    f"QTextEdit {{\n                selection-color: {color_hex};",
-                )
-            else:
-                new_style = f"QTextEdit {{ selection-color: {color_hex}; }}"
-        self.text_edit.setStyleSheet(new_style)
+        self.dynamic_styles["QTextEdit, QTextEditWithLineNumbers"][
+            "selection-color"
+        ] = color_hex
+        self._update_stylesheet()
