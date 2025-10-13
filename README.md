@@ -8,6 +8,7 @@ Copyright (C) 2025 Jean-Marc DIGNE
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier conformément aux termes de la Licence Publique Générale GNU telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre choix) toute version ultérieure.
 
+[![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
 
 
 ### Spécifications techniques
