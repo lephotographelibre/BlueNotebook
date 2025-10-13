@@ -70,55 +70,60 @@ def get_location_name_from_gps(lat, lon):
 
 
 def format_exif_as_markdown(image_path):
-    """Extrait les données EXIF et les formate en tableau Markdown."""
+    """Extrait les données EXIF et les formate en bloc HTML <figure>."""
     exif_data = _get_exif_data(image_path)
     if not exif_data:
         return None
 
     lat, lon = _get_gps_info(exif_data)
-    location_name = get_location_name_from_gps(lat, lon) if lat and lon else None
 
-    dt_original = exif_data.get("DateTimeOriginal")
-    make = exif_data.get("Make", "").strip()
-    model = exif_data.get("Model", "").strip()
-    f_number = exif_data.get("FNumber")
-    exposure_time = exif_data.get("ExposureTime")
-    focal_length = exif_data.get("FocalLength")
-    iso = exif_data.get("ISOSpeedRatings")
-
-    # Si aucune donnée utile n'est trouvée, on ne retourne rien
-    if not any([lat, dt_original, model]):
+    # Si aucune donnée EXIF utile n'est trouvée, on ne retourne rien.
+    if not any(
+        [
+            lat,
+            exif_data.get("DateTimeOriginal"),
+            exif_data.get("Model"),
+        ]
+    ):
         return None
 
-    # Toujours commencer par un en-tête pour un tableau propre
-    md_table = "\n| Propriété | Valeur |\n|---|---|\n"
+    caption_parts = []
 
-    if location_name:
-        md_table += f"| Lieu | {location_name} |\n"
     if lat and lon:
-        md_table += f"| Coordonnées GPS | [{lat:.6f}, {lon:.6f}] |\n"
-        md_table += f"| OpenStreetMap | <https://www.openstreetmap.org/#map=16/{lat:.6f}/{lon:.6f}> |\n"
-    if dt_original:
+        location_name = get_location_name_from_gps(lat, lon) or "Lieu"
+        osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
+        caption_parts.append(f'<a href="{osm_link}">{location_name}</a>')
+
+    if dt_original := exif_data.get("DateTimeOriginal"):
         try:
             dt_obj = datetime.strptime(dt_original, "%Y:%m:%d %H:%M:%S")
-            md_table += f"| Date et Heure de la prise de vue | {dt_obj.strftime('%d/%m/%Y %H:%M')} |\n"
+            caption_parts.append(dt_obj.strftime("%d/%m/%Y %H:%M"))
         except (ValueError, TypeError):
             pass
-    if make or model:
-        md_table += f"| Appareil | {make} {model} |\n"
-    if f_number:
-        md_table += f"| Ouverture | ƒ/{f_number} |\n"
-    if exposure_time:
+
+    if make := exif_data.get("Make", "").strip():
+        caption_parts.append(make)
+    if model := exif_data.get("Model", "").strip():
+        caption_parts.append(model)
+
+    if f_number := exif_data.get("FNumber"):
+        caption_parts.append(f"ƒ/{f_number}")
+
+    if exposure_time := exif_data.get("ExposureTime"):
         try:
-            speed = (
-                f"1/{int(1/exposure_time)}" if exposure_time > 0 else f"{exposure_time}"
-            )
+            if exposure_time > 0:
+                speed = f"1/{int(1/exposure_time)}s"
+            else:
+                speed = f"{exposure_time}s"
         except (ZeroDivisionError, ValueError):
             speed = f"{exposure_time}"
-        md_table += f"| Vitesse | {speed} |\n"
-    if focal_length:
-        md_table += f"| Focale | {focal_length}mm |\n"
-    if iso:
-        md_table += f"| ISO | {iso} |\n"
+        caption_parts.append(f"Vitesse: {speed}")
 
-    return md_table
+    if focal_length := exif_data.get("FocalLength"):
+        caption_parts.append(f"Focale: {focal_length}mm")
+
+    if iso := exif_data.get("ISOSpeedRatings"):
+        caption_parts.append(f"ISO: {iso}")
+
+    caption_text = " : ".join(filter(None, caption_parts))
+    return f'<figcaption style="font-weight: bold;">{caption_text}</figcaption>'

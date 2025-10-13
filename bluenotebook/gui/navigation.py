@@ -79,22 +79,28 @@ class NavigationPanel(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)  # Pas de marges extérieures
         layout.setSpacing(0)  # Pas d'espacement entre les widgets principaux
 
-        # Titre du panneau
-        title_label = QLabel("🧭 Navigation Journal")
+        # V2.4.6 - Amélioration du style de l'en-tête pour un look d'onglet
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+
+        title_label = QLabel("Navigation Journal")
         title_label.setStyleSheet(
             """
             QLabel {
-                font-weight: bold; 
-                padding: 8px; 
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
+                background-color: #f6f8fa;
+                padding: 8px 12px;
+                font-weight: bold;
+                color: #24292e;
+                border: 1px solid #d1d5da;
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
             }
         """
         )
-        title_label.setMaximumHeight(35)
-        layout.addWidget(title_label)
+        header_layout.addWidget(title_label)
+        header_layout.addStretch()  # Pousse le label vers la gauche
+        layout.addLayout(header_layout)
 
         # Barre d'outils de navigation
         nav_toolbar = self._create_toolbar()

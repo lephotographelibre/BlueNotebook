@@ -75,11 +75,11 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook V2.4.5
+            Manuel Utilisateur - BlueNotebook V2.4.6
     </header>
 
     <div class="toc">
-        <h2>📋 Table des matières</h2>
+        <h2>Table des matières</h2>
         <ul>
             <li><a href="#introduction">1. Introduction</a></li>
             <li><a href="#lancement">2. Lancement et Configuration</a></li>
@@ -231,8 +231,8 @@
         <h2>7. Gestion des Images et Fichiers</h2>
         <h3 id="images-locales">7.1 Gestion des Images Locales</h3>
         <p>Pour garantir que votre journal reste complet et portable, BlueNotebook gère intelligemment les images que vous insérez depuis votre ordinateur.</p>
-        <h3>Le Processus Automatique</h3>
-        <p>Lorsque vous insérez une image locale (via <code>➕ Insérer > 🖼️ Image</code> ou <code>🖼️ Image Markdown</code>), l'application effectue les actions suivantes en arrière-plan :</p>
+        <h4>Le Processus Automatique</h4>
+        <p>Lorsque vous insérez une image locale (via <code>Insérer > Image</code> ou <code>Image Markdown</code>), l'application effectue les actions suivantes en arrière-plan :</p>
         <ol>
             <li><strong>Copie de l'image :</strong> Une copie de votre image est créée dans un sous-dossier nommé <code>images</code> à l'intérieur de votre répertoire de journal.</li>
             <li><strong>Renommage intelligent :</strong> Pour éviter les conflits de noms et garder une trace chronologique, l'image copiée est renommée avec un horodatage, par exemple : <code>202510090805_votre_image.jpg</code>.</li>
@@ -240,7 +240,7 @@
         </ol>
         <h3>Les Avantages</h3>
         <ul>
-            <li><strong>Portabilité :</strong> Votre journal devient entièrement autonome. Vous pouvez déplacer ou copier le dossier de votre journal sur un autre ordinateur, et toutes vos images continueront de s'afficher car elles sont incluses.</li>
+            <li><strong>Portabilité :</strong> Votre journal devient entièrement autonome. Vous pouvez déplacer ou copier le dossier de votre journal sur un autre ordinateur, et toutes vos images continueront de s'afficher, car elles sont incluses.</li>
             <li><strong>Sécurité :</strong> L'image originale sur votre ordinateur n'est pas modifiée.</li>
             <li><strong>Organisation :</strong> Toutes les images de votre journal sont centralisées dans un seul et même dossier.</li>
         </ul>
@@ -272,7 +272,7 @@
         <h3 id="cartes-gps">7.2 Intégrer une Carte Statique (GPS)</h3>
         <p>Vous pouvez générer et insérer une carte statique directement dans vos notes à partir de coordonnées GPS. Cette fonctionnalité est idéale pour documenter des lieux de voyage, des randonnées ou des points d'intérêt.</p>
         <ol>
-            <li>Allez dans le menu <code>🔌 Intégrations > 🗺️ Carte GPS</code>.</li>
+            <li>Allez dans le menu <code>Intégrations > Carte GPS</code>.</li>
             <li>Une boîte de dialogue vous demandera de saisir la <strong>Latitude</strong> et la <strong>Longitude</strong>. Vous pouvez aussi sélectionner du texte au format <code>[46.514, 0.338]</code> dans l'éditeur avant de lancer l'action pour pré-remplir les champs.</li>
             <li>Choisissez ensuite la <strong>largeur</strong> de l'image de la carte en pixels.</li>
             <li>L'application va alors :
@@ -294,12 +294,12 @@
 
     <section id="integrations">
         <h2>8. Intégrations (YouTube, Citation)</h2>
-        <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>🔌 Intégrations</code>.</p>
+        <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>Intégrations</code>.</p>
 
         <h3>Intégrer une Vidéo YouTube</h3>
         <p>Vous pouvez facilement intégrer une vidéo YouTube dans vos notes, avec une miniature cliquable.</p>
         <ol>
-            <li>Allez dans le menu <code>🔌 Intégrations > 🎬 Vidéo YouTube</code>.</li>
+            <li>Allez dans le menu <code>Intégrations > Vidéo YouTube</code>.</li>
             <li>Si vous avez déjà sélectionné une URL YouTube dans l'éditeur, elle sera utilisée automatiquement. Sinon, une boîte de dialogue vous demandera de coller l'URL.</li>
             <li>L'application va alors :
                 <ul>
@@ -344,31 +344,31 @@
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 Fichier
-├── Nouveau (Ctrl+N) : Créer un nouveau fichier, en proposant un document vierge ou un modèle.
-├── Ouvrir (Ctrl+O) : Ouvre un fichier Markdown existant depuis votre ordinateur.
+├── Nouveau (Ctrl+N) : Crée un nouveau fichier, en proposant un document vierge ou un modèle.
+├── Ouvrir (Ctrl+O) : Ouvre un fichier Markdown existant.
 ├── ---
-├── Sauvegarder dans Journal (Ctrl+S) : Sauvegarde la note actuelle dans le répertoire du journal.
+├── Sauvegarder dans Journal (Ctrl+S) : Sauvegarde la note dans le répertoire du journal.
 ├── Sauvegarder comme Modèle... : Sauvegarde le document actuel comme un nouveau modèle réutilisable.
 ├── Sauvegarder sous... (Ctrl+Shift+S) : Enregistre la note actuelle dans un nouveau fichier de votre choix.
 ├── ---
 ├── Ouvrir Journal : Permet de sélectionner un nouveau dossier qui servira de journal.
 ├── Sauvegarde Journal... : Crée une archive ZIP complète de votre journal actuel.
-├── Restauration Journal... : Restaure un journal à partir d'une archive ZIP (votre journal actuel est sauvegardé avant).
+├── Restauration Journal... : Restaure un journal depuis une archive ZIP.
 ├── ---
-├── Exporter HTML... : Exporte la note actuelle en fichier HTML, avec un nommage intelligent.
+├── Exporter HTML... : Exporte la note en fichier HTML.
 ├── Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates, titre et auteur.
 ├── ---
 ├── Préférences... : Ouvre la fenêtre de personnalisation de l'application.
 ├── ---
 └── Quitter (Ctrl+Q) : Ferme BlueNotebook.
 
-Edition
+Édition
 ├── Insérer un modèle... : Insère le contenu d'un modèle à la position du curseur.
 ├── ---
-├── Annuler (Ctrl+Z) : Annule la dernière action de frappe ou de formatage.
+├── Annuler (Ctrl+Z) : Annule la dernière action.
 ├── Rétablir (Ctrl+Y) : Rétablit la dernière action annulée.
 ├── ---
-└── Rechercher (Ctrl+F) : Ouvre une boîte de dialogue pour rechercher du texte dans l'éditeur.
+└── Rechercher (Ctrl+F) : Recherche du texte dans l'éditeur.
 
 Affichage
 ├── Basculer Navigation Journal (F6) : Affiche ou masque le panneau de gauche (calendrier, recherche, nuages).
@@ -377,23 +377,23 @@ Affichage
 
 Formater
 ├── Titres
-│   ├── Niv 1 (#) : Applique un titre de niveau 1.
-│   ├── Niv 2 (##) : Applique un titre de niveau 2.
-│   ├── Niv 3 (###) : Applique un titre de niveau 3.
-│   ├── Niv 4 (####) : Applique un titre de niveau 4.
-│   └── Niv 5 (#####) : Applique un titre de niveau 5.
+│   ├── Niv 1 (#)
+│   ├── Niv 2 (##)
+│   ├── Niv 3 (###)
+│   ├── Niv 4 (####)
+│   └── Niv 5 (#####)
 ├── Style de texte
-│   ├── Gras (**texte**) : Met le texte sélectionné en gras.
-│   ├── Italique (*texte*) : Met le texte sélectionné en italique.
-│   ├── Barré (~~texte~~) : Barre le texte sélectionné.
-│   └── Surligné (==texte==) : Surligne le texte sélectionné.
+│   ├── Gras (**texte**)
+│   ├── Italique (*texte*)
+│   ├── Barré (~~texte~~)
+│   └── Surligné (==texte==)
 ├── Code
-│   ├── Monospace (inline) : Formate la sélection comme du code en ligne.
-│   └── Bloc de code : Encadre la sélection dans un bloc de code.
+│   ├── Monospace (inline)
+│   └── Bloc de code
 ├── Listes
-│   ├── • Liste non ordonnée : Transforme les lignes sélectionnées en liste à puces.
-│   ├── 1. Liste ordonnée : Transforme les lignes sélectionnées en liste numérotée.
-│   └── ☑️ Liste de tâches : Transforme les lignes sélectionnées en liste de tâches.
+│   ├── Liste non ordonnée
+│   ├── Liste ordonnée
+│   └── Liste de tâches
 ├── ---
 └── RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
@@ -404,15 +404,15 @@ Insérer
 ├── Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe `texte`.
 ├── Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
-├── Ligne Horizontale : Insère une ligne de séparation (`---`).
-├── Commentaire HTML : Transforme la sélection en commentaire HTML (`<!-- ... -->`).
-├── Tableau : Insère un modèle de tableau Markdown.
-├── Citation : Formate la sélection comme une citation (`> ...`).
+├── Ligne Horizontale
+├── Commentaire HTML
+├── Tableau
+├── Citation
 ├── ---
 ├── Tag (@@) : Insère un tag `@@` ou transforme la sélection en tag.
 ├── Heure : Insère l'heure actuelle (HH:MM).
 ├── ---
-└── Emoji : Ouvre un sous-menu pour insérer rapidement des emojis courants.
+└── Emoji : Ouvre un sous-menu pour insérer des emojis.
 
 Intégrations
 ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
@@ -420,7 +420,7 @@ Intégrations
 └── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
 
 Aide
-├── Documentation en ligne : Ouvre ce manuel d'aide dans votre navigateur.
+├── Documentation en ligne : Ouvre ce manuel.
 └── À propos : Affiche les informations sur l'application, sa version et sa licence.
         </code></pre>
     </section>
@@ -470,7 +470,7 @@ Aide
 
     <section id="preferences">
         <h2>13. Personnalisation Avancée (Préférences)</h2>
-        <p>La fenêtre des Préférences, accessible via <code>Fichier > ⚙️ Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
+        <p>La fenêtre des Préférences, accessible via <code>Fichier > Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
         <ul>
@@ -486,28 +486,28 @@ Aide
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture. BlueNotebook vous offre une flexibilité totale, que vous souhaitiez utiliser un thème prêt à l'emploi ou créer le vôtre.</p>
 
         <p> <strong>Affichage des numéros de lignes ? :</strong> </p> 
-        <p>Cochez cette case pour afficher une marge avec les numéros de ligne à gauche de l'éditeur. C'est très pratique pour se repérer dans de longs documents.</p>
+        <p>Cochez cette case pour afficher une marge avec les numéros de ligne à gauche de l'éditeur. C'est pratique pour se repérer dans de longs documents.</p>
 
         <p><strong>Thèmes de l'éditeur (Clair & Sombre)</strong></p>
         <p>Pour une mise en place rapide, BlueNotebook inclut des thèmes développé par BlueNotebook ainsi que des thèmes inspirés de l'excellent éditeur Markdown <a href="https://ghostwriter.kde.org/fr/" target="_blank">Ghostwriter</a>.</p>
         <ul>
 
-            <li><strong>🎨 Sélectionner un thème :</strong> Cliquez sur ce bouton pour choisir un thème prêt à l'emploi (comme "Classic Light" ou "Classic Dark"). La sélection met instantanément à jour les couleurs dans la fenêtre des préférences pour que vous puissiez prévisualiser le résultat.</li>
+            <li><strong>Sélectionner un thème :</strong> Cliquez sur ce bouton pour choisir un thème prêt à l'emploi (comme "Classic Light" ou "Classic Dark"). La sélection met instantanément à jour les couleurs dans la fenêtre des préférences pour que vous puissiez prévisualiser le résultat.</li>
         </ul>
 
         <p><strong>Personnalisation avancée et création de thèmes</strong></p>
         <p>Si vous souhaitez aller plus loin, vous pouvez ajuster chaque couleur individuellement (fond, texte, titres, code, etc.) et même la police de caractères.</p>
         <ul>
-            <li><strong>💾 Sauvegarder comme thème :</strong> Une fois que vous avez créé une palette de couleurs qui vous plaît, cliquez sur ce bouton pour la sauvegarder comme un nouveau thème. Il sera alors disponible dans la liste de sélection.</li>
-            <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, très pratique pour se repérer dans de longs documents.</li>
+            <li><strong>Sauvegarder comme thème :</strong> Une fois que vous avez créé une palette de couleurs qui vous plaît, cliquez sur ce bouton pour la sauvegarder comme un nouveau thème. Il sera alors disponible dans la liste de sélection.</li>
+            <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, pratique pour se repérer dans de longs documents.</li>
         </ul>
 
         <h4 id="themes-apercu">13.2 Personnalisation de l'Aperçu HTML (et des Exports)</h4>
         <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>.</p>
         <p>L'apparence est contrôlée par des feuilles de style CSS. Pour vous aider à choisir, une prévisualisation du rendu est intégrée directement dans la fenêtre des préférences.</p>
         <ul>
-            <li><strong>🎨 Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés. Vous trouverez des thèmes clairs et sombres inspirés de l'apparence de GitHub.</li>
-            <li><strong>👁️ Prévisualisation instantanée :</strong> Dès que vous sélectionnez un thème dans la liste, une mini-fenêtre d'aperçu située en dessous se met à jour pour vous montrer le rendu des titres, paragraphes, liens et blocs de code. Cela vous permet de juger de l'apparence avant de valider votre choix.</li>
+            <li><strong>Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés. Vous trouverez des thèmes clairs et sombres inspirés de l'apparence de GitHub.</li>
+            <li><strong>Prévisualisation instantanée :</strong> Dès que vous sélectionnez un thème dans la liste, une mini-fenêtre d'aperçu située en dessous se met à jour pour vous montrer le rendu des titres, paragraphes, liens et blocs de code. Cela vous permet de juger de l'apparence avant de valider votre choix.</li>
         </ul>
         <p>Le thème que vous validez est sauvegardé et sera automatiquement appliqué à chaque démarrage de BlueNotebook.</p>
         
@@ -595,7 +595,7 @@ Aide
             <dd><strong>R :</strong> Le Markdown est une syntaxe très simple pour mettre en forme du texte. Au lieu de cliquer sur des boutons, vous utilisez des symboles pour indiquer le formatage, ce qui vous permet de ne pas quitter votre clavier. L'aperçu à droite vous montre le résultat en temps réel.</dd>
 
             <dt>Q : Comment mettre du texte en gras ou en italique ?</dt>
-            <dd><strong>R :</strong> Pour le <strong>gras</strong>, entourez votre texte de deux astérisques : <code>**texte en gras**</code>. Pour l'<em>italique</em>, entourez-le d'un seul astérisque : <code>*texte en italique*</code>. Vous pouvez aussi utiliser le menu <code>Formater > Style de texte</code>.</dd>
+            <dd><strong>R :</strong> Pour le <strong>gras</strong>, entourez votre texte de deux astérisques : <code>**texte en gras**</code>. Pour l'<em>italique</em>, entourez-le d'un seul astérisque : <code>*texte en italique*</code>. Vous pouvez aussi utiliser le menu <code>Formater &gt; Style de texte</code>.</dd>
 
             <dt>Q : Y a-t-il un moyen rapide de formater du texte sans utiliser les menus ?</dt>
             <dd><strong>R :</strong> Oui ! En plus des raccourcis clavier, vous pouvez maintenant faire un <strong>clic droit</strong> sur du texte que vous avez sélectionné. Un menu contextuel apparaîtra, vous donnant un accès direct aux options de formatage les plus courantes (Gras, Italique, Code, etc.).</dd>
@@ -610,7 +610,7 @@ Aide
             <dd><strong>R :</strong> Tapez simplement <code>@@projet</code> dans le champ de recherche et appuyez sur <code>Entrée</code>. Vous pouvez aussi cliquer sur le bouton <code>▼</code> pour voir la liste de tous vos tags.</dd>
 
             <dt>Q : À quoi servent les "Nuages de Tags/Mots" ?</dt>
-            <dd><strong>R :</strong> Ils vous montrent les tags et les mots que vous utilisez le plus fréquemment. C'est un excellent moyen de voir les thèmes principaux de votre journal. <strong>Cliquez sur un mot ou un tag dans un nuage pour lancer immédiatement une recherche sur ce terme !</strong></dd>
+            <dd><strong>R :</strong> Ils vous montrent les tags et les mots que vous utilisez le plus fréquemment. C'est un moyen de voir les thèmes principaux de votre journal. <strong>Cliquez sur un mot ou un tag dans un nuage pour lancer immédiatement une recherche sur ce terme !</strong></dd>
 
             <dt>Q : Que se passe-t-il quand je clique sur un résultat de recherche ?</dt>
             <dd><strong>R :</strong> L'application ouvre la note correspondante et positionne le curseur <strong>directement à la ligne</strong> où l'occurrence a été trouvée. C'est un moyen ultra-rapide de retrouver le contexte exact d'une information.</dd>
@@ -619,7 +619,7 @@ Aide
         <h3>Sauvegarde et Sécurité</h3>
         <dl>
             <dt>Q : Comment faire une sauvegarde complète de tout mon journal ?</dt>
-            <dd><strong>R :</strong> Allez dans <code>Fichier > Sauvegarde Journal...</code>. Cela créera une archive <code>.zip</code> contenant toutes vos notes et les fichiers d'index. C'est une bonne pratique à faire régulièrement.</dd>
+            <dd><strong>R :</strong> Allez dans <code>Fichier &gt; Sauvegarde Journal...</code>. Cela créera une archive <code>.zip</code> contenant toutes vos notes et les fichiers d'index. C'est une bonne pratique à faire régulièrement.</dd>
 
             <dt>Q : Comment restaurer mon journal depuis une sauvegarde ?</dt>
             <dd><strong>R :</strong> Utilisez <code>Fichier > Restauration Journal...</code>. La procédure est très sécurisée : avant de restaurer, BlueNotebook renomme votre journal actuel pour en faire une sauvegarde (ex: <code>MonJournal.bak-20250927-103000</code>). <strong>Vos données actuelles ne sont jamais supprimées.</strong> Vous devrez simplement redémarrer l'application après la restauration.</dd>
@@ -628,10 +628,10 @@ Aide
         <h3>Export et Partage</h3>
         <dl>
             <dt>Q : Comment puis-je partager une de mes notes ?</dt>
-            <dd><strong>R :</strong> La meilleure façon de partager une note est de l'exporter en HTML. Allez dans <code>Fichier > Exporter HTML...</code>. Une boîte de dialogue s'ouvrira en vous proposant un nom de fichier intelligent (<code>BlueNotebook-nom-date.html</code>) et se souviendra du dernier dossier que vous avez utilisé. Le fichier HTML généré utilisera le même thème visuel que votre aperçu dans l'application.</dd>
+            <dd><strong>R :</strong> La meilleure façon de partager une note est de l'exporter en HTML. Allez dans <code>Fichier &gt; Exporter HTML...</code>. Une boîte de dialogue s'ouvrira en vous proposant un nom de fichier intelligent (<code>BlueNotebook-nom-date.html</code>) et se souviendra du dernier dossier que vous avez utilisé. Le fichier HTML généré utilisera le même thème visuel que votre aperçu dans l'application.</dd>
 
             <dt>Q : Comment puis-je créer un PDF de tout ou partie de mon journal ?</dt>
-            <dd><strong>R :</strong> Utilisez la fonction <code>Fichier > Exporter Journal PDF...</code>. C'est un outil puissant qui vous permet de créer un document PDF professionnel. Une boîte de dialogue vous permettra de :
+            <dd><strong>R :</strong> Utilisez la fonction <code>Fichier &gt; Exporter Journal PDF...</code>. C'est un outil puissant qui vous permet de créer un document PDF professionnel. Une boîte de dialogue vous permettra de :
                 <ul>
                     <li>Sélectionner une <strong>plage de dates</strong> pour n'inclure que certaines notes.</li>
                     <li>Définir un <strong>titre</strong>, un <strong>nom d'auteur</strong> et même une <strong>image de couverture</strong> pour la page de garde.</li>
@@ -643,7 +643,7 @@ Aide
         <dl>
             <dt>Q : Comment puis-je créer mon propre thème de couleurs pour l'éditeur Markdown de BlueNotebook ?</dt>
             <dd><strong>R :</strong> C'est très simple !
-                <ol>
+                <ol><li>Allez dans <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
                     <li>Allez dans <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
                     <li>Ajustez les différentes couleurs (fond, texte, titres, etc.) et la police jusqu'à obtenir un résultat qui vous plaît.</li>
                     <li>Cliquez sur le bouton <code>Sauvegarder comme thème</code>.</li>
@@ -654,7 +654,7 @@ Aide
 
             <dt>Q : Comment modifier un thème existant ?</dt>
             <dd><strong>R :</strong>
-                <ol>
+                <ol><li>Ouvrez les <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
                     <li>Ouvrez les <code>Préférences > Affichage > Éditeur Markdown</code>.</li>
                     <li>Cliquez sur <code>Sélectionner un thème</code> et choisissez le thème que vous souhaitez modifier. Ses couleurs sont alors chargées dans l'interface.</li>
                     <li>Changez les couleurs ou la police que vous voulez ajuster.</li>
@@ -666,7 +666,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.4.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.4.6 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

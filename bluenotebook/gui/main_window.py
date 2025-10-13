@@ -2139,14 +2139,15 @@ class MainWindow(QMainWindow):
         if not ok:
             return
 
+        # V2.4.6 - Amélioration de l'affichage EXIF
         img_tag = f'<img src="{image_path}" width="{width}">'
-        exif_table = None
+        exif_caption = None
 
         if is_local and self.journal_directory:
             full_image_path = self.journal_directory / image_path
-            exif_table = format_exif_as_markdown(str(full_image_path))
+            exif_caption = format_exif_as_markdown(str(full_image_path))
 
-        if exif_table:
+        if exif_caption:
             reply = QMessageBox.question(
                 self,
                 "Données EXIF trouvées",
@@ -2156,7 +2157,8 @@ class MainWindow(QMainWindow):
                 QMessageBox.Yes,
             )
             if reply == QMessageBox.Yes:
-                self.editor.insert_text(img_tag + "\n" + exif_table)
+                figure_html = f'\n<figure style="text-align: center;">\n    {img_tag}\n    {exif_caption}\n</figure>\n'
+                self.editor.insert_text(figure_html)
             else:
                 self.editor.insert_text(img_tag)
         else:

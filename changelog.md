@@ -1,3 +1,45 @@
+## V2.4.6 Improve Exif Display + Onglet Navigation Journal
+
+Je veux modifier le HTML généré lors d'une insertion d'image Menu Insérer -> Image (<img..>) dans le cas ou il y a des information exif a afficher 
+objectif: Réduire la taille de l'affichage, plus compact et ajourter un marker à OpenSteetMaps
+toute la logique reste la meme c'est juste le HTML généré qui change
+voici les deux versions avant/ APrès pour illuster le changement
+
+Avant:
+
+<img src="images/20251013092158_PXL_20231027_083617007.jpg" width="800">
+
+| Propriété | Valeur |
+|---|---|
+| Lieu | Chauvigny |
+| Coordonnées GPS | [46.569323, 0.644341] |
+| OpenStreetMap | <https://www.openstreetmap.org/#map=16/46.569323/0.644341> |
+| Date et Heure de la prise de vue | 27/10/2023 10:36 |
+| Appareil | Google Pixel 6a |
+| Ouverture | ƒ/1.7 |
+| Vitesse | 1/687 |
+| Focale | 4.38mm |
+| ISO | 56 |
+
+
+Après:
+
+<figure style="text-align: center;">
+   <img src="images/20251013092158_PXL_20231027_083617007.jpg" width="800">
+    <figcaption style="font-weight: bold;">   
+       <a href="https://www.openstreetmap.org/?mlat=46.569323&mlon=0.644341#map=16/46.569323/0.644341">
+       Poitiers</a> : 19/11/2023 16:36  : Google Pixel 6a : ƒ/1.7  : Vitesse: 1/1063 : Focale: 4.38mm : ISO:56    
+   </figcaption>
+</figure>
+
+Beta1
+
+dans la fenetre principale, L'affichage de l'onglet "Navigation Journal" n'est pas correct:
+- Il faut enlever l'emoj
+- L'onglet est trop long (toute la largeur du panneau. Il ne boit couvrir que la longueur du texte "Navigation Journal")
+beta2 OK
+
+
 ## V2.4.5 Bug Editor: Coloration Menu Contextuel
 1
 @bluenotebook @editor.py a chaque remedemarrage la couleur de fond de l'editeur reprends la couleur par defaut et perd celle choisie par l'utilisateur avec son theme. Lorsque l'utilisateur selectionne son theme les couleurs et la couleur de fond sont bien persister dans settings.json.
