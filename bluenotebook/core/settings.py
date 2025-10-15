@@ -60,7 +60,10 @@ class SettingsManager:
                 "font_size": 12,
             },
             "preview": {"css_theme": "default_preview.css"},
-            "integrations": {"show_quote_of_the_day": False},
+            "integrations": {
+                "show_quote_of_the_day": False,
+                "weather": {"city": "", "api_key": ""},
+            },
             "ui": {
                 "show_navigation_panel": False,
                 "show_outline_panel": True,

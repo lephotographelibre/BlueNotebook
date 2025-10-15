@@ -61,6 +61,9 @@ def main():
             f"⚠️ Traduction Qt standard pour '{locale.name()}' non trouvée. Les dialogues système resteront en anglais."
         )
 
+    # Test Grok
+    print(f"Chemin des traductions : {qt_translation_path}")
+
     parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
     parser.add_argument(
         "-j", "--journal", dest="journal_dir", help="Spécifie le répertoire du journal."
@@ -69,7 +72,7 @@ def main():
 
     try:
         # Définir les informations de l'application
-        version = "2.4.6"
+        version = "2.5.1"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")

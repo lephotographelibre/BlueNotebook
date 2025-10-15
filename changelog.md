@@ -1,3 +1,95 @@
+## V2.5.1 Integration Meteo + Preferences  
+
+<https://www.weatherapi.com/> and <https://github.com/weatherapicom/>
+
+ 
+
+**Test Request:**
+
+http://api.weatherapi.com/v1/current.json?key=XXXXXXXX&q=Poitiers&aqi=no
+
+Execute with Rest Client : press `F1` and then select/type `Rest Client: Send Request`, the response will be previewed in a separate webview panel of Visual Studio Code
+----------------------
+
+## Integration:   Météo Weatherapi.com
+.
+
+Dans préférences... -> Intégrations
+On va ajouter une ligne :
+Météo Weatherapi.com  `Ville :` (Champ de Saisie de 20 Charactères) +  `Clé API :` : (Champ de Saisie de 30 Charactères)
+
+Ces ajouts préparent  le terrain pour l'implémentation de la logique de récupération des données météo. N'hésitez pas si vous avez d'autres questions !
+beta1
+
+Les champs comme la ville et la clé API pour la météo ne doivent pas avoir de valeur par défaut dans le code source. Ils doivent être créés dans le fichier settings.json de l'utilisateur uniquement lorsqu'il les saisit.
+```json
+    "integrations": {
+        "show_quote_of_the_day": false,
+        "youtube_enabled": true,
+        "weather": {
+            "city": "Poitiers",
+            "api_key": "d0c71250621403xxx8132544251410"
+        }
+```
+beta2
+
+Je voudrait ajouter un sous menu au Menu" Intégrations" appelé "Méteo  Weatherapi.com" 
+
+le code associé à ce traitements sera externalisé dans un fichier python dans le répertoire bluenotbook/integrations 
+
+Quand ce menu est appelé :
+- On va chercher les paramètres de la météo `Ville` et  `Clé API`  qui sont dans le fichier settings.json de l'utilisateur
+```json
+        "weather": {
+            "city": "Poitiers",
+            "api_key": "d0c71250621403xxx8132544251410"
+```
+Météo Weatherapi.com  `Ville` et  `Clé API` 
+
+- Si les paramètres sont vides ou pas renseignés tous les deux on va afficher une fenetre d'erreur demandant à l'utilisateur de renseigner ces paramètres
+- Sinon on va sur la base de ces paramètres générere une requète API de la forme
+
+http://api.weatherapi.com/v1/current.json?key=d0c71250621403xxx8132544251410&q=Poitiers&aqi=no
+q=Nom de la ville
+key=d0c71250621403xxx8132544251410
+
+- Si erreur lors de cette requete afficher un boite de dialogue avec le libellé de l'erreur
+-Sinon
+
+le retour de cette API est un flux JSON qu'il va falloir parser pour retrouver les informations
+```json
+    "name": "Poitiers",
+    "region": "Poitou-Charentes",
+    "country": "France",
+    "localtime": "2025-10-15 16:16"
+    "temp_c": 18.1,
+    "condition": {
+      "text": "Sunny",
+      "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+      "code": 1000
+    },
+    "wind_kph": 26.3,
+    "humidity": 64,
+```
+A partir de ces données on va construire un fragment  HTML incluant les données textuelles avec libellés en Français mais qui pourront etre traduit dans une phase ultérieure ainsi l'icone renvoyée dans le flux pour présenter les conditions. Essaye quelque chose de pas trop gros (2 lignes max + icones)
+
+Ce fragment HTML sera inclus à la position du caret dans l'éditeur au moment de l'appel
+beta3
+
+Il faudrait ajouter l'heure dans le fragment météo après la température dans le format HH:MM
+
+```html
+ <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; padding: 5px; background-color: #f9f9f9; max-width: 450px;">
+    <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png" alt="Ensoleillé" style="margin-right: 10px; width: 48px; height: 48px;">
+    <div style="font-family: sans-serif; font-size: 0.9em;">
+        <strong style="color: #333;">Poitiers:</strong> Ensoleillé, <strong>18.4°C</strong> à 16:48<br>
+        <span style="color: #666;">Vent: 26.3 km/h, Humidité: 60%</span>
+    </div>
+</div>
+```
+
+
+
 ## V2.4.6 Improve Exif Display + Onglet Navigation Journal
 
 Je veux modifier le HTML généré lors d'une insertion d'image Menu Insérer -> Image (<img..>) dans le cas ou il y a des information exif a afficher 

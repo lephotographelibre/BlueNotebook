@@ -68,6 +68,7 @@ from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
+from integrations.weather import get_weather_html
 import requests
 from bs4 import BeautifulSoup
 from integrations.gps_map_generator import get_location_name, create_gps_map
@@ -529,6 +530,7 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_quote_day_action)
         integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
+        integrations_menu.addAction(self.insert_weather_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("&Aide")
@@ -681,6 +683,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer une carte statique à partir de coordonnées GPS",
             triggered=self.insert_gps_map,
+        )
+        self.insert_weather_action = QAction(
+            "Météo Weatherapi.com",
+            self,
+            statusTip="Insérer la météo actuelle",
+            triggered=self.insert_weather,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -2163,6 +2171,25 @@ class MainWindow(QMainWindow):
                 self.editor.insert_text(img_tag)
         else:
             self.editor.insert_text(img_tag)
+
+    def insert_weather(self):
+        """Récupère et insère la météo actuelle dans l'éditeur."""
+        city = self.settings_manager.get("integrations.weather.city")
+        api_key = self.settings_manager.get("integrations.weather.api_key")
+
+        html_fragment, error_message = get_weather_html(city, api_key)
+
+        if error_message:
+            QMessageBox.warning(
+                self,
+                "Erreur Météo",
+                error_message,
+            )
+            return
+
+        if html_fragment:
+            self.editor.insert_text(html_fragment)
+            self.statusbar.showMessage("Météo insérée avec succès.", 3000)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""

@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Manuel Utilisateur - BlueNotebook V2.4.6
+            Aide en Ligne - BlueNotebook V2.5.1</h1>
     </header>
 
     <div class="toc">
@@ -94,7 +94,11 @@
                     <li><a href="#cartes-gps">7.2 Cartes GPS</a></li>
                 </ul>
             </li>
-            <li><a href="#integrations">8. Intégrations (YouTube, Citation)</a></li>
+            <li><a href="#integrations">8. Intégrations (Météo, YouTube, Citation)</a>
+                <ul>
+                    <li><a href="#meteo">8.1 Météo du Jour</a></li>
+                </ul>
+            </li>
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">10. Exploration des Menus</a></li>
             <li><a href="#export-pdf">11. Exportation du Journal en PDF</a></li>
@@ -293,8 +297,27 @@
     </section>
 
     <section id="integrations">
-        <h2>8. Intégrations (YouTube, Citation)</h2>
+        <h2>8. Intégrations (Météo, YouTube, Citation)</h2>
         <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>Intégrations</code>.</p>
+
+        <h3 id="meteo">8.1 Insérer la Météo du Jour</h3>
+        <p>Ajoutez les conditions météorologiques actuelles à vos notes journalières, ce qui est parfait pour un journal de bord ou pour contextualiser vos écrits.</p>
+        <ol>
+            <li><strong>Configuration initiale :</strong> Avant de pouvoir utiliser cette fonctionnalité, vous devez la configurer.
+                <ul>
+                    <li>Rendez-vous dans <code>Préférences > Intégrations</code>.</li>
+                    <li>Dans la section "Météo Weatherapi.com", renseignez votre <strong>Ville</strong> et votre <strong>Clé API</strong>. Vous pouvez obtenir une clé API gratuite sur le site <a href="https://www.weatherapi.com" target="_blank">weatherapi.com</a>.</li>
+                    <li>Validez les préférences. Ces informations sont sauvegardées localement et en toute sécurité.</li>
+                </ul>
+            </li>
+            <li><strong>Insertion :</strong>
+                <ul>
+                    <li>Placez votre curseur à l'endroit souhaité dans l'éditeur.</li>
+                    <li>Allez dans le menu <code>Intégrations > Météo Weatherapi.com</code>.</li>
+                    <li>Un fragment HTML contenant les informations météo (température, conditions, vent, humidité) sera inséré dans votre note.</li>
+                </ul>
+            </li>
+        </ol>
 
         <h3>Intégrer une Vidéo YouTube</h3>
         <p>Vous pouvez facilement intégrer une vidéo YouTube dans vos notes, avec une miniature cliquable.</p>
@@ -416,6 +439,7 @@ Insérer
 
 Intégrations
 ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
 └── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
 
@@ -526,6 +550,7 @@ Aide
         <ul>
             <li><strong>Intégration vidéo Youtube :</strong> Cochez cette case pour activer ou désactiver le sous-menu permettant d'insérer des vidéos YouTube.</li>
             <li><strong>Afficher la citation du jour au démarrage :</strong> Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
+            <li><strong>Météo Weatherapi.com :</strong> Renseignez ici votre ville et votre clé API pour pouvoir utiliser l'intégration météo.</li>
         </ul>
 
         <h3>Le fichier `settings.json`</h3>
@@ -666,7 +691,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.4.6 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.5.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

@@ -42,6 +42,7 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QInputDialog,
     QFileDialog,
+    QLineEdit,
 )
 from PyQt5.QtCore import QDir
 from PyQt5.QtGui import QFont, QColor
@@ -632,6 +633,35 @@ class PreferencesDialog(QDialog):
         self.youtube_integration_checkbox.setChecked(is_youtube_enabled)
         layout.addWidget(self.youtube_integration_checkbox)
 
+        # Météo Weatherapi.com
+        weather_layout = QHBoxLayout()
+        weather_layout.addWidget(QLabel("Météo Weatherapi.com"))
+
+        weather_layout.addWidget(QLabel("Ville :"))
+        self.weather_city_edit = QLineEdit()
+        self.weather_city_edit.setMaxLength(20)
+        self.weather_city_edit.setText(
+            self.settings_manager.get("integrations.weather.city")
+        )
+        weather_layout.addWidget(self.weather_city_edit)
+
+        weather_layout.addWidget(QLabel("Clé API :"))
+        self.weather_api_key_edit = QLineEdit()
+        self.weather_api_key_edit.setMaxLength(32)
+        self.weather_api_key_edit.setEchoMode(QLineEdit.Password)
+        self.weather_api_key_edit.setText(
+            self.settings_manager.get("integrations.weather.api_key")
+        )
+        weather_layout.addWidget(self.weather_api_key_edit)
+
+        weather_layout.addStretch()
+
+        # Wrapper widget for the weather layout
+        weather_widget = QWidget()
+        weather_widget.setLayout(weather_layout)
+
+        layout.addWidget(weather_widget)
+
         layout.addStretch()
         return widget
 
@@ -1038,6 +1068,13 @@ class PreferencesDialog(QDialog):
         # Sauvegarde du thème CSS de l'aperçu
         self.settings_manager.set("preview.css_theme", self.selected_html_theme)
 
+        # Sauvegarde des paramètres d'intégration météo
+        self.settings_manager.set(
+            "integrations.weather.city", self.weather_city_edit.text()
+        )
+        self.settings_manager.set(
+            "integrations.weather.api_key", self.weather_api_key_edit.text()
+        )
         # ... (le reste de la méthode accept originale)
         # NOTE: La logique de sauvegarde des autres onglets doit être ajoutée ici.
         # Pour l'instant, on appelle juste super().accept()
