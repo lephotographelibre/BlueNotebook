@@ -839,6 +839,9 @@ class MainWindow(QMainWindow):
             ("😊 Content", "😊"),
             ("😠 Mécontent", "😠"),
             ("😢 Triste", "😢"),
+            ("✅ Fait", "✅"),
+            ("❌ Annulé", "❌"),
+            ("⚠️ Attention", "⚠️"),
         ]
         for name, emoji in emoji_actions_data:
             action = QAction(
@@ -1911,20 +1914,21 @@ class MainWindow(QMainWindow):
             "À propos de BlueNotebook",
             f"""<h2>BlueNotebook V{self.app_version}</h2>
             <p><b>Éditeur de journal Markdown </b></p> 
-            <p>Un éditeur de texte Markdown avec aperçu en temps réel, 
+            <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel, 
             développé avec PyQt5 et QWebEngine.</p>
             <p>Très inspiré du logiciel <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
             <p><b>Fonctionnalités :</b></p>
             <ul>
-            <li>Gestion d'un journal<li>
-            <li>Sauvegarde Automatique (soon)</li>
+            <li>Gestion d'un journal Personnel</li>
+            <li>Navigation simple dans les notes du journal</li>
+            <li>Sauvegarde/Restauration</li>
             <li>Édition avec coloration syntaxique</li>
-            <li>Extensions Markdown surligné, barré</li>
             <li>Aperçu HTML en temps réel</li>
             <li>Export HTML des pages du journal</li>
-            <li>Export PDF du journal complet ou partiel (soon)</li>
-            <li>Gestion de Templates (soon)</li>
-            <li>Gestion de tags / Recherche par tags (soon)</li>
+            <li>Export PDF du journal complet ou partiel</li>
+            <li>Gestion de Templates</li>
+            <li>Gestion de tags / Recherche par tags/mots-clés</li>
+            <li>Insertion Cartes OpenStreetMap, Videos Youtube et Météo</li>
             </ul>
             <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
             <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>

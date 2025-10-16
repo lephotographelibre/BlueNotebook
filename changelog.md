@@ -1,8 +1,12 @@
+## V2.5.2 add emoji + About
+
+je voudrais ajouter ces trois emoji à la liste des emoji du Menu Inserer --> Emoji
+
+✅ ❌ ⚠️
+
 ## V2.5.1 Integration Meteo + Preferences  
 
 <https://www.weatherapi.com/> and <https://github.com/weatherapicom/>
-
- 
 
 **Test Request:**
 
