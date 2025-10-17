@@ -1,3 +1,5 @@
+## VX.Y
+
 ## V2.6.2 Export EPUB bug Fix + Refactoring PDF
 
 Modifier table des matières pour inclure tous les headers de niveau 1 # et de niveau 2 ##
