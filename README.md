@@ -8,7 +8,7 @@
 
 ## 1. Introduction et Vision du Produit
 
-BlueNotebook est une application de bureau multiplateforme (Windows, Linux) conçue pour la prise de notes et la tenue d'un journal personnel. Son principe fondamental est de fournir un environnement d'écriture centré sur le texte, basé sur la syntaxe **Markdown**, tout en offrant des fonctionnalités riches de navigation, de recherche et de personnalisation.
+`BlueNotebook` est une application de bureau multiplateforme (Windows, Linux) **conçue pour la prise de notes et la tenue d'un journal personnel**. Son principe fondamental est de fournir un environnement d'écriture centré sur le texte, basé sur la syntaxe **Markdown**, tout en offrant des fonctionnalités riches de navigation, de recherche et de personnalisation. Cette application s'est inspirée du logiciel [rednotebook](https://github.com/jendrikseipp/rednotebook) développé par Jendrik Seipp.
 
 L'application s'adresse aux utilisateurs qui apprécient la simplicité et la portabilité du format texte brut, mais qui souhaitent bénéficier d'une interface graphique moderne et d'outils avancés pour organiser et retrouver leurs informations.
 
@@ -19,7 +19,7 @@ La vision du produit est de combiner le meilleur des deux mondes :
 
 Copyright (C) 2025 Jean-Marc DIGNE
 
-Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier conformément aux termes de la Licence Publique Générale GNU telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre choix) toute version ultérieure.
+*Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier conformément aux termes de la Licence Publique Générale GNU telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre choix) toute version ultérieure.*
 
 
 [![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
@@ -188,7 +188,7 @@ Générés et mis à jour automatiquement dans le répertoire du journal :
 *   `resources/themes/`: Contient les thèmes de couleurs de l'éditeur au format JSON.
 *   `resources/css_preview/`: Contient les thèmes CSS pour le panneau d'aperçu.
 
-## 6. Recommandations d'Évolution
+## 6. Évolutions prévues
 
 ### 6.1. Évolutions Techniques
 
@@ -226,6 +226,6 @@ Générés et mis à jour automatiquement dans le répertoire du journal :
 
 ## 7. Conclusion
 
-BlueNotebook est une application de journalisation remarquablement complète et bien conçue. Son architecture modulaire, sa gestion transparente des données et la richesse de ses fonctionnalités (notamment les exports PDF/EPUB et les intégrations) en font un outil puissant.
+BlueNotebook est une application de journalisation déjà très complète et bien conçue. Son architecture modulaire, sa gestion transparente des données et la richesse de ses fonctionnalités (notamment les exports PDF/EPUB et les intégrations) en font un outil puissant.
 
 Les recommandations techniques visent à moderniser ses fondations pour assurer sa pérennité et sa maintenabilité, tandis que les recommandations fonctionnelles proposent des pistes pour l'aligner avec les attentes des utilisateurs d'applications de prise de notes modernes. Le projet dispose d'une base solide sur laquelle capitaliser pour de futures versions.
