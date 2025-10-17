@@ -1,3 +1,27 @@
+## V2.6.2 Export EPUB bug Fix + Refactoring PDF
+
+Modifier table des matières pour inclure tous les headers de niveau 1 # et de niveau 2 ##
+- Structure de la table des matières (toc) : Pour créer une table des matières avec des sous-niveaux (un chapitre de jour contenant des liens vers les titres de la note), EbookLib attend une structure comme (Section, (chapitre_principal, lien_1, lien_2, ...)). Le code précédent mélangeait des objets EpubHtml et des Link de manière incorrecte. La correction s'assure que chaque entrée de la table des matières respecte ce format.
+- Ajout de l'index à la table des matières : La page d'index des tags doit être ajoutée à la table des matières en tant que epub.Link, et non en tant qu'objet EpubHtml brut.
+
+corrections
+- Gestion des chapitres sans sous-titres : Le code vérifie maintenant si une note contient des sous-titres (if sub_links:).
+
+Si c'est le cas, il crée une section hiérarchique dans la table des matières, comme prévu.
+Si la note n'a pas de sous-titres, il ajoute simplement le chapitre principal à la table des matières, sans créer de section vide, ce qui évitait l'erreur.
+- Ajout de la page d'index : J'ai également corrigé la manière dont la page d'index des tags est ajoutée à la table des matières. Elle doit être ajoutée en tant qu'objet de chapitre (EpubHtml) et non en tant que simple lien (Link), ce qui était une autre source potentielle d'erreur
+
+Fixed with Claude !!
+beta1
+
+main_window.py je voudrais externaliser tout le code qui sert à l'export PDF dans un fichier python dans le répertoire integrations comme cela a été fait pour l'export EPUB
+
+beta 2
+
+add aide en ligne principaux packages python
+
+beta3
+
 ## V2.6.1 Export EPUB
 
 Je voudrais pouvoir exporter mon journal a format epub. le livre de vra contenir une table des matières, une couverture, un titre , un auteur.

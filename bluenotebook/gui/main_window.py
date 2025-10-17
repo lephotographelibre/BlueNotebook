@@ -84,38 +84,10 @@ from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
 from integrations.epub_exporter import EpubExportWorker
+from integrations.pdf_exporter import create_pdf_export_worker
 from integrations.youtube_video import get_youtube_video_details
 
 from integrations.image_exif import format_exif_as_markdown
-
-
-class PdfExportWorker(QRunnable):
-    """Worker pour générer le PDF en arrière-plan."""
-
-    class Signals(QObject):
-        finished = pyqtSignal(str)
-        error = pyqtSignal(str)
-
-    def __init__(self, html_string, base_url, css_string, output_path):
-        super().__init__()
-        self.signals = self.Signals()
-        self.html_string = html_string
-        self.base_url = base_url
-        self.css_string = css_string
-        self.output_path = output_path
-        from weasyprint import HTML, CSS
-
-        self.HTML = HTML
-        self.CSS = CSS
-
-    def run(self):
-        try:
-            html_doc = self.HTML(string=self.html_string, base_url=self.base_url)
-            css_doc = self.CSS(string=self.css_string)
-            html_doc.write_pdf(self.output_path, stylesheets=[css_doc])
-            self.signals.finished.emit(self.output_path)
-        except Exception as e:
-            self.signals.error.emit(str(e))
 
 
 class NewFileDialog(QDialog):
@@ -1648,220 +1620,29 @@ class MainWindow(QMainWindow):
         all_html_content = ""
 
         # Page de garde
-        image_abs_path = ""
-        if cover_image_path and Path(cover_image_path).exists():
-            image_abs_path = str(Path(cover_image_path).resolve())
-
-        last_note_in_range_date = datetime.strptime(
-            os.path.splitext(filtered_notes[-1])[0], "%Y%m%d"
-        )
-
-        image_html = (
-            f'<img src="{image_abs_path}" alt="Image de couverture" style="max-width: 400px; max-height: 400px; width: auto; height: auto;">'
-            if image_abs_path
-            else ""
-        )
-
-        author_html = (
-            f'<p class="cover-author">Auteur : {pdf_author}</p>' if pdf_author else ""
-        )
-
-        cover_page_html = f"""
-        <div class="cover-page">
-            {image_html}
-            <h1>{pdf_title}</h1>
-            {author_html}
-            <p class="cover-date">Période du {start_date_q.toString('d MMMM yyyy')} au {end_date_q.toString('d MMMM yyyy')}</p>
-            <p class="cover-date">Dernière note incluse : {last_note_in_range_date.strftime('%d %B %Y')}</p>
-        </div>
-        """
-        all_html_content += cover_page_html
-
-        # Contenu des notes filtrées
+        notes_data = []
         for note_file in filtered_notes:
             try:
                 with open(
                     self.journal_directory / note_file, "r", encoding="utf-8"
                 ) as f:
                     markdown_content = f.read()
-
                 self.preview.md.reset()
                 html_note = self.preview.md.convert(markdown_content)
-
                 date_obj = datetime.strptime(os.path.splitext(note_file)[0], "%Y%m%d")
-                date_formatted = date_obj.strftime("%d %B %Y")
-
-                all_html_content += f"""
-                <div class="journal-entry">
-                    <h2 class="entry-date">{date_formatted}</h2>
-                    {html_note}
-                </div>
-                """
+                notes_data.append((date_obj, html_note))
             except Exception as e:
                 print(f"Erreur de lecture du fichier {note_file}: {e}")
                 continue
-
-        # Échapper les guillemets dans le titre pour le CSS
-        escaped_pdf_title = pdf_title.replace('"', '\\"')
-
-        # CSS spécifique pour WeasyPrint avec pagination
-        weasyprint_css = f"""
-        @page {{
-            size: A4;
-            margin: 2cm 2cm 3cm 2cm;
-            
-            @bottom-center {{
-                content: "Page " counter(page) " / " counter(pages);
-                font-size: 9pt;
-                color: #666;
-            }}
-            
-            @bottom-left {{
-                content: "{escaped_pdf_title}";
-                font-size: 8pt;
-                color: #999;
-            }}
-            
-            @bottom-right {{
-                content: string(current-date);
-                font-size: 8pt;
-                color: #999;
-            }}
-        }}
-        
-        body {{
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11pt;
-            line-height: 1.6;
-            color: #333;
-        }}
-        
-        .cover-page {{
-            text-align: center;
-            padding-top: 30%;
-            page-break-after: always;
-        }}
-        
-        .cover-page h1 {{
-            font-size: 3em;
-            margin-top: 40px;
-            color: #2c3e50;
-        }}
-        
-        .cover-date {{
-            font-size: 1.2em;
-            margin-top: 20px;
-            color: #7f8c8d;
-        }}
-        
-        .cover-author {{
-            font-size: 1.1em;
-            margin-top: 15px;
-            color: #34495e;
-        }}
-
-        .journal-entry {{
-            page-break-before: always;
-        }}
-        
-        .journal-entry:first-of-type {{
-            page-break-before: avoid;
-        }}
-        
-        .entry-date {{
-            color: #3498db;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            string-set: current-date content();
-        }}
-        
-        h1, h2, h3, h4, h5, h6 {{
-            color: #2c3e50;
-            page-break-after: avoid;
-        }}
-        
-        pre, code {{
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 9pt;
-            page-break-inside: avoid;
-        }}
-        
-        code {{
-            padding: 2px 4px;
-            font-family: 'DejaVu Sans Mono', monospace;
-        }}
-        
-        pre {{
-            padding: 10px;
-            overflow-x: auto;
-        }}
-        
-        blockquote {{
-            border-left: 4px solid #3498db;
-            padding-left: 15px;
-            margin-left: 0;
-            color: #555;
-            font-style: italic;
-        }}
-        
-        table {{
-            border-collapse: collapse;
-            width: 100%;
-            margin: 15px 0;
-            page-break-inside: avoid;
-        }}
-        
-        th, td {{
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }}
-        
-        th {{
-            background-color: #f5f5f5;
-            font-weight: bold;
-        }}
-        
-        img {{
-            max-width: 100%;
-            height: auto;
-            page-break-inside: avoid;
-        }}
-        
-        .tag {{
-            background-color: #e3f2fd;
-            color: #1976d2;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 0.9em;
-        }}
-        """
-
-        # Créer le HTML complet
-        full_html = f"""
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-            <meta charset="UTF-8">
-            <title>Journal BlueNotebook</title>
-        </head>
-        <body>
-            {all_html_content}
-        </body>
-        </html>
-        """
 
         # Générer le PDF avec WeasyPrint
         try:
             self._start_export_flashing()
 
-            worker = PdfExportWorker(
-                html_string=full_html,
-                base_url=str(self.journal_directory),
-                css_string=weasyprint_css,
+            worker = create_pdf_export_worker(
+                options=options,
+                notes_data=notes_data,
+                journal_dir=self.journal_directory,
                 output_path=pdf_path,
             )
             worker.signals.finished.connect(self._on_export_finished)

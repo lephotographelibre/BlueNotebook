@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.6.2</h1>
+            Aide en Ligne - BlueNotebook V2.6.1</h1>
     </header>
 
     <div class="toc">
@@ -112,7 +112,6 @@
             </li>
             <li><a href="#raccourcis">15. Raccourcis Clavier</a></li>
             <li><a href="#faq">16. Foire Aux Questions (FAQ)</a></li>
-            <li><a href="#packages">17. Principaux Packages Python</a></li>
         </ul>
     </div>
 
@@ -714,94 +713,9 @@ Aide
         </dl>
     </section>
 
-    <section id="packages">
-        <h2>17. Principaux Packages Python utilisés dans BlueNotebook</h2>
-        <p>Voici une liste des principales bibliothèques Python qui animent le projet BlueNotebook, avec une explication de leur rôle.</p>
-
-        <h3>Interface Graphique et Composants de Base</h3>
-        <ul>
-            <li><strong>PyQt5</strong> : C'est le cœur de l'application. Ce framework est utilisé pour créer toute l'interface utilisateur, des fenêtres aux boutons, en passant par les menus et les panneaux. La partie <code>QWebEngineWidgets</code> est spécifiquement utilisée pour l'aperçu HTML en temps réel.
-                <ul>
-                    <li><strong>Auteur :</strong> Riverbank Computing</li>
-                    <li><strong>Site Officiel :</strong> <a href="https://www.riverbankcomputing.com" target="_blank">www.riverbankcomputing.com</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <h3>Traitement du Markdown et du HTML</h3>
-        <ul>
-            <li><strong>python-markdown</strong> : Cette bibliothèque est essentielle pour convertir le texte que vous écrivez en Markdown vers le format HTML qui est affiché dans le panneau d'aperçu.
-                <ul>
-                    <li><strong>Auteur :</strong> Waylan Limberg et contributeurs</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/Python-Markdown/markdown" target="_blank">github.com/Python-Markdown/markdown</a></li>
-                </ul>
-            </li>
-            <li><strong>Pygments</strong> : Utilisée par <code>python-markdown</code> pour réaliser la coloration syntaxique des blocs de code dans l'aperçu HTML, ce qui rend le code beaucoup plus lisible.
-                <ul>
-                    <li><strong>Auteur :</strong> Georg Brandl et contributeurs</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/pygments/pygments" target="_blank">github.com/pygments/pygments</a></li>
-                </ul>
-            </li>
-            <li><strong>pymdown-extensions</strong> : Fournit des fonctionnalités Markdown supplémentaires qui ne sont pas dans la version de base, comme le surlignage (<code>==texte==</code>) ou le texte barré (<code>~~texte~~</code>).
-                <ul>
-                    <li><strong>Auteur :</strong> Isaac Muse</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/facelessuser/pymdown-extensions" target="_blank">github.com/facelessuser/pymdown-extensions</a></li>
-                </ul>
-            </li>
-            <li><strong>BeautifulSoup4 (<code>bs4</code>)</strong> : Un outil très puissant utilisé à plusieurs endroits pour analyser (parser) du code HTML. Il sert notamment à extraire la citation du jour, mais aussi à trouver et traiter les images et les tags lors de l'export EPUB.
-                <ul>
-                    <li><strong>Auteur :</strong> Leonard Richardson</li>
-                    <li><strong>Site Officiel :</strong> <a href="https://www.crummy.com/software/BeautifulSoup/" target="_blank">www.crummy.com/software/BeautifulSoup/</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <h3>Export de Documents</h3>
-        <ul>
-            <li><strong>WeasyPrint</strong> : C'est la bibliothèque qui permet de générer les exports PDF de haute qualité. Elle prend le contenu HTML du journal et le transforme en un document PDF paginé.
-                <ul>
-                    <li><strong>Auteur :</strong> Kozea</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/Kozea/WeasyPrint" target="_blank">github.com/Kozea/WeasyPrint</a></li>
-                </ul>
-            </li>
-            <li><strong>EbookLib</strong> : La bibliothèque centrale pour la création des fichiers au format EPUB. Elle gère l'assemblage des chapitres, la création de la table des matières, l'intégration de la couverture et des images.
-                <ul>
-                    <li><strong>Auteur :</strong> Aleksandar Erkalovic</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/aerkalov/ebooklib" target="_blank">github.com/aerkalov/ebooklib</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <h3>Manipulation d'Images</h3>
-        <ul>
-            <li><strong>Pillow</strong> (un fork de PIL) : Utilisée pour tout ce qui touche à la manipulation d'images. Elle sert principalement à créer l'image de couverture composite pour l'export EPUB (en combinant une image et du texte) et à redimensionner/compresser les images avant de les inclure dans le livre numérique.
-                <ul>
-                    <li><strong>Auteur :</strong> Alex Clark et contributeurs</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/python-pillow/Pillow" target="_blank">github.com/python-pillow/Pillow</a></li>
-                </ul>
-            </li>
-            <li><strong>cairosvg</strong> : Une bibliothèque spécialisée qui permet de convertir les images au format vectoriel SVG en format PNG, car Pillow ne peut pas lire les SVG nativement. C'est crucial pour l'export EPUB.
-                <ul>
-                    <li><strong>Auteur :</strong> Kozea</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/Kozea/cairosvg" target="_blank">github.com/Kozea/cairosvg</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <h3>Intégrations et Réseau</h3>
-        <ul>
-            <li><strong>requests</strong> : C'est la bibliothèque de référence pour effectuer des requêtes sur internet. Elle est utilisée pour récupérer la citation du jour, les informations sur les vidéos YouTube, les données météo, et pour télécharger les images depuis des URLs lors de l'export EPUB.
-                <ul>
-                    <li><strong>Auteur :</strong> Python Software Foundation (mainteneur actuel)</li>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/psf/requests" target="_blank">github.com/psf/requests</a></li>
-                </ul>
-            </li>
-        </ul>
-    </section>
-
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.6.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.6.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>
