@@ -1,4 +1,6 @@
-## VX.Y
+## V2.6.2.1 README.md MaJ + copie d'écran
+
+Basé sur document architecture technique générée par Gemini CLI
 
 ## V2.6.2 Export EPUB bug Fix + Refactoring PDF
 
