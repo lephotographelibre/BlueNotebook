@@ -1,3 +1,85 @@
+## V2.6.1 Export EPUB
+
+Je voudrais pouvoir exporter mon journal a format epub. le livre de vra contenir une table des matières, une couverture, un titre , un auteur.
+Menu Fichier->" Export Journal EPUB..." ce choix de menu viendra juste avant "Exporter Journal PDF ..."
+Une boite de dialogue Option d'exportation du Journal EPUB (à l'identique de celle utilise pour l'export PDV
+Puis une deuxieme boite de dialogue permettant de choisir l'emplacement du fichier epub. Cet emplacement sera persisté dans les préferences utilisateur settings.json. et sera reproposé lors des exports ultérieurs.
+Le fichier EPUB sera a la norme EPUB 3.
+L'image de couverture sélectionnée par l'utilisateur servira à fabrique la couverture du livre. Cette couverture du livre sera une image jpg composé d'une moitier haute (l'image sélectionnée par l'utilisateur) et une moitier basse sur fond blanc et police de caractère noire avec le titre, l'auteur (si disponible, la plage de dates couvertes par le journal.
+Tout le code produit pour la logique de cet export sera externalisé dans un fichier python spécifique
+Y a t il d'autres questions a se poser ?
+
+```bash
+pip install EbookLib Pillow
+```
+beta1
+
+bien sur les images sont manquantes dans le epub. Il est nécessaire de les inclure dasn le epub.
+Ils faut les rapatrier en local dasn le epub et donc
+- soit aller les chercher en utilisant l'URL
+- Soit aller les chercher dans le dosser images du Journal.
+toutes les images seront stockées dasn le dossier Images de l'epub dans un format jpg compressé à80% taille maxi (800 px x 800 px) pour diminuer la taille du fichier.
+
+L'intégration des images dans le fichier EPUB est une étape cruciale pour rendre l'export complet et autonome.
+
+Pour ce faire, je vais modifier le EpubExportWorker afin qu'il analyse le contenu HTML de chaque note, trouve toutes les images, les télécharge ou les copie, les redimensionne, les compresse, puis les intègre directement dans le fichier .epub.
+
+J'utiliserai la bibliothèque BeautifulSoup pour analyser le HTML de manière fiable et requests pour télécharger les images depuis des URLs.
+
+beta 2
+ 
+
+Il faudrait changer la position du Menu Fichier->" Export Journal EPUB..." le positionner entre export HTML et export Journal PDF
+
+pour traiter les images svg --> Sinon Erreur car non supportées par Pillow
+
+Pour que cette modification fonctionne, vous devez installer la bibliothèque cairosvg et ses dépendances système.
+
+1. Installation de la bibliothèque Python :
+
+```bash
+pip install cairosvg
+```
+2. Installation des dépendances système (sur Linux/Debian/Ubuntu) :
+
+cairosvg a besoin de la bibliothèque libcairo2. Si elle n'est pas déjà sur votre système, vous pouvez l'installer avec :
+
+```bash
+sudo apt-get update
+sudo apt-get install libcairo2-dev
+```
+beta3
+
+
+Je voudrais créer un index a la fin du livre qui liste toute les tags (du type @@Python) dans le epub et qu me permette d'acceder rapidement aux pages. A chaque tag classé suivant ordre alphanumerique une liste de page cliquable pour acceder à l'emplacement du tag. Pages d'index ayant pour titre Index de Tags et bien listé dans spine et toc.ncx.
+
+
+
+
+
+externaliser toute la logique de l'export PDF
+
+## V2.5.3  Barre d'outils des panneaux
+
+Je voudrais afficher sous la barre de menu une barre de boutons switch ayant comme label le nom des panneaux (Navigation, Plan, EditeurAperçu )
+Sur une ligne
+Navigation (switch) Plan (switch) Editeur (Switch) Aperçu (switch)
+
+- Quand un switch est on le panneau est visible
+- Quand un switch est off le panneau est masqué
+- Editeur est toujours on et grisé (pas desactivable)
+- D'autres panneaux viendront par la suite
+- Au demarrage les switchs tienne comtpe des préférences (fichier settings.json). Sinon par defaut editeur+Aperçu HTML seulement
+
+beta1
+
+comme j'ai ajouté cette barre de menu, je peux supprimer le menu affichage et ses 3 sous menu de la barre de menu principale
+beta2
+
+Barre d'outils des panneaux: je voudrais remplacer les boutons simples par des QtQuick.Controls
+Pour un arrangement de type
+Navigation (QtQuick.Controls) Plan (QtQuick.Controls) Editeur (QtQuick.Controls) Aperçu (QtQuick.Controls)
+
 ## V2.5.2 add emoji + About
 
 je voudrais ajouter ces trois emoji à la liste des emoji du Menu Inserer --> Emoji

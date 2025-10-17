@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.5.2</h1>
+            Aide en Ligne - BlueNotebook V2.6.1</h1>
     </header>
 
     <div class="toc">
@@ -102,15 +102,16 @@
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
             <li><a href="#menus">10. Exploration des Menus</a></li>
             <li><a href="#export-pdf">11. Exportation du Journal en PDF</a></li>
-            <li><a href="#backup-restore">12. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">13. Personnalisation Avancée</a>
+            <li><a href="#export-epub">12. Exportation du Journal en EPUB</a></li>
+            <li><a href="#backup-restore">13. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">14. Personnalisation Avancée</a>
                 <ul>
-                    <li><a href="#themes-editeur">13.1 Personnalisation de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">13.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
+                    <li><a href="#themes-editeur">14.1 Personnalisation de l'Éditeur</a></li>
+                    <li><a href="#themes-apercu">14.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
                 </ul>
             </li>
-            <li><a href="#raccourcis">12. Raccourcis Clavier</a></li>
-            <li><a href="#faq">13. Foire Aux Questions (FAQ)</a></li>
+            <li><a href="#raccourcis">15. Raccourcis Clavier</a></li>
+            <li><a href="#faq">16. Foire Aux Questions (FAQ)</a></li>
         </ul>
     </div>
 
@@ -150,14 +151,15 @@
 
     <section id="interface">
         <h2>3. L'interface Principale</h2>
-        <p>L'interface est divisée en plusieurs panneaux redimensionnables pour s'adapter à votre façon de travailler :</p>
+        <p>L'interface est divisée en plusieurs panneaux pour s'adapter à votre façon de travailler :</p>
         <ol>
             <li><strong>Panneau de Navigation (<code>F6</code>) :</strong> Situé à gauche, il contient le calendrier, les outils de recherche et les nuages de mots/tags.</li>
             <li><strong>Panneau "Plan du document" (<code>F7</code>) :</strong> Affiche la structure des titres (<code>#</code>, <code>##</code>, etc.) de votre note actuelle. Cliquez sur un titre pour naviguer instantanément.</li>
-            <li><strong>L'Éditeur :</strong> La zone centrale où vous écrivez votre texte en utilisant la syntaxe Markdown.</li>
+            <li><strong>L'Éditeur :</strong> La zone centrale où vous écrivez votre texte en utilisant la syntaxe Markdown. Ce panneau est toujours visible.</li>
             <li><strong>La Prévisualisation (<code>F5</code>) :</strong> À droite, ce panneau affiche le rendu final de votre texte, mis en forme en temps réel.</li>
         </ol>
-        <p>Vous pouvez afficher ou masquer ces panneaux via le menu <code>Affichage</code> ou avec les raccourcis clavier indiqués.</p>
+        <p>Juste sous la barre de menu principale, une <strong>barre d'outils des panneaux</strong> vous permet d'afficher ou de masquer rapidement ces panneaux à l'aide de boutons interrupteurs. L'état de ces boutons (activé/désactivé) est synchronisé avec les préférences que vous définissez dans <code>Préférences > Panneaux</code>. Les raccourcis clavier (<code>F5</code>, <code>F6</code>, <code>F7</code>) sont également fonctionnels.</p>
+
         <p>La <strong>barre de statut</strong>, située tout en bas de la fenêtre, est une source d'information précieuse. De gauche à droite, vous y trouverez :</p>
         <ul>
             <li>Le nom du <strong>fichier actuel</strong> (ex: <code>20250920.md</code>).</li>
@@ -380,6 +382,7 @@ Fichier
 ├── ---
 ├── Exporter HTML... : Exporte la note en fichier HTML.
 ├── Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates, titre et auteur.
+├── Exporter Journal EPUB... : Crée un livre numérique au format EPUB de votre journal.
 ├── ---
 ├── Préférences... : Ouvre la fenêtre de personnalisation de l'application.
 ├── ---
@@ -392,11 +395,6 @@ Fichier
 ├── Rétablir (Ctrl+Y) : Rétablit la dernière action annulée.
 ├── ---
 └── Rechercher (Ctrl+F) : Recherche du texte dans l'éditeur.
-
-Affichage
-├── Basculer Navigation Journal (F6) : Affiche ou masque le panneau de gauche (calendrier, recherche, nuages).
-├── Basculer Plan du document (F7) : Affiche ou masque le panneau central qui liste les titres du document.
-└── Basculer Aperçu HTML (F5) : Affiche ou masque le panneau de droite qui montre le rendu de votre note.
 
 Formater
 ├── Titres
@@ -469,8 +467,24 @@ Aide
         <p>Une fois les options choisies, l'application génère le fichier PDF en arrière-plan. Une notification clignotante "Veuillez patienter..." apparaît dans la barre de statut pendant le processus.</p>
     </section>
 
+    <section id="export-epub">
+        <h2>12. Exportation du Journal en EPUB</h2>
+        <p>En plus du PDF, BlueNotebook vous permet de transformer votre journal en un véritable livre numérique au format EPUB, compatible avec toutes les liseuses (Kobo, Kindle, etc.) et applications de lecture. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal EPUB...</code>.</p>
+        <p>L'export EPUB est conçu pour offrir une expérience de lecture optimale et inclut de nombreuses fonctionnalités avancées :</p>
+        <ul>
+            <li><strong>Configuration similaire au PDF :</strong> Vous pouvez choisir la plage de dates, le titre du livre, le nom de l'auteur et une image de base pour la couverture.</li>
+            <li><strong>Couverture personnalisée :</strong> L'application génère une couverture de livre professionnelle en combinant l'image que vous avez choisie avec le titre, l'auteur et la plage de dates sur un fond élégant.</li>
+            <li><strong>Table des matières :</strong> Un sommaire cliquable est automatiquement créé, avec une entrée pour chaque note journalière, vous permettant de naviguer facilement dans votre livre.</li>
+            <li><strong>Intégration des images :</strong> Toutes les images de vos notes (locales ou web) sont automatiquement téléchargées, redimensionnées, compressées et intégrées dans le fichier EPUB. Votre livre est ainsi 100% autonome.</li>
+            <li><strong>Index des tags :</strong> Pour une navigation thématique, un index de tous vos tags (<code>@@tag</code>) est généré à la fin du livre. Chaque tag est suivi d'une liste de liens cliquables qui vous amènent directement à chaque occurrence du tag dans le journal.</li>
+        </ul>
+        <p>Le résultat est un fichier <code>.epub</code> de haute qualité, prêt à être transféré sur votre liseuse pour une relecture confortable de vos souvenirs.</p>
+        <p><strong>Note :</strong> Pour utiliser cette fonctionnalité, les bibliothèques Python <code>EbookLib</code>, <code>Pillow</code>, <code>BeautifulSoup4</code>, <code>requests</code> et <code>cairosvg</code> doivent être installées.</p>
+    </section>
+
+
     <section id="backup-restore">
-        <h2>12. Sauvegarde et Restauration du Journal</h2>
+        <h2>13. Sauvegarde et Restauration du Journal</h2>
         <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
         <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
         <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
@@ -493,7 +507,7 @@ Aide
     </section>
 
     <section id="preferences">
-        <h2>13. Personnalisation Avancée (Préférences)</h2>
+        <h2>14. Personnalisation Avancée (Préférences)</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -506,7 +520,7 @@ Aide
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">13.1 Personnalisation de l'Éditeur</h4>
+        <h4 id="themes-editeur">14.1 Personnalisation de l'Éditeur</h4>
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture. BlueNotebook vous offre une flexibilité totale, que vous souhaitiez utiliser un thème prêt à l'emploi ou créer le vôtre.</p>
 
         <p> <strong>Affichage des numéros de lignes ? :</strong> </p> 
@@ -572,7 +586,7 @@ Aide
 
 
     <section id="raccourcis">
-        <h2>12. Récapitulatif des Raccourcis Clavier</h2>
+        <h2>15. Récapitulatif des Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -594,7 +608,7 @@ Aide
     </section>
 
     <section id="faq">
-        <h2>13. Foire Aux Questions (FAQ)</h2>
+        <h2>16. Foire Aux Questions (FAQ)</h2>
         <p>Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilisation de l'application.</p>
 
         <h3>Gestion du Journal et des Notes</h3>
@@ -662,6 +676,16 @@ Aide
                     <li>Définir un <strong>titre</strong>, un <strong>nom d'auteur</strong> et même une <strong>image de couverture</strong> pour la page de garde.</li>
                 </ul>
             L'application mémorise vos choix (dossier, titre, auteur) pour vous faire gagner du temps lors des prochains exports. Le résultat est un document paginé, parfait pour l'archivage ou l'impression.</dd>
+
+            <dt>Q : Comment transformer mon journal en livre numérique (EPUB) ?</dt>
+            <dd><strong>R :</strong> BlueNotebook propose une fonction d'export EPUB très complète via <code>Fichier > Exporter Journal EPUB...</code>. Elle transforme votre journal en un véritable livre numérique pour liseuses. En plus des options de dates, titre et auteur, l'export EPUB inclut :
+                <ul>
+                    <li>Une <strong>couverture personnalisée</strong> générée automatiquement.</li>
+                    <li>Une <strong>table des matières</strong> cliquable.</li>
+                    <li>L'<strong>intégration de toutes vos images</strong>, redimensionnées et compressées.</li>
+                    <li>Un <strong>index des tags</strong> à la fin du livre pour une navigation par thème.</li>
+                </ul>
+            C'est la solution idéale pour une relecture confortable de vos souvenirs sur n'importe quelle liseuse.</dd>
         </dl>
 
         <h3>Personnalisation et Thèmes</h3>
@@ -691,7 +715,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.5.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.6.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

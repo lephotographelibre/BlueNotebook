@@ -65,9 +65,9 @@ class SettingsManager:
                 "weather": {"city": "", "api_key": ""},
             },
             "ui": {
-                "show_navigation_panel": False,
-                "show_outline_panel": True,
-                "show_preview_panel": False,
+                "show_navigation_panel": False,  # Par défaut, masqué
+                "show_outline_panel": False,  # Par défaut, masqué
+                "show_preview_panel": True,  # Par défaut, visible
                 "show_indexing_stats": True,
             },
             "indexing": {

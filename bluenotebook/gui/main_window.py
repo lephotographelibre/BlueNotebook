@@ -47,6 +47,8 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
     QProgressDialog,
     QInputDialog,
+    QToolBar,
+    QPushButton,
     QRadioButton,
     QComboBox,
 )
@@ -54,8 +56,14 @@ from PyQt5.QtWidgets import QFormLayout, QLineEdit
 from PyQt5.QtWidgets import QSplitterHandle, QToolButton
 
 from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
-from PyQt5.QtCore import QThreadPool
-from PyQt5.QtGui import QKeySequence, QIcon, QFont
+from PyQt5.QtCore import (
+    QThreadPool,
+    QPropertyAnimation,
+    QRect,
+    QEasingCurve,
+    pyqtProperty,
+)
+from PyQt5.QtGui import QKeySequence, QIcon, QFont, QPainter
 from PyQt5.QtGui import QColor
 
 from .custom_widgets import CenteredStatusBarLabel
@@ -75,6 +83,7 @@ from integrations.gps_map_generator import get_location_name, create_gps_map
 from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+from integrations.epub_exporter import EpubExportWorker
 from integrations.youtube_video import get_youtube_video_details
 
 from integrations.image_exif import format_exif_as_markdown
@@ -171,6 +180,99 @@ class NewFileDialog(QDialog):
             else:
                 # Fallback si aucun template n'est trouvé
                 return "blank", None
+
+
+class SwitchButton(QPushButton):
+    """Un bouton de type interrupteur (switch) inspiré de QtQuick.Controls."""
+
+    def __init__(self, parent=None, text=""):
+        super().__init__(text, parent)
+        self.setCheckable(True)
+        self.setMinimumHeight(24)
+
+        # Calculer la largeur minimale en fonction du texte pour un ajustement parfait
+        font_metrics = self.fontMetrics()
+        text_width = font_metrics.horizontalAdvance(
+            text + "  "
+        )  # Ajouter un peu d'espace
+        self.setMinimumWidth(30 + text_width + 24)  # Marge gauche + texte + cercle
+
+        self._circle_pos = 3
+        self._animation = QPropertyAnimation(self, b"circle_pos", self)
+        self._animation.setDuration(200)
+        self._animation.setEasingCurve(QEasingCurve.OutCubic)
+
+        self.toggled.connect(self._on_toggled)
+        # Mettre à jour la position initiale sans animation lorsque l'état est défini par programme
+        self.toggled.connect(self._update_circle_pos_no_anim)
+
+    def showEvent(self, event):
+        """Initialise la position du cercle lorsque le widget est affiché."""
+        self._circle_pos = self.width() - 23 if self.isChecked() else 2
+        super().showEvent(event)
+        # Forcer une mise à jour visuelle
+        self.update()
+
+    def _update_circle_pos_no_anim(self, checked):
+        # Mettre à jour la position uniquement si l'animation n'est pas en cours
+        if self._animation.state() != QPropertyAnimation.Running:
+            self._circle_pos = self.width() - 23 if checked else 2
+
+    def _get_circle_pos(self):
+        return self._circle_pos
+
+    def _set_circle_pos(self, pos):
+        self._circle_pos = pos
+        self.update()
+
+    circle_pos = pyqtProperty(int, fget=_get_circle_pos, fset=_set_circle_pos)
+
+    def _on_toggled(self, checked):
+        end_pos = self.width() - 23 if checked else 2
+        self._animation.setEndValue(end_pos)
+        self._animation.start()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+        # Solution robuste : Mettre à jour la position du cercle juste avant de dessiner,
+        # mais seulement si aucune animation n'est en cours.
+        if self._animation.state() != QPropertyAnimation.Running:
+            self._circle_pos = self.width() - 23 if self.isChecked() else 2
+
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        # Couleurs
+        bg_color_off = QColor("#d1d5da")
+        bg_color_on = QColor("#3498db")
+        circle_color = QColor("#ffffff")
+        text_color = QColor("#24292e")
+
+        # Fond
+        rect = self.rect()
+        bg_rect = QRect(0, 0, rect.width(), rect.height())
+        painter.setPen(Qt.NoPen)
+
+        if self.isEnabled():
+            bg_color = bg_color_on if self.isChecked() else bg_color_off
+        else:
+            bg_color = bg_color_on if self.isChecked() else QColor("#e0e0e0")
+
+        painter.setBrush(bg_color)
+        painter.drawRoundedRect(bg_rect, 14, 14)
+
+        # Cercle
+        painter.setBrush(circle_color)
+        painter.drawEllipse(self._circle_pos, 2, 20, 20)
+
+        # Texte
+        painter.setPen(text_color)
+        font = self.font()
+        font.setBold(True)
+        painter.setFont(font)
+        text_rect = self.rect()
+        text_rect.setLeft(30)
+        painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, self.text())
 
 
 class GpsInputDialog(QDialog):
@@ -357,6 +459,7 @@ class MainWindow(QMainWindow):
 
         self.setup_ui()
         self.setup_menu()
+        self.setup_panels_toolbar()
         self.setup_statusbar()
         self.apply_settings()
         self.setup_connections()
@@ -496,6 +599,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.restore_journal_action)
         file_menu.addSeparator()
         file_menu.addAction(self.export_action)
+        file_menu.addAction(self.export_journal_epub_action)
         file_menu.addAction(self.export_journal_pdf_action)
         file_menu.addSeparator()
         file_menu.addAction(self.preferences_action)
@@ -511,11 +615,10 @@ class MainWindow(QMainWindow):
         edit_menu.addSeparator()
         edit_menu.addAction(self.find_action)
 
-        # Menu Affichage
-        view_menu = menubar.addMenu("&Affichage")
-        view_menu.addAction(self.toggle_navigation_action)
-        view_menu.addAction(self.toggle_outline_action)
-        view_menu.addAction(self.toggle_preview_action)
+        # Les actions de basculement des panneaux sont conservées pour les raccourcis clavier
+        self.addAction(self.toggle_navigation_action)
+        self.addAction(self.toggle_outline_action)
+        self.addAction(self.toggle_preview_action)
 
         # Menu Formatter
         format_menu = menubar.addMenu("F&ormater")
@@ -603,6 +706,12 @@ class MainWindow(QMainWindow):
             statusTip="Exporter le journal complet en PDF",
             triggered=self.export_journal_pdf,
         )
+        self.export_journal_epub_action = QAction(
+            "Exporter Journal EPUB...",
+            self,
+            statusTip="Exporter le journal complet en EPUB",
+            triggered=self.export_journal_epub,
+        )
         self.preferences_action = QAction(
             "Préférences...",
             self,
@@ -629,25 +738,27 @@ class MainWindow(QMainWindow):
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
         )
-
         self.toggle_navigation_action = QAction(
             "Basculer Navigation Journal",
             self,
             shortcut="F6",
+            checkable=True,
             triggered=self.toggle_navigation,
         )
-
         self.toggle_outline_action = QAction(
             "Basculer Plan du document",
             self,
             shortcut="F7",
+            checkable=True,
             triggered=self.toggle_outline,
         )
-
         self.toggle_preview_action = QAction(
-            "Basculer Aperçu HTML", self, shortcut="F5", triggered=self.toggle_preview
+            "Basculer Aperçu HTML",
+            self,
+            shortcut="F5",
+            checkable=True,
+            triggered=self.toggle_preview,
         )
-
         self.about_action = QAction(
             "À propos",
             self,
@@ -849,6 +960,59 @@ class MainWindow(QMainWindow):
             )
             emoji_menu.addAction(action)
         insert_menu.addMenu(emoji_menu)
+
+    def setup_panels_toolbar(self):
+        """Configure la barre d'outils pour basculer les panneaux."""
+        self.panels_toolbar = QToolBar("Panneaux")
+        self.panels_toolbar.setMovable(False)
+        self.addToolBar(Qt.TopToolBarArea, self.panels_toolbar)
+
+        # Style pour la barre d'outils pour un fond uni
+        self.panels_toolbar.setStyleSheet("QToolBar { border: none; }")
+
+        # Bouton Navigation
+        self.nav_button = SwitchButton(text="Navigation")
+        self.nav_button.toggled.connect(self.navigation_panel.setVisible)
+        self.panels_toolbar.addWidget(self.nav_button)
+
+        # Bouton Plan
+        self.outline_button = SwitchButton(text="Plan")
+        self.outline_button.toggled.connect(self.outline_panel.setVisible)
+        self.panels_toolbar.addWidget(self.outline_button)
+
+        # Bouton Éditeur (toujours visible et désactivé)
+        self.editor_button = SwitchButton(text="Éditeur")
+        self.editor_button.setChecked(True)
+        self.editor_button.setEnabled(False)
+        self.panels_toolbar.addWidget(self.editor_button)
+
+        # Bouton Aperçu
+        self.preview_button = SwitchButton(text="Aperçu")
+        self.preview_button.toggled.connect(self.preview.setVisible)
+        self.panels_toolbar.addWidget(self.preview_button)
+
+        # Note: Les états initiaux seront définis dans apply_settings() après le chargement des préférences
+
+    def _sync_panel_controls(self):
+        """Synchronise l'état des boutons et des menus avec la visibilité des panneaux."""
+        # Bloquer les signaux pour éviter les boucles de rappel
+        self.nav_button.blockSignals(True)
+        self.outline_button.blockSignals(True)
+        self.preview_button.blockSignals(True)
+
+        self.nav_button.setChecked(self.navigation_panel.isVisible())
+        self.toggle_navigation_action.setChecked(self.navigation_panel.isVisible())
+
+        self.outline_button.setChecked(self.outline_panel.isVisible())
+        self.toggle_outline_action.setChecked(self.outline_panel.isVisible())
+
+        self.preview_button.setChecked(self.preview.isVisible())
+        self.toggle_preview_action.setChecked(self.preview.isVisible())
+
+        # Rétablir les signaux
+        self.nav_button.blockSignals(False)
+        self.outline_button.blockSignals(False)
+        self.preview_button.blockSignals(False)
 
     def setup_statusbar(self):
         """Configuration de la barre de statut"""
@@ -1692,7 +1856,7 @@ class MainWindow(QMainWindow):
 
         # Générer le PDF avec WeasyPrint
         try:
-            self._start_pdf_flashing()
+            self._start_export_flashing()
 
             worker = PdfExportWorker(
                 html_string=full_html,
@@ -1700,8 +1864,8 @@ class MainWindow(QMainWindow):
                 css_string=weasyprint_css,
                 output_path=pdf_path,
             )
-            worker.signals.finished.connect(self._on_pdf_export_finished)
-            worker.signals.error.connect(self._on_pdf_export_error)
+            worker.signals.finished.connect(self._on_export_finished)
+            worker.signals.error.connect(self._on_export_error)
 
             self.thread_pool.start(worker)
 
@@ -1715,30 +1879,152 @@ class MainWindow(QMainWindow):
             self.settings_manager.save_settings()
 
         except Exception as e:
-            self._stop_pdf_flashing()
+            self._stop_export_flashing()
             QMessageBox.critical(
                 self,
                 "Erreur d'exportation",
                 f"Une erreur est survenue lors de la création du PDF :\n{str(e)}",
             )
 
-    def _on_pdf_export_finished(self, pdf_path):
-        """Callback pour la fin de l'export PDF."""
-        self._stop_pdf_flashing()
+    def _on_export_finished(self, file_path):
+        """Callback générique pour la fin d'un export."""
+        self._stop_export_flashing()
+        file_type = Path(file_path).suffix.upper()[1:]
         QMessageBox.information(
             self,
             "Exportation terminée",
-            f"Le journal a été exporté avec succès dans :\n{pdf_path}",
+            f"Le journal a été exporté avec succès au format {file_type} dans :\n{file_path}",
         )
 
-    def _on_pdf_export_error(self, error_message):
-        """Callback en cas d'erreur d'export PDF."""
-        self._stop_pdf_flashing()
+    def _on_export_error(self, error_message):
+        """Callback générique en cas d'erreur d'export."""
+        self._stop_export_flashing()
         QMessageBox.critical(
             self,
             "Erreur d'exportation",
-            f"Une erreur est survenue lors de la création du PDF :\n{error_message}",
+            f"Une erreur est survenue lors de la création du fichier :\n{error_message}",
         )
+
+    def export_journal_epub(self):
+        """Exporte l'ensemble du journal dans un unique fichier EPUB."""
+        try:
+            from ebooklib import epub
+            from PIL import Image
+        except ImportError:
+            QMessageBox.critical(
+                self,
+                "Modules manquants",
+                "Les bibliothèques 'EbookLib' et 'Pillow' sont requises.\n\n"
+                "Pour utiliser cette fonctionnalité, installez-les avec:\n"
+                "pip install EbookLib Pillow",
+            )
+            return
+
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Exportation impossible",
+                "Aucun répertoire de journal n'est actuellement défini.",
+            )
+            return
+
+        # Récupérer et trier toutes les notes du journal
+        note_files = sorted(
+            [
+                f
+                for f in os.listdir(self.journal_directory)
+                if f.endswith(".md") and re.match(r"^\d{8}\.md$", f)
+            ]
+        )
+
+        if not note_files:
+            QMessageBox.information(
+                self, "Journal vide", "Aucune note à exporter dans le journal."
+            )
+            return
+
+        # Déterminer les dates min/max pour la boîte de dialogue
+        min_date_obj = datetime.strptime(os.path.splitext(note_files[0])[0], "%Y%m%d")
+        min_date_q = QDate(min_date_obj.year, min_date_obj.month, min_date_obj.day)
+        today_q = QDate.currentDate()
+
+        # Récupérer les derniers paramètres utilisés
+        last_author = self.settings_manager.get("epub.last_author", "")
+        last_title = self.settings_manager.get(
+            "epub.last_title", "BlueNotebook Journal"
+        )
+        default_logo_path = (
+            Path(__file__).parent.parent
+            / "resources"
+            / "images"
+            / "bluenotebook_256-x256_fond_blanc.png"
+        )
+
+        # Afficher la boîte de dialogue de sélection (identique à celle du PDF)
+        date_dialog = DateRangeDialog(
+            start_date_default=min_date_q,
+            end_date_default=today_q,
+            min_date=min_date_q,
+            max_date=today_q,
+            default_title=last_title,
+            default_cover_image=str(default_logo_path),
+            default_author=last_author,
+            parent=self,
+        )
+        date_dialog.setWindowTitle("Options d'exportation du Journal EPUB")
+
+        if date_dialog.exec_() != QDialog.Accepted:
+            return
+
+        options = date_dialog.get_export_options()
+
+        # Demander où sauvegarder le fichier EPUB
+        last_epub_dir = self.settings_manager.get("epub.last_directory")
+        if not last_epub_dir or not Path(last_epub_dir).is_dir():
+            last_epub_dir = str(self.journal_directory.parent)
+
+        default_filename = f"Journal-{options['start_date'].toString('ddMMyyyy')}-{options['end_date'].toString('ddMMyyyy')}.epub"
+        default_path = os.path.join(last_epub_dir, default_filename)
+
+        epub_path, _ = QFileDialog.getSaveFileName(
+            self, "Exporter le journal en EPUB", default_path, "Fichiers EPUB (*.epub)"
+        )
+
+        if not epub_path:
+            return
+
+        # Filtrer les notes et préparer les données
+        notes_data = []
+        for note_file in note_files:
+            note_date_str = os.path.splitext(note_file)[0]
+            note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
+            if (
+                options["start_date"].toPyDate()
+                <= note_date_obj
+                <= options["end_date"].toPyDate()
+            ):
+                with open(
+                    self.journal_directory / note_file, "r", encoding="utf-8"
+                ) as f:
+                    markdown_content = f.read()
+                self.preview.md.reset()
+                html_note = self.preview.md.convert(markdown_content)
+                notes_data.append((note_date_obj, html_note))
+
+        # Lancer le worker en arrière-plan
+        self._start_export_flashing()
+        worker = EpubExportWorker(
+            options, notes_data, epub_path, self.journal_directory
+        )
+        worker.signals.finished.connect(self._on_export_finished)
+        worker.signals.error.connect(self._on_export_error)
+        self.thread_pool.start(worker)
+
+        # Mémoriser les paramètres pour la prochaine fois
+        self.settings_manager.set("epub.last_directory", str(Path(epub_path).parent))
+        self.settings_manager.set("epub.last_author", options["author"])
+        self.settings_manager.set("epub.last_title", options["title"])
+        self.settings_manager.save_settings()
 
     def backup_journal(self):
         """Sauvegarde le répertoire du journal dans une archive ZIP."""
@@ -1875,6 +2161,7 @@ class MainWindow(QMainWindow):
             self.preview.hide()
         else:
             self.preview.show()
+        self._sync_panel_controls()
 
     def toggle_navigation(self):
         """Basculer la visibilité du panneau de navigation."""
@@ -1882,6 +2169,7 @@ class MainWindow(QMainWindow):
             self.navigation_panel.hide()
         else:
             self.navigation_panel.show()
+        self._sync_panel_controls()
 
     def toggle_outline(self):
         """Basculer la visibilité du panneau de plan."""
@@ -1889,6 +2177,7 @@ class MainWindow(QMainWindow):
             self.outline_panel.hide()
         else:
             self.outline_panel.show()
+        self._sync_panel_controls()
 
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
@@ -2424,12 +2713,12 @@ class MainWindow(QMainWindow):
         """Définit la couleur du texte pour le label du nom de fichier."""
         self.file_label.setStyleSheet(f"color: {color};")
 
-    def _start_pdf_flashing(self):
-        """Démarre le message clignotant pour l'export PDF."""
+    def _start_export_flashing(self):
+        """Démarre le message clignotant pour un export."""
         self.pdf_status_label.setVisible(True)
         self.pdf_flash_timer.start()
 
-    def _stop_pdf_flashing(self):
+    def _stop_export_flashing(self):
         """Arrête le message clignotant."""
         self.pdf_flash_timer.stop()
         self.pdf_status_label.setVisible(False)
@@ -2593,15 +2882,37 @@ class MainWindow(QMainWindow):
 
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
+        # Récupérer l'état des panneaux depuis les paramètres
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+        show_outline = self.settings_manager.get("ui.show_outline_panel", False)
+        show_preview = self.settings_manager.get("ui.show_preview_panel", True)
+
+        # Bloquer temporairement les signaux pour éviter les appels en cascade
+        self.nav_button.blockSignals(True)
+        self.outline_button.blockSignals(True)
+        self.preview_button.blockSignals(True)
+
+        # Appliquer la visibilité des panneaux
         self.navigation_panel.setVisible(show_nav)
-
-        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
         self.outline_panel.setVisible(show_outline)
-
-        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
         self.preview.setVisible(show_preview)
 
+        # Synchroniser les switchs avec l'état des panneaux
+        self.nav_button.setChecked(show_nav)
+        self.outline_button.setChecked(show_outline)
+        self.preview_button.setChecked(show_preview)
+
+        # Débloquer les signaux
+        self.nav_button.blockSignals(False)
+        self.outline_button.blockSignals(False)
+        self.preview_button.blockSignals(False)
+
+        # Synchroniser également les actions du menu
+        self.toggle_navigation_action.setChecked(show_nav)
+        self.toggle_outline_action.setChecked(show_outline)
+        self.toggle_preview_action.setChecked(show_preview)
+
+        # Appliquer les paramètres de l'éditeur
         show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
         if not show_stats:
             self.tag_index_status_label.clear()
@@ -2685,6 +2996,9 @@ class MainWindow(QMainWindow):
         self.outline_panel.apply_styles(
             outline_font, QColor(heading_color), QColor(bg_color)
         )
+
+        # Note: La synchronisation des contrôles de panneaux est déjà faite plus haut
+        # Pas besoin d'appeler _sync_panel_controls() ici
 
     def update_tag_cloud(self):
         """Met à jour le contenu du nuage de tags."""
