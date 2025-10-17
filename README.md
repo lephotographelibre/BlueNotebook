@@ -24,6 +24,9 @@ Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier 
 
 [![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
 
+![BlueNotebook](docs/Screencopy/V2.6.2_bluenotebook_4_panneaux.jpg)
+
+
 ## **Table des Matières**
 1.  [Introduction et Vision du Produit](#1-introduction-et-vision-du-produit)
 2.  [Architecture Logicielle](#2-architecture-logicielle)
