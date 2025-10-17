@@ -1,3 +1,5 @@
+## V2.6.2.2 doc install Windows Linux run_bluenotebook.bat
+
 ## V2.6.2.1 README.md MaJ + copie d'écran
 
 Basé sur document architecture technique générée par Gemini CLI
