@@ -69,7 +69,23 @@ class SearchResultsPanel(QWidget):
         self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.results_tree.setSortingEnabled(True)
         self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
-        self.results_tree.setStyleSheet("border: none; background-color: transparent;")
+        # V2.6.3 - Forcer la couleur de la police et le style pour la cohérence
+        self.results_tree.setStyleSheet(
+            """
+            QTreeWidget {
+                border: none; 
+                background-color: transparent;
+                color: #333333;
+            }
+            QHeaderView::section {
+                background-color: #f8f9fa;
+                color: #333333;
+                padding: 4px;
+                border: 1px solid #dee2e6;
+                font-weight: bold;
+            }
+        """
+        )
         layout.addWidget(self.results_tree)
 
         self.setLayout(layout)
