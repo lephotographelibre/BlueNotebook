@@ -48,7 +48,6 @@ from PyQt5.QtWidgets import (
     QProgressDialog,
     QInputDialog,
     QToolBar,
-    QApplication,
     QPushButton,
     QRadioButton,
     QComboBox,
@@ -462,10 +461,6 @@ class MainWindow(QMainWindow):
         """Configuration de l'interface utilisateur"""
         self.setWindowTitle(f"BlueNotebook V{self.app_version} - Éditeur Markdown")
         self.setGeometry(100, 100, 1400, 900)
-
-        # V2.6.3 - Forcer l'utilisation des boîtes de dialogue natives du système
-        # pour une meilleure intégration avec les thèmes (notamment sombres).
-        QApplication.setAttribute(Qt.AA_DontUseNativeDialogs, False)
 
         self.set_application_icon()
 

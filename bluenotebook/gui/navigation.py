@@ -110,55 +110,8 @@ class NavigationPanel(QWidget):
         self.calendar = QCalendarWidget()
         self.calendar.setGridVisible(True)
         # Assurer que le calendrier garde une taille constante (carrée)
-        # V2.6.3 - Forcer la couleur du texte de la barre de navigation du calendrier
-        # pour assurer la lisibilité sur tous les thèmes.
-        self.calendar.setStyleSheet(
-            """
-            QCalendarWidget QToolButton {
-                color: #333333; /* Gris foncé pour une bonne lisibilité */
-            }
-            QCalendarWidget QSpinBox {
-                color: #333333;
-                background-color: transparent;
-                border: none;
-            }
-            """
-        )
         # La largeur du panneau parent est fixée à 400px dans main_window.py
         self.calendar.setFixedSize(400, 250)
-
-        # V2.6.3 - Remplacer les flèches de navigation du calendrier par des émojis (Correctif)
-        # Méthode robuste pour trouver les boutons par leur nom d'objet interne
-        prev_button = self.calendar.findChild(QToolButton, "qt_calendar_prevmonth")
-        next_button = self.calendar.findChild(QToolButton, "qt_calendar_nextmonth")
-
-        if prev_button:
-            prev_button.setText("◀️")
-            prev_button.setToolButtonStyle(Qt.ToolButtonTextOnly)
-            prev_button.setFont(QFont("Arial", 14))
-
-        if next_button:
-            next_button.setText("▶️")
-            next_button.setToolButtonStyle(Qt.ToolButtonTextOnly)
-            next_button.setFont(QFont("Arial", 14))
-
-        # V2.6.3 - Forcer la couleur des jours sans note en gris clair
-        # On récupère le format d'un jour de semaine (ex: Lundi) pour le modifier
-        weekday_format = self.calendar.weekdayTextFormat(Qt.Monday)
-        weekday_format.setForeground(QColor("#d7d6d6"))
-
-        # On applique ce format à tous les jours de la semaine, y compris le week-end
-        for day in [
-            Qt.Monday,
-            Qt.Tuesday,
-            Qt.Wednesday,
-            Qt.Thursday,
-            Qt.Friday,
-            Qt.Saturday,
-            Qt.Sunday,
-        ]:
-            self.calendar.setWeekdayTextFormat(day, weekday_format)
-
         self.calendar.clicked.connect(self.date_clicked.emit)
         layout.addWidget(self.calendar)
 
@@ -180,14 +133,9 @@ class NavigationPanel(QWidget):
             QLineEdit {
                 border: 1px solid #ced4da;
                 border-radius: 4px;
-                background-color: white; /* Fond blanc pour la lisibilité */
-                color: #333333; /* Couleur du texte saisi */
                 padding-right: 20px; /* Espace pour l'icône de loupe */
             }
-            QLineEdit::placeholder {
-                color: #868e96; /* Gris plus foncé pour le texte d'aide */
-            }
-            /* Style pour le bouton d'effacement natif (masqué) */
+            /* Style pour le bouton d'effacement natif */
             QLineEdit::clear-button {
                 image: url(none); /* Masquer l'image par défaut si nécessaire */
                 background-image: url(none); /* Alternative pour certains thèmes */
@@ -211,17 +159,13 @@ class NavigationPanel(QWidget):
         self.tag_dropdown_button.setSizePolicy(
             QSizePolicy.Preferred, QSizePolicy.Expanding
         )
-        # V2.6.3 - Remplacer l'icône par un émoji pour une meilleure cohérence
-        self.tag_dropdown_button.setText("▼")
-        self.tag_dropdown_button.setFont(QFont("Arial", 12))
+        self.tag_dropdown_button.setIcon(QIcon.fromTheme("go-down"))
         self.tag_dropdown_button.setStyleSheet(
             """
             QPushButton {
                 border: 1px solid #ced4da;
                 border-radius: 4px;
                 margin-left: 2px;
-                color: #333333; /* Couleur de l'émoji */
-                padding-bottom: 2px; /* Ajustement vertical de l'émoji */
             }
         """
         )
@@ -264,26 +208,21 @@ class NavigationPanel(QWidget):
         """Crée la barre d'outils de navigation."""
         # Utiliser un QWidget avec un QHBoxLayout pour un meilleur contrôle du rendu HTML
         toolbar_widget = QWidget()
-        # V2.6.3 - Forcer la couleur du texte des boutons de navigation
-        # pour assurer la lisibilité sur tous les thèmes.
-        toolbar_widget.setStyleSheet(
-            """
-            QPushButton {
-                color: #333333; /* Gris foncé pour une bonne lisibilité */
-            }
-            """
-        )
         toolbar_layout = QHBoxLayout(toolbar_widget)
         toolbar_layout.setContentsMargins(5, 2, 5, 2)
         toolbar_layout.setSpacing(5)
 
-        self.prev_day_button = QPushButton("◀️ Précédent")
+        self.prev_day_button = QPushButton("Précédent")
+        self.prev_day_button.setIcon(QIcon.fromTheme("go-previous"))
         self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
 
-        self.today_button = QPushButton("📅 Aujourd'hui")
+        self.today_button = QPushButton("Aujourd'hui")
+        self.today_button.setIcon(QIcon.fromTheme("go-home"))
         self.today_button.clicked.connect(self.today_button_clicked.emit)
 
-        self.next_day_button = QPushButton("Suivant ▶️")
+        self.next_day_button = QPushButton("Suivant")
+        self.next_day_button.setIcon(QIcon.fromTheme("go-next"))
+        self.next_day_button.setLayoutDirection(Qt.RightToLeft)
         self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
 
         toolbar_layout.addWidget(self.prev_day_button)
@@ -339,21 +278,6 @@ class NavigationPanel(QWidget):
             return
 
         menu = QMenu(self)
-        # V2.6.3 - Forcer la couleur de la police pour la liste déroulante des tags
-        menu.setStyleSheet(
-            """
-            QMenu {
-                background-color: white;
-                border: 1px solid #ced4da;
-            }
-            QMenu::item {
-                color: #333333;
-            }
-            QMenu::item:selected {
-                background-color: #3498db;
-            }
-        """
-        )
         for tag in self.available_tags:
             action = QAction(tag, self)
             action.triggered.connect(
