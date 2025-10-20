@@ -1,0 +1,138 @@
+/*
+ * dark_preview.css
+ * Style sombre pour l'aperçu HTML de BlueNotebook.
+ * Inspiré du style Markdown sombre avec accentuation bleue.
+ */
+
+/* Reset et base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #d1d5da; /* Gris clair pour le texte principal */
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 45px;
+    background-color: #1e262f; /* Fond bleu-gris sombre */
+    font-size: 16px;
+}
+
+/* Titres */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #e6edf3; /* Blanc cassé pour les titres */
+}
+
+h1 {
+    font-size: 2em;
+    border-bottom: 1px solid #2f3b4c; /* Bordure bleu-gris sombre */
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #2f3b4c;
+    padding-bottom: 0.3em;
+}
+
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: #8b949e; /* Gris moyen pour h6 */ }
+
+/* Paragraphes et texte */
+p {
+    margin-top: 0;
+    margin-bottom: 16px;
+    text-align: justify;
+}
+
+/* Mise en forme */
+strong {
+    font-weight: 600;
+    color: #e6edf3; /* Blanc cassé pour le texte en gras */
+}
+
+em {
+    font-style: italic;
+    color: #b1bac4; /* Gris clair pour l'italique */
+}
+
+/* Code */
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: #2f3b4c; /* Fond bleu-gris sombre pour le code inline */
+    border-radius: 6px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    color: #3498db; /* Bleu vif pour le code inline */
+}
+
+pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #2f3b4c; /* Fond sombre pour les blocs de code */
+    border-radius: 6px;
+    border: 1px solid #3b4a5e; /* Bordure légèrement plus claire */
+    margin-bottom: 16px;
+}
+
+pre code {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0;
+    color: #d1d5da; /* Texte clair pour le code dans les blocs */
+}
+
+/* Citations */
+blockquote {
+    padding: 0 1em;
+    color: #8b949e; /* Gris moyen pour les citations */
+    border-left: 0.25em solid #3498db; /* Bordure bleue d'accentuation */
+    margin: 0 0 16px 0;
+    font-style: italic;
+}
+
+/* Listes */
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+li {
+    margin-bottom: 0.25em;
+}
+
+/* Liens */
+a {
+    color: #58a6ff; /* Bleu clair pour les liens */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #79c0ff; /* Bleu plus clair au survol */
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0

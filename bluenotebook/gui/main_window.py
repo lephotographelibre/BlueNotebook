@@ -752,6 +752,7 @@ class MainWindow(QMainWindow):
         self.insert_youtube_video_action = QAction(
             "Vidéo YouTube",
             self,
+            icon=QIcon("bluenotebook/resources/icons/youtube_32px.png"),
             statusTip="Insérer une vidéo YouTube",
             triggered=self.insert_youtube_video,
         )
@@ -2221,8 +2222,12 @@ class MainWindow(QMainWindow):
         if not ok:
             return
 
-        # V2.4.6 - Amélioration de l'affichage EXIF
-        img_tag = f'<img src="{image_path}" width="{width}">'
+        # V2.6.4 - L'image est maintenant cliquable pour l'agrandir
+        img_tag = (
+            f'<a href="{image_path}" target="_blank">'
+            f'<img src="{image_path}" width="{width}" alt="Image">'
+            f"</a>"
+        )
         exif_caption = None
 
         if is_local and self.journal_directory:

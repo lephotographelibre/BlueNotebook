@@ -20,6 +20,7 @@ Module pour l'intégration des vidéos YouTube.
 import re
 import requests
 from bs4 import BeautifulSoup
+import os
 
 
 def _extract_youtube_id(url: str) -> str | None:
@@ -59,3 +60,25 @@ def get_youtube_video_details(url: str) -> dict | str:
 
     except requests.RequestException as e:
         return f"Impossible de vérifier la vidéo : {e}"
+
+
+def generate_youtube_html_block(video_id, video_url, video_title) -> str:
+    """
+    Génère le fragment HTML complet pour une vidéo YouTube, incluant le style CSS.
+    """
+    thumbnail_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+
+    html_block = f"""
+@@Video @@Youtube {video_title} <{video_url}>
+<figure class="youtube-video-figure">
+    <a href="{video_url}" target="_blank" title="Lancer la vidéo dans le navigateur">
+        <img src="{thumbnail_url}" alt="{video_title}" style="max-width: 480px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    </a>
+    <figcaption style="font-size: 0.9em; margin-top: 0.5em;">
+        <a href="{video_url}" target="_blank" style="text-decoration: none; color: #ff0000;">
+            <span>Voir sur YouTube : {video_url}</span>
+        </a>
+    </figcaption>
+</figure>
+"""
+    return html_block

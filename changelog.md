@@ -1,3 +1,112 @@
+## V2.6.4 Imagces clickables + Integration Youtube MaJ
+
+Lorsque j'insère une image (Menu Insérer --> Image(<img ..>))dans le journal, l'image est copiée dans le dossier images du journal et un fragment HTML est généré du type par exemple
+
+```html
+<img src="images/20251020112436_20251018_092855.jpg" width="600">
+```
+
+je voudrais que le fragment html soit modifier pour rendre l'image cliclable et donc qu'elle puisse s'ouvrir en grand dans l'apercu HTML.
+beta1
+
+ Exemple:
+
+
+
+<figure style="text-align: center;">
+    <a href="images/20251020160600_IMG_6938-4k.jpg" target="_blank"><img src="images/20251020160600_IMG_6938-4k.jpg" width="400" alt="Image"></a>
+    <figcaption style="font-weight: bold;">08/06/2025 15:45 : Chauvigny : Canon EOS 700D : ƒ/10.0 : Vitesse: 1/125s : Focale: 24.0mm : ISO: 100</figcaption>
+</figure>
+
+
+
+2 -
+dans mon application Bluenotebook je génère des fragments HTML dans l'éditeur Markdownd pour affichier des images dans la fenetre d'aperçu HTML (preview.py). Ces images sont clickables
+
+<figure style="text-align: center;">
+    <a href="images/20251020160600_IMG_6938-4k.jpg" target="_blank"><img src="images/20251020160600_IMG_6938-4k.jpg" width="400" alt="Image"></a>
+    <figcaption style="font-weight: bold;">08/06/2025 15:45 : Canon : Canon EOS 700D : ƒ/10.0 : Vitesse: 1/125s : Focale: 24.0mm : ISO: 100</figcaption>
+</figure>
+ 
+
+Quand je clique sur une image dans l'aperçu, j'ai bien une flèche qui se dessine mais après click rien ne se passe
+
+je voudrais qu'un clic sur une image dans l'aperçu l'ouvre bien en grand dans de la visionneuse d'images ou du navigateur par défaut et que Cela fonctionne  également pour tous les autres liens (par exemple, les liens vers des sites web) que je pourrais avoir dans mes  notes.
+
+beta2
+
+3 image Markdown
+Dans cette meme application j'insere des images au format Markdown.
+
+ ![](images/20251020164812_2025_06_25_img_7028_01.jpg)
+
+Comment faire pour que ces images soient également ckliqiable dans l'Apercu HTML et s'ouvre  dans la visionneuse par defaut
+beta3
+
+4- Embelissement css images
+ 
+@CSS /* Styles pour les images cliquables */ ajouté --> Theme CSS -->  defaul_preview2;css
+
+```css
+/* Styles pour les images cliquables */
+a img {
+    transition: border 0.2s ease, opacity 0.2s ease;
+}
+
+a img:hover {
+    border: 2px solid #3498db;
+    opacity: 0.9;
+}
+```
+beta4
+
+dans mon application Bluenotebook je génère des fragments Markdown dans l'éditeur   pour affichier des images qui doivent permettre de lancer des vidéo Youtube. voici par exemple le code Markdown généré  par le menu de la fenètre principale "Integrations --> Vidéo Youtube" 
+
+```
+@@Video @@Youtube Perfect Morrning 🎶✨ Comfortable music that makes you feel positive | Best Indie/Pop/Folk/Acoustic <https://www.youtube.com/watch?v=796pqzI9T_w>
+
+[![Perfect Morrning 🎶✨ Comfortable music that makes you feel positive | Best Indie/Pop/Folk/Acoustic](https://img.youtube.com/vi/796pqzI9T_w/hqdefault.jpg)](https://www.youtube.com/watch?v=796pqzI9T_w)
+
+⬆️**Cliquez sur l'image pour lancer la vidéo**⬆️
+
+```
+
+depuis que l'on a modifié le code pour rendre les images clickable Markdown, ce n'est plus la video youtube que je lance mais 
+il faudrait corriger le code généré par le menu de la fenètre principale "Integrations --> Vidéo Youtube" pour générer un fragment HTML (et pas MArkdown) à la place qui lorsque l'on demande à integrer la video youtube https://www.youtube.com/watch?v=796pqzI9T_w  :
+
+1 - Affiche le titre de la video comme ici: @@Video @@Youtube Perfect Morrning 🎶✨ Comfortable music that makes you feel positive | Best Indie/Pop/Folk/Acoustic + URL de la video
+
+2- Affiche la vignette de la video youtube choisie ici: https://img.youtube.com/vi/796pqzI9T_w/hqdefault.jpg et qui soit clickable . Si on clique dessus on lance la video youtube ici: https://www.youtube.com/watch?v=796pqzI9T_w dans un navigateur externe
+
+3- en figcaption de l'image "Voir sur Youtube"
+beta5
+
+Je voudrais que tout le code relatif à l'insertion de video youtube soit dans le fichier bluenotebook/integrations/youtube_video.py
+
+cela comprend le code HTML dans la metheode insert_youtube_video de editor.py pour eviter d'avoir du code et du parametrage dispersé dans plusieurs fichiers y compris le style CSS pour les videos Youtubes Integrées
+
+```css
+/* Style pour les vidéos YouTube intégrées */
+figure.youtube-video-figure {
+    border: 2px solid #e50914; /* Une bordure rouge rappelant YouTube */
+    border-radius: 12px;       /* Des coins plus arrondis pour le conteneur */
+    padding: 10px;             /* Un peu d'espace entre la bordure et l'image */
+    background-color: #f0f0f0; /* Un fond légèrement gris pour faire ressortir la figure */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    /* Corrections pour l'alignement */
+    display: inline-block; /* S'adapte à la largeur du contenu */
+    margin: 1em auto;      /* Centre le bloc horizontalement */
+    text-align: center;    /* Centre la légende (figcaption) */
+}
+
+figure.youtube-video-figure:hover {
+    transform: scale(1.02); /* Un léger effet de zoom au survol */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Ombre plus prononcée au survol */
+}
+```
+
+
 ## V2.6.3 Dark Theme Support
 
 1- Afin de supprimer le maximun de surstyle je voudrais pour le panneau navigation et ses different widgets supprimer toutes élements de surstylage par rappport au theme systme. ne concerver que les jours en bleu (ceux qui ont une note dans le calendrier) et le jour d'aujour'hui en jaune. tous les widget sont concerne barre de bouttons, calendrier, barre de recher, bouton et liest de recher, panneau de resultat de rechcher, nuage de mots, nuage de tags. main_window.py navigation.py word_cloud.py tag_cloud.py custom_widgets.py search_results_panel.py

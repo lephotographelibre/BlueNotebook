@@ -26,6 +26,32 @@ from PyQt5.QtCore import QUrl
 from pygments.formatters import HtmlFormatter
 from markdown.inlinepatterns import InlineProcessor
 import markdown
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PyQt5.QtCore import QUrl
+import webbrowser
+
+
+class CustomWebEnginePage(QWebEnginePage):
+    """Page web personnalisée qui gère les clics sur les liens"""
+
+    def acceptNavigationRequest(self, url, _type, isMainFrame):
+        """
+        Intercepte les tentatives de navigation.
+        Si c'est un clic sur un lien, l'ouvre dans le navigateur/visionneuse par défaut.
+        """
+        if _type == QWebEnginePage.NavigationTypeTyped:
+            return True
+        if _type == QWebEnginePage.NavigationTypeLinkClicked:
+            webbrowser.open(url.toString())
+            return False
+        return True
+
+    def createWindow(self, window_type):
+        """
+        Gère les demandes de nouvelle fenêtre (ex: target="_blank").
+        Crée une page fantôme qui ouvrira le lien externe.
+        """
+        return CustomWebEnginePage(self)
 
 
 class TagInlineProcessor(InlineProcessor):
@@ -38,6 +64,26 @@ class TagInlineProcessor(InlineProcessor):
         return el, m.start(0), m.end(0)
 
 
+class ImageLinkProcessor(InlineProcessor):
+    """Traite les images Markdown pour les rendre cliquables en les enveloppant dans une balise <a>."""
+
+    def handleMatch(self, m, data):
+        # Créer l'élément <a> pour rendre l'image cliquable
+        a_el = ElementTree.Element("a")
+        a_el.set("href", m.group(2))  # URL de l'image
+        a_el.set("target", "_blank")  # Ouvre dans une nouvelle fenêtre (géré par createWindow)
+
+        # Créer l'élément <img> comme dans le rendu standard
+        img_el = ElementTree.Element("img")
+        img_el.set("src", m.group(2))  # URL de l'image
+        if m.group(1):  # Texte alternatif
+            img_el.set("alt", m.group(1))
+
+        # Ajouter l'élément <img> comme enfant de <a>
+        a_el.append(img_el)
+        return a_el, m.start(0), m.end(0)
+
+
 class MarkdownPreview(QWidget):
     """Aperçu HTML avec QWebEngine"""
 
@@ -47,9 +93,6 @@ class MarkdownPreview(QWidget):
         self.current_markdown = ""
         self.setup_ui()
         self.default_css = self._load_default_css()
-        # self.pygments_css = HtmlFormatter(style="default").get_style_defs(".highlight")
-        # **Thèmes clairs** : default, solarized-light, vs, xcode.
-        # **Thèmes sombres** : `monokai`, `solarized-dark`, `dracula`, `material`.
         self.pygments_css = HtmlFormatter(style="default").get_style_defs(".highlight")
         self.custom_css = ""
         self.setup_markdown()
@@ -60,11 +103,9 @@ class MarkdownPreview(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Layout pour l'en-tête pour contrôler son alignement
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
 
-        # En-tête de panneau (style onglet)
         label = QLabel("Aperçu HTML")
         label.setStyleSheet(
             """
@@ -86,6 +127,9 @@ class MarkdownPreview(QWidget):
         layout.addLayout(header_layout)
 
         self.web_view = QWebEngineView()
+        custom_page = CustomWebEnginePage(self.web_view)
+        self.web_view.setPage(custom_page)
+
         self.web_view.setStyleSheet(
             """
             QWebEngineView {
@@ -127,6 +171,10 @@ class MarkdownPreview(QWidget):
 
         self.md.inlinePatterns.register(
             TagInlineProcessor(r"@@(\w{2,})\b", self.md), "tag", 175
+        )
+        # Enregistrer le processeur pour les images Markdown
+        self.md.inlinePatterns.register(
+            ImageLinkProcessor(r"!\[(.*?)\]\((.*?)\)", self.md), "image_link", 150
         )
 
     def _load_css_from_file(self, filename):

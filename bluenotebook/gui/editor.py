@@ -46,6 +46,8 @@ from PyQt5.QtGui import (
     QTextCursor,
 )
 
+from integrations.youtube_video import generate_youtube_html_block
+
 # V1.9.3 Line numbers
 """
 Widget de numéros de ligne pour QTextEdit
@@ -1072,10 +1074,12 @@ class MarkdownEditor(QWidget):
             cursor.insertText(new_text)
 
     def insert_youtube_video(self, video_id, video_url, video_title="Vidéo YouTube"):
-        """Insère le bloc de texte formaté pour une vidéo YouTube."""
-        thumbnail_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
-        markdown_text = f"\n\n@@Video @@Youtube {video_title} <{video_url}>\n\n[![{video_title}]({thumbnail_url})]({video_url})\n\n⬆️**Cliquez sur l'image pour lancer la vidéo**⬆️\n"
-        self.insert_text(markdown_text)
+        """
+        Génère et insère un bloc HTML formaté pour une vidéo YouTube.
+        La logique de génération est déleguée au module d'intégration.
+        """
+        html_block = generate_youtube_html_block(video_id, video_url, video_title)
+        self.insert_text(html_block)
 
     def insert_html_image(self):
         """
