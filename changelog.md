@@ -1,3 +1,41 @@
+## ANNULE -- V2.6.3. Fix Calendar - le nom du mois affiché en Blanc avec un theme clair 
+
+!!! Attention le fix fonctionne mais en theme sombre s'est pas beau
+
+- Le problème : Le nom du mois est affiché par un QToolButton interne au QCalendarWidget. Sa couleur par défaut n'est pas toujours adaptée.
+- L'objectif : Forcer la couleur du texte de ce bouton (et des autres éléments de la barre de navigation comme les flèches et l'année) à une couleur sombre et lisible, qui s'adaptera bien aux thèmes clairs comme sombres.
+- La solution : Appliquer une feuille de style (QSS) au QCalendarWidget pour cibler spécifiquement les QToolButton et le QSpinBox de sa barre de navigation.
+- QCalendarWidget QToolButton : Ce sélecteur cible tous les boutons de la barre de navigation du calendrier. Cela inclut :
+    - La flèche du mois précédent.
+    - La flèche du mois suivant.
+    - Le bouton affichant le nom du mois.
+- Une couleur de police gris foncé (#333333). C'est une couleur standard qui offre un excellent contraste sur les fonds clairs (comme celui de la barre de navigation par défaut) et qui reste visible sur la plupart des thèmes sombres
+
+```python
+
+        self.calendar.setGridVisible(True)
+        # Assurer que le calendrier garde une taille constante (carrée)
+        # La largeur du panneau parent est fixée à 400px dans main_window.py
+        self.calendar.setStyleSheet(
+            """
+            /* Cible tous les boutons de la barre de navigation (flèches, mois, année) */
+            QCalendarWidget QToolButton {
+                color: #333; /* Une couleur sombre et lisible sur fond clair */
+                background-color: transparent;
+            }
+
+            /* Cible le sélecteur d'année */
+            QCalendarWidget QSpinBox {
+                color: #333;
+                background-color: transparent;
+                border: none;
+            }
+        """
+        )
+```
+beta1
+
+
 ## V2.6.2.2 doc install Windows Linux run_bluenotebook.bat
 
 ## V2.6.2.1 README.md MaJ + copie d'écran
