@@ -1,5 +1,15 @@
 ## V2.6.3 Dark Theme Support
 
+1- Afin de supprimer le maximun de surstyle je voudrais pour le panneau navigation et ses different widgets supprimer toutes élements de surstylage par rappport au theme systme. ne concerver que les jours en bleu (ceux qui ont une note dans le calendrier) et le jour d'aujour'hui en jaune. tous les widget sont concerne barre de bouttons, calendrier, barre de recher, bouton et liest de recher, panneau de resultat de rechcher, nuage de mots, nuage de tags. main_window.py navigation.py word_cloud.py tag_cloud.py custom_widgets.py search_results_panel.py
+
+2 - la couleur de fond du panneau navigation reste claire alors qu'elle devrait etre combre avec un theme sombre. coment corriger cela
+beta1
+
+3- Corrections des boutons de Navigation du panneau NAvigation 
+
+4- Je voudrait que le header du panneau navigation soit comme les autres headers de panneaux "Editeur Markdown" par exemple. c'est a dire qu'il ressemble à un onglet dont la taille couvre juste le texte du header "Navigation" et de la meme couleur que les autres onglets/headers
+
+
 ## V2.6.2.2 doc install Windows Linux run_bluenotebook.bat
 
 ## V2.6.2.1 README.md MaJ + copie d'écran

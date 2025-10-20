@@ -56,24 +56,16 @@ class WordCloudPanel(QWidget):
         layout.setSpacing(5)
 
         self.label = QLabel("📖 Nuage de Mots")
-        self.label.setStyleSheet(
-            """
-            QLabel {
-                font-weight: bold;
-                padding: 8px;
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
-            }
-        """
-        )
+        font = self.label.font()
+        font.setBold(True)
+        self.label.setFont(font)
+
         self.label.setMaximumHeight(35)
         layout.addWidget(self.label)
 
         self.text_browser = NonNavigatingTextBrowser()
         self.text_browser.setOpenExternalLinks(False)
-        self.text_browser.setStyleSheet("border: none; background-color: transparent;")
+        self.text_browser.setStyleSheet("border: none; background: transparent;")
         layout.addWidget(self.text_browser)
 
         self.setLayout(layout)

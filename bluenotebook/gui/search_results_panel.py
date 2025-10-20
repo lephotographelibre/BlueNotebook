@@ -47,18 +47,10 @@ class SearchResultsPanel(QWidget):
         layout.setSpacing(5)
 
         self.label = QLabel("🔍 Résultats de la Recherche")
-        self.label.setStyleSheet(
-            """
-            QLabel {
-                font-weight: bold;
-                padding: 8px;
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                color: #495057;
-            }
-        """
-        )
+        font = self.label.font()
+        font.setBold(True)
+        self.label.setFont(font)
+
         self.label.setMaximumHeight(35)
         layout.addWidget(self.label)
 
@@ -69,7 +61,7 @@ class SearchResultsPanel(QWidget):
         self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.results_tree.setSortingEnabled(True)
         self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
-        self.results_tree.setStyleSheet("border: none; background-color: transparent;")
+        self.results_tree.setStyleSheet("border: none; background: transparent;")
         layout.addWidget(self.results_tree)
 
         self.setLayout(layout)

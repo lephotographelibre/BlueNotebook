@@ -80,8 +80,9 @@ class NavigationPanel(QWidget):
         layout.setSpacing(0)  # Pas d'espacement entre les widgets principaux
 
         # V2.4.6 - Amélioration du style de l'en-tête pour un look d'onglet
+        # V2.6.3 - Harmonisation du style de l'en-tête
         header_layout = QHBoxLayout()
-        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.setContentsMargins(0, 5, 0, 0)  # Marge en haut pour l'esthétique
 
         title_label = QLabel("Navigation Journal")
         title_label.setStyleSheet(
@@ -99,7 +100,7 @@ class NavigationPanel(QWidget):
         """
         )
         header_layout.addWidget(title_label)
-        header_layout.addStretch()  # Pousse le label vers la gauche
+        header_layout.addStretch()
         layout.addLayout(header_layout)
 
         # Barre d'outils de navigation
@@ -128,22 +129,7 @@ class NavigationPanel(QWidget):
         # V 1.6.9 Ajoute le bouton pour effacer le contenu du champ de recherche
         self.tag_search_input.setClearButtonEnabled(True)
         self.tag_search_input.setPlaceholderText("@@tag ou mot")
-        self.tag_search_input.setStyleSheet(
-            """
-            QLineEdit {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                padding-right: 20px; /* Espace pour l'icône de loupe */
-            }
-            /* Style pour le bouton d'effacement natif */
-            QLineEdit::clear-button {
-                image: url(none); /* Masquer l'image par défaut si nécessaire */
-                background-image: url(none); /* Alternative pour certains thèmes */
-                /* Si vous voulez utiliser une icône de votre thème : */
-                /* image: url(path/to/your/clear-icon.png); */
-            }
-        """
-        )
+
         # L'icône de loupe est maintenant gérée par le thème ou peut être ajoutée
         # via QSS si nécessaire, mais l'action est déclenchée par returnPressed.
         # Assurer que le champ de recherche s'étire verticalement
@@ -153,22 +139,13 @@ class NavigationPanel(QWidget):
         search_layout.addWidget(self.tag_search_input)
 
         # Bouton pour le menu déroulant des tags
-        self.tag_dropdown_button = QPushButton()
+        self.tag_dropdown_button = QToolButton()
         self.tag_dropdown_button.setFixedWidth(30)
         # Assurer que le bouton s'étire verticalement pour correspondre au QLineEdit
         self.tag_dropdown_button.setSizePolicy(
             QSizePolicy.Preferred, QSizePolicy.Expanding
         )
-        self.tag_dropdown_button.setIcon(QIcon.fromTheme("go-down"))
-        self.tag_dropdown_button.setStyleSheet(
-            """
-            QPushButton {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                margin-left: 2px;
-            }
-        """
-        )
+        self.tag_dropdown_button.setArrowType(Qt.DownArrow)
         self.tag_dropdown_button.clicked.connect(self.show_tag_dropdown)
         search_layout.addWidget(self.tag_dropdown_button)
 
@@ -204,25 +181,65 @@ class NavigationPanel(QWidget):
 
         self.setLayout(layout)
 
+    """ def _create_toolbar(self):
+        
+        toolbar = QToolBar()
+        toolbar.setMovable(False)
+
+        # Bouton Jour Précédent
+        self.prev_day_button = QToolButton()
+        self.prev_day_button.setText("Précédent")
+        self.prev_day_button.setIcon(QIcon.fromTheme("go-previous"))
+        self.prev_day_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
+        self.prev_day_button.setAutoRaise(True)
+        self.prev_day_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        # Bouton Aujourd'hui
+        self.today_button = QToolButton()
+        self.today_button.setText("Aujourd'hui")
+        self.today_button.setIcon(QIcon.fromTheme("go-home"))
+        self.today_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.today_button.clicked.connect(self.today_button_clicked.emit)
+        self.today_button.setAutoRaise(True)
+        self.today_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        # Bouton Jour Suivant
+        self.next_day_button = QToolButton()
+        self.next_day_button.setText("Suivant")
+        self.next_day_button.setIcon(QIcon.fromTheme("go-next"))
+        self.next_day_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
+        self.next_day_button.setLayoutDirection(Qt.RightToLeft)
+        self.next_day_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.next_day_button.setAutoRaise(True)
+
+        toolbar.addWidget(self.prev_day_button)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.today_button)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.next_day_button)
+        return toolbar
+    """
+
     def _create_toolbar(self):
         """Crée la barre d'outils de navigation."""
         # Utiliser un QWidget avec un QHBoxLayout pour un meilleur contrôle du rendu HTML
         toolbar_widget = QWidget()
+        # V2.6.3 - Forcer la couleur du texte des boutons de navigation
+        # pour assurer la lisibilité sur tous les thèmes.
+
         toolbar_layout = QHBoxLayout(toolbar_widget)
         toolbar_layout.setContentsMargins(5, 2, 5, 2)
         toolbar_layout.setSpacing(5)
 
-        self.prev_day_button = QPushButton("Précédent")
-        self.prev_day_button.setIcon(QIcon.fromTheme("go-previous"))
+        self.prev_day_button = QPushButton("◀️ Précédent")
         self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
 
-        self.today_button = QPushButton("Aujourd'hui")
-        self.today_button.setIcon(QIcon.fromTheme("go-home"))
+        self.today_button = QPushButton("📅 Aujourd'hui")
         self.today_button.clicked.connect(self.today_button_clicked.emit)
 
-        self.next_day_button = QPushButton("Suivant")
-        self.next_day_button.setIcon(QIcon.fromTheme("go-next"))
-        self.next_day_button.setLayoutDirection(Qt.RightToLeft)
+        self.next_day_button = QPushButton("Suivant ▶️")
         self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
 
         toolbar_layout.addWidget(self.prev_day_button)

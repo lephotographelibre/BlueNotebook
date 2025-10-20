@@ -468,7 +468,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         # Appliquer un fond neutre à la fenêtre principale
-        central_widget.setStyleSheet("background-color: #f0f2f5;")
+        # central_widget.setStyleSheet("background-color: #f0f2f5;")
 
         main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(5, 5, 5, 5)
