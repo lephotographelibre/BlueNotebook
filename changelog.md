@@ -1,4 +1,101 @@
+<<<<<<< HEAD
 ## V2.6.3 
+=======
+## Fix Issue #22 V2.6.3 Harmonisation Couleurs Navigation - Option Surstylage
+
+En partant de la`v2.6.2` On va donc mettre en place la premiere stratégie qui est de renforcer le  **sur-stylage (over-styling)**. C'est a dire que l'on va force un style pour tout les éléments du panneau `Navigation` afin de maitriser complètement le rendu quelque soit le thème utilisé et homogénéïser la couleur de la police utilisée   gris foncé (`#333333`).De haut en bas cela veut dire
+
+1. Dans le calendrier:
+
+- Barre de navigation du calendrier (mois et année)  
+
+- Barre de bouton de Navigation  
+- Barre de navigation du calendrier (fleche de naviagtion)  beta1
+
+
+- Couleur police utilisée pour le nuage de tags
+- Couleur police utilisée pour le nuage de mots
+ beta 3
+
+ - Couleur des jours de semaine sans notes  #d7d6d6ff`
+beta4
+
+
+- Suppression liseré barre de defilement tag et cloud
+beta5
+
+- Dans le panneau naviagtion champ de recherche. en theme sombre on ne voit pas
+1 - ce que l'on tape --> mettre couleur de la police à #333333
+2 - l'indication en grisé (@@tag ou mot) --> mettre un grisé plus foncé
+beta6
+- bouton liste de tags  ??
+
+dans l'ongle naviagtion  a coté du champs de recherche il y a un bouton qui fait apparaitre une liste déroulante de tags; Il faudrait 
+- que les éléments de la liste déroulante soit dans une couleur de police #333333
+beta6
+ - que le symbole sur le bouton soit remplacé par un emoji fleche en bas couleur #333333
+Attention de bien respecter les hauteurs relatives entre le champ de recherche et le bouton de recherche et eventuellement ajuster les deux
+beta8
+
+- Liste de resultats de recherche
+dans l'ongle naviagtion lorsque l'on a lancé un recherche s'affiche ine liste de deux colonnes avec les resultats de la recherche. Il faudrait que ce résultats de recherche soient affichés avec une couleur de la police à #333333
+cela fonctionne mais alors je perd la couleur des headers de colonnes des resultats de recherche. cela n'est pas grave si on peux aussi forcer la couleurs de la police du texte des headers color: #333333 
+beta9
+
+- Boite de dialogue theme sombre
+beta11
+
+-- 
+
+Fix Issue #22 https://github.com/lephotographelibre/BlueNotebook/issues/22
+
+Reste encore des problemes a traiter peut etre avec darkdetect --> Grok
+lorsque j'utilise un theme sombre certaines boites de dialogue boite de dialoque sont inutilisable comment faire pour qu'elles utilisent le theme system  les boite de dialogue, le selecteurs de fichiers etc
+
+
+- Inserer image source de l'image, sélectionner une image,
+- Inserer lien Markdown
+- inserer fichier selecteur de fichiers
+
+
+## ANNULE -- V2.6.3. Fix Calendar - le nom du mois affiché en Blanc avec un theme clair 
+
+!!! Attention le fix fonctionne mais en theme sombre s'est pas beau
+
+- Le problème : Le nom du mois est affiché par un QToolButton interne au QCalendarWidget. Sa couleur par défaut n'est pas toujours adaptée.
+- L'objectif : Forcer la couleur du texte de ce bouton (et des autres éléments de la barre de navigation comme les flèches et l'année) à une couleur sombre et lisible, qui s'adaptera bien aux thèmes clairs comme sombres.
+- La solution : Appliquer une feuille de style (QSS) au QCalendarWidget pour cibler spécifiquement les QToolButton et le QSpinBox de sa barre de navigation.
+- QCalendarWidget QToolButton : Ce sélecteur cible tous les boutons de la barre de navigation du calendrier. Cela inclut :
+    - La flèche du mois précédent.
+    - La flèche du mois suivant.
+    - Le bouton affichant le nom du mois.
+- Une couleur de police gris foncé (#333333). C'est une couleur standard qui offre un excellent contraste sur les fonds clairs (comme celui de la barre de navigation par défaut) et qui reste visible sur la plupart des thèmes sombres
+
+```python
+
+        self.calendar.setGridVisible(True)
+        # Assurer que le calendrier garde une taille constante (carrée)
+        # La largeur du panneau parent est fixée à 400px dans main_window.py
+        self.calendar.setStyleSheet(
+            """
+            /* Cible tous les boutons de la barre de navigation (flèches, mois, année) */
+            QCalendarWidget QToolButton {
+                color: #333; /* Une couleur sombre et lisible sur fond clair */
+                background-color: transparent;
+            }
+
+            /* Cible le sélecteur d'année */
+            QCalendarWidget QSpinBox {
+                color: #333;
+                background-color: transparent;
+                border: none;
+            }
+        """
+        )
+```
+beta1
+
+>>>>>>> 888b60e721f89e8f46dd15cdf2b7c32f2dac19a3
 
 ## V2.6.2.2 doc install Windows Linux run_bluenotebook.bat
 

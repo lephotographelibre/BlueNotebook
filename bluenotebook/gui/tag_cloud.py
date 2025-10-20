@@ -74,7 +74,29 @@ class TagCloudPanel(QWidget):
 
         self.text_browser = NonNavigatingTextBrowser()
         self.text_browser.setOpenExternalLinks(False)  # Pour le futur cliquable
-        self.text_browser.setStyleSheet("border: none; background-color: transparent;")
+        # V2.6.3 - Style complet pour supprimer les bordures, y compris sur la scrollbar
+        self.text_browser.setStyleSheet(
+            """
+            QTextBrowser {
+                border: none;
+                background-color: transparent;
+            }
+            QScrollBar:vertical {
+                border: none;
+                background: transparent;
+                width: 8px;
+                margin: 0px 0px 0px 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #c0c0c0;
+                min-height: 20px;
+                border-radius: 4px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+            }
+        """
+        )
         layout.addWidget(self.text_browser)
 
         self.setLayout(layout)
@@ -133,11 +155,8 @@ class TagCloudPanel(QWidget):
             base_font_size + 10,
         ]
 
-        # Récupérer la couleur de texte par défaut du thème pour une lisibilité parfaite
-        text_color = (
-            self.text_browser.palette().color(self.text_browser.foregroundRole()).name()
-        )
-
+        # V2.6.3 - Forcer la couleur de la police pour une meilleure cohérence
+        text_color = "#333333"
         html_parts = []
         for tag, data in sorted_tags:
             occ = data["occurrences"]
