@@ -83,7 +83,12 @@ from integrations.gps_map_generator import get_location_name, create_gps_map
 from core.word_indexer import start_word_indexing
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+
 from integrations.epub_exporter import EpubExportWorker
+from integrations.gpx_trace_generator import (
+    create_gpx_trace_map,
+    get_gpx_data,
+)
 from integrations.pdf_exporter import create_pdf_export_worker
 from integrations.youtube_video import get_youtube_video_details
 
@@ -281,6 +286,54 @@ class GpsInputDialog(QDialog):
             return float(lat_str), float(lon_str)
         except (ValueError, TypeError):
             return None, None
+
+
+class GpxSourceDialog(QDialog):
+    """
+    Boîte de dialogue pour obtenir le chemin d'un fichier GPX,
+    soit via une URL, soit via un sélecteur de fichier.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Source du fichier GPX")
+        self.setModal(True)
+        self.resize(500, 120)
+
+        self.layout = QVBoxLayout(self)
+        form_layout = QFormLayout()
+
+        # Champ pour le chemin/URL
+        path_layout = QHBoxLayout()
+        self.path_edit = QLineEdit(self)
+        self.path_edit.setPlaceholderText(
+            "https://example.com/trace.gpx ou /chemin/local/trace.gpx"
+        )
+        path_layout.addWidget(self.path_edit)
+
+        browse_button = QPushButton("Parcourir...", self)
+        browse_button.clicked.connect(self._browse_file)
+        path_layout.addWidget(browse_button)
+
+        form_layout.addRow("Chemin ou URL:", path_layout)
+        self.layout.addLayout(form_layout)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.layout.addWidget(self.button_box)
+
+    def _browse_file(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Sélectionner un fichier GPX", "", "Fichiers GPX (*.gpx)"
+        )
+        if path:
+            self.path_edit.setText(path)
+
+    def get_path(self):
+        return self.path_edit.text().strip()
 
 
 class CollapsibleSplitterHandle(QSplitterHandle):
@@ -603,6 +656,7 @@ class MainWindow(QMainWindow):
         # Menu Intégrations
         integrations_menu = menubar.addMenu("&Intégrations")
         integrations_menu.addAction(self.insert_quote_day_action)
+        integrations_menu.addAction(self.insert_gpx_trace_action)
         integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
         integrations_menu.addAction(self.insert_weather_action)
@@ -767,6 +821,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer une carte statique à partir de coordonnées GPS",
             triggered=self.insert_gps_map,
+        )
+        self.insert_gpx_trace_action = QAction(
+            "Trace GPX",
+            self,
+            statusTip="Insérer une carte à partir d'une trace GPX",
+            triggered=self.insert_gpx_trace,
         )
         self.insert_weather_action = QAction(
             "Météo Weatherapi.com",
@@ -2208,6 +2268,74 @@ class MainWindow(QMainWindow):
 
         self.statusbar.showMessage(
             f"Carte pour '{location_name}' insérée avec succès.", 5000
+        )
+
+    def insert_gpx_trace(self):
+        """Gère la logique d'insertion d'une carte à partir d'une trace GPX."""
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Journal non défini",
+                "Veuillez définir un répertoire de journal avant d'insérer une trace GPX.",
+            )
+            return
+
+        # Utiliser la nouvelle boîte de dialogue
+        dialog = GpxSourceDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        gpx_input = dialog.get_path()
+        if not gpx_input:
+            return
+
+        width, ok = QInputDialog.getInt(
+            self,
+            "Taille de la carte",
+            "Largeur de l'image (en pixels):",
+            800,
+            200,
+            2000,
+            50,
+        )
+        if not ok:
+            return
+
+        # Récupérer le contenu du GPX
+        gpx_content = get_gpx_data(gpx_input)
+        if not gpx_content:
+            QMessageBox.warning(
+                self,
+                "Fichier GPX introuvable",
+                f"Impossible de lire le fichier GPX depuis :\n{gpx_input}",
+            )
+            return
+
+        # Chemin vers l'icône de départ
+        base_path = Path(__file__).parent.parent
+        start_icon_path = base_path / "resources" / "icons" / "start.png"
+
+        # Appeler le générateur
+        result = create_gpx_trace_map(
+            gpx_content, self.journal_directory, width, str(start_icon_path)
+        )
+
+        if isinstance(result, str):  # C'est un message d'erreur
+            QMessageBox.critical(self, "Erreur de création de la trace", result)
+            return
+
+        # Construire le bloc HTML
+        html_block = f"""
+<figure style="text-align: center;">
+    <a href="{result['osm_link']}" target="_blank">
+         <img src="{result['relative_image_path']}" alt="{result['alt_text']}" width="{result['width']}">
+    </a>
+    <figcaption style="font-weight: bold;">{result['caption']}</figcaption>
+</figure>
+"""
+        self.editor.insert_text(html_block)
+        self.statusbar.showMessage(
+            f"Trace GPX '{result['alt_text']}' insérée avec succès.", 5000
         )
 
     def insert_html_image(self):

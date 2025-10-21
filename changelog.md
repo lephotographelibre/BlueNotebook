@@ -1,3 +1,79 @@
+## V2.7.1 Integration Trace GPX
+
+Je vais rajouter une Integration pour les fichiers GPX. Aufinal j'insere une carte statique sous la forme d'une image HTML avec le tracé GPX et en légende la date et le lieu du tracé , heure de debut et heure de fin. Cette image sera clickable et ouvrira OpenStreetMap avec comme marqueur le pont de départ du tracé GPX. Le tracé GPX sera recuperer soit en local dans un dossier soit à distrace via un lien Web. Dans tous les cas ce travé GPX sera sauvegardé dans le dossier gpx du journal sous le nom YYYYMMJJ_Lieu.gpx (ou  YYYYMMJJ correspond au jour ou le tracé a commencé et le Lieu du tracé). 
+
+Installer les packages `gpxpy` `py-staticmaps`
+```bash
+pip install gpxpy py-staticmaps
+```
+- Le menu pour lancer l'intégration GPX Menu "Intégrations --> Trace GPX"
+- Le code nécessaire à l'integration sera stocké dans le dossiers `bluenotebook/integrations`
+- Le tracé GPX sera recuperer soit en local dans un dossier soit à distrace via un lien Web
+- Ce tracé GPX sera sauvegardé dans le dossier gpx du journal sous le nom YYYYMMJJ_Lieu.gpx (ou  YYYYMMJJ correspond au jour ou le tracé a commencé et le Lieu du tracé). 
+- Carte fabriquée au format PNG sera stockée dans le dossier images du Journal. On demandra a l'utilisateur la taille de la largueur de l'affichage en Pixels
+- Cette carte sera archivée dans le dossier `images` du journal sous le nom  YYYYMMJJ_lieu_gpx.png (ou  YYYYMMJJ correspond au jour ou le tracé a commencé et le Lieu du tracé). 
+- pour créer la carte on va utiliser le package `staticmaps` <https://www.npmjs.com/package/staticmaps> et GitHub <https://github.com/StephanGeorg/staticmaps> et   le code pour fabriquer la carte sera inspiré de 
+
+```
+import sys
+
+import gpxpy
+import staticmaps
+
+context = staticmaps.Context()
+context.set_tile_provider(staticmaps.tile_provider_OSM)
+
+with open(sys.argv[1], "r") as file:
+    gpx = gpxpy.parse(file)
+
+for track in gpx.tracks:
+    for segment in track.segments:
+        line = [
+            staticmaps.create_latlng(p.latitude, p.longitude) for p in segment.points
+        ]
+        context.add_object(staticmaps.Line(line))
+
+for p in gpx.walk(only_points=True):
+    pos = staticmaps.create_latlng(p.latitude, p.longitude)
+    marker = staticmaps.ImageMarker(pos, "start.png", origin_x=27, origin_y=35)
+    context.add_object(marker)
+    break
+
+ # render anti-aliased png (this only works if pycairo is installed)
+image = context.render_cairo(800, 500)
+image.write_to_png("draw_gpx.cairo.png")
+
+```
+- Pour marquer le début du trajet il faut mettre une icone de marqueur start.png qui est dans le repértoire  `bluenotebook/resources/icons/`
+- cette carte générée permettra de générer un fragment HTML du type suivant (ici lieu = Poitiers et coordonnées GPX sont les coordonnées du 1er Point GPX ou il i a le marqueur start.png)
+
+
+```html
+<figure style="text-align: center;">
+    <a href="https://www.openstreetmap.org/#map=16/46.569111995162096/0.34343837205047145">
+         <img src="images/YYYYMMJJ_lieu_gpx.png" alt="Trace GPX - Poitiers" width="800">
+    </a>
+    <figcaption style="font-weight: bold;">Trace GPX - Poitiers - OpenStreetMap</figcaption>
+</figure>
+```
+- Cette carte est doc clickable et le lien renvoie vers une carte openstreetmap avec un marqueur cetré sur le prmier point de la traceGPX
+
+beta1
+
+Il faudrait modifier le code HTML généré pour les traces GPX pour rendre le Lieu dans figcaption (ici poitiers) clickable et ouvrir https://www.openstreetmap.org/?mlat=46.561517&mlon=0.323711#map=16/46.561517/0.323711. Les coordonées GPS utilisées étant celle du premier point de la trace GPX.
+Cela donnerait quelque chose comme:
+```html
+<figure style="text-align: center;">
+    <a href="https://www.openstreetmap.org/#map=16/46.569194/0.344577" target="_blank">
+         <img src="images/20250506_Poitiers_gpx.png" alt="Trace GPX - Poitiers" width="1000">
+    </a>
+    <figcaption style="font-weight: bold;">Trace GPX: <a href="https://www.openstreetmap.org/?mlat=46.561517&mlon=0.323711#map=16/46.561517/0.323711">Poitiers</a> - 06/05/2025 à 09:45 - Durée: 1:48:24</figcaption>
+</figure>
+```
+beta2
+
+le marqueur de départ start.png n'est pas localisé exactement au point de départ de la trace GPX peux tu corriger cela
+
 ## V2.6.4 Imagces clickables + Integration Youtube MaJ
 
 Lorsque j'insère une image (Menu Insérer --> Image(<img ..>))dans le journal, l'image est copiée dans le dossier images du journal et un fragment HTML est généré du type par exemple
