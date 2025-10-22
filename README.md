@@ -1,4 +1,5 @@
 # **BlueNotebook - Documentation Technique**
+![BlueNotebook](images/bluenotebook_bandeau.jpg)
 
 **Version du Document :** V2.6.2
 **Date :** 17 octobre 2025
