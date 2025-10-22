@@ -1073,12 +1073,12 @@ class MarkdownEditor(QWidget):
             new_text = f"<!-- {selected_text} -->"
             cursor.insertText(new_text)
 
-    def insert_youtube_video(self, video_id, video_url, video_title="Vidéo YouTube"):
+    def insert_youtube_video(self, details: dict):
         """
         Génère et insère un bloc HTML formaté pour une vidéo YouTube.
         La logique de génération est déleguée au module d'intégration.
         """
-        html_block = generate_youtube_html_block(video_id, video_url, video_title)
+        html_block = generate_youtube_html_block(details)
         self.insert_text(html_block)
 
     def insert_html_image(self):

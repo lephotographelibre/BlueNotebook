@@ -92,7 +92,7 @@ from integrations.gpx_trace_generator import (
 from integrations.pdf_exporter import create_pdf_export_worker
 from integrations.amazon_books import get_book_info_from_amazon, generate_html_fragment
 from integrations.youtube_video import get_youtube_video_details
-from integrations.sun_moon import get_sun_moon_html
+from integrations.sun_moon import get_sun_moon_html, generate_sun_moon_html
 
 from integrations.image_exif import format_exif_as_markdown
 
@@ -2210,9 +2210,17 @@ class MainWindow(QMainWindow):
         if selected_text:
             video_url = selected_text
         else:
-            url, ok = QInputDialog.getText(
-                self, "Vidéo YouTube", "Entrez l'URL de la vidéo YouTube:"
-            )
+            dialog = QInputDialog(self)
+            dialog.setWindowTitle("Vidéo ou Playlist YouTube")
+            dialog.setLabelText("Entrez l'URL de la vidéo ou playlist Youtube:")
+            dialog.setTextEchoMode(QLineEdit.Normal)
+            # Augmenter la largeur pour les longues URL
+            dialog.setMinimumWidth(600)
+            ok = dialog.exec_()
+            url = ""
+            if ok:
+                url = dialog.textValue()
+
             if ok and url:
                 video_url = url.strip()
 
@@ -2232,9 +2240,7 @@ class MainWindow(QMainWindow):
             return
 
         # Si c'est un dictionnaire, l'insertion a réussi
-        self.editor.insert_youtube_video(
-            result["video_id"], result["url"], result["title"]
-        )
+        self.editor.insert_youtube_video(result)
 
     def insert_gps_map(self):
         """Gère la logique d'insertion d'une carte GPS."""

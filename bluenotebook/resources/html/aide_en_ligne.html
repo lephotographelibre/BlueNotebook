@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.3</h1>
+            Aide en Ligne - BlueNotebook V2.7.4</h1>
     </header>
 
     <div class="toc">
@@ -348,11 +348,17 @@
 &lt;/figure&gt;</code></pre>
 
         <h3 id="youtube-video">8.4 Intégrer une Vidéo YouTube</h3>
-        <p>Vous pouvez facilement intégrer une vidéo YouTube dans vos notes, avec une miniature cliquable.</p>
+        <p>Vous pouvez facilement intégrer une vidéo ou une playlist YouTube dans vos notes, avec une miniature cliquable qui renvoie vers le site de YouTube.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Vidéo YouTube</code>.</li>
-            <li>Si vous avez déjà sélectionné une URL YouTube dans l'éditeur, elle sera utilisée automatiquement. Sinon, une boîte de dialogue vous demandera de coller l'URL.</li>
-            <li>L'application génère et insère un bloc HTML avec le titre de la vidéo et une miniature cliquable qui renvoie vers YouTube.</li>
+            <li>Si vous avez déjà sélectionné une URL YouTube (vidéo ou playlist) dans l'éditeur, elle sera utilisée automatiquement.</li>
+            <li>Sinon, une boîte de dialogue s'ouvrira avec le message "Entrez l'URL de la vidéo ou playlist Youtube:". Collez-y votre lien.</li>
+            <li>L'application détecte automatiquement s'il s'agit d'une vidéo ou d'une playlist et insère un bloc HTML formaté avec :
+                <ul>
+                    <li>Pour une <strong>vidéo</strong> : le titre et la miniature.</li>
+                    <li>Pour une <strong>playlist</strong> : le titre, l'auteur, le nombre de pistes et la miniature.</li>
+                </ul>
+            </li>
         </ol>
         <p><strong>Astuce :</strong> Vous pouvez activer ou désactiver cette fonctionnalité dans <code>Préférences > Intégrations</code>.</p>
 
@@ -495,7 +501,7 @@ Intégrations
 ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
 ├── Trace GPX : Génère une carte à partir d'un fichier de trace GPX.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
-├── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
+├── Vidéo YouTube : Insère une vidéo ou une playlist YouTube avec sa miniature à partir d'une URL.
 ├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
 ├── Amazon ISBN : Insère les informations d'un livre depuis Amazon via son ISBN.
 └── Astro du jour : Insère les données astronomiques du jour pour la ville configurée.
@@ -865,7 +871,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.7.3 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.7.4 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

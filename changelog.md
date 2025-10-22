@@ -1,3 +1,13 @@
+## V2.7.4  Integration Youtube add Playlist
+
+Je voudrais modifier l'integration youtube deja existante. telle qu'elle est elle permet d'ajouter des vidéo youtube avec des URL de type https://www.youtube.com/watch?v=bo_efYhYU2A.
+Je voudrais pourvoir rajouter des playlists Youtube avec des url de type https://www.youtube.com/playlist?list=OLAK5uy_n2B_NIITvMyLSO6eiiFe5mAiOKW30EvD0 et dans ce cas la récuperer l'image de la playlist, l'auteur ou les auteurs, le titre de la playlist, le nombre de morceaux et afficher l'image de la playlist clickable.
+ce qui change seront les tags @@Musique @@Youtube @@Playlist au lieu @@Video @@Youtube sinon utiliser le meme type d'affichage et de CSS que pour une vidéo youtube classique.
+Appelable toujours par le meme menu ou bien url selectionnée dans l'editeur Markdown
+
+
+
+
 ## V2.7.3 Integration Soleil-Lune
 
 Pour cette nouvelle integration on va aller recuperer les donnes astronominiques de la journée concernant le soleil et la lune de la ville choisie par l'utilisateur
