@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.1</h1>
+            Aide en Ligne - BlueNotebook V2.7.2</h1>
     </header>
 
     <div class="toc">
@@ -97,9 +97,10 @@
                 <ul>
                     <li><a href="#meteo">8.1 Insérer la Météo du Jour</a></li>
                     <li><a href="#gpx-trace">8.2 Intégrer une Trace GPX</a></li>
-                    <li><a href="#cartes-gps">8.3 Intégrer une Carte Statique (GPS)</a></li>
+                    <li><a href="#cartes-gps">8.3 Intégrer une Carte Statique (GPS)</a></li> 
                     <li><a href="#youtube-video">8.4 Intégrer une Vidéo YouTube</a></li>
-                    <li><a href="#quote-of-the-day">8.5 Insérer la Citation du Jour</a></li>
+                    <li><a href="#amazon-isbn">8.5 Intégrer un Livre (Amazon ISBN)</a></li>
+                    <li><a href="#quote-of-the-day">8.6 Insérer la Citation du Jour</a></li>
                 </ul>
             </li>
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
@@ -354,7 +355,18 @@
         </ol>
         <p><strong>Astuce :</strong> Vous pouvez activer ou désactiver cette fonctionnalité dans <code>Préférences > Intégrations</code>.</p>
 
-        <h3 id="quote-of-the-day">8.5 Insérer la Citation du Jour</h3>
+        <h3 id="amazon-isbn">8.5 Intégrer un Livre (Amazon ISBN)</h3>
+        <p>Enrichissez vos notes avec des fiches de lecture complètes en récupérant automatiquement les informations d'un livre depuis Amazon grâce à son numéro ISBN.</p>
+        <ol>
+            <li>Allez dans le menu <code>Intégrations > Amazon ISBN</code>.</li>
+            <li>Si vous avez déjà sélectionné un numéro ISBN dans l'éditeur, il sera utilisé directement.</li>
+            <li>Sinon, une boîte de dialogue s'ouvrira, vous invitant à saisir le numéro ISBN du livre que vous recherchez.</li>
+            <li>Après une courte attente (un message clignotant apparaît dans la barre de statut), un bloc HTML contenant les détails du livre (couverture, titre, auteur, résumé, etc.) sera inséré dans votre note. Le résumé est automatiquement tronqué pour rester concis, avec une mention "En lire plus...".</li>
+        </ol>
+        <p>Cette fonctionnalité est parfaite pour tenir un journal de lecture, préparer des fiches de livres ou simplement garder une trace des ouvrages qui vous intéressent.</p>
+
+
+        <h3 id="quote-of-the-day">8.6 Insérer la Citation du Jour</h3>
         <p>Commencez votre journée avec une pensée inspirante. BlueNotebook peut récupérer une citation célèbre et l'insérer dans votre note.</p>
         <ul>
             <li><strong>Au démarrage :</strong> Si l'option est activée dans <code>Préférences > Intégrations</code>, une fenêtre affichant la citation du jour apparaîtra au lancement de l'application.</li>
@@ -465,7 +477,8 @@ Intégrations
 ├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
 ├── Trace GPX : Génère une carte à partir d'un fichier de trace GPX.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
-└── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
+├── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
+└── Amazon ISBN : Insère les informations d'un livre depuis Amazon via son ISBN.
 
 Aide
 ├── Documentation en ligne : Ouvre ce manuel.
@@ -826,7 +839,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.7.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.7.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

@@ -82,7 +82,7 @@ from bs4 import BeautifulSoup
 from integrations.gps_map_generator import get_location_name, create_gps_map
 from core.word_indexer import start_word_indexing
 
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
 from integrations.epub_exporter import EpubExportWorker
 from integrations.gpx_trace_generator import (
@@ -90,9 +90,33 @@ from integrations.gpx_trace_generator import (
     get_gpx_data,
 )
 from integrations.pdf_exporter import create_pdf_export_worker
+from integrations.amazon_books import get_book_info_from_amazon, generate_html_fragment
 from integrations.youtube_video import get_youtube_video_details
 
 from integrations.image_exif import format_exif_as_markdown
+
+
+class BookWorker(QRunnable):
+    """Worker pour la recherche de livre en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str, bool)  # html_fragment, has_selection
+        error = pyqtSignal(str)
+
+    def __init__(self, isbn, has_selection):
+        super().__init__()
+        self.isbn = isbn
+        self.has_selection = has_selection
+        self.signals = self.Signals()
+
+    @pyqtSlot()
+    def run(self):
+        try:
+            book_data_json = get_book_info_from_amazon(self.isbn)
+            html_fragment = generate_html_fragment(book_data_json)
+            self.signals.finished.emit(html_fragment, self.has_selection)
+        except Exception as e:
+            self.signals.error.emit(str(e))
 
 
 class NewFileDialog(QDialog):
@@ -660,6 +684,7 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
         integrations_menu.addAction(self.insert_weather_action)
+        integrations_menu.addAction(self.insert_amazon_book_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("&Aide")
@@ -833,6 +858,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer la météo actuelle",
             triggered=self.insert_weather,
+        )
+        self.insert_amazon_book_action = QAction(
+            "Amazon ISBN",
+            self,
+            statusTip="Insérer les informations d'un livre depuis Amazon via son ISBN",
+            triggered=self.insert_amazon_book,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -1085,6 +1116,16 @@ class MainWindow(QMainWindow):
         self.pdf_status_label.setStyleSheet("color: red; font-weight: bold;")
         self.pdf_status_label.setVisible(False)
         self.statusbar.addWidget(self.pdf_status_label, 1)
+
+        self.book_search_flash_timer = QTimer(self)
+        self.book_search_flash_timer.setInterval(500)
+        self.book_search_flash_timer.timeout.connect(
+            self._toggle_book_search_status_visibility
+        )
+        self.book_search_status_label = CenteredStatusBarLabel("Recherche du livre...")
+        self.book_search_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.book_search_status_label.setVisible(False)
+        self.statusbar.addWidget(self.book_search_status_label, 1)
 
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -2397,6 +2438,67 @@ class MainWindow(QMainWindow):
         if html_fragment:
             self.editor.insert_text(html_fragment)
             self.statusbar.showMessage("Météo insérée avec succès.", 3000)
+
+    def insert_amazon_book(self):
+        """Récupère et insère les informations d'un livre depuis Amazon via ISBN."""
+        has_selection = False
+        cursor = self.editor.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+
+        isbn = ""
+        if selected_text:
+            isbn = selected_text
+        else:
+            has_selection = True
+            text, ok = QInputDialog.getText(
+                self, "Recherche de livre par ISBN", "Entrez le code ISBN du livre:"
+            )
+            if ok and text:
+                isbn = text.strip()
+
+        if not isbn:
+            return
+
+        # Afficher un message d'attente
+        self._start_book_search_flashing()
+        worker = self._create_book_worker(isbn, has_selection)
+        worker.signals.finished.connect(self.on_book_search_finished)
+        worker.signals.error.connect(self.on_book_search_error)
+        self.thread_pool.start(worker)
+
+    def _create_book_worker(self, isbn, has_selection):
+        """Crée et retourne un worker pour la recherche de livre."""
+        return BookWorker(isbn, has_selection)
+
+    def on_book_search_finished(self, html_fragment, has_selection):
+        """Insère le fragment HTML du livre dans l'éditeur."""
+        self._stop_book_search_flashing()
+        if has_selection:
+            self.editor.text_edit.textCursor().removeSelectedText()
+        self.editor.insert_text(f"\n{html_fragment}\n")
+        self.statusbar.showMessage("Informations du livre insérées avec succès.", 5000)
+
+    def on_book_search_error(self, error_message):
+        """Affiche une erreur si la recherche de livre a échoué."""
+        self._stop_book_search_flashing()
+        self.statusbar.clearMessage()
+        QMessageBox.critical(self, "Erreur de recherche", error_message)
+
+    def _start_book_search_flashing(self):
+        """Démarre le message clignotant pour la recherche de livre."""
+        self.book_search_status_label.setVisible(True)
+        self.book_search_flash_timer.start()
+
+    def _stop_book_search_flashing(self):
+        """Arrête le message clignotant de recherche de livre."""
+        self.book_search_flash_timer.stop()
+        self.book_search_status_label.setVisible(False)
+
+    def _toggle_book_search_status_visibility(self):
+        """Bascule la visibilité du label de statut de recherche de livre."""
+        self.book_search_status_label.setVisible(
+            not self.book_search_status_label.isVisible()
+        )
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
