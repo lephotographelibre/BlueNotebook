@@ -374,3 +374,72 @@ figure.youtube-video-figure:hover {
     font-family: Arial, sans-serif;
     color: #d32f2f;
 }
+
+/* Style pour l'intégration Soleil/Lune */
+.sun-moon-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #f9f9f9;
+    max-width: 350px;
+    font-family: sans-serif;
+    font-size: 0.9em;
+    gap: 8px;
+    margin: 1em 0; /* Ajoute une marge pour l'espacement */
+}
+
+.sun-moon-row {
+    display: flex;
+    align-items: center;
+}
+
+.sun-moon-row-split {
+    justify-content: space-between;
+}
+
+.sun-moon-item {
+    display: flex;
+    align-items: center;
+}
+
+.sun-moon-emoji {
+    font-size: 1.6em;
+    margin-right: 8px;
+}
+
+.sun-moon-text {
+    color: #333;
+}
+
+/* Style pour l'intégration Météo */
+.weather-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background-color: #f9f9f9;
+    max-width: 450px;
+    font-family: sans-serif;
+    font-size: 0.9em;
+    gap: 10px;
+    margin: 1em 0;
+}
+
+.weather-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0; /* Reset margin from global img style */
+    box-shadow: none; /* Reset shadow from global img style */
+}
+
+.weather-location {
+    font-weight: bold;
+    color: #333;
+}
+
+.weather-extra {
+    color: #666;
+}

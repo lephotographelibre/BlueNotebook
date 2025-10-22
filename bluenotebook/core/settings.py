@@ -63,6 +63,7 @@ class SettingsManager:
             "integrations": {
                 "show_quote_of_the_day": False,
                 "weather": {"city": "", "api_key": ""},
+                "sun_moon": {"city": "", "latitude": "", "longitude": ""},
             },
             "ui": {
                 "show_navigation_panel": False,  # Par défaut, masqué

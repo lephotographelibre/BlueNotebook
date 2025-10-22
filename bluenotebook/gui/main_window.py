@@ -92,6 +92,7 @@ from integrations.gpx_trace_generator import (
 from integrations.pdf_exporter import create_pdf_export_worker
 from integrations.amazon_books import get_book_info_from_amazon, generate_html_fragment
 from integrations.youtube_video import get_youtube_video_details
+from integrations.sun_moon import get_sun_moon_html
 
 from integrations.image_exif import format_exif_as_markdown
 
@@ -117,6 +118,31 @@ class BookWorker(QRunnable):
             self.signals.finished.emit(html_fragment, self.has_selection)
         except Exception as e:
             self.signals.error.emit(str(e))
+
+
+class SunMoonWorker(QRunnable):
+    """Worker pour la recherche des données astro en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str)
+        error = pyqtSignal(str)
+
+    def __init__(self, city, latitude, longitude):
+        super().__init__()
+        self.city = city
+        self.latitude = latitude
+        self.longitude = longitude
+        self.signals = self.Signals()
+
+    @pyqtSlot()
+    def run(self):
+        html_fragment, error_message = get_sun_moon_html(
+            self.city, self.latitude, self.longitude
+        )
+        if error_message:
+            self.signals.error.emit(error_message)
+        else:
+            self.signals.finished.emit(html_fragment)
 
 
 class NewFileDialog(QDialog):
@@ -685,6 +711,7 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_youtube_video_action)
         integrations_menu.addAction(self.insert_weather_action)
         integrations_menu.addAction(self.insert_amazon_book_action)
+        integrations_menu.addAction(self.insert_sun_moon_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("&Aide")
@@ -864,6 +891,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer les informations d'un livre depuis Amazon via son ISBN",
             triggered=self.insert_amazon_book,
+        )
+        self.insert_sun_moon_action = QAction(
+            "Astro du jour",
+            self,
+            statusTip="Insérer les données astronomiques du jour",
+            triggered=self.insert_sun_moon_data,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -2465,6 +2498,40 @@ class MainWindow(QMainWindow):
         worker.signals.finished.connect(self.on_book_search_finished)
         worker.signals.error.connect(self.on_book_search_error)
         self.thread_pool.start(worker)
+
+    def insert_sun_moon_data(self):
+        """Récupère et insère les données astro du jour."""
+        city = self.settings_manager.get("integrations.sun_moon.city")
+        latitude = self.settings_manager.get("integrations.sun_moon.latitude")
+        longitude = self.settings_manager.get("integrations.sun_moon.longitude")
+
+        if not all([city, latitude, longitude]):
+            QMessageBox.warning(
+                self,
+                "Configuration requise",
+                "Veuillez configurer votre ville dans 'Préférences > Intégrations' "
+                "pour utiliser cette fonctionnalité.",
+            )
+            return
+
+        # Afficher un message d'attente
+        self.statusbar.showMessage("Récupération des données astronomiques...", 0)
+
+        worker = SunMoonWorker(city, latitude, longitude)
+        worker.signals.finished.connect(self.on_sun_moon_finished)
+        worker.signals.error.connect(self.on_sun_moon_error)
+        self.thread_pool.start(worker)
+
+    def on_sun_moon_finished(self, html_fragment):
+        """Insère le fragment HTML des données astro."""
+        self.statusbar.clearMessage()
+        self.editor.insert_text(f"\n{html_fragment}\n")
+        self.statusbar.showMessage("Données astronomiques insérées.", 3000)
+
+    def on_sun_moon_error(self, error_message):
+        """Affiche une erreur si la recherche astro a échoué."""
+        self.statusbar.clearMessage()
+        QMessageBox.critical(self, "Erreur Astro", error_message)
 
     def _create_book_worker(self, isbn, has_selection):
         """Crée et retourne un worker pour la recherche de livre."""

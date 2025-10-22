@@ -45,6 +45,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
 )
 from PyQt5.QtCore import QDir
+from geopy.geocoders import Nominatim
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt
 
@@ -662,6 +663,40 @@ class PreferencesDialog(QDialog):
 
         layout.addWidget(weather_widget)
 
+        # Astro Soleil et Lune
+        astro_layout = QHBoxLayout()
+        astro_layout.addWidget(QLabel("Astro Soleil et Lune Ville :"))
+        self.astro_city_edit = QLineEdit()
+        self.astro_city_edit.setText(
+            self.settings_manager.get("integrations.sun_moon.city", "")
+        )
+        astro_layout.addWidget(self.astro_city_edit)
+
+        self.astro_search_button = QPushButton("Rechercher")
+        self.astro_search_button.clicked.connect(self._search_city_coords)
+        astro_layout.addWidget(self.astro_search_button)
+
+        astro_layout.addWidget(QLabel("Latitude:"))
+        self.astro_lat_edit = QLineEdit()
+        self.astro_lat_edit.setReadOnly(True)
+        self.astro_lat_edit.setText(
+            self.settings_manager.get("integrations.sun_moon.latitude", "")
+        )
+        astro_layout.addWidget(self.astro_lat_edit)
+
+        astro_layout.addWidget(QLabel("Longitude:"))
+        self.astro_lon_edit = QLineEdit()
+        self.astro_lon_edit.setReadOnly(True)
+        self.astro_lon_edit.setText(
+            self.settings_manager.get("integrations.sun_moon.longitude", "")
+        )
+        astro_layout.addWidget(self.astro_lon_edit)
+
+        astro_layout.addStretch()
+        astro_widget = QWidget()
+        astro_widget.setLayout(astro_layout)
+        layout.addWidget(astro_widget)
+
         layout.addStretch()
         return widget
 
@@ -698,6 +733,30 @@ class PreferencesDialog(QDialog):
                 button.setStyleSheet(f"background-color: {color.name()};")
 
         return selector
+
+    def _search_city_coords(self):
+        """Recherche les coordonnées GPS d'une ville."""
+        city_name = self.astro_city_edit.text().strip()
+        if not city_name:
+            QMessageBox.warning(self, "Recherche", "Veuillez saisir un nom de ville.")
+            return
+
+        try:
+            geolocator = Nominatim(user_agent="bluenotebook_app")
+            location = geolocator.geocode(city_name)
+            if location:
+                self.astro_lat_edit.setText(f"{location.latitude:.6f}")
+                self.astro_lon_edit.setText(f"{location.longitude:.6f}")
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Recherche",
+                    f"Impossible de trouver les coordonnées pour '{city_name}'.",
+                )
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur de géolocalisation", f"Une erreur est survenue : {e}"
+            )
 
     def _save_as_theme(self):
         """Sauvegarde les paramètres actuels comme un nouveau thème."""
@@ -1074,6 +1133,17 @@ class PreferencesDialog(QDialog):
         )
         self.settings_manager.set(
             "integrations.weather.api_key", self.weather_api_key_edit.text()
+        )
+
+        # Sauvegarde des paramètres d'intégration astro
+        self.settings_manager.set(
+            "integrations.sun_moon.city", self.astro_city_edit.text()
+        )
+        self.settings_manager.set(
+            "integrations.sun_moon.latitude", self.astro_lat_edit.text()
+        )
+        self.settings_manager.set(
+            "integrations.sun_moon.longitude", self.astro_lon_edit.text()
         )
         # ... (le reste de la méthode accept originale)
         # NOTE: La logique de sauvegarde des autres onglets doit être ajoutée ici.

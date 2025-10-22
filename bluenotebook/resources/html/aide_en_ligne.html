@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.2</h1>
+            Aide en Ligne - BlueNotebook V2.7.3</h1>
     </header>
 
     <div class="toc">
@@ -101,6 +101,7 @@
                     <li><a href="#youtube-video">8.4 Intégrer une Vidéo YouTube</a></li>
                     <li><a href="#amazon-isbn">8.5 Intégrer un Livre (Amazon ISBN)</a></li>
                     <li><a href="#quote-of-the-day">8.6 Insérer la Citation du Jour</a></li>
+                    <li><a href="#astro-du-jour">8.7 Insérer les Données Astronomiques du Jour</a></li>
                 </ul>
             </li>
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
@@ -373,6 +374,24 @@
             <li><strong>Manuellement :</strong> À tout moment, vous pouvez aller dans le menu <code>Intégrations > Citation du jour</code> pour insérer la citation actuelle (formatée comme une citation Markdown) à l'endroit où se trouve votre curseur.</li>
         </ul>
     </section>
+    <h3 id="astro-du-jour">8.7 Insérer les Données Astronomiques du Jour</h3>
+    <p>Ajoutez les heures de lever/coucher du soleil et la phase de la lune pour la ville de votre choix, idéal pour un journal de bord ou pour noter les conditions du jour.</p>
+    <ol>
+        <li><strong>Configuration initiale :</strong> Avant de pouvoir utiliser cette fonctionnalité, vous devez la configurer.
+            <ul>
+                <li>Rendez-vous dans <code>Préférences > Intégrations</code>.</li>
+                <li>Dans la section "Astro Soleil et Lune", saisissez le nom de votre <strong>Ville</strong> et cliquez sur <strong>"Rechercher"</strong>. L'application trouvera automatiquement la latitude et la longitude.</li>
+                <li>Validez les préférences. Ces informations sont sauvegardées localement.</li>
+            </ul>
+        </li>
+        <li><strong>Insertion :</strong>
+            <ul>
+                <li>Placez votre curseur à l'endroit souhaité dans l'éditeur.</li>
+                <li>Allez dans le menu <code>Intégrations > Astro du jour</code>.</li>
+                <li>Un fragment HTML contenant les informations (lever/coucher du soleil, phase de la lune) pour votre ville sera inséré dans votre note.</li>
+            </ul>
+        </li>
+    </ol>
 
     <section id="recherche-avancee">
         <h2>9. Recherche et Navigation Avancée</h2>
@@ -474,11 +493,12 @@ Insérer
 
 Intégrations
 ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
-├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
 ├── Trace GPX : Génère une carte à partir d'un fichier de trace GPX.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
 ├── Vidéo YouTube : Insère une vidéo YouTube avec sa miniature à partir d'une URL.
-└── Amazon ISBN : Insère les informations d'un livre depuis Amazon via son ISBN.
+├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
+├── Amazon ISBN : Insère les informations d'un livre depuis Amazon via son ISBN.
+└── Astro du jour : Insère les données astronomiques du jour pour la ville configurée.
 
 Aide
 ├── Documentation en ligne : Ouvre ce manuel.
@@ -834,12 +854,18 @@ Aide
                     <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/psf/requests" target="_blank">github.com/psf/requests</a></li>
                 </ul>
             </li>
+            <li><strong>geopy</strong> : Utilisée pour la géolocalisation, notamment pour convertir les noms de villes en coordonnées géographiques (latitude et longitude) pour l'intégration "Astro du Jour".
+                <ul>
+                    <li><strong>Auteur :</strong> Geopy Contributors</li>
+                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/geopy/geopy" target="_blank">github.com/geopy/geopy</a></li>
+                </ul>
+            </li>
         </ul>
     </section>
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.7.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.7.3 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

@@ -81,14 +81,13 @@ def get_weather_html(city: str, api_key: str) -> tuple[str | None, str | None]:
         # Construction du fragment HTML
         # Utilisation de styles inline pour un affichage simple et portable
         html_fragment = f"""
-<div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; padding: 5px; background-color: #f9f9f9; max-width: 450px;">
-    <img src="https:{icon_url}" alt="{condition_text}" style="margin-right: 10px; width: 48px; height: 48px;">
-    <div style="font-family: sans-serif; font-size: 0.9em;">
-        <strong style="color: #333;">{city_name}:</strong> {condition_text}, <strong>{temp_c}°C</strong> à {time_str}<br>
-        <span style="color: #666;">Vent: {wind_kph} km/h, Humidité: {humidity}%</span>
+<div class="weather-container">
+    <img src="https:{icon_url}" alt="{condition_text}" class="weather-icon">
+    <div class="weather-details">
+        <span class="weather-location">{city_name}:</span> {condition_text}, <strong class="weather-temp">{temp_c}°C</strong> à {time_str}<br>
+        <span class="weather-extra">Vent: {wind_kph} km/h, Humidité: {humidity}%</span>
     </div>
-</div>
-"""
+</div>"""
         return html_fragment.strip(), None
 
     except requests.exceptions.HTTPError as e:
