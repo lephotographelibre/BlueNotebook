@@ -71,7 +71,9 @@ class ImageLinkProcessor(InlineProcessor):
         # Créer l'élément <a> pour rendre l'image cliquable
         a_el = ElementTree.Element("a")
         a_el.set("href", m.group(2))  # URL de l'image
-        a_el.set("target", "_blank")  # Ouvre dans une nouvelle fenêtre (géré par createWindow)
+        a_el.set(
+            "target", "_blank"
+        )  # Ouvre dans une nouvelle fenêtre (géré par createWindow)
 
         # Créer l'élément <img> comme dans le rendu standard
         img_el = ElementTree.Element("img")
@@ -192,12 +194,12 @@ class MarkdownPreview(QWidget):
 
     def _load_default_css(self):
         """Charge le contenu du fichier CSS par défaut."""
-        return self._load_css_from_file("default_preview.css")
+        return self._load_css_from_file("default_bluenotebook.css")
 
     def set_css_theme(self, theme_filename):
         """Définit et applique un nouveau thème CSS pour l'aperçu."""
         if not theme_filename:
-            theme_filename = "default_preview.css"
+            theme_filename = "default_bluenotebook.css"
 
         self.default_css = self._load_css_from_file(theme_filename)
 
