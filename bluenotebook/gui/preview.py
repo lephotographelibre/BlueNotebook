@@ -27,7 +27,8 @@ from pygments.formatters import HtmlFormatter
 from markdown.inlinepatterns import InlineProcessor
 import markdown
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QEvent, Qt
+from PyQt5.QtGui import QDesktopServices
 import webbrowser
 
 
@@ -62,28 +63,6 @@ class TagInlineProcessor(InlineProcessor):
         el.set("class", "tag")
         el.text = m.group(0)
         return el, m.start(0), m.end(0)
-
-
-class ImageLinkProcessor(InlineProcessor):
-    """Traite les images Markdown pour les rendre cliquables en les enveloppant dans une balise <a>."""
-
-    def handleMatch(self, m, data):
-        # Créer l'élément <a> pour rendre l'image cliquable
-        a_el = ElementTree.Element("a")
-        a_el.set("href", m.group(2))  # URL de l'image
-        a_el.set(
-            "target", "_blank"
-        )  # Ouvre dans une nouvelle fenêtre (géré par createWindow)
-
-        # Créer l'élément <img> comme dans le rendu standard
-        img_el = ElementTree.Element("img")
-        img_el.set("src", m.group(2))  # URL de l'image
-        if m.group(1):  # Texte alternatif
-            img_el.set("alt", m.group(1))
-
-        # Ajouter l'élément <img> comme enfant de <a>
-        a_el.append(img_el)
-        return a_el, m.start(0), m.end(0)
 
 
 class MarkdownPreview(QWidget):
@@ -144,8 +123,43 @@ class MarkdownPreview(QWidget):
 
         layout.addWidget(self.web_view, 1)
         self.setLayout(layout)
+        # V2.7.5 - Installer un filtre d'événements pour intercepter les clics
+        # sur les images dans les liens, sans affecter les liens textuels.
+        self.web_view.installEventFilter(self)
 
-        self.show_welcome_content()
+    def eventFilter(self, obj, event):
+        """
+        Filtre les événements de la souris pour gérer les clics sur les images
+        qui sont à l'intérieur d'un lien.
+        """
+        if (
+            obj is self.web_view
+            and event.type() == QEvent.MouseButtonRelease
+            and event.button() == Qt.LeftButton
+        ):
+            hit_test = self.web_view.page().hitTestContent(event.pos())
+            is_on_image = hit_test.mediaType() == QWebEnginePage.MediaTypeImage
+            is_on_link = hit_test.linkUrl().isValid()
+
+            # Cas 1: Clic sur une image qui N'EST PAS dans un lien
+            # (ex: une image Markdown simple `!`)
+            if is_on_image and not is_on_link:
+                image_url = hit_test.mediaUrl()
+                if image_url.isValid() and image_url.isLocalFile():
+                    QDesktopServices.openUrl(image_url)
+                if image_url.isValid():
+                    webbrowser.open(image_url.toString())
+                    return True  # Événement traité
+
+            # Cas 2: Clic sur un lien (contenant une image ou du texte)
+            # On laisse CustomWebEnginePage gérer l'ouverture dans le navigateur
+            # ou la visionneuse d'images. On ne fait rien ici.
+            if is_on_link:
+                # Laisser l'événement se propager pour que CustomWebEnginePage le gère
+                pass
+
+        # Renvoyer à l'implémentation parente pour tous les autres événements
+        return super().eventFilter(obj, event)
 
     def setup_markdown(self):
         """Configuration du processeur Markdown"""
@@ -173,10 +187,6 @@ class MarkdownPreview(QWidget):
 
         self.md.inlinePatterns.register(
             TagInlineProcessor(r"@@(\w{2,})\b", self.md), "tag", 175
-        )
-        # Enregistrer le processeur pour les images Markdown
-        self.md.inlinePatterns.register(
-            ImageLinkProcessor(r"!\[(.*?)\]\((.*?)\)", self.md), "image_link", 150
         )
 
     def _load_css_from_file(self, filename):

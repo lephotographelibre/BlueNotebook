@@ -1,10 +1,23 @@
+## 2.7.5 Images Markdown clickable (images seuleument)
+
+Ceci est important car je veux changer le code inclus lors dune integration Carte GPS et de HTML (facilement clickable) à Markdown
+
+[![Carte de Poitiers, coordonnées 46.58325004582807, 0.3438650843823104](images/20251025093445_carte_Poitiers.png)](https://www.openstreetmap.org/#map=16/46.58325004582807/0.3438650843823104)
+
+ @@TODO ⚠️ ⚠️ ⚠️ Pb d'image clickable dans le cas de carte GPS --> on ouvre l'image pas le lien associé 
+
+### Analyse du problème
+Le problème vient de la manière dont les liens sont gérés dans le panneau d'aperçu (bluenotebook/gui/preview.py). Pour permettre d'ouvrir les images en grand, une règle a été mise en place qui intercepte tous les clics sur des liens. Si le lien pointe vers une image (se terminant par .jpg, .png, etc.), il l'ouvre localement. Sinon, il tente d'ouvrir le lien dans un navigateur externe.
+
+Dans votre cas, un lien Markdown comme Voir la carte... est converti en une balise HTML <a>. Le code actuel ne fait pas la distinction entre un lien contenant une image et un lien contenant uniquement du texte. Il traite tous les liens de la même manière, ce qui cause ce comportement inattendu.
+
+
 ## V2.7.4  Integration Youtube add Playlist
 
 Je voudrais modifier l'integration youtube deja existante. telle qu'elle est elle permet d'ajouter des vidéo youtube avec des URL de type https://www.youtube.com/watch?v=bo_efYhYU2A.
 Je voudrais pourvoir rajouter des playlists Youtube avec des url de type https://www.youtube.com/playlist?list=OLAK5uy_n2B_NIITvMyLSO6eiiFe5mAiOKW30EvD0 et dans ce cas la récuperer l'image de la playlist, l'auteur ou les auteurs, le titre de la playlist, le nombre de morceaux et afficher l'image de la playlist clickable.
 ce qui change seront les tags @@Musique @@Youtube @@Playlist au lieu @@Video @@Youtube sinon utiliser le meme type d'affichage et de CSS que pour une vidéo youtube classique.
 Appelable toujours par le meme menu ou bien url selectionnée dans l'editeur Markdown
-
 
 
 
