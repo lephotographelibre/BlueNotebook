@@ -60,19 +60,19 @@ def create_gpx_trace_map(
     Analyse un GPX, génère une carte, sauvegarde les fichiers et retourne les informations pour l'HTML.
     """
     if not staticmaps.cairo_is_supported():
-        return "La bibliothèque Cairo n'est pas installée ou supportée. Impossible de générer la carte."
+        return "❌ Carte GPX: La bibliothèque Cairo n'est pas installée ou supportée. Impossible de générer la carte."
 
     try:
         gpx = gpxpy.parse(gpx_content)
     except gpxpy.gpx.GPXException as e:
-        return f"Erreur lors de l'analyse du fichier GPX : {e}"
+        return f"❌ Carte GPX:Erreur lors de l'analyse du fichier GPX : {e}"
 
     # Extraire les informations du GPX
     start_time, end_time = gpx.get_time_bounds()
     start_point = next(gpx.walk(only_points=True), None)
 
     if not start_point:
-        return "Le fichier GPX ne contient aucun point de trace."
+        return "❌ Carte GPX:Le fichier GPX ne contient aucun point de trace."
 
     if not start_time:
         start_time = datetime.datetime.now()
@@ -124,7 +124,7 @@ def create_gpx_trace_map(
         image = context.render_cairo(width, height)
         image.write_to_png(str(image_path))
     except Exception as e:
-        return f"Erreur lors de la génération de l'image de la carte : {e}"
+        return f"❌ Carte GPX:Erreur lors de la génération de l'image de la carte : {e}"
 
     # Préparer les informations pour le bloc HTML
     osm_link = f"https://www.openstreetmap.org/#map=16/{start_point.latitude}/{start_point.longitude}"

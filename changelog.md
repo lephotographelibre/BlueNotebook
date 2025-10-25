@@ -1,4 +1,10 @@
-## 2.7.5 Images Markdown clickable (images seuleument)
+## V2.7.6 Travail préparatoire Images Markdown
+
+voir docs/[text](../../../../ssd/Dropbox/BlueNotebookJournal/attachments/V2.7.6_Images_Markdown.md)
+
+
+
+## 2.7.5 bug Images Markdown clickable (images seuleument)
 
 Ceci est important car je veux changer le code inclus lors dune integration Carte GPS et de HTML (facilement clickable) à Markdown
 
@@ -10,6 +16,9 @@ Ceci est important car je veux changer le code inclus lors dune integration Cart
 Le problème vient de la manière dont les liens sont gérés dans le panneau d'aperçu (bluenotebook/gui/preview.py). Pour permettre d'ouvrir les images en grand, une règle a été mise en place qui intercepte tous les clics sur des liens. Si le lien pointe vers une image (se terminant par .jpg, .png, etc.), il l'ouvre localement. Sinon, il tente d'ouvrir le lien dans un navigateur externe.
 
 Dans votre cas, un lien Markdown comme Voir la carte... est converti en une balise HTML <a>. Le code actuel ne fait pas la distinction entre un lien contenant une image et un lien contenant uniquement du texte. Il traite tous les liens de la même manière, ce qui cause ce comportement inattendu.
+
+
+
 
 
 ## V2.7.4  Integration Youtube add Playlist
