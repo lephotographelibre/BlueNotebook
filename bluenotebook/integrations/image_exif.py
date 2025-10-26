@@ -146,3 +146,52 @@ def format_exif_as_markdown(image_path):
 
     caption_text = " : ".join(filter(None, caption_parts))
     return f'<figcaption style="font-weight: bold;">{caption_text}</figcaption>'
+
+
+def format_exif_as_markdown_string(image_path: str) -> str | None:
+    """
+    Extrait les données EXIF et les formate en une chaîne Markdown.
+    Format: [Lieu](lien) : **Date : Appareil : etc.**
+    """
+    exif_data = _get_exif_data(image_path)
+    if not exif_data:
+        return None
+
+    lat, lon = _get_gps_info(exif_data)
+
+    # Si aucune donnée EXIF utile n'est trouvée, on ne retourne rien.
+    if not any([lat, exif_data.get("DateTimeOriginal"), exif_data.get("Model")]):
+        return None
+
+    location_part = ""
+    if lat and lon:
+        location_name = get_location_name_from_gps(lat, lon) or "Lieu"
+        osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
+        location_part = f"[{location_name}]({osm_link}) : "
+
+    details_parts = []
+    if dt_original := exif_data.get("DateTimeOriginal"):
+        try:
+            dt_obj = datetime.strptime(dt_original, "%Y:%m:%d %H:%M:%S")
+            details_parts.append(dt_obj.strftime("%d/%m/%Y %H:%M"))
+        except (ValueError, TypeError):
+            pass
+
+    if make := exif_data.get("Make", "").strip():
+        details_parts.append(make)
+    if model := exif_data.get("Model", "").strip():
+        details_parts.append(model)
+    if f_number := exif_data.get("FNumber"):
+        details_parts.append(f"ƒ/{f_number}")
+    if exposure_time := exif_data.get("ExposureTime"):
+        speed = (
+            f"1/{int(1/exposure_time)}s" if exposure_time > 0 else f"{exposure_time}s"
+        )
+        details_parts.append(f"Vitesse: {speed}")
+    if focal_length := exif_data.get("FocalLength"):
+        details_parts.append(f"Focale: {focal_length}mm")
+    if iso := exif_data.get("ISOSpeedRatings"):
+        details_parts.append(f"ISO: {iso}")
+
+    details_text = " : ".join(filter(None, details_parts))
+    return f"{location_part}**{details_text}**"

@@ -224,7 +224,19 @@ class MarkdownPreview(QWidget):
                 f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
             )
 
-        final_css = self.default_css + self.pygments_css + self.custom_css
+        # V2.7.7 - Ajout d'un style pour limiter la taille des images Markdown
+        # Cette règle s'applique aux images qui ne sont pas dans une <figure>
+        # pour ne pas affecter les images HTML dont la taille est déjà définie.
+        image_style = """
+        body > p > img, body > p > a > img {
+            max-width: 600px;
+            max-height: 600px;
+            height: auto; /* Conserve le ratio */
+            display: block; /* Permet le centrage avec margin */
+            margin: 1em auto; /* Centre l'image horizontalement */
+        }
+        """
+        final_css = self.default_css + self.pygments_css + self.custom_css + image_style
 
         return f"""
         <!DOCTYPE html>

@@ -18,6 +18,7 @@ Composant éditeur de texte BlueNotebook avec coloration syntaxique PyQt5
 """
 
 from pathlib import Path
+import requests
 import os
 import shutil
 from datetime import datetime
@@ -33,6 +34,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QMenu,
     QPushButton,
+    QMessageBox,
 )
 from PyQt5.QtWidgets import QDialogButtonBox, QFormLayout, QInputDialog
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
@@ -47,6 +49,7 @@ from PyQt5.QtGui import (
 )
 
 from integrations.youtube_video import generate_youtube_html_block
+from integrations.image_markdown_handler import handle_markdown_image_insertion
 
 # V1.9.3 Line numbers
 """
@@ -1122,34 +1125,10 @@ class MarkdownEditor(QWidget):
 
     def insert_markdown_image(self):
         """Insère une image au format Markdown ![](/chemin/vers/image)."""
-        cursor = self.text_edit.textCursor()
-        selected_text = cursor.selectedText().strip()
+        # V2.7.7 - La logique est maintenant externalisée
+        handle_markdown_image_insertion(self)
 
-        image_path = ""
-        # V1.7.8 - Harmonisation avec l'insertion d'image HTML
-        # Si le texte sélectionné est un chemin de fichier valide, on l'utilise.
-        if selected_text and Path(selected_text).is_file():
-            image_path = selected_text
-        elif not selected_text:
-            # Sinon, si rien n'est sélectionné, ouvrir la boîte de dialogue polyvalente
-            dialog = ImageSourceDialog(self)
-            if dialog.exec_() == QDialog.Accepted:
-                path = dialog.get_path()
-                if path:
-                    image_path = path
-        else:  # Du texte est sélectionné, mais ce n'est pas un fichier (ex: une URL)
-            image_path = selected_text
-
-        if image_path:
-            relative_path = self._copy_image_to_journal(image_path)
-            # Utiliser des barres obliques pour la compatibilité web/markdown
-            image_path_md = relative_path.replace("\\", "/")
-            # Insérer le tag Markdown
-            self.insert_text(f"![]({image_path_md})")
-
-        self.text_edit.setFocus()
-
-    def get_image_path_from_user(self):
+    def get_image_path_from_user(self, copy_remote=False):
         """
         Ouvre une boîte de dialogue pour obtenir un chemin d'image (local ou URL).
         Si le chemin est local, l'image est copiée dans le journal.
@@ -1170,24 +1149,58 @@ class MarkdownEditor(QWidget):
             return None, False
 
         is_local = not image_path.lower().startswith(("http://", "https://"))
-        relative_path = self._copy_image_to_journal(image_path)
-        return relative_path, is_local
+        if copy_remote and not is_local:
+            # Si c'est une URL et qu'on doit la copier, on la traite comme une image locale après téléchargement
+            final_path = self._copy_image_to_journal(image_path, is_remote=True)
+            return (
+                final_path,
+                True,
+            )  # On la considère comme locale car elle est dans le journal
+        else:
+            final_path = self._copy_image_to_journal(image_path, is_remote=not is_local)
+            return final_path, is_local
 
-    def _copy_image_to_journal(self, source_path: str) -> str:
+    def _copy_image_to_journal(self, source_path: str, is_remote: bool = False) -> str:
         """
         Copie une image locale dans le répertoire 'images' du journal,
         la renomme avec un horodatage et retourne le chemin relatif.
         Si le chemin est une URL, le retourne inchangé.
         """
-        if not source_path or source_path.lower().startswith(("http://", "https://")):
-            return source_path
+        if not source_path:
+            return ""
 
+        if is_remote:
+            if not self.main_window or not self.main_window.journal_directory:
+                return source_path  # Pas de journal, on retourne l'URL originale
+
+            journal_images_dir = self.main_window.journal_directory / "images"
+            journal_images_dir.mkdir(exist_ok=True)
+
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            original_filename = Path(source_path).name.split("?")[
+                0
+            ]  # Nettoyer les params URL
+            new_filename = f"{timestamp}_{original_filename}"
+            destination_file = journal_images_dir / new_filename
+
+            try:
+                response = requests.get(source_path, stream=True, timeout=10)
+                response.raise_for_status()
+                with open(destination_file, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                return f"images/{new_filename}"
+            except requests.RequestException as e:
+                print(f"Erreur de téléchargement de l'image : {e}")
+                return source_path  # En cas d'erreur, on retourne l'URL originale
+
+        # Cas d'un fichier local
         if not self.main_window or not self.main_window.journal_directory:
-            return source_path  # Pas de journal défini, on utilise le chemin original
+            return source_path
 
         source_file = Path(source_path)
         if not source_file.is_file():
-            return source_path  # Ce n'est pas un fichier valide
+            return source_path
 
         journal_images_dir = self.main_window.journal_directory / "images"
         journal_images_dir.mkdir(exist_ok=True)

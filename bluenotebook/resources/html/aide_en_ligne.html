@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.5</h1>
+            Aide en Ligne - BlueNotebook V2.7.7</h1>
     </header>
 
     <div class="toc">
@@ -89,7 +89,7 @@
             <li><a href="#navigation-temporelle">6. Navigation Temporelle</a></li>
             <li><a href="#images-locales">7. Gestion des Images et Fichiers</a>
                 <ul>
-                    <li><a href="#images-locales">7.1 Images Locales</a></li>
+                    <li><a href="#images-markdown">7.1 Insertion d'Images (Markdown et HTML)</a></li>
                     <li><a href="#exif-data">7.2 Insertion d'images avec données EXIF</a></li>
                 </ul>
             </li>
@@ -241,33 +241,34 @@
 
     <section id="images-fichiers">
         <h2>7. Gestion des Images et Fichiers</h2>
-        <h3 id="images-locales">7.1 Gestion des Images Locales</h3>
-        <p>Pour garantir que votre journal reste complet et portable, BlueNotebook gère intelligemment les images que vous insérez depuis votre ordinateur.</p>
+        <h3 id="images-markdown">7.1 Insertion d'Images (Markdown et HTML)</h3>
+        <p>Pour garantir que votre journal reste complet et portable, BlueNotebook adopte une gestion robuste et intelligente des images que vous insérez, qu'elles proviennent de votre ordinateur ou d'une URL distante.</p>
         <h4>Le Processus Automatique</h4>
-        <p>Lorsque vous insérez une image locale (via <code>Insérer > Image</code> ou <code>Image Markdown</code>), l'application effectue les actions suivantes en arrière-plan :</p>
+        <p>Que vous utilisiez <code>Insérer > Image Markdown</code> ou <code>Insérer > Image (&lt;img...&gt;)</code>, l'application effectue systématiquement les actions suivantes en arrière-plan :</p>
         <ol>
-            <li><strong>Copie de l'image :</strong> Une copie de votre image est créée dans un sous-dossier nommé <code>images</code> à l'intérieur de votre répertoire de journal.</li>
-            <li><strong>Renommage intelligent :</strong> Pour éviter les conflits de noms et garder une trace chronologique, l'image copiée est renommée avec un horodatage, par exemple : <code>202510090805_votre_image.jpg</code>.</li>
-            <li><strong>Insertion d'un lien relatif :</strong> Le code inséré dans votre note (que ce soit une balise <code>&lt;img&gt;</code> ou une syntaxe Markdown) utilisera un chemin relatif vers cette nouvelle image (ex: <code>src="images/202510090805_votre_image.jpg"</code>).</li>
+            <li><strong>Copie systématique dans le journal :</strong> Que l'image soit sélectionnée depuis un fichier local ou une URL distante, elle est désormais toujours copiée dans le répertoire <code>images/</code> de votre journal.</li>
+            <li><strong>Renommage avec horodatage :</strong> Pour éviter les conflits et garder une trace chronologique, l'image copiée est renommée en suivant le format <code>AAAAMMJJHHMMSS_nom_original.extension</code>. Par exemple, <code>photo.jpg</code> devient <code>20251026103000_photo.jpg</code>.</li>
+            <li><strong>Génération de Markdown cliquable :</strong> Le tag Markdown généré est maintenant une image cliquable. Il prend la forme <code>[![alt_text](chemin/image.jpg)](chemin/image.jpg)</code>. Dans l'aperçu HTML, un clic sur l'image l'ouvrira en grand dans votre navigateur.</li>
+            <li><strong>Affichage optimisé :</strong> Les images insérées en Markdown sont automatiquement redimensionnées pour ne pas dépasser 600px de large ou de haut dans l'aperçu, tout en conservant leurs proportions.</li>
         </ol>
         <h3>Les Avantages</h3>
         <ul>
             <li><strong>Portabilité :</strong> Votre journal devient entièrement autonome. Vous pouvez déplacer ou copier le dossier de votre journal sur un autre ordinateur, et toutes vos images continueront de s'afficher, car elles sont incluses.</li>
             <li><strong>Sécurité :</strong> L'image originale sur votre ordinateur n'est pas modifiée.</li>
-            <li><strong>Organisation :</strong> Toutes les images de votre journal sont centralisées dans un seul et même dossier.</li>
+            <li><strong>Pérennité :</strong> Les liens vers des images sur internet ne risquent plus de se "casser" si le site distant disparaît.</li>
+            <li><strong>Organisation :</strong> Toutes les ressources visuelles de votre journal sont centralisées dans un seul et même dossier.</li>
         </ul>
-        <p>Si vous insérez une image depuis une URL internet (<code>http://...</code>), elle ne sera pas copiée et le lien restera externe.</p>
     </section>
 
     <section id="exif-data">
         <h3>7.2 Insertion d'images avec données EXIF</h3>
-        <p>Pour enrichir encore plus vos notes, notamment pour un journal de voyage, BlueNotebook peut extraire et afficher les données EXIF (Exchangeable image file format) contenues dans vos photos.</p>
+        <p>Pour enrichir vos notes, notamment pour un journal de voyage, BlueNotebook peut extraire et afficher les données EXIF (Exchangeable image file format) contenues dans vos photos.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
-            <li>Utilisez le menu <code>Insérer > Image (&lt;img ...&gt;)</code> pour choisir une image locale.</li>
+            <li>Utilisez le menu <code>Insérer > Image Markdown</code> pour choisir une image locale.</li>
             <li>Après avoir choisi la taille de l'image, l'application analyse le fichier.</li>
             <li>Si des données EXIF pertinentes (coordonnées GPS, date, modèle d'appareil photo, etc.) sont trouvées, une boîte de dialogue vous demandera : <strong>"Voulez-vous les insérer sous l'image ?"</strong></li>
-            <li>Si vous acceptez, un tableau Markdown sera généré et inséré juste après votre image, présentant les informations de manière claire et structurée.</li>
+            <li>Si vous acceptez, une ligne de métadonnées formatée en Markdown sera ajoutée sous l'image, présentant les informations de manière compacte et lisible.</li>
         </ol>
         <h4>Quelles informations sont affichées ?</h4>
         <p>Si elles sont disponibles dans l'image, vous pourrez voir :</p>
@@ -871,7 +872,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.7.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version 2.7.7 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

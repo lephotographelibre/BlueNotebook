@@ -1,3 +1,54 @@
+## V2.7.7 Bug Fix Insert Image Markdown
+
+Modification de l'insertion d'images via le menu "Inserer -> Image Markdown" pour un comportement plus robuste et cohérent.
+
+- **Copie systématique dans le journal** : Que l'image soit sélectionnée depuis un fichier local ou une URL distante, elle est désormais systématiquement copiée dans le répertoire `images/` du journal.
+
+- **Renommage avec horodatage** : L'image copiée est renommée en suivant le format `YYYYMMJJHHMMSS-nom_original.extension`. Par exemple, `photo.jpg` devient `20251026103000_photo.jpg`.
+
+- **Génération de Markdown cliquable** : Le tag Markdown généré est maintenant une image cliquable. Il prend la forme `[!alt_text](chemin/image.jpg)`. Le texte alternatif (`alt_text`) est dérivé du nom de fichier original.
+
+- **Ouverture dans le navigateur** : Dans l'aperçu HTML, un clic sur l'image insérée l'ouvrira en grand dans le navigateur externe par défaut.
+
+- **Gestion des données EXIF** :
+  - Lors de l'insertion d'une image, l'application détecte la présence de données EXIF.
+  - Si des données sont trouvées, une boîte de dialogue vous demande si vous souhaitez les insérer.
+  - Si vous acceptez, une ligne de métadonnées formatée en Markdown est ajoutée sous l'image. Elle inclut le lieu (cliquable vers OpenStreetMap), la date, l'appareil photo et les principaux paramètres de prise de vue.
+  - Exemple de format :
+[Poitiers](https://www.openstreetmap.org/?mlat=46.565814&mlon=0.359097#map=16/46.565814/0.359097) : **06/11/2024 10:30 : Google : Pixel 6a : ƒ/1.73 : Vitesse: 1/99s : Focale: 4.38mm : ISO: 79**
+
+Cette modification garantit que toutes les images insérées font partie intégrante du journal, le rendant ainsi plus portable et autonome.
+beta2
+
+***Refactoring***
+
+Je veux que la totalité du code n'écessaire à l'insertion d'image Markdown sera externalié dans un fichier Python qui sera dans le répertoire integration du projet afin d'alléger editor.py, main_window.py etc. Y integrer également le code integrations/image_exif.py
+--> Création du nouveau fichier `bluenotebook/integrations/image_markdown_handler.py`
+
+je voudrais que toutes les images "Markdown" insérées s'affichent avec une largeur/hauteur maximales de 600 px dans l'aperçu HTML en concervant le bon ration longueur largeur
+
+Ajouté une règle de style CSS directement dans le composant d'aperçu (preview.py). Cette règle s'appliquera à toutes les images qui ne sont pas déjà contrôlées par une balise <figure> (comme celles insérées via le menu "Image ()").
+
+```python
+        # V2.7.7 - Ajout d'un style pour limiter la taille des images Markdown
+        # Cette règle s'applique aux images qui ne sont pas dans une <figure>
+        # pour ne pas affecter les images HTML dont la taille est déjà définie.
+        image_style = """
+        body > p > img, body > p > a > img {
+            max-width: 600px;
+            max-height: 600px;
+            height: auto; /* Conserve le ratio */
+            display: block; /* Permet le centrage avec margin */
+            margin: 1em auto; /* Centre l'image horizontalement */
+        }
+        """
+```
+beta4
+
+***Refactoring***
+
+Je veux que la totalité du code n'écessaire à l'insertion d'image HTML (le code associé au menu Inserer --> Image (<img...>)) sera externalié dans un fichier Python qui sera dans le répertoire integrations du projet afin d'alléger editor.py,
+
 ## V2.7.6 Travail préparatoire Images Markdown
 
 voir docs/[text](../../../../ssd/Dropbox/BlueNotebookJournal/attachments/V2.7.6_Images_Markdown.md)
