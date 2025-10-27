@@ -48,7 +48,6 @@ from PyQt5.QtGui import (
     QTextCursor,
 )
 
-from integrations.youtube_video import generate_youtube_html_block
 from integrations.image_markdown_handler import handle_markdown_image_insertion
 
 # V1.9.3 Line numbers
@@ -1075,14 +1074,6 @@ class MarkdownEditor(QWidget):
         elif format_type == "html_comment":
             new_text = f"<!-- {selected_text} -->"
             cursor.insertText(new_text)
-
-    def insert_youtube_video(self, details: dict):
-        """
-        Génère et insère un bloc HTML formaté pour une vidéo YouTube.
-        La logique de génération est déleguée au module d'intégration.
-        """
-        html_block = generate_youtube_html_block(details)
-        self.insert_text(html_block)
 
     def insert_html_image(self):
         """

@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.7</h1>
+            Aide en Ligne - BlueNotebook V2.7.8</h1>
     </header>
 
     <div class="toc">
@@ -299,7 +299,7 @@
                 <ul>
                     <li>Placez votre curseur à l'endroit souhaité dans l'éditeur.</li>
                     <li>Allez dans le menu <code>Intégrations > Météo Weatherapi.com</code>.</li>
-                    <li>Un fragment HTML contenant les informations météo (température, conditions, vent, humidité) sera inséré dans votre note.</li>
+                    <li>Une ligne de texte au format Markdown, contenant un emoji météo et les informations (température, conditions, vent, humidité), sera insérée dans votre note.</li>
                 </ul>
             </li>
         </ol>
@@ -320,11 +320,11 @@
                     <li>Analyser le fichier GPX pour en extraire le tracé, la date et l'heure de début/fin.</li>
                     <li>Sauvegarder une copie du fichier GPX dans le dossier <code>gpx/</code> de votre journal.</li>
                     <li>Générer une image de carte statique (<code>.png</code>) avec le tracé et un marqueur de départ, puis la sauvegarder dans le dossier <code>images/</code>.</li>
-                    <li>Insérer un bloc HTML complet dans votre note.</li>
+                    <li>Insérer un bloc de texte au format Markdown dans votre note.</li>
                 </ul>
             </li>
         </ol>
-        <p>Le résultat est une image de votre parcours, cliquable pour ouvrir OpenStreetMap. La légende est riche et interactive : elle contient le nom du lieu (cliquable), la date et l'heure de départ, ainsi que la durée totale du parcours.</p>
+        <p>Le résultat est une image de votre parcours, cliquable pour ouvrir la carte sur OpenStreetMap avec un marqueur sur le point de départ. La légende est riche et interactive : elle contient le nom du lieu (cliquable), la date et l'heure de départ, ainsi que la durée totale du parcours.</p>
 
         <h3 id="cartes-gps">8.3 Intégrer une Carte Statique (GPS)</h3>
         <p>Vous pouvez générer et insérer une carte statique directement dans vos notes à partir de coordonnées GPS. Cette fonctionnalité est idéale pour documenter des lieux de voyage, des randonnées ou des points d'intérêt.</p>
@@ -336,17 +336,14 @@
                 <ul>
                     <li>Contacter un service de géolocalisation pour trouver le nom du lieu le plus proche (ex: "Ligugé").</li>
                     <li>Générer une image de carte statique (un fichier <code>.png</code>) et la sauvegarder dans le dossier <code>images/</code> de votre journal.</li>
-                    <li>Insérer un bloc HTML propre et sémantique dans votre note.</li>
+                    <li>Insérer un bloc de texte au format Markdown dans votre note.</li>
                 </ul>
             </li>
         </ol>
-        <p>Le résultat est une image cliquable qui renvoie vers OpenStreetMap, avec une légende claire indiquant les coordonnées et le nom du lieu.
-        <pre><code>&lt;figure style="text-align: center;"&gt;
-    &lt;a href="https://www.openstreetmap.org/..."&gt;
-        &lt;img src="images/20251010175513_carte_Ligug.png" alt="..."&gt;
-    &lt;/a&gt;
-    &lt;figcaption style="font-weight: bold;"&gt;GPS: [46.569, 0.346] Ligugé&lt;/figcaption&gt;
-&lt;/figure&gt;</code></pre>
+        <p>Le résultat est une image cliquable qui renvoie vers OpenStreetMap (avec un marqueur sur le lieu), accompagnée d'une légende claire indiquant les coordonnées et le nom du lieu, également cliquable.
+        <pre><code>[![Carte de Poitiers...](images/20251026_carte_Poitiers.png)](https://www.openstreetmap.org/...)
+
+**GPS :** [46.58, 0.34] - [Poitiers](https://www.openstreetmap.org/...)</code></pre>
 
         <h3 id="youtube-video">8.4 Intégrer une Vidéo YouTube</h3>
         <p>Vous pouvez facilement intégrer une vidéo ou une playlist YouTube dans vos notes, avec une miniature cliquable qui renvoie vers le site de YouTube.</p>
@@ -354,7 +351,7 @@
             <li>Allez dans le menu <code>Intégrations > Vidéo YouTube</code>.</li>
             <li>Si vous avez déjà sélectionné une URL YouTube (vidéo ou playlist) dans l'éditeur, elle sera utilisée automatiquement.</li>
             <li>Sinon, une boîte de dialogue s'ouvrira avec le message "Entrez l'URL de la vidéo ou playlist Youtube:". Collez-y votre lien.</li>
-            <li>L'application détecte automatiquement s'il s'agit d'une vidéo ou d'une playlist et insère un bloc HTML formaté avec :
+            <li>L'application détecte automatiquement s'il s'agit d'une vidéo ou d'une playlist et insère un bloc de texte au format Markdown avec :
                 <ul>
                     <li>Pour une <strong>vidéo</strong> : le titre et la miniature.</li>
                     <li>Pour une <strong>playlist</strong> : le titre, l'auteur, le nombre de pistes et la miniature.</li>
@@ -369,7 +366,7 @@
             <li>Allez dans le menu <code>Intégrations > Amazon ISBN</code>.</li>
             <li>Si vous avez déjà sélectionné un numéro ISBN dans l'éditeur, il sera utilisé directement.</li>
             <li>Sinon, une boîte de dialogue s'ouvrira, vous invitant à saisir le numéro ISBN du livre que vous recherchez.</li>
-            <li>Après une courte attente (un message clignotant apparaît dans la barre de statut), un bloc HTML contenant les détails du livre (couverture, titre, auteur, résumé, etc.) sera inséré dans votre note. Le résumé est automatiquement tronqué pour rester concis, avec une mention "En lire plus...".</li>
+            <li>Après une courte attente (un message clignotant apparaît dans la barre de statut), un bloc de texte au format Markdown contenant les détails du livre (couverture, titre, auteur, résumé, etc.) sera inséré dans votre note. Le résumé est automatiquement tronqué pour rester concis, avec une mention "En lire plus...".</li>
         </ol>
         <p>Cette fonctionnalité est parfaite pour tenir un journal de lecture, préparer des fiches de livres ou simplement garder une trace des ouvrages qui vous intéressent.</p>
 
@@ -394,8 +391,8 @@
         <li><strong>Insertion :</strong>
             <ul>
                 <li>Placez votre curseur à l'endroit souhaité dans l'éditeur.</li>
-                <li>Allez dans le menu <code>Intégrations > Astro du jour</code>.</li>
-                <li>Un fragment HTML contenant les informations (lever/coucher du soleil, phase de la lune) pour votre ville sera inséré dans votre note.</li>
+                    <li>Allez dans le menu <code>Intégrations > Astro du jour</code>.</li>
+                    <li>Un bloc de texte au format Markdown contenant les informations (lever/coucher du soleil, phase de la lune) pour votre ville sera inséré dans votre note.</li>
             </ul>
         </li>
     </ol>
@@ -872,7 +869,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version 2.7.7 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V2.7.8 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

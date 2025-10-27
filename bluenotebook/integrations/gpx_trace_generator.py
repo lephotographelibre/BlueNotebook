@@ -55,9 +55,9 @@ def create_gpx_trace_map(
     journal_dir: Path,
     width: int,
     start_icon_path: str,
-) -> dict | str:
+) -> tuple[str | None, str | None]:
     """
-    Analyse un GPX, génère une carte, sauvegarde les fichiers et retourne les informations pour l'HTML.
+    Analyse un GPX, génère une carte, la sauvegarde et retourne le fragment Markdown correspondant.
     """
     if not staticmaps.cairo_is_supported():
         return "❌ Carte GPX: La bibliothèque Cairo n'est pas installée ou supportée. Impossible de générer la carte."
@@ -126,29 +126,29 @@ def create_gpx_trace_map(
     except Exception as e:
         return f"❌ Carte GPX:Erreur lors de la génération de l'image de la carte : {e}"
 
-    # Préparer les informations pour le bloc HTML
-    osm_link = f"https://www.openstreetmap.org/#map=16/{start_point.latitude}/{start_point.longitude}"
+    # Préparer les informations pour le bloc Markdown
     location_osm_link = f"https://www.openstreetmap.org/?mlat={start_point.latitude}&mlon={start_point.longitude}#map=16/{start_point.latitude}/{start_point.longitude}"
     alt_text = f"Trace GPX - {location_name}"
+    relative_image_path = f"images/{image_filename}"
 
     # Formatage de la légende
     start_str = start_time.strftime("%d/%m/%Y à %H:%M")
-
-    # Rendre le nom du lieu cliquable dans la légende
-    location_html = f'<a href="{location_osm_link}" target="_blank">{location_name}</a>'
-    caption_parts = [f"Trace GPX: {location_html}", start_str]
+    caption_parts = [
+        f"**Trace GPX :** [{location_name}]({location_osm_link})",
+        start_str,
+    ]
 
     if end_time:
         duration = end_time - start_time
         duration_str = str(datetime.timedelta(seconds=int(duration.total_seconds())))
         caption_parts.append(f"Durée: {duration_str}")
 
-    caption = " - ".join(caption_parts)
+    caption_markdown = " - ".join(caption_parts)
 
-    return {
-        "relative_image_path": f"images/{image_filename}",
-        "osm_link": osm_link,
-        "alt_text": alt_text,
-        "caption": caption,
-        "width": width,
-    }
+    markdown_block = (
+        f"[![{alt_text}]({relative_image_path})]({relative_image_path})\n\n"
+        f"{caption_markdown}"
+    )
+
+    status_message = f"Trace GPX '{alt_text}' insérée avec succès."
+    return markdown_block, status_message

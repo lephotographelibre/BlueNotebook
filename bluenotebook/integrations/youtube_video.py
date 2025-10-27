@@ -164,35 +164,25 @@ def _get_playlist_details(url: str, playlist_id: str) -> dict | str:
         return f"Impossible de vérifier la playlist : {e}"
 
 
-def generate_youtube_html_block(details: dict) -> str:
+def generate_youtube_markdown_block(details: dict) -> str:
     """
-    Génère le fragment HTML complet pour une vidéo ou une playlist YouTube.
+    Génère le fragment Markdown complet pour une vidéo ou une playlist YouTube.
     """
     if details["type"] == "video":
-        tags = f"@@Video @@Youtube {details['title']}"
+        tags = f"@@Video @@Youtube {details['title']} [Voir sur YouTube : {details['url']}]({details['url']})"
         thumbnail_url = (
             f"https://img.youtube.com/vi/{details['video_id']}/hqdefault.jpg"
         )
-        caption = f"Voir sur YouTube : {details['url']}"
     elif details["type"] == "playlist":
-        tags = f"@@Musique @@Youtube @@Playlist {details['title']}"
+        tags = f"@@Musique @@Youtube @@Playlist {details['title']} [{details['author']} - {details['track_count']}]({details['url']})"
         thumbnail_url = details["thumbnail_url"]
-        caption = f"{details['author']} - {details['track_count']}"
     else:
         return ""
 
-    html_block = f"""
+    # Format Markdown : Tags et lien texte sur la première ligne, image cliquable sur la seconde.
+    markdown_block = f"""
 {tags}
-<{details['url']}>
-<figure class="youtube-video-figure">
-    <a href="{details['url']}" target="_blank" title="Lancer dans le navigateur">
-        <img src="{thumbnail_url}" alt="{details['title']}" style="max-width: 480px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-    </a>
-    <figcaption style="font-size: 0.9em; margin-top: 0.5em;">
-        <a href="{details['url']}" target="_blank" style="text-decoration: none; color: #ff0000;">
-            <span>{caption}</span>
-        </a>
-    </figcaption>
-</figure>
+
+[![{details['title']}]({thumbnail_url})]({details['url']})
 """
-    return html_block
+    return markdown_block.strip()

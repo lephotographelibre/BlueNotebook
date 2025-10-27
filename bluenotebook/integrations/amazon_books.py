@@ -189,39 +189,57 @@ def get_book_info_from_amazon(isbn, region="fr"):
         )
 
 
-def generate_html_fragment(book_data_json):
+def generate_book_markdown_fragment(book_data_json: str) -> str:
     """
-    Génère un fragment HTML pour afficher les métadonnées du livre.
+    Génère un fragment Markdown pour afficher les métadonnées du livre.
     :param book_data_json: JSON string contenant les métadonnées
-    :return: Fragment HTML
+    :return: Fragment Markdown
     """
     try:
         book_data = json.loads(book_data_json)
         if "error" in book_data:
-            return f"""<div class="book-error"><h2>Erreur</h2><p>{book_data['error']}</p></div>"""
+            return f"**Erreur lors de la récupération des informations du livre :** {book_data['error']}"
 
-        # Construction du fragment HTML
-        html = f"""
-<div class="book-container">
-    <h2>{book_data.get('titre', 'Inconnu')}</h2>
-    <div class="book-content">
-        <div class="book-image">
-            <img src="{book_data.get('couverture_url', 'https://via.placeholder.com/150')}" alt="Couverture">
-        </div>
-        <div class="book-details">
-            <p><strong>Auteur :</strong> {book_data.get('auteur', 'Inconnu')}</p>
-            <p><strong>Éditeur :</strong> {book_data.get('editeur', 'Inconnu')}</p>
-            <p><strong>Date de publication :</strong> {book_data.get('date_publication', 'Inconnu')}</p>
-            <p><strong>ISBN :</strong> {book_data.get('isbn', 'Inconnu')}</p>
-            <p><strong>Pages :</strong> {book_data.get('pages', 'Inconnu')}</p>
-            <p><strong>Note :</strong> {book_data.get('note', 'Inconnu')}</p>
-            <p><strong>Résumé :</strong> {book_data.get('resume', 'Non disponible')}</p>
-            <p><a href="{book_data.get('product_url', '#')}" target="_blank">Voir sur Amazon.fr</a></p>
-        </div>
-    </div>
-</div>
+        title = book_data.get("titre", "Inconnu")
+        cover_url = book_data.get("couverture_url", "https://via.placeholder.com/150")
+        author = book_data.get("auteur", "Inconnu")
+        publisher = book_data.get("editeur", "Inconnu")
+        pub_date = book_data.get("date_publication", "Inconnu")
+        isbn = book_data.get("isbn", "Inconnu")
+        pages = book_data.get("pages", "Inconnu")
+        note = book_data.get("note", "Inconnu")
+        product_url = book_data.get("product_url", "#")
+
+        # Handle summary and "En lire plus..." link
+        raw_resume = book_data.get("resume", "Non disponible")
+        resume_text = raw_resume
+        resume_more_link_markdown = ""
+        if "<br>En lire plus..." in raw_resume:
+            parts = raw_resume.split("<br>En lire plus...")
+            resume_text = parts[0].strip()
+            if product_url != "#":
+                resume_more_link_markdown = f"[En lire plus...]({product_url})"
+
+        markdown_fragment = f"""
+@@Book **{title} de {author}**
+
+![Couverture]({cover_url})
+
+**Auteur :** {author}  
+**Éditeur :** {publisher}  
+**Date de publication :** {pub_date}  
+**ISBN :** {isbn}  
+**Pages :** {pages}  
+**Note :** {note}  
+
+**Résumé :** {resume_text}  
+{resume_more_link_markdown}
+
+[Voir sur Amazon.fr]({product_url})
 """
-        return html
+        return markdown_fragment.strip()
 
     except json.JSONDecodeError:
-        return """<div class="book-error"><h2>Erreur</h2><p>Erreur lors du traitement des données JSON.</p></div>"""
+        return "**Erreur :** Erreur lors du traitement des données JSON du livre."
+    except Exception as e:
+        return f"**Erreur inattendue lors de la génération du Markdown :** {e}"

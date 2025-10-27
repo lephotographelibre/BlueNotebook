@@ -76,7 +76,7 @@ from .preferences_dialog import PreferencesDialog
 from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
-from integrations.weather import get_weather_html
+from integrations.weather import get_weather_markdown
 import requests
 from bs4 import BeautifulSoup
 from integrations.gps_map_generator import get_location_name, create_gps_map
@@ -89,19 +89,26 @@ from integrations.gpx_trace_generator import (
     create_gpx_trace_map,
     get_gpx_data,
 )
-from integrations.pdf_exporter import create_pdf_export_worker
-from integrations.amazon_books import get_book_info_from_amazon, generate_html_fragment
-from integrations.youtube_video import get_youtube_video_details
-from integrations.sun_moon import get_sun_moon_html, generate_sun_moon_html
+from integrations.pdf_exporter import create_pdf_export_worker, PdfExportWorker
+from integrations.amazon_books import (
+    get_book_info_from_amazon,
+    generate_book_markdown_fragment,
+)
+from integrations.youtube_video import (
+    get_youtube_video_details,
+    generate_youtube_markdown_block,
+)
+from integrations.sun_moon import get_sun_moon_markdown
+from integrations.gps_map_handler import generate_gps_map_markdown
 
 from integrations.image_exif import format_exif_as_markdown
 
 
 class BookWorker(QRunnable):
-    """Worker pour la recherche de livre en arrière-plan."""
+    """Worker pour la recherche de livre Amazon en arrière-plan."""
 
     class Signals(QObject):
-        finished = pyqtSignal(str, bool)  # html_fragment, has_selection
+        finished = pyqtSignal(str, bool)  # markdown_fragment, has_selection
         error = pyqtSignal(str)
 
     def __init__(self, isbn, has_selection):
@@ -113,9 +120,13 @@ class BookWorker(QRunnable):
     @pyqtSlot()
     def run(self):
         try:
-            book_data_json = get_book_info_from_amazon(self.isbn)
-            html_fragment = generate_html_fragment(book_data_json)
-            self.signals.finished.emit(html_fragment, self.has_selection)
+            book_data_json = get_book_info_from_amazon(self.isbn)  # Renamed function
+            markdown_fragment = generate_book_markdown_fragment(
+                book_data_json
+            )  # Renamed function
+            self.signals.finished.emit(
+                markdown_fragment, self.has_selection
+            )  # Renamed variable
         except Exception as e:
             self.signals.error.emit(str(e))
 
@@ -136,7 +147,7 @@ class SunMoonWorker(QRunnable):
 
     @pyqtSlot()
     def run(self):
-        html_fragment, error_message = get_sun_moon_html(
+        html_fragment, error_message = get_sun_moon_markdown(
             self.city, self.latitude, self.longitude
         )
         if error_message:
@@ -2133,7 +2144,7 @@ class MainWindow(QMainWindow):
             <li>Export PDF du journal complet ou partiel</li>
             <li>Gestion de Templates</li>
             <li>Gestion de tags / Recherche par tags/mots-clés</li>
-            <li>Insertion Cartes OpenStreetMap, Videos Youtube et Météo</li>
+            <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
             </ul>
             <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
             <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
@@ -2227,20 +2238,17 @@ class MainWindow(QMainWindow):
         if not video_url:
             return
 
-        # Déléguer le traitement au module d'intégration
         result = get_youtube_video_details(video_url)
 
-        # Gérer le résultat
         if isinstance(result, str):  # C'est une chaîne d'erreur
             QMessageBox.warning(
                 self,
                 "Erreur d'intégration YouTube",
                 result,
             )
-            return
-
-        # Si c'est un dictionnaire, l'insertion a réussi
-        self.editor.insert_youtube_video(result)
+        else:  # C'est un dictionnaire de détails
+            markdown_block = generate_youtube_markdown_block(result)
+            self.editor.insert_text(f"\n{markdown_block}\n")
 
     def insert_gps_map(self):
         """Gère la logique d'insertion d'une carte GPS."""
@@ -2252,42 +2260,28 @@ class MainWindow(QMainWindow):
             )
             return
 
-        cursor = self.editor.text_edit.textCursor()
-        selected_text = cursor.selectedText().strip()
-
         lat, lon = None, None
-
-        if selected_text:
+        selected_text = self.editor.text_edit.textCursor().selectedText().strip()
+        if (
+            selected_text
+            and selected_text.startswith("[")
+            and selected_text.endswith("]")
+        ):
             try:
-                # Essayer de parser le format [lat, lon]
                 coords = json.loads(selected_text)
                 if isinstance(coords, list) and len(coords) == 2:
                     lat, lon = float(coords[0]), float(coords[1])
             except (json.JSONDecodeError, ValueError, TypeError):
-                QMessageBox.warning(
-                    self,
-                    "Format invalide",
-                    "Le texte sélectionné n'est pas au format [latitude, longitude].",
-                )
-                return
-        else:
-            dialog = GpsInputDialog(self)
-            if dialog.exec_() == QDialog.Accepted:
-                lat, lon = dialog.get_coordinates()
+                pass  # Si le parsing échoue, on ouvre la boîte de dialogue
+
+        if lat is None:
+            gps_dialog = GpsInputDialog(self)
+            if gps_dialog.exec_() == QDialog.Accepted:
+                lat, lon = gps_dialog.get_coordinates()
 
         if lat is None or lon is None:
             return
 
-        # Valider les coordonnées
-        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
-            QMessageBox.warning(
-                self,
-                "Coordonnées invalides",
-                "La latitude doit être entre -90 et 90, et la longitude entre -180 et 180.",
-            )
-            return
-
-        # Demander la largeur de l'image
         width, ok = QInputDialog.getInt(
             self,
             "Taille de la carte",
@@ -2300,55 +2294,15 @@ class MainWindow(QMainWindow):
         if not ok:
             return
 
-        # Calculer la hauteur (ratio 16:10)
-        height = int(width * (10 / 16))
-
-        # Créer le sous-dossier 'images' s'il n'existe pas
-        images_dir = self.journal_directory / "images"
-        images_dir.mkdir(exist_ok=True)
-
-        # Trouver le nom du lieu
-        location_name = get_location_name(lat, lon)
-        # Nettoyer le nom pour le nom de fichier
-        safe_location_name = re.sub(
-            r"[^a-zA-Z0-9_-]", "", location_name.replace(" ", "_")
+        markdown_block, message = generate_gps_map_markdown(
+            lat, lon, width, self.journal_directory
         )
 
-        # Générer le nom de fichier de l'image
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        image_filename = f"{timestamp}_carte_{safe_location_name}.png"
-        image_path = images_dir / image_filename
-
-        # Générer la carte
-        success = create_gps_map(lat, lon, width, height, str(image_path))
-
-        if not success:
-            QMessageBox.critical(
-                self,
-                "Erreur de création",
-                "Impossible de générer l'image de la carte. Vérifiez que Cairo est installé.",
-            )
-            return
-
-        # Construire le bloc HTML à insérer
-        relative_image_path = f"images/{image_filename}"
-        osm_link = f"https://www.openstreetmap.org/#map=16/{lat}/{lon}"
-        alt_text = f"Carte de {location_name}, coordonnées {lat}, {lon}"
-
-        html_block = f"""
-<figure style="text-align: center;">
-    <a href="{osm_link}">
-         <img src="{relative_image_path}" alt="{alt_text}" width="{width}">
-    </a>
-    <figcaption style="font-weight: bold;">GPS: [{lat}, {lon}]  {location_name}</figcaption>
-</figure>
-"""
-
-        self.editor.insert_text(html_block)
-
-        self.statusbar.showMessage(
-            f"Carte pour '{location_name}' insérée avec succès.", 5000
-        )
+        if markdown_block:
+            self.editor.insert_text(f"\n{markdown_block}\n")
+            self.statusbar.showMessage(message, 5000)
+        else:
+            QMessageBox.critical(self, "Erreur de création de carte", message)
 
     def insert_gpx_trace(self):
         """Gère la logique d'insertion d'une carte à partir d'une trace GPX."""
@@ -2396,27 +2350,16 @@ class MainWindow(QMainWindow):
         start_icon_path = base_path / "resources" / "icons" / "start.png"
 
         # Appeler le générateur
-        result = create_gpx_trace_map(
+        markdown_block, message = create_gpx_trace_map(
             gpx_content, self.journal_directory, width, str(start_icon_path)
         )
 
-        if isinstance(result, str):  # C'est un message d'erreur
-            QMessageBox.critical(self, "Erreur de création de la trace", result)
-            return
-
-        # Construire le bloc HTML
-        html_block = f"""
-<figure style="text-align: center;">
-    <a href="{result['osm_link']}" target="_blank">
-         <img src="{result['relative_image_path']}" alt="{result['alt_text']}" width="{result['width']}">
-    </a>
-    <figcaption style="font-weight: bold;">{result['caption']}</figcaption>
-</figure>
-"""
-        self.editor.insert_text(html_block)
-        self.statusbar.showMessage(
-            f"Trace GPX '{result['alt_text']}' insérée avec succès.", 5000
-        )
+        if markdown_block:
+            self.editor.insert_text(f"\n{markdown_block}\n")
+            self.statusbar.showMessage(message, 5000)
+        else:
+            # 'message' contient l'erreur dans ce cas
+            QMessageBox.critical(self, "Erreur de création de la trace", message)
 
     def insert_html_image(self):
         """Gère la logique d'insertion d'une image HTML avec gestion EXIF."""
@@ -2464,7 +2407,7 @@ class MainWindow(QMainWindow):
         city = self.settings_manager.get("integrations.weather.city")
         api_key = self.settings_manager.get("integrations.weather.api_key")
 
-        html_fragment, error_message = get_weather_html(city, api_key)
+        markdown_fragment, error_message = get_weather_markdown(city, api_key)
 
         if error_message:
             QMessageBox.warning(
@@ -2474,8 +2417,8 @@ class MainWindow(QMainWindow):
             )
             return
 
-        if html_fragment:
-            self.editor.insert_text(html_fragment)
+        if markdown_fragment:
+            self.editor.insert_text(markdown_fragment)
             self.statusbar.showMessage("Météo insérée avec succès.", 3000)
 
     def insert_amazon_book(self):
@@ -2529,7 +2472,7 @@ class MainWindow(QMainWindow):
         self.thread_pool.start(worker)
 
     def on_sun_moon_finished(self, html_fragment):
-        """Insère le fragment HTML des données astro."""
+        """Insère le fragment Markdown des données astro."""
         self.statusbar.clearMessage()
         self.editor.insert_text(f"\n{html_fragment}\n")
         self.statusbar.showMessage("Données astronomiques insérées.", 3000)
@@ -2543,12 +2486,12 @@ class MainWindow(QMainWindow):
         """Crée et retourne un worker pour la recherche de livre."""
         return BookWorker(isbn, has_selection)
 
-    def on_book_search_finished(self, html_fragment, has_selection):
-        """Insère le fragment HTML du livre dans l'éditeur."""
+    def on_book_search_finished(self, markdown_fragment, has_selection):
+        """Insère le fragment Markdown du livre dans l'éditeur."""
         self._stop_book_search_flashing()
         if has_selection:
             self.editor.text_edit.textCursor().removeSelectedText()
-        self.editor.insert_text(f"\n{html_fragment}\n")
+        self.editor.insert_text(f"\n{markdown_fragment}\n")
         self.statusbar.showMessage("Informations du livre insérées avec succès.", 5000)
 
     def on_book_search_error(self, error_message):

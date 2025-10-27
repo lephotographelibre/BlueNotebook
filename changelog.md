@@ -1,3 +1,174 @@
+## V2.7.8 Migration Markdown Météo, Astro, carte GPS, trace GPX, Amazon ISBN, Vidéo Youtube
+
+Je voudrais modifier le code généré par l'intégration Météo whether.py. En fait je voudrais ne plus générer de HTML mais que du Markdown 
+
+par exemple je génère le HTML suivant:
+
+```html
+<div class="weather-container">
+    <img src="https://cdn.weatherapi.com/weather/64x64/night/296.png" alt="Pluie légère" class="weather-icon">
+    <div class="weather-details">
+        <span class="weather-location">Poitiers:</span> Pluie légère, <strong class="weather-temp">11.3°C</strong> à 08:09<br>
+        <span class="weather-extra">Vent: 13.3 km/h, Humidité: 100%</span>
+    </div>
+</div>
+```
+Je voudrais générer le code Markdown à la place
+
+![Pluie légère](https://cdn.weatherapi.com/weather/64x64/night/296.png) 
+
+**Poitiers :** Pluie légère, **11.3°C** à 08:09  Vent : 13.3 km/h, Humidité : 100%
+
+modifie le fichier bluenotebook/integrations/sun_moon.py pour qu'il génère un fragment Markdown au lieu du HTML, en suivant la même logique que pour l'intégration météo.
+beta1
+
+Je voudrais modifier le code généré par l'intégration carte GPS. 
+- En fait je voudrais ne plus générer de HTML mais que du Markdown (à fonctionnalités équivalentes) à la place  de par exemple
+```html
+<figure style="text-align: center;">
+    <a href="https://www.openstreetmap.org/#map=16/46.58325004582807/0.3438650843823104">
+         <img src="images/20251025093445_carte_Poitiers.png" alt="Carte de Poitiers, coordonnées 46.58325004582807, 0.3438650843823104" width="800">
+    </a>
+    <figcaption style="font-weight: bold;">GPS: [46.58325004582807, 0.3438650843823104]  Poitiers</figcaption>
+</figure>
+```
+- je voudrais aussi que tout le code nécessaire à cette intégration soit externalisé dans un fichier python dans le répertoire integrations
+
+Il faudrait modifier l'url générée pour inclure le marker c'est a dire rajouter "?mlat=46.561517&mlon=0.323711" par exemple ce qui conne une url de type
+
+https://www.openstreetmap.org/?mlat=46.561517&mlon=0.323711#map=16/46.56152/0.32371
+
+beta2
+
+je voudrais faire la meme chose avec l'intégration de trace GPX
+- En fait je voudrais ne plus générer de HTML mais que du Markdown (à fonctionnalités équivalentes) à la place  de par exemple
+```html
+<figure style="text-align: center;">
+    <a href="https://www.openstreetmap.org/#map=16/46.569191/0.344628" target="_blank">
+         <img src="images/20250502_Poitiers_gpx.png" alt="Trace GPX - Poitiers" width="800">
+    </a>
+    <figcaption style="font-weight: bold;">Trace GPX: <a href="https://www.openstreetmap.org/?mlat=46.569191&mlon=0.344628#map=16/46.569191/0.344628" target="_blank">Poitiers</a> - 02/05/2025 à 09:46 - Durée: 1:23:45</figcaption>
+</figure>
+```
+- En plus je voudrais que l'image clickable genere un lien avec un marker de type https://www.openstreetmap.org/?mlat=46.569191&mlon=0.344628#map=16/46.569191/0.344628
+- Si nécessaire je voudrais aussi que tout le code nécessaire à cette intégration soit externalisé dans un fichier python dans le répertoire integrations
+
+correction pour les traces GPX je voudrais que le lien clickable de l'image soit l'image elle meme
+
+
+[![Trace GPX - Poitiers](images/20250502_Poitiers_gpx.png)](https://www.openstreetmap.org/?mlat=46.569191&mlon=0.344628#map=16/46.569191/0.344628)
+
+**Trace GPX :** [Poitiers](https://www.openstreetmap.org/?mlat=46.569191&mlon=0.344628#map=16/46.569191/0.344628) - 02/05/2025 à 09:46 - Durée: 1:23:45
+
+[![Trace GPX - Poitiers](images/20250502_Poitiers_gpx.png)](images/20250502_Poitiers_gpx.png)
+
+**Trace GPX :** [Poitiers](https://www.openstreetmap.org/?mlat=46.569191&mlon=0.344628#map=16/46.569191/0.344628) - 02/05/2025 à 09:46 - Durée: 1:23:45
+
+beta3
+
+Je vais continuer pour l'intégration Amazon ISBN.
+- En fait je voudrais ne plus générer de HTML mais que du Markdown (à fonctionnalités équivalentes) à la place  de par exemple
+
+```html
+<div class="book-container">
+    <h2>Les cent jours qui ont changé les États-Unis</h2>
+    <div class="book-content">
+        <div class="book-image">
+            <img src="https://m.media-amazon.com/images/I/31Umm4kJo5L._SY445_SX342_QL70_ML2_.jpg" alt="Couverture">
+        </div>
+        <div class="book-details">
+            <p><strong>Auteur :</strong> Gilles PARIS</p>
+            <p><strong>Éditeur :</strong> Editions de l'Aube</p>
+            <p><strong>Date de publication :</strong> 17 octobre 2025</p>
+            <p><strong>ISBN :</strong> 9782815968645</p>
+            <p><strong>Pages :</strong> 189 pages</p>
+            <p><strong>Note :</strong> Inconnu</p>
+            <p><strong>Résumé :</strong> Le retour de Trump signe une nouvelle ère pour les États-Unis. Endurci, entouré d'hommes à sa solde et disposant maintenant des pleins pouvoirs, il n'a plus face à lui de véritables limites.<br>En lire plus...</p>
+            <p><a href="https://www.amazon.fr/dp/B0FV3GBYVW" target="_blank">Voir sur Amazon.fr</a></p>
+        </div>
+    </div>
+</div>
+```
+A la place je voudrais générer quelque chose comme!
+```markdown
+![Couverture](https://m.media-amazon.com/images/I/31Umm4kJo5L._SY445_SX342_QL70_ML2_.jpg)
+
+**Auteur :** Gilles PARIS  
+**Éditeur :** Editions de l'Aube  
+**Date de publication :** 17 octobre 2025  
+**ISBN :** 9782815968645  
+**Pages :** 189 pages  
+**Note :** Inconnu  
+
+**Résumé :** Le retour de Trump signe une nouvelle ère pour les États-Unis. Endurci, entouré d'hommes à sa solde et disposant maintenant des pleins pouvoirs, il n'a plus face à lui de véritables limites.  
+[En lire plus...](https://www.amazon.fr/dp/B0FV3GBYVW)
+
+[Voir sur Amazon.fr](https://www.amazon.fr/dp/B0FV3GBYVW)
+```
+- Si nécessaire je voudrais aussi que tout le code nécessaire à cette intégration soit externalisé dans un fichier python dans le répertoire integrations
+- Je voudrais avant la couverture générer un fragment Markdown de type:
+@@Book **Titre :** Titre du livre
+
+beta4
+
+Toujours dans la meme logique pour l'intégration de videos youtube 
+- En fait je voudrais ne plus générer de HTML mais que du Markdown (à fonctionnalités équivalentes) à la place  de par exemple
+
+```html
+@@Video @@Youtube Etta James Inspired Blues Unforgettable Melodies of Heart and Soul
+<https://www.youtube.com/watch?v=zucjShnTi4g>
+<figure class="youtube-video-figure">
+    <a href="https://www.youtube.com/watch?v=zucjShnTi4g" target="_blank" title="Lancer dans le navigateur">
+        <img src="https://img.youtube.com/vi/zucjShnTi4g/hqdefault.jpg" alt="Etta James Inspired Blues Unforgettable Melodies of Heart and Soul" style="max-width: 480px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    </a>
+    <figcaption style="font-size: 0.9em; margin-top: 0.5em;">
+        <a href="https://www.youtube.com/watch?v=zucjShnTi4g" target="_blank" style="text-decoration: none; color: #ff0000;">
+            <span>Voir sur YouTube : https://www.youtube.com/watch?v=zucjShnTi4g</span>
+        </a>
+    </figcaption>
+</figure>
+```
+A la place je voudrais générer quelque chose comme!
+```markdown
+
+@@Video @@Youtube Etta James Inspired Blues Unforgettable Melodies of Heart and Soul [Voir sur YouTube : https://www.youtube.com/watch?v=zucjShnTi4g](https://www.youtube.com/watch?v=zucjShnTi4g)
+
+[![Etta James Inspired Blues Unforgettable Melodies of Heart and Soul](https://img.youtube.com/vi/zucjShnTi4g/hqdefault.jpg)](https://www.youtube.com/watch?v=zucjShnTi4g)
+```
+beta5
+
+- je voudrais modifier le code Markdown renvoyé par l'intégration météo
+- Basé sur la table de correspondance suivante:
+
+
+| Icône | Terme météo en français | Terme météo en anglais | Emoji le plus proche |
+|-------|-------------------------|-----------------------|----------------------|
+| 113   | Ensoleillé             | Sunny                 | ☀️                   |
+| 116   | Partiellement nuageux  | Partly Cloudy         | ⛅                   |
+| 119   | Nuageux                | Cloudy                | ☁️                   |
+| 122   | Couvert                | Overcast              | 🌥️                  |
+| 143   | Brume                  | Mist                  | 🌫️                  |
+| 176   | Pluie éparse à proximité | Patchy rain nearby  | 🌦️                  |
+| 179   | Neige éparse à proximité | Patchy snow nearby  | ❄️🌨️               |
+| 182   | Grésil épars à proximité | Patchy sleet nearby | 🌨️💧               |
+| 185   | Bruine verglaçante éparse à proximité | Patchy freezing drizzle nearby | 🌧️❄️       |
+| 374   | Légères averses de cristaux de glace | Light showers of ice pellets | 🌨️       |
+| 377   | Averses de cristaux de glace modérées à fortes | Moderate or heavy showers of ice pellets | 🌨️💨 |
+| 386   | Légère pluie éparse avec tonnerre par endroit | Patchy light rain in area with thunder | 🌦️⚡️ |
+| 389   | Pluie forte à modérée avec tonnerre par endroit | Moderate or heavy rain in area with thunder | 🌧️⚡️ |
+| 392   | Légère neige éparse avec tonnerre par endroit | Patchy light snow in area with thunder | ❄️⚡️ |
+| 395   | Neige éparse modérée à forte avec tonnerre par endroit | Moderate or heavy snow in area with thunder | ❄️⚡️💨 |
+- je voudrais supprimer l'affichage actuel de l'icone tel que cidessous:
+```markdown
+ ![Pluie légère](https://cdn.weatherapi.com/weather/64x64/day/296.png)
+
+**Météo pour Poitiers :** Pluie légère, **12.2°C** à 08:49  Vent : 29.5 km/h, Humidité : 88%
+```
+et le remplacer par l'insertion de la bonne emoji coformément au tableau ci-dessus fourni tel que:
+```markdown
+**🌨️ Météo pour Poitiers :** Pluie légère, **12.2°C** à 08:49  Vent : 29.5 km/h, Humidité : 88%
+```
+
 ## V2.7.7 Bug Fix Insert Image Markdown
 
 Modification de l'insertion d'images via le menu "Inserer -> Image Markdown" pour un comportement plus robuste et cohérent.

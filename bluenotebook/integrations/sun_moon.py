@@ -47,7 +47,7 @@ def find_phenomenon_time(
     return None
 
 
-def generate_sun_moon_html(
+def generate_sun_moon_markdown(
     city: str,
     sun_rise: Optional[str],
     sun_set: Optional[str],
@@ -55,34 +55,23 @@ def generate_sun_moon_html(
     moon_emoji: str,
     illumination: str,
 ) -> str:
-    """Génère un fragment HTML à partir des données du soleil et de la lune."""
+    """Génère un fragment Markdown à partir des données du soleil et de la lune."""
     sun_rise_str = sun_rise or "N/A"
     sun_set_str = sun_set or "N/A"
 
-    print(f"☀️ Données Astronomiques du jour pour <strong>{city}")
-
-    html = f"""
-<div class="sun-moon-container">
-    <div class="sun-moon-row">
-        <span class="sun-moon-text">Données Astronomiques du jour pour {city} </span>
-    </div>
-    <div class="sun-moon-row sun-moon-row-split">
-        <span class="sun-moon-item"><span class="sun-moon-emoji">🌅</span><span class="sun-moon-text">Lever: <strong>{sun_rise_str}</strong></span></span>
-        <span class="sun-moon-item"><span class="sun-moon-emoji">🌇</span><span class="sun-moon-text">Coucher: <strong>{sun_set_str}</strong></span></span>
-    </div>
-    <div class="sun-moon-row">
-        <span class="sun-moon-item"><span class="sun-moon-emoji">{moon_emoji}</span><span class="sun-moon-text">Phase lune: {moon_phase} ({illumination} illuminée)</span></span>
-    </div>
-</div>
-"""
-    return html
+    markdown = (
+        f"**Données Astronomiques du jour pour {city}**\n\n"
+        f"🌅 Lever: **{sun_rise_str}** - 🌇 Coucher: **{sun_set_str}**\n"
+        f"{moon_emoji} Phase lune: {moon_phase} ({illumination} illuminée)"
+    )
+    return markdown
 
 
-def get_sun_moon_html(
+def get_sun_moon_markdown(
     city: str, latitude: str, longitude: str
 ) -> tuple[str | None, str | None]:
     """
-    Fonction principale qui récupère les données et retourne le fragment HTML.
+    Fonction principale qui récupère les données et retourne le fragment Markdown.
     """
     today = date.today().strftime("%Y-%m-%d")
     # L'API USNO nécessite dst=true pour l'heure d'été, et tz est le décalage standard.
@@ -109,10 +98,10 @@ def get_sun_moon_html(
             moon_phase_en, (moon_phase_en, "❔")
         )
 
-        html_fragment = generate_sun_moon_html(
+        markdown_fragment = generate_sun_moon_markdown(
             city, sun_rise_time, sun_set_time, moon_phase_fr, moon_emoji, frac_illum
         )
-        return html_fragment, None
+        return markdown_fragment, None
 
     except requests.exceptions.RequestException as e:
         return None, f"Erreur de requête HTTP : {e}"
