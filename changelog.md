@@ -1,3 +1,13 @@
+## V2.7.11 Aide en ligne HTML redesign
+
+aide_en_ligne.html dans le fichier d'aide en ligne la table des matieres apparait en premier puis le texte. je voudrais que la table des matieres apparaisse a gauche du texte et reste toujours affichée meme si l'utilisateur scrolle le texte
+
+To achieve this, I'll restructure the HTML slightly and update the CSS to use a Flexbox layout, which will allow the table of contents to remain "sticky" on the left while you scroll through the main content on the right.
+
+Here are the required changes for bluenotebook/resources/html/aide_en_ligne.html:
+
+
+
 ## V2.7.10 Intégration Conversion PDf to MD
 
 Pour cette nouvelle integration on va aller recuperer chercher un fichier PDF en local ou à distance via une URL puis on va le convertir en Markdown en utilisant le toolkit de Microsoft dispobile `https://github.com/microsoft/markitdown`
