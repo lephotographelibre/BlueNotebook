@@ -15,32 +15,51 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import shutil
+import os
+import zipfile
 from pathlib import Path
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
 
-class JournalBackupSignals(QObject):
-    finished = pyqtSignal(str)
-    error = pyqtSignal(str)
-
-
 class JournalBackupWorker(QRunnable):
+    """
+    Worker pour la sauvegarde du journal en arrière-plan.
+    """
+
+    class Signals(QObject):
+        finished = pyqtSignal(str)
+        error = pyqtSignal(str)
+
     def __init__(self, journal_directory: Path, backup_path: Path):
         super().__init__()
         self.journal_directory = journal_directory
         self.backup_path = backup_path
-        self.signals = JournalBackupSignals()
+        self.signals = (
+            self.Signals()
+        )  # Correctement instancie la classe Signals imbriquée
 
     @pyqtSlot()
     def run(self):
+        """Exécute la sauvegarde dans un thread séparé."""
         try:
-            self.backup_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.make_archive(
-                base_name=str(self.backup_path.with_suffix("")),
-                format="zip",
-                root_dir=self.journal_directory,
-            )
+            with zipfile.ZipFile(
+                self.backup_path, "w", zipfile.ZIP_DEFLATED
+            ) as zipf:  # Assure que zipfile et os sont importés
+                # Parcourir tous les fichiers et dossiers du journal
+                for root, dirs, files in os.walk(self.journal_directory):
+                    # Exclure les répertoires de cache Python
+                    if "__pycache__" in dirs:
+                        dirs.remove("__pycache__")
+
+                    for file in files:
+                        file_path = Path(root) / file
+                        # Calculer le chemin relatif pour l'archive
+                        arcname = file_path.relative_to(self.journal_directory)
+                        zipf.write(file_path, arcname)
+
             self.signals.finished.emit(str(self.backup_path))
+
         except Exception as e:
-            self.signals.error.emit(f"La sauvegarde a échoué : {e}")
+            self.signals.error.emit(
+                f"Une erreur est survenue lors de la sauvegarde : {e}"
+            )

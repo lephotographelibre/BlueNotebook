@@ -22,6 +22,7 @@ import requests
 import os
 import shutil
 from datetime import datetime
+from typing import Optional
 import re
 from PyQt5.QtWidgets import (
     QWidget,
@@ -708,6 +709,51 @@ class ImageSourceDialog(QDialog):
         return self.path_edit.text().strip()
 
 
+class AttachmentSourceDialog(QDialog):
+    """
+    Boîte de dialogue pour obtenir le chemin d'une pièce jointe,
+    soit via une URL, soit via un sélecteur de fichier.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Source de la pièce jointe")
+        self.setModal(True)
+        self.resize(500, 120)
+
+        self.layout = QVBoxLayout(self)
+        form_layout = QFormLayout()
+
+        path_layout = QHBoxLayout()
+        self.path_edit = QLineEdit(self)
+        self.path_edit.setPlaceholderText(
+            "http://example.com/document.pdf ou /chemin/local/document.pdf"
+        )
+        path_layout.addWidget(self.path_edit)
+
+        browse_button = QPushButton("Parcourir...", self)
+        browse_button.clicked.connect(self._browse_file)
+        path_layout.addWidget(browse_button)
+
+        form_layout.addRow("Chemin ou URL:", path_layout)
+        self.layout.addLayout(form_layout)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.layout.addWidget(self.button_box)
+
+    def _browse_file(self):
+        path, _ = QFileDialog.getOpenFileName(self, "Sélectionner un fichier", "")
+        if path:
+            self.path_edit.setText(path)
+
+    def get_path(self):
+        return self.path_edit.text().strip()
+
+
 class MarkdownEditor(QWidget):
     """Éditeur de texte avec coloration syntaxique Markdown"""
 
@@ -852,6 +898,38 @@ class MarkdownEditor(QWidget):
         if cursor.hasSelection():
             menu.addSeparator()
 
+            # --- Titres ---
+            title_menu = QMenu("Titres", self)
+            title_menu.setStyleSheet(self.menu_stylesheet)
+            title_actions_data = [
+                ("Niv 1 (#)", "h1"),
+                ("Niv 2 (##)", "h2"),
+                ("Niv 3 (###)", "h3"),
+                ("Niv 4 (####)", "h4"),
+                ("Niv 5 (#####)", "h5"),
+            ]
+            for name, data in title_actions_data:
+                action = title_menu.addAction(name)
+                action.triggered.connect(
+                    lambda checked=False, d=data: self.format_text(d)
+                )
+            menu.addMenu(title_menu)
+
+            # --- Listes ---
+            list_menu = QMenu("Listes", self)
+            list_menu.setStyleSheet(self.menu_stylesheet)
+            list_actions_data = [
+                ("• Liste non ordonnée", "ul"),
+                ("1. Liste ordonnée", "ol"),
+                ("☑️ Liste de tâches", "task_list"),
+            ]
+            for name, data in list_actions_data:
+                action = list_menu.addAction(name)
+                action.triggered.connect(
+                    lambda checked=False, d=data: self.format_text(d)
+                )
+            menu.addMenu(list_menu)
+
             # --- Style de texte ---
             style_menu = QMenu("Style de texte", self)
             style_menu.setStyleSheet(self.menu_stylesheet)
@@ -881,8 +959,6 @@ class MarkdownEditor(QWidget):
             # --- Liens ---
             link_menu = QMenu("Liens", self)
             link_menu.setStyleSheet(self.menu_stylesheet)
-            url_link_action = link_menu.addAction("Lien (URL ou email)")
-            url_link_action.triggered.connect(lambda: self.format_text("url"))
             markdown_link_action = link_menu.addAction("Lien Markdown")
             markdown_link_action.triggered.connect(
                 lambda: self.format_text("markdown_link")
@@ -947,6 +1023,10 @@ class MarkdownEditor(QWidget):
             self.insert_html_image()
             return
 
+        if format_type == "attachment":
+            self.insert_attachment()
+            return
+
         if format_type == "quote_of_the_day":
             if (
                 self.main_window
@@ -955,23 +1035,6 @@ class MarkdownEditor(QWidget):
             ):
                 quote_text = f"> {self.main_window.daily_quote}\n> \n> **{self.main_window.daily_author}**"
                 cursor.insertText(quote_text)
-            return
-
-        if format_type == "internal_link":
-            start_dir = (
-                str(self.main_window.journal_directory)
-                if self.main_window and self.main_window.journal_directory
-                else ""
-            )
-            filename, _ = QFileDialog.getOpenFileName(
-                self, "Sélectionner un fichier à lier", start_dir
-            )
-
-            if filename:
-                file_basename = os.path.basename(filename)
-                file_uri = Path(filename).as_uri()
-                new_text = f"[{file_basename}]({file_uri})"
-                cursor.insertText(new_text)
             return
 
         if not cursor.hasSelection():
@@ -1118,6 +1181,77 @@ class MarkdownEditor(QWidget):
         """Insère une image au format Markdown ![](/chemin/vers/image)."""
         # V2.7.7 - La logique est maintenant externalisée
         handle_markdown_image_insertion(self)
+
+    def insert_attachment(self):
+        """Insère une pièce jointe après l'avoir copiée dans le journal."""
+        if not self.main_window or not self.main_window.journal_directory:
+            QMessageBox.warning(
+                self,
+                "Journal non défini",
+                "Veuillez définir un répertoire de journal avant d'insérer une pièce jointe.",
+            )
+            return
+
+        dialog = AttachmentSourceDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        source_path = dialog.get_path()
+        if not source_path:
+            return
+
+        new_relative_path = self._copy_attachment_to_journal(source_path)
+
+        if new_relative_path:
+            new_filename = Path(new_relative_path).name
+            markdown_link = f"📎 [Attachement | {new_filename}]({new_relative_path})"
+            self.insert_text(markdown_link)
+
+    def _copy_attachment_to_journal(self, source_path: str) -> Optional[str]:
+        """
+        Copie un fichier (local ou distant) dans le répertoire 'attachments' du journal,
+        le renomme avec la date de la note et retourne le chemin relatif.
+        """
+        journal_dir = self.main_window.journal_directory
+        attachments_dir = journal_dir / "attachments"
+        attachments_dir.mkdir(exist_ok=True)
+
+        # Vérifier si le fichier est déjà dans le bon répertoire
+        try:
+            if Path(source_path).resolve().parent == attachments_dir.resolve():
+                return f"attachments/{Path(source_path).name}"
+        except (OSError, AttributeError):
+            pass  # Gère les chemins non-résolvables comme les URL
+
+        # Déterminer la date pour le nommage
+        if self.main_window.current_file:
+            try:
+                date_str = Path(self.main_window.current_file).stem
+                datetime.strptime(date_str, "%Y%m%d")
+            except ValueError:
+                date_str = datetime.now().strftime("%Y%m%d")
+        else:
+            date_str = datetime.now().strftime("%Y%m%d")
+
+        is_remote = source_path.lower().startswith(("http://", "https://"))
+        original_filename = Path(source_path).name.split("?")[0]
+        new_filename = f"{date_str}_{original_filename}"
+        destination_file = attachments_dir / new_filename
+
+        try:
+            if is_remote:
+                response = requests.get(source_path, stream=True, timeout=10)
+                response.raise_for_status()
+                with open(destination_file, "wb") as f:
+                    shutil.copyfileobj(response.raw, f)
+            else:  # Fichier local
+                shutil.copy2(source_path, destination_file)
+            return f"attachments/{new_filename}"
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur de copie", f"Impossible de copier le fichier : {e}"
+            )
+            return None
 
     def get_image_path_from_user(self, copy_remote=False):
         """

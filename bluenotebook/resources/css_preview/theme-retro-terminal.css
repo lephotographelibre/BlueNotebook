@@ -1,0 +1,95 @@
+/* theme-retro-terminal.css */
+body {
+    font-family: 'Courier New', 'Fira Mono', monospace;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #000000;
+    color: #00ff00;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #00ff00;
+    margin-top: 1.5em;
+    font-weight: normal;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+h1 {
+    font-size: 2em;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 0.2em;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+code {
+    font-family: 'Courier New', 'Fira Mono', monospace;
+    background-color: #1a1a1a;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    color: #00ff00;
+    font-size: 0.95em;
+}
+
+pre {
+    background-color: #1a1a1a;
+    color: #00ff00;
+    padding: 15px;
+    border-radius: 3px;
+    overflow-x: auto;
+    font-family: 'Courier New', 'Fira Mono', monospace;
+    line-height: 1.4;
+    border: 1px solid #00ff00;
+    text-shadow: 0 0 3px #00ff00;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+blockquote {
+    border-left: 3px solid #00ff00;
+    padding-left: 10px;
+    margin: 1em 0;
+    color: #00cc00;
+    background-color: #1a1a1a;
+    padding: 10px;
+}
+
+a {
+    color: #00ff00;
+    text-decoration: none;
+    border-bottom: 1px dashed #00ff00;
+}
+
+a:hover {
+    color: #00cc00;
+    text-shadow: 0 0 5px #00cc00;
+}
+
+ul, ol {
+    margin: 1em 0;
+    padding-left: 25px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+th, td {
+    border: 1px solid #00ff00;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #1a1a1a;
+    color: #00ff00;
+}

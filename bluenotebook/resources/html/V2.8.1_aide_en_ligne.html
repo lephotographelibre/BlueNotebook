@@ -124,7 +124,6 @@
             <li><a href="#images-locales">7. Gestion des Images et Fichiers</a>
                 <ul>
                     <li><a href="#images-markdown">7.1 Insertion d'Images (Markdown et HTML)</a></li>
-                    <li><a href="#attachements">7.3 Gestion des Pièces Jointes (Attachements)</a></li>
                     <li><a href="#exif-data">7.2 Insertion d'images avec données EXIF</a></li>
                 </ul>
             </li>
@@ -294,30 +293,6 @@
             <li><strong>Pérennité :</strong> Les liens vers des images sur internet ne risquent plus de se "casser" si le site distant disparaît.</li>
             <li><strong>Organisation :</strong> Toutes les ressources visuelles de votre journal sont centralisées dans un seul et même dossier.</li>
         </ul>
-    </section>
-
-    <section id="attachements">
-        <h3>7.3 Gestion des Pièces Jointes (Attachements)</h3>
-        <p>En plus des images, BlueNotebook vous permet d'attacher n'importe quel type de fichier à vos notes (PDF, documents, archives, etc.). Cette fonctionnalité est conçue pour centraliser toutes les ressources liées à votre journal en un seul endroit.</p>
-        <h4>Comment insérer une pièce jointe ?</h4>
-        <ol>
-            <li>Placez votre curseur à l'endroit où vous souhaitez insérer le lien vers la pièce jointe.</li>
-            <li>Allez dans le menu <code>Insérer > 📎 Attachement</code>.</li>
-            <li>Une boîte de dialogue s'ouvrira, vous permettant de :
-                <ul>
-                    <li>Coller une <strong>URL</strong> vers un fichier distant (ex: un PDF en ligne).</li>
-                    <li>Cliquer sur <strong>"Parcourir..."</strong> pour sélectionner un fichier sur votre ordinateur.</li>
-                </ul>
-            </li>
-        </ol>
-        <h4>Que se passe-t-il en arrière-plan ?</h4>
-        <p>Lorsque vous validez, BlueNotebook effectue plusieurs actions pour garantir la portabilité de votre journal :</p>
-        <ul>
-            <li><strong>Création d'un dossier dédié :</strong> Un dossier nommé <code>attachments</code> est créé à la racine de votre répertoire de journal (s'il n'existe pas déjà).</li>
-            <li><strong>Copie et renommage :</strong> Le fichier que vous avez sélectionné (qu'il soit local ou distant) est copié dans ce dossier <code>attachments</code>. Pour une meilleure organisation, il est automatiquement renommé en suivant le format <code>AAAAMMJJ_nom_original.extension</code>, où <code>AAAAMMJJ</code> correspond à la date de la note dans laquelle vous insérez la pièce jointe.</li>
-            <li><strong>Insertion d'un lien Markdown :</strong> Un lien formaté est inséré dans votre éditeur, par exemple :<br><code>📎 [Attachement | 20251026_rapport.pdf](attachments/20251026_rapport.pdf)</code></li>
-        </ul>
-        <p>Grâce à ce système, même si vous déplacez votre dossier de journal sur un autre ordinateur, tous les liens vers vos pièces jointes continueront de fonctionner car les fichiers sont stockés localement dans le journal.</p>
     </section>
 
     <section id="exif-data">
@@ -557,8 +532,9 @@ Formater
 Insérer
 ├── Image (<img ...>) : Insère une image via une balise HTML. Copie les images locales dans le journal.
 ├── Image Markdown : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
+├── Lien (URL ou email) (<url>) : Encadre une URL pour la rendre cliquable.
 ├── Lien Markdown (texte) : Crée un lien hypertexte avec la syntaxe `texte`.
-├── 📎 Attachement : Insère un lien vers un fichier attaché (local ou distant), copié dans le répertoire `attachments` du journal.
+├── Fichier : Insère un lien vers un fichier local de votre ordinateur.
 ├── ---
 ├── Ligne Horizontale
 ├── Commentaire HTML
@@ -776,7 +752,7 @@ Aide
             <dd><strong>R :</strong> Pour le <strong>gras</strong>, entourez votre texte de deux astérisques : <code>**texte en gras**</code>. Pour l'<em>italique</em>, entourez-le d'un seul astérisque : <code>*texte en italique*</code>. Vous pouvez aussi utiliser le menu <code>Formater &gt; Style de texte</code>.</dd>
 
             <dt>Q : Y a-t-il un moyen rapide de formater du texte sans utiliser les menus ?</dt>
-            <dd><strong>R :</strong> Oui ! En plus des raccourcis clavier, vous pouvez maintenant faire un <strong>clic droit</strong> sur du texte que vous avez sélectionné. Un menu contextuel apparaîtra, vous donnant un accès direct aux options de formatage, y compris les sous-menus pour les <strong>Titres</strong>, les <strong>Listes</strong>, le <strong>Style de texte</strong> et le <strong>Code</strong>.</dd>
+            <dd><strong>R :</strong> Oui ! En plus des raccourcis clavier, vous pouvez maintenant faire un <strong>clic droit</strong> sur du texte que vous avez sélectionné. Un menu contextuel apparaîtra, vous donnant un accès direct aux options de formatage les plus courantes (Gras, Italique, Code, etc.).</dd>
         </dl>
 
         <h3>Recherche et Navigation</h3>

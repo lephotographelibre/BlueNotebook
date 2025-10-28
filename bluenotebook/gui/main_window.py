@@ -1051,8 +1051,8 @@ class MainWindow(QMainWindow):
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("Lien (URL ou email) (<url>)", "url"),
             ("Lien Markdown (texte)", "markdown_link"),
+            ("📎 Attachement", "attachment"),
         ]
 
         for name, data, *shortcut in insert_actions_data:  # type: ignore
@@ -1062,11 +1062,6 @@ class MainWindow(QMainWindow):
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
 
-        insert_internal_link_action = QAction("Fichier", self)
-        insert_internal_link_action.triggered.connect(
-            lambda: self.editor.format_text("internal_link")
-        )
-        insert_menu.addAction(insert_internal_link_action)
         insert_menu.addSeparator()
 
         insert_hr_action = QAction("Ligne Horizontale", self)

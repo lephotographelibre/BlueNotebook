@@ -1,3 +1,29 @@
+## V2.8.2 Theme CSS pour Aperçu HTML + Clean Menu + Attachements
+
+Ajout de 3 thèmes CSS pour Aperçu HTML.
+beta1
+
+Je voudrais alleger un peu les menus je voudrais supprimer le Menu "Insérer -- Fichier" et le code associé.
+peux tu supprimer aussi a logique associée dans le fichier de l'éditeur (editor.py) pour gérer "internal_link" si elle devient ainsi inutilisée editor.py
+beta2
+
+Je voudrais alleger un peu les menus je voudrais supprimer le Menu "Insérer -- Lien (URL ou email)" du menu principal mais aussi du mmenu contextuel de l'éditeur
+beta3
+
+Je voudrai ajouter au menu contextuel de l'editeur le menu (et ses sous-menus) de formattage de titres et de formattage de liste (et ses sous-menus) comme dans le menu principal
+beta4
+
+Attachement
+Lien mono directionnel
+ 
+- Ajout d'un menu `Insérer --> Attachement` en dessous Lien Markdown (texte)
+- demander à l'utilisateur ou se trouve le fichier à attacher en local (sélécteur de fichier ou à distance (URL) comme pour insérer Image (<img.. >) (boite de dialogue: Chemin ou URL  et parcourir pour le sélecteur de fichier)  
+- copier le fichier sélectionné dans le répertoire `attachments` du journal en le renommemant `YYYYMMJJ_nom_du_fichier.extension` (YYYYMMJJ est la date du jour de la note dans laquelle on insère cet attachement). Si le fichier est déja dans le bon répertoire ne pas le renommer !
+- générer un fragment Markdown de type: (incluant l'emoji 📎)
+📎 [Attachement | 20251024_nom_du_fichier.extension](attachments/20251024_nom_du_fichier.extension)
+par exemple
+📎 [Attachement | 20251024_Vax_paper.md](attachments/20251024_Vax_paper.md)
+
 ## V2.8.1 Re-définition d'un menu contextuel en Français dans l'aperçu HTML
 
 Redéfinir un menu contextuel personnalisé dans une fenêtre PyQt  PyQt5 ou PyQt6, ce qui est courant pour les interfaces graphiques Python). L'objectif est de faciliter la traduction des menus en différentes langues, en utilisant le système d'internationalisation (i18n) de Qt. Cela évite de dépendre du menu contextuel standard des widgets (comme QTextEdit ou QLabel), qui peut être capricieux pour les traductions, et vous permet de contrôler pleinement les chaînes de texte.
