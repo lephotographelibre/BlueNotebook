@@ -20,9 +20,7 @@ Composant d'aperçu HTML du Markdown avec QWebEngine
 import os
 from xml.etree import ElementTree
 
-from PyQt5.QtWidgets import QMenu, QAction
-from PyQt5.QtGui import QClipboard
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 from pygments.formatters import HtmlFormatter
@@ -67,7 +65,6 @@ class TagInlineProcessor(InlineProcessor):
         return el, m.start(0), m.end(0)
 
 
-# V2.8.1 Menu contextuel en Français
 class MarkdownPreview(QWidget):
     """Aperçu HTML avec QWebEngine"""
 
@@ -80,10 +77,6 @@ class MarkdownPreview(QWidget):
         self.pygments_css = HtmlFormatter(style="default").get_style_defs(".highlight")
         self.custom_css = ""
         self.setup_markdown()
-
-        # === NOUVEAU : Désactiver le menu contextuel par défaut ===
-        self.web_view.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.web_view.customContextMenuRequested.connect(self.show_context_menu)
 
     def setup_ui(self):
         """Configuration de l'interface de prévisualisation"""
@@ -349,69 +342,3 @@ class MarkdownPreview(QWidget):
             window.scrollTo(0, targetY);
         """
         self.web_view.page().runJavaScript(js_code)
-
-    # V2.8.1 Menu contextuel en Français
-    def show_context_menu(self, pos):
-        """Affiche un menu contextuel personnalisé et traduisible"""
-        menu = QMenu(self)
-
-        # --- Sélection de texte ---
-        has_selection = self.web_view.selectedText().strip() != ""
-
-        # Action : Copier
-        copy_action = QAction(self.tr("Copier"), self)
-        copy_action.setEnabled(has_selection)
-        copy_action.triggered.connect(self.copy_selection)
-        menu.addAction(copy_action)
-
-        # Action : Tout sélectionner
-        select_all_action = QAction(self.tr("Tout sélectionner"), self)
-        select_all_action.triggered.connect(self.select_all)
-        menu.addAction(select_all_action)
-
-        menu.addSeparator()
-
-        # Action : Recharger
-        reload_action = QAction(self.tr("Recharger"), self)
-        reload_action.triggered.connect(self.web_view.reload)
-        menu.addAction(reload_action)
-
-        # Action : Ouvrir dans le navigateur
-        open_in_browser_action = QAction(self.tr("Ouvrir dans le navigateur"), self)
-        open_in_browser_action.triggered.connect(self.open_in_browser)
-        menu.addAction(open_in_browser_action)
-
-        menu.addSeparator()
-
-        # Action : Imprimer (optionnel)
-        # print_action = QAction(self.tr("Imprimer..."), self)
-        # print_action.triggered.connect(self.web_view.page().printRequested)
-        # menu.addAction(print_action)
-
-        # Exécuter le menu
-        menu.exec_(self.web_view.mapToGlobal(pos))
-
-    # === ACTIONS ASSOCIÉES ===
-    def copy_selection(self):
-        clipboard = QApplication.clipboard()
-        clipboard.setText(self.web_view.selectedText())
-
-    def select_all(self):
-        self.web_view.triggerPageAction(QWebEnginePage.SelectAll)
-
-    def open_in_browser(self):
-        url = self.web_view.page().url()
-        if url.isValid():
-            QDesktopServices.openUrl(url)
-
-    # === POUR LA TRADUCTION : mise à jour dynamique ===
-    def retranslate_ui(self):
-        """À appeler quand on change de langue"""
-        # Rien à faire ici pour l'instant, mais utile si vous ajoutez d'autres widgets
-        pass
-
-    # === Surcharge pour capter le changement de langue ===
-    def changeEvent(self, event):
-        if event.type() == QEvent.LanguageChange:
-            self.retranslate_ui()
-        super().changeEvent(event)

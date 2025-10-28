@@ -1,3 +1,12 @@
+## V2.8.1 Re-définition d'un menu contextuel en Français dans l'aperçu HTML
+
+Redéfinir un menu contextuel personnalisé dans une fenêtre PyQt  PyQt5 ou PyQt6, ce qui est courant pour les interfaces graphiques Python). L'objectif est de faciliter la traduction des menus en différentes langues, en utilisant le système d'internationalisation (i18n) de Qt. Cela évite de dépendre du menu contextuel standard des widgets (comme QTextEdit ou QLabel), qui peut être capricieux pour les traductions, et vous permet de contrôler pleinement les chaînes de texte.
+
+Redéfinir le menu contextuel
+
+- Au lieu d'utiliser widget.createStandardContextMenu(), créez un QMenu personnalisé avec des QAction.
+- Associez-le à l'événement clic droit via contextMenuEvent ou en définissant setContextMenuPolicy(Qt.CustomContextMenu) et en connectant le signal customContextMenuRequested.
+
 ## V2.7.11 Aide en ligne HTML redesign
 
 aide_en_ligne.html dans le fichier d'aide en ligne la table des matieres apparait en premier puis le texte. je voudrais que la table des matieres apparaisse a gauche du texte et reste toujours affichée meme si l'utilisateur scrolle le texte
