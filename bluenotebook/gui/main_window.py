@@ -73,6 +73,7 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .date_range_dialog import DateRangeDialog
 from .preferences_dialog import PreferencesDialog
+from core.journal_backup_worker import JournalBackupWorker
 from core.quote_fetcher import QuoteFetcher
 from .word_cloud import WordCloudPanel
 from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
@@ -1151,6 +1152,13 @@ class MainWindow(QMainWindow):
         self.save_status_label.setVisible(False)
         self.statusbar.addWidget(self.save_status_label, 1)
 
+        self.backup_status_label = CenteredStatusBarLabel(
+            self.tr("Sauvegarde en cours...")
+        )
+        self.backup_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.backup_status_label.setVisible(False)
+        self.statusbar.addWidget(self.backup_status_label, 1)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1170,6 +1178,10 @@ class MainWindow(QMainWindow):
         self.book_search_status_label.setStyleSheet("color: red; font-weight: bold;")
         self.book_search_status_label.setVisible(False)
         self.statusbar.addWidget(self.book_search_status_label, 1)
+
+        self.backup_flash_timer = QTimer(self)
+        self.backup_flash_timer.setInterval(500)
+        self.backup_flash_timer.timeout.connect(self._toggle_backup_status_visibility)
 
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -1980,48 +1992,21 @@ class MainWindow(QMainWindow):
             options=QFileDialog.DontConfirmOverwrite,
         )
 
-        if not backup_path:
-            return
+        if backup_path:
+            # Démarrer le worker de sauvegarde en arrière-plan
+            self._start_backup_flashing()
+            worker = JournalBackupWorker(self.journal_directory, Path(backup_path))
+            worker.signals.finished.connect(self._on_journal_backup_finished)
+            worker.signals.error.connect(self._on_journal_backup_error)
+            self.thread_pool.start(worker)
 
-        if os.path.exists(backup_path):
-            msg_box = QMessageBox(self)
-            msg_box.setIcon(QMessageBox.Question)
-            msg_box.setWindowTitle("Fichier existant")
-            msg_box.setText(
-                f"Le fichier '{os.path.basename(backup_path)}' existe déjà.\n\n"
-                "Voulez-vous le remplacer ?"
-            )
-            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msg_box.button(QMessageBox.Yes).setText("Valider")
-            msg_box.button(QMessageBox.No).setText("Annuler")
-            msg_box.setDefaultButton(QMessageBox.No)
-            reply = msg_box.exec_()
-
-            if reply == QMessageBox.No:
-                self.statusbar.showMessage("Sauvegarde annulée.", 3000)
-                return
-
-        try:
-            shutil.make_archive(
-                base_name=os.path.splitext(backup_path)[0],
-                format="zip",
-                root_dir=self.journal_directory,
-            )
-            self.statusbar.showMessage(f"Journal sauvegardé dans {backup_path}", 5000)
-
+            # Mémoriser le répertoire de destination
             new_backup_dir = os.path.dirname(backup_path)
             self.settings_manager.set("backup.last_directory", new_backup_dir)
             self.settings_manager.save_settings()
 
-            QMessageBox.information(
-                self,
-                "Sauvegarde terminée",
-                f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
-            )
-        except Exception as e:
-            QMessageBox.critical(
-                self, "Erreur de sauvegarde", f"La sauvegarde a échoué : {e}"
-            )
+            # Afficher un message immédiat (le message de fin viendra du worker)
+            self.statusbar.showMessage("Lancement de la sauvegarde...", 3000)
 
     def restore_journal(self):
         """Restaure un journal depuis une archive ZIP."""
@@ -2515,6 +2500,34 @@ class MainWindow(QMainWindow):
         self.book_search_status_label.setVisible(
             not self.book_search_status_label.isVisible()
         )
+
+    def _start_backup_flashing(self):
+        """Démarre le message clignotant pour la sauvegarde."""
+        self.backup_status_label.setVisible(True)
+        self.backup_flash_timer.start()
+
+    def _stop_backup_flashing(self):
+        """Arrête le message clignotant de sauvegarde."""
+        self.backup_flash_timer.stop()
+        self.backup_status_label.setVisible(False)
+
+    def _toggle_backup_status_visibility(self):
+        """Bascule la visibilité du label de statut de sauvegarde."""
+        self.backup_status_label.setVisible(not self.backup_status_label.isVisible())
+
+    def _on_journal_backup_finished(self, backup_path: str):
+        """Slot appelé lorsque la sauvegarde du journal est terminée avec succès."""
+        self._stop_backup_flashing()
+        QMessageBox.information(
+            self,
+            "Sauvegarde terminée",
+            f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+        )
+
+    def _on_journal_backup_error(self, error_message: str):
+        """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
+        self._stop_backup_flashing()
+        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""

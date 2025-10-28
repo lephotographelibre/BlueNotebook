@@ -1,3 +1,72 @@
+## V2.7.9 Filtre Liste déroulante des tags + suppress doublons, + @@ Majuscules 
+
+La liste déroulante des tags est définie et gérée dans le fichier `bluenotebook/gui/navigation.py`.
+
+Voici comment cela fonctionne, en se basant sur la documentation technique :
+
+1.  **Création de l'interface** : Dans le fichier `gui/navigation.py`, la classe `NavigationPanel` (ou une classe similaire) est responsable de la création des widgets du panneau de navigation. C'est là que le champ de recherche (`QLineEdit`) et le bouton pour la liste déroulante (`QToolButton` ou `QPushButton` avec un "▼") sont créés et agencés.
+
+2.  **Population de la liste** :
+    *   Au démarrage, `MainWindow` lance l'indexation des tags, qui crée le fichier `index_tags.json`.
+    *   Une fois l'indexation terminée, `MainWindow` lit ce fichier JSON pour obtenir la liste de tous les tags uniques.
+    *   Cette liste de tags est ensuite transmise au `NavigationPanel`.
+    *   Le `NavigationPanel` utilise cette liste pour construire dynamiquement un menu (`QMenu`) qui s'affichera lorsque l'utilisateur cliquera sur le bouton "▼". Chaque tag de la liste devient une action (`QAction`) dans ce menu.
+
+3.  **Interaction** :
+    *   Le `changelog.md` (version 1.6.9) précise bien le comportement attendu : "dès qu'il est cliqué [le tag dans la liste] vient remplir le champ de recherche avec le tag sélectionné."
+    *   Cela signifie que le signal `triggered` de chaque `QAction` (chaque tag dans le menu) est connecté à une méthode (un "slot") qui insère le texte du tag dans le champ de recherche et, comme le précise la documentation, lance immédiatement la recherche.
+
+En résumé, la **définition visuelle** du bouton se trouve dans `gui/navigation.py`, mais la **logique de remplissage** avec les données des tags est orchestrée par `MainWindow` après l'indexation.
+
+Si vous cherchiez à modifier l'apparence ou le comportement de cette liste, c'est le fichier `bluenotebook/gui/navigation.py` qu'il faudrait examiner en premier.
+
+### beta 1 Indexation des tags
+@bluenotebook @tag_indexer.py 
+Les tags sont indexés par tag_indexer.py  qui fabrique une liste index_tags.json et index_tags.cvs.
+La saisie des tags par l'utilisateur est variable le meme tag teut etre saisi sous differentes formes (casse & accentuation)
+Quellleque soit la saisie je voudrais que soient aggrégées toutes les formes d'un meme tag (avec differentes casse et accentuation sous in tag unique EN MAJUSCULE.
+On retrouvera dans la liste des tags par exemple @@METEO qui aggerera toutes les occurences de @@Météo @@MéTEO @@météo.
+donc dans la liste de tags index_tags.json et index_tags.cvs n'existeront que des tags en majuscules
+
+### beta2 Sauvegarde Journal asynch
+ Sauvegarde du journal peut-etre assz longue. je voudrais que celle ci soit réaliséé en asyncrhone avec message d'attente en police de couleur rouge dans la barre de status. je voudrais que le code n"cessaire à la sauvegarde du journal soir externalisé dans un fichier python du répertoire `bluenotebook/core/`
+
+### beta3 index_tags augementer le contexte
+
+dans le fichier index_tag.json ou .csv a chaque occurence du tag j'ajoute une élément de contexte (le champ context)
+
+```json
+  "@@AECOUTER": {
+    "occurrences": 2,
+    "details": [
+      {
+        "context": "[Comment l'IA bouleverse-t-elle notre",
+        "filename": "20251028.md",
+        "date": "2025-10-28",
+        "line": 10
+      },
+      {
+        "context": "[Comment l'IA bouleverse-t-elle notre",
+        "filename": "20251023.md",
+        "date": "2025-10-23",
+        "line": 36
+      }
+    ]
+  }
+```
+Le "contexte" d'un tag est constitué des 40 premiers caractères qui suivent immédiatement le tag sur la même ligne, après avoir supprimé les éventuels espaces de début et de fin de cette chaîne de 40 caractères.
+Je voudrais augmenter la taille du contexte en pranant tous les caractères qui suivent immédiatement le tag sur la même ligne jusqu'à la fin de la ligne.
+
+Modification du code Regex du le fichier `bluenotebook/core/tag_indexer.py ` pour que le contexte capturé s'étende jusqu'à la fin de la ligne, au lieu d'être limité aux 40 premiers caractères.
+
+```python
+        # Regex pour trouver les tags @@tag et capturer les 40 caractères suivants
+        # self.tag_pattern = re.compile(r"(@@\w{2,})\b(.{0,40})")
+        # Regex pour trouver les tags @@tag et capturer le reste de la ligne comme contexte
+        self.tag_pattern = re.compile(r"(@@\w{2,})\b(.*)")
+```
+
+
 ## V2.7.8 Migration Markdown Météo, Astro, carte GPS, trace GPX, Amazon ISBN, Vidéo Youtube
 
 Je voudrais modifier le code généré par l'intégration Météo whether.py. En fait je voudrais ne plus générer de HTML mais que du Markdown 

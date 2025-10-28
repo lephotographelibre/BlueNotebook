@@ -22,7 +22,6 @@ import os
 import csv
 import json
 import re
-import unicodedata
 from pathlib import Path
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
@@ -46,8 +45,8 @@ class TagIndexer(QRunnable):
         super().__init__()
         self.journal_directory = journal_directory
         self.signals = IndexerSignals()
-        # Regex pour trouver les tags @@tag et capturer le reste de la ligne comme contexte
-        self.tag_pattern = re.compile(r"(@@\w{2,})\b(.*)")
+        # Regex pour trouver les tags @@tag et capturer les 40 caractères suivants
+        self.tag_pattern = re.compile(r"(@@\w{2,})\b(.{0,40})")
 
     @pyqtSlot()
     def run(self):
@@ -90,34 +89,19 @@ class TagIndexer(QRunnable):
                     with open(file_path, "r", encoding="utf-8") as f:
                         for line_number, line in enumerate(f, 1):
                             for match in self.tag_pattern.finditer(line):
-                                original_tag = match.group(1)
+                                tag = match.group(1)
                                 context = match.group(2).strip()
-
-                                # Normaliser le tag : suppression des accents et passage en majuscules
-                                # pour regrouper @@météo, @@Météo, @@METEO sous @@METEO.
-                                tag_body = original_tag[
-                                    2:
-                                ]  # Extrait "météo" de "@@météo"
-                                nfkd_form = unicodedata.normalize("NFKD", tag_body)
-                                without_accents = "".join(
-                                    [
-                                        c
-                                        for c in nfkd_form
-                                        if not unicodedata.combining(c)
-                                    ]
-                                )
-                                normalized_tag = f"@@{without_accents.upper()}"
 
                                 # Stocker les données structurées
                                 all_tags_info.append(
                                     {
-                                        "tag": normalized_tag,
+                                        "tag": tag,
                                         "context": context,
                                         "filename": file_path.name,
                                         "line": line_number,
                                     }
                                 )
-                                unique_tags.add(normalized_tag)
+                                unique_tags.add(tag)
                 except Exception:
                     # Ignorer les fichiers qui ne peuvent pas être lus
                     continue
