@@ -102,6 +102,7 @@ from integrations.youtube_video import (
 from integrations.sun_moon import get_sun_moon_markdown
 from integrations.gps_map_handler import generate_gps_map_markdown
 
+from integrations.pdf_converter import PdfToMarkdownWorker
 from integrations.image_exif import format_exif_as_markdown
 
 
@@ -390,6 +391,53 @@ class GpxSourceDialog(QDialog):
     def _browse_file(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "Sélectionner un fichier GPX", "", "Fichiers GPX (*.gpx)"
+        )
+        if path:
+            self.path_edit.setText(path)
+
+    def get_path(self):
+        return self.path_edit.text().strip()
+
+
+class PdfSourceDialog(QDialog):
+    """
+    Boîte de dialogue pour obtenir le chemin d'un fichier PDF,
+    soit via une URL, soit via un sélecteur de fichier.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Source du fichier PDF")
+        self.setModal(True)
+        self.resize(500, 120)
+
+        self.layout = QVBoxLayout(self)
+        form_layout = QFormLayout()
+
+        path_layout = QHBoxLayout()
+        self.path_edit = QLineEdit(self)
+        self.path_edit.setPlaceholderText(
+            "https://example.com/document.pdf ou /chemin/local/document.pdf"
+        )
+        path_layout.addWidget(self.path_edit)
+
+        browse_button = QPushButton("Parcourir...", self)
+        browse_button.clicked.connect(self._browse_file)
+        path_layout.addWidget(browse_button)
+
+        form_layout.addRow("Chemin ou URL:", path_layout)
+        self.layout.addLayout(form_layout)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.layout.addWidget(self.button_box)
+
+    def _browse_file(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Sélectionner un fichier PDF", "", "Fichiers PDF (*.pdf)"
         )
         if path:
             self.path_edit.setText(path)
@@ -724,6 +772,7 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_weather_action)
         integrations_menu.addAction(self.insert_amazon_book_action)
         integrations_menu.addAction(self.insert_sun_moon_action)
+        integrations_menu.addAction(self.convert_pdf_markdown_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("&Aide")
@@ -909,6 +958,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Insérer les données astronomiques du jour",
             triggered=self.insert_sun_moon_data,
+        )
+        self.convert_pdf_markdown_action = QAction(
+            "Conversion PDF-Markdown",
+            self,
+            statusTip="Convertir un fichier PDF en Markdown avec 'markit'",
+            triggered=self.convert_pdf_to_markdown,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -1159,6 +1214,13 @@ class MainWindow(QMainWindow):
         self.backup_status_label.setVisible(False)
         self.statusbar.addWidget(self.backup_status_label, 1)
 
+        self.pdf_convert_status_label = CenteredStatusBarLabel(
+            self.tr("Conversion PDF en cours...")
+        )
+        self.pdf_convert_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.pdf_convert_status_label.setVisible(False)
+        self.statusbar.addWidget(self.pdf_convert_status_label, 1)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1182,6 +1244,12 @@ class MainWindow(QMainWindow):
         self.backup_flash_timer = QTimer(self)
         self.backup_flash_timer.setInterval(500)
         self.backup_flash_timer.timeout.connect(self._toggle_backup_status_visibility)
+
+        self.pdf_convert_flash_timer = QTimer(self)
+        self.pdf_convert_flash_timer.setInterval(500)
+        self.pdf_convert_flash_timer.timeout.connect(
+            self._toggle_pdf_convert_status_visibility
+        )
 
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -2511,6 +2579,42 @@ class MainWindow(QMainWindow):
         self.backup_flash_timer.stop()
         self.backup_status_label.setVisible(False)
 
+    def _start_pdf_convert_flashing(self):
+        """Démarre le message clignotant pour la conversion PDF."""
+        self.pdf_convert_status_label.setVisible(True)
+        self.pdf_convert_flash_timer.start()
+
+    def _stop_pdf_convert_flashing(self):
+        """Arrête le message clignotant de conversion PDF."""
+        self.pdf_convert_flash_timer.stop()
+        self.pdf_convert_status_label.setVisible(False)
+
+    def _toggle_pdf_convert_status_visibility(self):
+        """Bascule la visibilité du label de statut de conversion PDF."""
+        self.pdf_convert_status_label.setVisible(
+            not self.pdf_convert_status_label.isVisible()
+        )
+
+    def on_pdf_convert_finished(self, markdown_content):
+        """Callback pour la fin de la conversion PDF."""
+        self._stop_pdf_convert_flashing()
+        self.editor.set_text(markdown_content)
+        self.current_file = None
+        self.is_modified = True
+        self.update_title()
+        self.update_stats()
+        self._set_file_label_color("red")
+        self.update_preview()
+        self.expand_outline()
+        QMessageBox.information(
+            self, "Conversion terminée", "Le fichier PDF a été converti avec succès."
+        )
+
+    def on_pdf_convert_error(self, error_message):
+        """Callback en cas d'erreur de conversion PDF."""
+        self._stop_pdf_convert_flashing()
+        QMessageBox.critical(self, "Erreur de conversion", error_message)
+
     def _toggle_backup_status_visibility(self):
         """Bascule la visibilité du label de statut de sauvegarde."""
         self.backup_status_label.setVisible(not self.backup_status_label.isVisible())
@@ -2528,6 +2632,27 @@ class MainWindow(QMainWindow):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
         self._stop_backup_flashing()
         QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
+
+    def convert_pdf_to_markdown(self):
+        """Gère la conversion d'un PDF en Markdown."""
+        if not self.check_save_changes():
+            return
+
+        dialog = PdfSourceDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        pdf_path = dialog.get_path()
+        if not pdf_path:
+            return
+
+        self._start_pdf_convert_flashing()
+
+        worker = PdfToMarkdownWorker(pdf_path)
+        worker.signals.finished.connect(self.on_pdf_convert_finished)
+        worker.signals.error.connect(self.on_pdf_convert_error)
+
+        self.thread_pool.start(worker)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""

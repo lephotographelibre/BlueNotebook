@@ -75,7 +75,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.7.9</h1>
+            Aide en Ligne - BlueNotebook V2.7.10</h1>
     </header>
 
     <div class="toc">
@@ -102,6 +102,7 @@
                     <li><a href="#amazon-isbn">8.5 Intégrer un Livre (Amazon ISBN)</a></li>
                     <li><a href="#quote-of-the-day">8.6 Insérer la Citation du Jour</a></li>
                     <li><a href="#astro-du-jour">8.7 Insérer les Données Astronomiques du Jour</a></li>
+                    <li><a href="#pdf-to-markdown">8.8 Convertir un PDF en Markdown</a></li>
                 </ul>
             </li>
             <li><a href="#recherche-avancee">9. Recherche et Navigation Avancée</a></li>
@@ -397,6 +398,22 @@
         </li>
     </ol>
 
+    <h3 id="pdf-to-markdown">8.8 Convertir un PDF en Markdown</h3>
+    <p>BlueNotebook intègre l'outil <strong>MarkItDown</strong> de Microsoft pour convertir des documents PDF en fichiers Markdown. Cette fonctionnalité est idéale pour extraire le contenu textuel et structurel d'un PDF afin de le rendre éditable.</p>
+    <ol>
+        <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code>.</li>
+        <li>Une boîte de dialogue s'ouvre, vous permettant de :
+            <ul>
+                <li>Coller une <strong>URL</strong> vers un fichier PDF en ligne.</li>
+                <li>Cliquer sur <strong>"Parcourir..."</strong> pour sélectionner un fichier PDF sur votre ordinateur.</li>
+            </ul>
+        </li>
+        <li>Après validation, la conversion se lance en arrière-plan. Un message clignotant "Conversion PDF en cours..." apparaît dans la barre de statut pour vous informer que l'opération est en cours.</li>
+        <li>Une fois la conversion terminée, le contenu Markdown généré remplace le contenu actuel de l'éditeur. Si votre document en cours avait des modifications non sauvegardées, l'application vous proposera de les enregistrer au préalable.</li>
+    </ol>
+    <p><strong>Note :</strong> Pour que cette fonctionnalité soit opérationnelle, la bibliothèque Python <code>markitdown[pdf]</code> doit être installée. Si elle est manquante, un message d'erreur vous guidera pour l'installation via la commande : <code>pip install markitdown[pdf]</code>.</p>
+
+
     <section id="recherche-avancee">
         <h2>9. Recherche et Navigation Avancée</h2>
         <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
@@ -503,6 +520,7 @@ Intégrations
 ├── Météo Weatherapi.com : Insère la météo actuelle pour la ville configurée.
 ├── Amazon ISBN : Insère les informations d'un livre depuis Amazon via son ISBN.
 └── Astro du jour : Insère les données astronomiques du jour pour la ville configurée.
+└── Conversion PDF-Markdown : Convertit un fichier PDF (local ou distant) en Markdown.
 
 Aide
 ├── Documentation en ligne : Ouvre ce manuel.
@@ -834,6 +852,15 @@ Aide
             </li>
         </ul>
 
+        <h3>Conversion de Documents</h3>
+        <ul>
+            <li><strong>markitdown</strong> : Une bibliothèque de Microsoft utilisée pour la nouvelle fonctionnalité de conversion de PDF en Markdown. Elle analyse la structure du PDF pour générer un fichier Markdown équivalent.
+                <ul>
+                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/microsoft/markitdown" target="_blank">github.com/microsoft/markitdown</a></li>
+                </ul>
+            </li>
+        </ul>
+
         <h3>Manipulation d'Images</h3>
         <ul>
             <li><strong>Pillow</strong> (un fork de PIL) : Utilisée pour tout ce qui touche à la manipulation d'images. Elle sert principalement à créer l'image de couverture composite pour l'export EPUB (en combinant une image et du texte) et à redimensionner/compresser les images avant de les inclure dans le livre numérique.
@@ -869,7 +896,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V2.7.9 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V2.7.10 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

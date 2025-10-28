@@ -1,3 +1,64 @@
+## V2.7.10 Intégration Conversion PDf to MD
+
+Pour cette nouvelle integration on va aller recuperer chercher un fichier PDF en local ou à distance via une URL puis on va le convertir en Markdown en utilisant le toolkit de Microsoft dispobile `https://github.com/microsoft/markitdown`
+
+- Le menu pour lancer l'intégration "Intégrations --> Conversion PDF-Markdown"
+- Le code nécessaire à l'integration sera stocké dans le dossier `bluenotebook/integrations`
+- L'utilisateur devra sélectionner via une boite de dialogue la localisation du fichier local ou remote
+- Le toolkit `markitdown` de microsoft sera utilisé.
+- SLe fichier résultat sera affiché dans l'editeur Markdown. Si un fichier était déjà en cours d'édition il sera sauvegradé après demande à l'utilisateur.
+- La conversion peut prendre du temps alors celle ci sera faite dans un worrker spécifique et l'utilisateur sera informé de la conversion en cours par un message en police rouge dans la barre de statut de la fenètre principale.
+
+**Exemple de code Python pour convertir un PDF en Markdown avec MarkItDown**
+
+`MarkItDown` est un excellent outil de Microsoft pour convertir des documents (comme les PDF) en Markdown structuré, idéal pour les LLMs ou l'analyse de texte. Comme indiqué dans la documentation du repo GitHub, l'installation se fait via `pip install 'markitdown[all]'` pour inclure toutes les dépendances optionnelles (y compris pour les PDF).
+Voici un exemple complet et simple d'utilisation en Python. Je suppose que vous avez un fichier PDF local (remplacez "mon_fichier.pdf" par votre chemin). Ce code :
+
+- Charge l'outil.
+- Convertit le PDF en Markdown.
+- Affiche le résultat et l'enregistre dans un fichier .md.
+
+
+
+```python
+from markitdown import MarkItDown
+import os
+
+# Initialisation de MarkItDown
+# - enable_plugins=False : Désactive les plugins tiers (par défaut)
+# - Vous pouvez ajouter llm_client pour des descriptions d'images si besoin
+md_converter = MarkItDown(enable_plugins=False)
+
+# Chemin vers votre fichier PDF
+pdf_path = "mon_fichier.pdf"  # Remplacez par votre fichier
+
+# Vérification si le fichier existe
+if not os.path.exists(pdf_path):
+    print(f"Erreur : Le fichier '{pdf_path}' n'existe pas.")
+    exit(1)
+
+try:
+    # Conversion du PDF en Markdown
+    result = md_converter.convert(pdf_path)
+    
+    # Affichage du Markdown généré
+    print("Contenu Markdown généré :\n")
+    print(result.text_content)
+    print("\n" + "="*50 + "\n")
+    
+    # Enregistrement dans un fichier Markdown
+    output_md = pdf_path.replace(".pdf", ".md")
+    with open(output_md, "w", encoding="utf-8") as f:
+        f.write(result.text_content)
+    
+    print(f"Fichier Markdown sauvegardé : {output_md}")
+    
+except Exception as e:
+    print(f"Erreur lors de la conversion : {e}")
+    print("Assurez-vous d'avoir installé 'markitdown[pdf]' pour les PDF.")
+```
+
+
 ## V2.7.9 Filtre Liste déroulante des tags + suppress doublons, + @@ Majuscules 
 
 La liste déroulante des tags est définie et gérée dans le fichier `bluenotebook/gui/navigation.py`.
