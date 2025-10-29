@@ -86,6 +86,9 @@ class PreferencesDialog(QDialog):
         self.selected_html_theme = self.settings_manager.get(
             "preview.css_theme", "default_preview.css"
         )
+        self.selected_pdf_theme = self.settings_manager.get(
+            "pdf.css_theme", "default_preview.css"
+        )
 
         # Créer les onglets
         self.tabs = QTabWidget()
@@ -501,19 +504,29 @@ class PreferencesDialog(QDialog):
 
         return content_widget
 
-    def _select_css_theme(self):
-        """Ouvre une boîte de dialogue pour sélectionner un thème CSS."""
+    def _select_css_theme(self, pdf=False):
+        """
+        Ouvre une boîte de dialogue pour sélectionner un thème CSS pour l'aperçu HTML ou l'export PDF.
+        """
         base_path = Path(__file__).parent.parent
-        css_preview_dir = base_path / "resources" / "css_preview"
 
-        if not css_preview_dir.exists():
+        if pdf:
+            css_dir = base_path / "resources" / "css_pdf"
+            dialog_title = "Choisir un thème pour l'export PDF"
+        else:
+            css_dir = base_path / "resources" / "css_preview"
+            dialog_title = "Choisir un thème pour l'aperçu HTML"
+
+        if not css_dir.exists():
             QMessageBox.warning(
-                self, "Erreur", "Le répertoire des thèmes CSS est introuvable."
+                self,
+                "Erreur",
+                f"Le répertoire des thèmes '{css_dir.name}' est introuvable.",
             )
             return
 
         # Utiliser QDir pour lister les fichiers avec un filtre
-        dir = QDir(str(css_preview_dir))
+        dir = QDir(str(css_dir))
         dir.setNameFilters(["*.css"])
         theme_files = dir.entryList()
 
@@ -523,37 +536,72 @@ class PreferencesDialog(QDialog):
             )
             return
 
+        # Déterminer le thème actuel en fonction du contexte (HTML ou PDF)
+        current_theme = self.selected_pdf_theme if pdf else self.selected_html_theme
+
         current_theme_index = (
-            theme_files.index(self.selected_html_theme)
-            if self.selected_html_theme in theme_files
-            else 0
+            theme_files.index(current_theme) if current_theme in theme_files else 0
         )
 
         theme_name, ok = QInputDialog.getItem(
             self,
-            "Sélection",
-            "Choisir un thème CSS:",
+            "Sélection de thème",
+            dialog_title,
             theme_files,
             current_theme_index,
             False,
         )
 
         if ok and theme_name:
-            self.selected_html_theme = theme_name
-            self.current_html_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
-            # Mettre à jour le mini-aperçu HTML
-            css_file_path = css_preview_dir / theme_name
-            self._update_html_preview_style(css_file_path)
+            css_file_path = css_dir / theme_name
+            if pdf:
+                self.selected_pdf_theme = theme_name
+                self.current_pdf_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+                # Mettre à jour le mini-aperçu PDF
+                self._update_pdf_preview_style(css_file_path)
+            else:
+                self.selected_html_theme = theme_name
+                self.current_html_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+                self._update_html_preview_style(css_file_path)
 
     def _create_pdf_export_sub_tab(self):
         """Crée le sous-onglet (vide pour l'instant) pour l'export PDF."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-        layout.addWidget(
-            QLabel("Les options pour l'export PDF seront disponibles ici.")
+        content_widget = QWidget()
+        layout = QGridLayout(content_widget)
+        layout.setSpacing(15)
+
+        row = 0
+
+        # === SECTION GESTION DES THÈMES CSS POUR PDF ===
+        theme_layout = QHBoxLayout()
+
+        self.pdf_theme_button = QPushButton("Sélectionner un thème CSS pour le PDF")
+        self.pdf_theme_button.setToolTip(
+            "Sélectionner un thème CSS pour les exports PDF"
         )
-        layout.addStretch()
-        return widget
+        self.pdf_theme_button.clicked.connect(lambda: self._select_css_theme(pdf=True))
+        theme_layout.addWidget(self.pdf_theme_button)
+
+        # Label pour afficher le thème PDF actuellement sélectionné
+        self.current_pdf_theme_label = QLabel(
+            f"<b>Actuel :</b> {self.selected_pdf_theme}"
+        )
+        self.current_pdf_theme_label.setStyleSheet("margin-left: 10px;")
+        theme_layout.addWidget(self.current_pdf_theme_label)
+
+        theme_layout.addStretch()
+
+        layout.addLayout(theme_layout, row, 0, 1, 4)
+        row += 1
+
+        # === SECTION MINI-APERÇU PDF ===
+        self.pdf_preview_widget = QWebEngineView()
+        self.pdf_preview_widget.setMinimumHeight(300)
+        layout.addWidget(self.pdf_preview_widget, row, 0, 1, 4)
+
+        layout.setRowStretch(row, 1)  # Pousse les éléments vers le haut
+
+        return content_widget
 
     def _update_html_preview_style(self, css_file_path):
         """Met à jour le mini-aperçu HTML avec le style du fichier CSS donné."""
@@ -567,13 +615,27 @@ class PreferencesDialog(QDialog):
         full_html = SAMPLE_HTML_FOR_PREVIEW.format(css_content=css_content)
         self.html_preview_widget.setHtml(full_html)
 
+    def _update_pdf_preview_style(self, css_file_path):
+        """Met à jour le mini-aperçu PDF avec le style du fichier CSS donné."""
+        css_content = ""
+        if not css_file_path.exists():
+            print(f"Avertissement : le fichier CSS {css_file_path} est introuvable.")
+        else:
+            with open(css_file_path, "r", encoding="utf-8") as f:
+                css_content = f.read()
+
+        full_html = SAMPLE_HTML_FOR_PREVIEW.format(css_content=css_content)
+        self.pdf_preview_widget.setHtml(full_html)
+
     def showEvent(self, event):
         """Appelé lorsque la boîte de dialogue est affichée."""
         super().showEvent(event)
-        # Mettre à jour le mini-aperçu HTML au premier affichage
+        # Mettre à jour les mini-aperçus au premier affichage
         base_path = Path(__file__).parent.parent
         css_preview_dir = base_path / "resources" / "css_preview"
+        css_pdf_dir = base_path / "resources" / "css_pdf"
         self._update_html_preview_style(css_preview_dir / self.selected_html_theme)
+        self._update_pdf_preview_style(css_pdf_dir / self.selected_pdf_theme)
 
     def _create_panels_tab(self):
         """Crée l'onglet 'Panneaux' pour gérer la visibilité au démarrage."""
@@ -1126,6 +1188,9 @@ class PreferencesDialog(QDialog):
 
         # Sauvegarde du thème CSS de l'aperçu
         self.settings_manager.set("preview.css_theme", self.selected_html_theme)
+
+        # Sauvegarde du thème CSS de l'export PDF
+        self.settings_manager.set("pdf.css_theme", self.selected_pdf_theme)
 
         # Sauvegarde des paramètres d'intégration météo
         self.settings_manager.set(

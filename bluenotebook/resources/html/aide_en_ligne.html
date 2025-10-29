@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V2.8.2</h1>
+            Aide en Ligne - BlueNotebook V2.9.1</h1>
     </header>
 
 <div class="main-container">
@@ -148,7 +148,8 @@
             <li><a href="#preferences">14. Personnalisation Avancée</a>
                 <ul>
                     <li><a href="#themes-editeur">14.1 Personnalisation de l'Éditeur</a></li>
-                    <li><a href="#themes-apercu">14.2 Personnalisation de l'Aperçu HTML (et des Exports)</a></li>
+                    <li><a href="#themes-apercu">14.2 Personnalisation de l'Aperçu HTML</a></li>
+                    <li><a href="#themes-pdf">14.3 Personnalisation de l'Export PDF</a></li>
                 </ul>
             </li>
             <li><a href="#raccourcis">15. Raccourcis Clavier</a></li>
@@ -679,8 +680,8 @@ Aide
             <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, pratique pour se repérer dans de longs documents.</li>
         </ul>
 
-        <h4 id="themes-apercu">13.2 Personnalisation de l'Aperçu HTML (et des Exports)</h4>
-        <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>.</p>
+        <h4 id="themes-apercu">14.2 Personnalisation de l'Aperçu HTML</h4>
+        <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>. L'apparence est contrôlée par des feuilles de style CSS.</p>
         <p>L'apparence est contrôlée par des feuilles de style CSS. Pour vous aider à choisir, une prévisualisation du rendu est intégrée directement dans la fenêtre des préférences.</p>
         <ul>
             <li><strong>Sélectionner un thème CSS :</strong> Cliquez sur ce bouton pour choisir un style parmi ceux proposés. Vous trouverez des thèmes clairs et sombres inspirés de l'apparence de GitHub.</li>
@@ -688,6 +689,16 @@ Aide
         </ul>
         <p>Le thème que vous validez est sauvegardé et sera automatiquement appliqué à chaque démarrage de BlueNotebook.</p>
         
+        <h4 id="themes-pdf">14.3 Personnalisation de l'Export PDF</h4>
+        <p>De la même manière que pour l'aperçu HTML, vous pouvez désormais choisir un thème CSS <strong>spécifique pour vos exports PDF</strong>. Cette fonctionnalité est très utile pour utiliser un thème sombre pour l'édition à l'écran, et un thème clair, optimisé pour l'impression, pour vos documents PDF.</p>
+        <ul>
+            <li><strong>Accès :</strong> Rendez-vous dans <code>Préférences > Affichage > Export PDF</code>.</li>
+            <li><strong>Sélectionner un thème CSS pour le PDF :</strong> Cliquez sur ce bouton pour choisir un style dans le dossier dédié <code>resources/css_pdf/</code>. Ces thèmes sont spécialement conçus pour la mise en page des documents PDF.</li>
+            <li><strong>Prévisualisation instantanée :</strong> Comme pour l'aperçu HTML, une mini-fenêtre vous montre le rendu du thème sélectionné avant que vous ne validiez votre choix.</li>
+        </ul>
+        <p>Cette séparation vous offre une flexibilité maximale pour que vos documents finaux aient exactement l'apparence que vous souhaitez, indépendamment de votre thème de travail quotidien.</p>
+
+
         <p>Le bouton <strong>"Valeurs d'affichage par défaut"</strong>, présent dans l'onglet "Affichage", réinitialise toutes les options de cet onglet (couleurs de l'éditeur, thème de l'aperçu, etc.) à leurs valeurs d'usine.</p>
 
         <h3>Onglet "Panneaux"</h3>
@@ -704,6 +715,7 @@ Aide
             <li><strong>Intégration vidéo Youtube :</strong> Cochez cette case pour activer ou désactiver le sous-menu permettant d'insérer des vidéos YouTube.</li>
             <li><strong>Afficher la citation du jour au démarrage :</strong> Cochez ou décochez cette case pour activer ou désactiver la fenêtre affichant une citation inspirante au lancement de BlueNotebook.</li>
             <li><strong>Météo Weatherapi.com :</strong> Renseignez ici votre ville et votre clé API pour pouvoir utiliser l'intégration météo.</li>
+            <li><strong>Astro Soleil et Lune :</strong> Saisissez votre ville et cliquez sur "Rechercher" pour obtenir les coordonnées géographiques (latitude et longitude) nécessaires à l'intégration astronomique.</li>
         </ul>
 
         <h3>Le fichier `settings.json`</h3>
@@ -954,7 +966,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V2.8.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V2.9.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

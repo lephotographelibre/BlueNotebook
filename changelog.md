@@ -1,3 +1,24 @@
+## V2.9.1 Thèmes CSS pour PDF  
+
+- Création d'un dossier `bluenotebook/resources/css_pdf/`
+- Création d'in onglet `Préférences .. Affichage .. Export PDF`
+
+- Comment est defini le theme css pour les exports PDF du journal ?
+
+- Peut_on externaliser tout le code CSS de la méthode `weasyprint_css` du   fichier `integrations/pdf_exporter.py` dans un fichier `default_pdf.css` dans le répertoire `resources/css_pdf/` ce qui rendra plus facile ensuite sa modification a ISO fonctionnalités. le fichier `default_pdf.css` sera au standard CSS.
+beta1
+
+- Je voudrais 
+1.  **Modifier `preferences_dialog.py`** pour ajouter une section de sélection de thème dans l'onglet "Export PDF" de la même manière que cela es fait pour Aperçu HTML afin de concerver une homogénéité entre onglets.
+2.  **Sauvegarder ce nouveau paramètre** (par exemple, `pdf.css_theme`) dans `settings.json`.
+3.  **Modifier la logique d'exportation PDF** dans `main_window.py` et `integrations/pdf_exporter.py` pour utiliser ce nouveau paramètre
+beta2
+
+
+Dans le répertoire resources/css_preview/ j'ai un theme css utilisé pour l'apercu HTML qui s'appelle theme-minimaliste.css.
+Je voudrais que tu convertises ce theme au meme format que resources/css_pdf/default_pdf.css et que sauvegarde ce fichier sous le meme nom resources/css_pdf/theme-minimaliste.css 
+beta3
+
 ## V2.8.2 Theme CSS pour Aperçu HTML + Clean Menu + Attachements
 
 Ajout de 3 thèmes CSS pour Aperçu HTML.

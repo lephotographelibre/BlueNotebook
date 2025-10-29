@@ -1860,9 +1860,29 @@ class MainWindow(QMainWindow):
         try:
             self._start_export_flashing()
 
+            # V2.9.1 - Charger le thème CSS pour le contenu du PDF
+            pdf_theme_filename = self.settings_manager.get(
+                "pdf.css_theme", "default_preview.css"
+            )
+            # Le thème peut être dans css_pdf ou css_preview
+            base_path = Path(__file__).parent.parent
+            css_pdf_path = base_path / "resources" / "css_pdf" / pdf_theme_filename
+            css_preview_path = (
+                base_path / "resources" / "css_preview" / pdf_theme_filename
+            )
+
+            content_css_string = ""
+            css_path_to_load = (
+                css_pdf_path if css_pdf_path.exists() else css_preview_path
+            )
+            if css_path_to_load.exists():
+                with open(css_path_to_load, "r", encoding="utf-8") as f:
+                    content_css_string = f.read()
+
             worker = create_pdf_export_worker(
                 options=options,
                 notes_data=notes_data,
+                content_css_string=content_css_string,
                 journal_dir=self.journal_directory,
                 output_path=pdf_path,
             )

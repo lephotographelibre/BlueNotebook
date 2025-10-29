@@ -28,18 +28,19 @@ class PdfExportWorker(QRunnable):
         finished = pyqtSignal(str)
         error = pyqtSignal(str)
 
-    def __init__(self, html_string, base_url, css_string, output_path):
+    def __init__(self, options, notes_data, content_css_string, base_url, output_path):
         super().__init__()
-        # Conserver les anciens paramètres pour la compatibilité si nécessaire,
-        # mais ils ne seront plus utilisés par la nouvelle logique.
         self.signals = self.Signals()
-        self.html_string = html_string
+        self.options = options
+        self.notes_data = notes_data
+        self.content_css_string = content_css_string
         self.base_url = base_url
-        self.css_string = css_string
         self.output_path = output_path
 
     @staticmethod
-    def _build_html_and_css(options, notes_data):
+    def _build_html_and_css(
+        options, notes_data, content_css_string
+    ) -> (str, list[str]):
         """Construit le contenu HTML et CSS complet pour l'export PDF."""
         all_html_content = ""
 
@@ -81,43 +82,33 @@ class PdfExportWorker(QRunnable):
             """
 
         # 3. CSS pour WeasyPrint
+        # Charger le CSS de base depuis un fichier externe
+        base_css_path = (
+            Path(__file__).parent.parent / "resources" / "css_pdf" / "default_pdf.css"
+        )
+        try:
+            with open(base_css_path, "r", encoding="utf-8") as f:
+                base_weasyprint_css = f.read()
+        except FileNotFoundError:
+            print(f"⚠️ Fichier CSS par défaut non trouvé : {base_css_path}")
+            base_weasyprint_css = ""
+
+        # Gérer le titre dynamique qui ne peut pas être dans le fichier CSS statique
         escaped_pdf_title = options.get("title", "").replace('"', '\\"')
-        weasyprint_css = f"""
-        @page {{
-            size: A4;
-            margin: 2cm 2cm 3cm 2cm;
-            @bottom-center {{
-                content: "Page " counter(page) " / " counter(pages);
-                font-size: 9pt; color: #666;
-            }}
+        dynamic_css = f"""
+        @page {{ 
             @bottom-left {{
                 content: "{escaped_pdf_title}";
                 font-size: 8pt; color: #999;
             }}
-            @bottom-right {{
-                content: string(current-date);
-                font-size: 8pt; color: #999;
-            }}
         }}
-        body {{ font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #333; }}
-        .cover-page {{ text-align: center; padding-top: 30%; page-break-after: always; }}
-        .cover-page h1 {{ font-size: 3em; margin-top: 40px; color: #2c3e50; }}
-        .cover-date {{ font-size: 1.2em; margin-top: 20px; color: #7f8c8d; }}
-        .cover-author {{ font-size: 1.1em; margin-top: 15px; color: #34495e; }}
-        .journal-entry {{ page-break-before: always; }}
-        .journal-entry:first-of-type {{ page-break-before: avoid; }}
-        .entry-date {{ color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; string-set: current-date content(); }}
-        h1, h2, h3, h4, h5, h6 {{ color: #2c3e50; page-break-after: avoid; }}
-        pre, code {{ background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; font-size: 9pt; page-break-inside: avoid; }}
-        code {{ padding: 2px 4px; font-family: 'DejaVu Sans Mono', monospace; }}
-        pre {{ padding: 10px; overflow-x: auto; }}
-        blockquote {{ border-left: 4px solid #3498db; padding-left: 15px; margin-left: 0; color: #555; font-style: italic; }}
-        table {{ border-collapse: collapse; width: 100%; margin: 15px 0; page-break-inside: avoid; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-        th {{ background-color: #f5f5f5; font-weight: bold; }}
-        img {{ max-width: 100%; height: auto; page-break-inside: avoid; }}
-        .tag {{ background-color: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 3px; font-size: 0.9em; }}
         """
+
+        # Combiner le CSS de base et le CSS dynamique
+        weasyprint_css = base_weasyprint_css + dynamic_css
+
+        # Le CSS du contenu est maintenant passé en paramètre
+        all_css = [weasyprint_css, content_css_string]
 
         # 4. HTML final
         full_html = f"""
@@ -127,24 +118,20 @@ class PdfExportWorker(QRunnable):
         <body>{all_html_content}</body>
         </html>
         """
-
-        return full_html, weasyprint_css
+        return full_html, all_css
 
     def run(self):
         """Exécute la conversion en PDF."""
         try:
             from weasyprint import HTML, CSS
 
-            # La nouvelle logique utilise les options et les données des notes
-            # pour construire le HTML et le CSS.
-            # Les anciens paramètres (self.html_string, etc.) sont ignorés.
-            html_string, css_string = self._build_html_and_css(
-                self.html_string, self.css_string
+            html_string, css_strings = self._build_html_and_css(
+                self.options, self.notes_data, self.content_css_string
             )
 
             html_doc = HTML(string=html_string, base_url=self.base_url)
-            css_doc = CSS(string=css_string)
-            html_doc.write_pdf(self.output_path, stylesheets=[css_doc])
+            stylesheets = [CSS(string=css) for css in css_strings]
+            html_doc.write_pdf(self.output_path, stylesheets=stylesheets)
             self.signals.finished.emit(self.output_path)
 
         except ImportError:
@@ -157,12 +144,13 @@ class PdfExportWorker(QRunnable):
 
 
 # Constructeur mis à jour pour la nouvelle logique
-def create_pdf_export_worker(options, notes_data, journal_dir, output_path):
-    # Le worker prend maintenant les options et les données des notes.
-    # Pour la compatibilité, nous les passons via les anciens paramètres.
+def create_pdf_export_worker(
+    options, notes_data, content_css_string, journal_dir, output_path
+):
     return PdfExportWorker(
-        html_string=options,
-        css_string=notes_data,
+        options=options,
+        notes_data=notes_data,
+        content_css_string=content_css_string,
         base_url=str(journal_dir),
         output_path=output_path,
     )
