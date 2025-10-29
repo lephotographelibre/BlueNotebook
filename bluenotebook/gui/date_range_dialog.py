@@ -15,6 +15,7 @@
 
 from PyQt5.QtWidgets import (
     QDialog,
+    QComboBox,
     QVBoxLayout,
     QDialogButtonBox,
     QFormLayout,
@@ -42,6 +43,7 @@ class DateRangeDialog(QDialog):
         default_title: str,
         default_cover_image: str,
         default_author: str,
+        available_tags: list = None,
         parent=None,
     ):
         super().__init__(parent)
@@ -69,6 +71,15 @@ class DateRangeDialog(QDialog):
         self.author_edit = QLineEdit(self)
         self.author_edit.setText(default_author)
 
+        # V2.9.2 - Sélection du tag
+        self.tag_combo = QComboBox(self)
+        self.tag_combo.addItem("(Aucun tag)")
+        if available_tags:
+            self.tag_combo.addItems(available_tags)
+        self.tag_combo.setToolTip(
+            "Filtrer les notes pour n'inclure que celles contenant ce tag."
+        )
+
         # Champ pour l'image de couverture
         self.cover_image_path = default_cover_image
         self.cover_image_edit = QLineEdit(self)
@@ -82,6 +93,7 @@ class DateRangeDialog(QDialog):
 
         form_layout.addRow(QLabel("Première note à inclure :"), self.start_date_edit)
         form_layout.addRow(QLabel("Dernière note à inclure :"), self.end_date_edit)
+        form_layout.addRow(QLabel("Filtrer par tag (optionnel) :"), self.tag_combo)
         form_layout.addRow(QLabel("Titre du journal :"), self.title_edit)
         form_layout.addRow(QLabel("Nom de l'auteur (optionnel) :"), self.author_edit)
         form_layout.addRow(QLabel("Image de couverture :"), image_layout)
@@ -108,10 +120,13 @@ class DateRangeDialog(QDialog):
 
     def get_export_options(self) -> dict:
         """Retourne les options d'exportation sélectionnées."""
+        selected_tag = self.tag_combo.currentText()
+
         return {
             "start_date": self.start_date_edit.date(),
             "end_date": self.end_date_edit.date(),
             "title": self.title_edit.text(),
             "author": self.author_edit.text(),
             "cover_image": self.cover_image_path,
+            "selected_tag": selected_tag if selected_tag != "(Aucun tag)" else None,
         }

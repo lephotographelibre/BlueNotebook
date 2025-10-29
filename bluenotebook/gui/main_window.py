@@ -1743,6 +1743,18 @@ class MainWindow(QMainWindow):
             )
             return
 
+        # V2.9.2 - Charger les tags disponibles pour le filtre
+        available_tags = []
+        tags_index_path = self.journal_directory / "index_tags.json"
+        if tags_index_path.exists():
+            try:
+                with open(tags_index_path, "r", encoding="utf-8") as f:
+                    tags_data = json.load(f)
+                    # On trie les tags par ordre alphabétique pour la liste déroulante
+                    available_tags = sorted(tags_data.keys())
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"⚠️ Erreur de lecture de l'index des tags : {e}")
+
         # Récupérer et trier toutes les notes du journal
         note_files = []
         for filename in os.listdir(self.journal_directory):
@@ -1791,6 +1803,7 @@ class MainWindow(QMainWindow):
             end_date_default=today_q,
             min_date=min_date_q,
             max_date=today_q,
+            available_tags=available_tags,
             default_title=last_title,
             default_cover_image=str(default_logo_path),
             default_author=last_author,
@@ -1806,6 +1819,7 @@ class MainWindow(QMainWindow):
         pdf_title = options["title"]
         pdf_author = options["author"]
         cover_image_path = options["cover_image"]
+        selected_tag = options.get("selected_tag")
 
         # Proposer un nom de fichier par défaut
         default_filename = f"Journal-{start_date_q.toString('ddMMyyyy')}-{end_date_q.toString('ddMMyyyy')}.pdf"
@@ -1822,13 +1836,31 @@ class MainWindow(QMainWindow):
         if not pdf_path:
             return
 
-        # Filtrer les notes en fonction de la plage de dates sélectionnée
+        # V2.9.2 - Logique de filtrage combiné (dates et tag)
+        # 1. Filtrer par date
         filtered_notes = []
         for note_file in note_files:
             note_date_str = os.path.splitext(note_file)[0]
             note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
             if start_date_q.toPyDate() <= note_date_obj <= end_date_q.toPyDate():
                 filtered_notes.append(note_file)
+
+        # 2. Si un tag est sélectionné, filtrer davantage
+        if selected_tag:
+            try:
+                with open(tags_index_path, "r", encoding="utf-8") as f:
+                    tags_data = json.load(f)
+                # Obtenir la liste des noms de fichiers contenant le tag
+                files_with_tag = {
+                    d["filename"] for d in tags_data[selected_tag]["details"]
+                }
+                # Conserver uniquement les notes qui sont dans la plage de dates ET qui ont le tag
+                filtered_notes = [
+                    note for note in filtered_notes if note in files_with_tag
+                ]
+            except (KeyError, FileNotFoundError) as e:
+                print(f"⚠️ Erreur lors du filtrage par tag : {e}")
+                filtered_notes = []
 
         if not filtered_notes:
             QMessageBox.information(

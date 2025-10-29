@@ -61,12 +61,21 @@ class PdfExportWorker(QRunnable):
             f'<p class="cover-author">Auteur : {pdf_author}</p>' if pdf_author else ""
         )
 
+        # V2.9.2 - Ajouter le tag de filtre sur la page de garde s'il existe
+        selected_tag = options.get("selected_tag")
+        tag_html = (
+            f'<p class="cover-tag">Filtré par tag : <strong>{selected_tag}</strong></p>'
+            if selected_tag
+            else ""
+        )
+
         cover_page_html = f"""
         <div class="cover-page">
             {image_html}
             <h1>{options.get('title', 'Journal')}</h1>
             {author_html}
             <p class="cover-date">Période du {options['start_date'].toString('d MMMM yyyy')} au {options['end_date'].toString('d MMMM yyyy')}</p>
+            {tag_html}
         </div>
         """
         all_html_content += cover_page_html

@@ -1,3 +1,16 @@
+## V2.9.2 Export PDF basé sur un tag
+
+Pour l'"export Journal PDF" je voudrais ajouter un critère:
+- En Complément d'une fenetre de dates (qui est prioritaire) je voudrais ajouter comme critère la présence d'un tag dans les notes du jour exportées en PDF. c'est a dire n'inclure dans l'export PDF unquement les notes du jour entre "date de debut et date de fin" qui contienne obligatoirement un tage donné.
+- Le tag sera sélectionné dans une liste déroulante basée sur les données `index_tags.json` du journalc ce qui contraindra l'utilisateur à ne choisir qu'un tag qui existe déja et qui a été indexé.
+- il n'est pas nécessaire de reparser les fichiers notes car celles ci ont été indexées au demarrage de l'appli et le résultat est `index_tags.json` qui contient pour chaque tag la liste des notes qui contiennent ce tag.
+- ce choix apparaitra dans la boite de dialogue lancée lors de l"export pdf après les choix "date de debut et date de fin" 
+- Si aucune note comportant ce tag n'existe dans la fenetre "date de debut et date de fin" un message sera affiché pour l'utilisateur et aucun fichier ne sera créé.
+- Il faudra ajouter le nom du tag sélectionné sur la première page du Journal PDF.
+beta1
+
+
+
 ## V2.9.1 Thèmes CSS pour PDF  
 
 - Création d'un dossier `bluenotebook/resources/css_pdf/`
