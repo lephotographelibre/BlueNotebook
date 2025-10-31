@@ -1,3 +1,15 @@
+ ## V2.9.3 Bug Fix Issue [#31]  Mise en forme paragraphe & Fix Issue [#30]
+
+Issue [#31](https://github.com/lephotographelibre/BlueNotebook/issues/31)
+Mise en forme paragraphe
+
+- Ajout d'un sous-menu contextuel "Mise en forme" avec une option "Nettoyer le paragraphe" pour supprimer les sauts de ligne et espaces superflus dans une sélection.
+- Amélioration de la gestion des espaces lors de l'application des styles (gras, italique, etc.) pour préserver l'espacement original.
+
+Issue [#30](https://github.com/lephotographelibre/BlueNotebook/issues/30)
+Formatage correct élements de dtyle sélectionnés dans l'éditeur
+
+
 ## V2.9.2 Export PDF basé sur un tag
 
 Pour l'"export Journal PDF" je voudrais ajouter un critère:
@@ -1898,6 +1910,9 @@ beta3
 
 Memoriser le répertoire de destination d'exportation PDF. Cela évitera à l'utilisateur de naviguer à chaque fois vers le même dossier.
 
+# V2   ----------------------------------------------------------------------------------------------------------------------
+
+
 ## V1.9.3 Editor: Line Numbering
 
 Claude: dans l'editeur markdown peux t on rajouter un numero de ligne devant chaque ligne de l'éditeur
@@ -3390,3 +3405,5 @@ Remettre à jour l'aborecence des fichiers
 
 
 ## V1.0    Première release avec Qt (editeur Markdown + Preview)
+
+# V1   ----------------------------------------------------------------------------------------------------------------------

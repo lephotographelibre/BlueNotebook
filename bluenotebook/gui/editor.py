@@ -965,8 +965,26 @@ class MarkdownEditor(QWidget):
             )
             menu.addMenu(link_menu)
 
+            # V2.9.3 - Menu pour nettoyer le formatage de paragraphe
+            format_menu = QMenu("Mise en forme", self)
+            format_menu.setStyleSheet(self.menu_stylesheet)
+
+            cleanup_action = format_menu.addAction("Nettoyer le paragraphe")
+            cleanup_action.triggered.connect(self.cleanup_paragraph)
+
+            menu.addMenu(format_menu)
+
         # Afficher le menu à la position du curseur
         menu.exec_(self.text_edit.viewport().mapToGlobal(position))
+
+    def cleanup_paragraph(self):
+        """Nettoie le paragraphe sélectionné en supprimant les sauts de ligne superflus."""
+        cursor = self.text_edit.textCursor()
+        if cursor.hasSelection():
+            selected_text = cursor.selectedText()
+            # Remplace les sauts de ligne par des espaces, puis nettoie les espaces multiples
+            cleaned_text = re.sub(r"\s+", " ", selected_text.replace("\n", " ")).strip()
+            cursor.insertText(cleaned_text)
 
     def undo(self):
         """Annuler"""
@@ -1103,10 +1121,25 @@ class MarkdownEditor(QWidget):
 
         if format_type in wrappers:
             wrapper = wrappers[format_type]
-            if selected_text.startswith(wrapper) and selected_text.endswith(wrapper):
-                new_text = selected_text[len(wrapper) : -len(wrapper)]
+
+            # V2.9.3 - Gestion intelligente des espaces autour de la sélection
+            leading_whitespace = selected_text[
+                : len(selected_text) - len(selected_text.lstrip())
+            ]
+            trailing_whitespace = selected_text[len(selected_text.rstrip()) :]
+            core_text = selected_text.strip()
+
+            # Vérifier si le texte principal est déjà formaté pour le retirer
+            if core_text.startswith(wrapper) and core_text.endswith(wrapper):
+                # Retirer le formatage du texte principal
+                new_core_text = core_text[len(wrapper) : -len(wrapper)]
+                # Reconstruire la chaîne avec les espaces d'origine
+                new_text = f"{leading_whitespace}{new_core_text}{trailing_whitespace}"
             else:
-                new_text = f"{wrapper}{selected_text}{wrapper}"
+                # Appliquer le formatage sur le texte principal
+                new_core_text = f"{wrapper}{core_text}{wrapper}"
+                # Reconstruire la chaîne avec les espaces d'origine
+                new_text = f"{leading_whitespace}{new_core_text}{trailing_whitespace}"
             cursor.insertText(new_text)
 
         elif format_type == "table":
