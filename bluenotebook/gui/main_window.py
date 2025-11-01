@@ -1051,7 +1051,8 @@ class MainWindow(QMainWindow):
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("Lien Markdown (texte)", "markdown_link"),
+            ("Lien Markdown", "markdown_link"),
+            ("Lien URL/Email", "url_link"),
             ("📎 Attachement", "attachment"),
         ]
 
@@ -1112,6 +1113,9 @@ class MainWindow(QMainWindow):
             ("✅ Fait", "✅"),
             ("❌ Annulé", "❌"),
             ("⚠️ Attention", "⚠️"),
+            ("📝 Mémo", "📝"),
+            ("❓ Question", "❓"),
+            ("❗ Exclamation", "❗"),
         ]
         for name, emoji in emoji_actions_data:
             action = QAction(

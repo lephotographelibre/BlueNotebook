@@ -633,10 +633,25 @@ class LinkDialog(QDialog):
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.accepted.connect(self.accept)
+        # V2.9.4 - Remplacer self.accept par une méthode de validation personnalisée
+        self.button_box.accepted.connect(self.validate_and_accept)
         self.button_box.rejected.connect(self.reject)
 
         self.layout.addWidget(self.button_box)
+
+    def validate_and_accept(self):
+        """Vérifie que les champs ne sont pas vides avant d'accepter."""
+        link_text = self.text_edit.text().strip()
+        url_text = self.url_edit.text().strip()
+
+        if not link_text or not url_text:
+            QMessageBox.warning(
+                self,
+                "Champs requis",
+                "Le texte du lien et l'URL sont tous les deux obligatoires.",
+            )
+        else:
+            self.accept()
 
     def get_data(self):
         """Retourne le texte et l'URL saisis."""
@@ -876,9 +891,12 @@ class MarkdownEditor(QWidget):
     def show_context_menu(self, position):
         """Affiche le menu contextuel personnalisé."""
         # Créer le menu standard (Couper, Copier, Coller, etc.)
+        # Cette méthode est plus sûre que de recréer manuellement les actions.
         menu = self.text_edit.createStandardContextMenu()
 
-        # V2.4.5 - Améliorer la visibilité du survol dans le menu contextuel
+        # V2.9.4 - Correction du crash. On insère nos menus personnalisés
+        # dans le menu standard existant.
+        # On insère un séparateur avant nos propres actions.
         menu_stylesheet = """
             QMenu {
                 border: 1px solid #d1d5da;
@@ -890,25 +908,27 @@ class MarkdownEditor(QWidget):
             }
         """
         menu.setStyleSheet(menu_stylesheet)
+        # V2.4.5 - Améliorer la visibilité du survol dans le menu contextuel
         # Appliquer le style à tous les sous-menus qui seront créés
         self.menu_stylesheet = menu_stylesheet
 
         # Ajouter des actions personnalisées uniquement si du texte est sélectionné
         cursor = self.text_edit.textCursor()
         if cursor.hasSelection():
+            # Ajouter un séparateur pour distinguer les actions standard des nôtres
             menu.addSeparator()
 
-            # --- Titres ---
+            # --- Création des menus personnalisés ---
             title_menu = QMenu("Titres", self)
             title_menu.setStyleSheet(self.menu_stylesheet)
-            title_actions_data = [
+            title_actions = [
                 ("Niv 1 (#)", "h1"),
                 ("Niv 2 (##)", "h2"),
                 ("Niv 3 (###)", "h3"),
                 ("Niv 4 (####)", "h4"),
                 ("Niv 5 (#####)", "h5"),
             ]
-            for name, data in title_actions_data:
+            for name, data in title_actions:
                 action = title_menu.addAction(name)
                 action.triggered.connect(
                     lambda checked=False, d=data: self.format_text(d)
@@ -918,12 +938,12 @@ class MarkdownEditor(QWidget):
             # --- Listes ---
             list_menu = QMenu("Listes", self)
             list_menu.setStyleSheet(self.menu_stylesheet)
-            list_actions_data = [
+            list_actions = [
                 ("• Liste non ordonnée", "ul"),
                 ("1. Liste ordonnée", "ol"),
                 ("☑️ Liste de tâches", "task_list"),
             ]
-            for name, data in list_actions_data:
+            for name, data in list_actions:
                 action = list_menu.addAction(name)
                 action.triggered.connect(
                     lambda checked=False, d=data: self.format_text(d)
@@ -963,6 +983,9 @@ class MarkdownEditor(QWidget):
             markdown_link_action.triggered.connect(
                 lambda: self.format_text("markdown_link")
             )
+            url_link_action = link_menu.addAction("Lien URL/Email")
+            url_link_action.triggered.connect(lambda: self.format_text("url_link"))
+
             menu.addMenu(link_menu)
 
             # V2.9.3 - Menu pour nettoyer le formatage de paragraphe
@@ -972,6 +995,14 @@ class MarkdownEditor(QWidget):
             cleanup_action = format_menu.addAction("Nettoyer le paragraphe")
             cleanup_action.triggered.connect(self.cleanup_paragraph)
 
+            menu.addMenu(format_menu)
+
+            # Ajouter les menus personnalisés à la fin du menu standard
+            menu.addMenu(title_menu)
+            menu.addMenu(list_menu)
+            menu.addMenu(style_menu)
+            menu.addMenu(code_menu)
+            menu.addMenu(link_menu)
             menu.addMenu(format_menu)
 
         # Afficher le menu à la position du curseur
@@ -1030,6 +1061,13 @@ class MarkdownEditor(QWidget):
     def format_text(self, format_type):
         """Applique le formatage Markdown au texte sélectionné."""
         cursor = self.text_edit.textCursor()
+
+        # V2.9.4 - Gérer le cas du lien Markdown en premier, car il doit
+        # fonctionner avec ou sans sélection.
+        if format_type == "markdown_link":
+            selected_text = cursor.selectedText().strip()
+            self._handle_markdown_link(selected_text)
+            return
 
         # Traiter en priorité les cas qui doivent fonctionner sans sélection
         if format_type == "markdown_image":
@@ -1157,15 +1195,9 @@ class MarkdownEditor(QWidget):
                 new_text = f"```\n{selected_text}\n```"
             cursor.insertText(new_text)
 
-        elif format_type == "url":
-            new_text = f"<{selected_text}>"
+        elif format_type == "url_link":
+            new_text = f"<{selected_text.strip()}>"
             cursor.insertText(new_text)
-
-        elif format_type == "markdown_link":
-            text, url = LinkDialog.get_link(self, selected_text.strip())
-            if text and url:
-                new_text = f"[{text}]({url})"
-                cursor.insertText(new_text)
 
         elif format_type == "html_comment":
             new_text = f"<!-- {selected_text} -->"
@@ -1239,6 +1271,13 @@ class MarkdownEditor(QWidget):
             new_filename = Path(new_relative_path).name
             markdown_link = f"📎 [Attachement | {new_filename}]({new_relative_path})"
             self.insert_text(markdown_link)
+
+    def _handle_markdown_link(self, selected_text=""):
+        """Ouvre la boîte de dialogue pour insérer un lien Markdown."""
+        text, url = LinkDialog.get_link(self, selected_text)
+        if text and url:
+            new_text = f"[{text}]({url})"
+            self.insert_text(new_text)
 
     def _copy_attachment_to_journal(self, source_path: str) -> Optional[str]:
         """

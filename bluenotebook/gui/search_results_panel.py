@@ -57,7 +57,7 @@ class SearchResultsPanel(QWidget):
         self.results_tree = QTreeWidget()
         self.results_tree.setColumnCount(2)
         self.results_tree.setHeaderLabels(["Date", "Texte"])
-        self.results_tree.setHeaderLabels(["🗓️", ""])
+        # self.results_tree.setHeaderLabels(["🗓️", ""])
         self.results_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.results_tree.setSortingEnabled(True)

@@ -1,3 +1,124 @@
+ ## V2.9.4 Bug Fix Issue [#26] & Fix issue [#25] & Fix issue [#24] & Fix issue [#27]
+
+Fix Issue [#26] Résultats de recherche header de colonne illisible
+dans search_results_panel.py 
+
+a la place de
+self.results_tree.setHeaderLabels(["🗓️", ""])
+revenir à 
+self.results_tree.setHeaderLabels(["Date", "Texte"])
+beta1
+
+Fix issue [#25](https://github.com/lephotographelibre/BlueNotebook/issues/25)
+Augmenter la taille du résumé des livres
+b
+La taille du résumé pour l'intégration Amazon ISBN est définie directement dans le code du fichier `bluenotebook/integrations/amazon_books.py`. 
+
+Plus précisément, dans la fonction `get_book_info_from_amazon`, la taille maximale du résumé est codée en dur à 200 caractères.
+--> Augmenter à 500 caractères
+
+```python
+            if len(raw_summary) > 500:
+                # Tronquer à la fin de la dernière phrase avant 500 caractères
+                trunc_limit = 500
+```
+beta2
+
+Fix issue [#24](https://github.com/lephotographelibre/BlueNotebook/issues/24)
+Add Markdown Link without selected text
+
+Quand je suis dans l'editeur Markdown et que j'active le menu  Insérer > Lien Markdown (texte) si aucun texte n'est sélectionné rien ne se passe. Idem avec le sous menu contextuel.
+Ce n'est pas le comportement que j'attendais. 
+- Je veux que dans ce cas apparaisse la boite de dialogue Insérer un lien Markdown avec les deux champs vide que l'utilisteur doit remplir (Texte du  Lien et URL du lien).
+- Sinon conserver le comportement actuel si un texte est sélectionné dans l'éditeur
+
+Modifier le label de ce menu "Lien Markdown (texte)" en "Lien Markdown"
+
+Comportement de l'insertion de lien :
+
+- Sans sélection : Si vous activez "Insérer > Lien Markdown" sans avoir sélectionné de texte, la boîte de dialogue s'ouvrira désormais avec les deux champs ("Texte du lien" et "URL") vides, prête à être remplie.
+- Avec sélection : Le comportement que vous appréciez est conservé. Si du texte est sélectionné, il pré-remplira automatiquement le champ "Texte du lien".
+
+Changement du libellé :
+
+Le menu Insérer > Lien Markdown (texte) a été renommé en Insérer > Lien Markdown.
+
+
+modification a été appliquée au fichier `bluenotebook/gui/editor.py`
+
+ 
+-Sans sélection de texte : Lorsque vous utilisez Insérer > Lien Markdown, la boîte de dialogue s'ouvrira désormais avec les deux champs ("Texte du lien" et "URL") vides, prête à être remplie.
+-Avec sélection de texte : Le comportement actuel est conservé. Le texte que vous avez sélectionné pré-remplira automatiquement le champ "Texte du lien".
+
+
+```python
+        # V2.9.4 - Gérer le cas du lien Markdown en premier, car il doit
+        # fonctionner avec ou sans sélection.
+        if format_type == "markdown_link":
+            selected_text = cursor.selectedText().strip()
+            self._handle_markdown_link(selected_text)
+            return
+```
+beta3
+
+Quand la boite de dialogue de Lien Markdown est "Validée" il faut vérifier que les deux champs sont bien remplis. Sinon en informer l'utilisateur pour qu'il puisse completer la saisie ou bien annuler la saisie de ce lien Markdown
+
+modification a été appliquée au fichier `bluenotebook/gui/editor.py`
+
+```python
+        # V2.9.4 - Remplacer self.accept par une méthode de validation personnalisée
+        self.button_box.accepted.connect(self.validate_and_accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self.layout.addWidget(self.button_box)
+
+    def validate_and_accept(self):
+        """Vérifie que les champs ne sont pas vides avant d'accepter."""
+        link_text = self.text_edit.text().strip()
+        url_text = self.url_edit.text().strip()
+
+        if not link_text or not url_text:
+            QMessageBox.warning(
+                self,
+                "Champs requis",
+                "Le texte du lien et l'URL sont tous les deux obligatoires.",
+            )
+        else:
+            self.accept()
+```
+Fix issue [#27](https://github.com/lephotographelibre/BlueNotebook/issues/27)
+Ajouter menu inserer URLs and Email Addresses
+
+conformément à la syntaxe Markdown https://www.markdownguide.org/basic-syntax/#links
+URLs and Email Addresses
+To quickly turn a URL or email address into a link, enclose it in angle brackets.
+
+<https://www.markdownguide.org>
+<fake@example.com>
+The rendered output looks like this:
+
+https://www.markdownguide.org
+fake@example.com
+
+Je voudrais ajouter une nouveau menu Insérer > Lien URL/Email en dessous de Lien Markdown. à la fois dans le menu principal et le menu contextuel.
+- L'utilisateur sélectionne dans l'éditeur une URL ou une adresse email 
+- On insere le lien avec les "<" ">"
+
+
+modifications:
+- Nouveau menu Insérer > Lien URL/Email : Un nouvel élément de menu a été ajouté dans le menu principal, juste en dessous de "Lien Markdown".
+- Mise à jour du menu contextuel : Ce même choix "Lien URL/Email" a été ajouté au menu contextuel qui apparaît lors d'un clic droit sur du texte sélectionné.
+
+Fonctionnalité : Lorsque vous sélectionnez une URL ou une adresse e-mail dans l'éditeur et que vous activez cette nouvelle action, le texte sélectionné sera automatiquement encadré par des chevrons (< et >), le transformant en un lien cliquable dans l'aperçu.
+beta4
+
+petite correction dans le cas ou l'utilisateur sélection une url ou adresse email avec des espaces devant ou derriere les supprimer lors de l'insertion du lien.
+C'est a dire si l'utilisateur sélectionne dans l'éditeur " https://www.markdownguide.org/basic-syntax/#links " le lien sera <https://www.markdownguide.org/basic-syntax/#links>
+
+
+Fix issue [#32](https://github.com/lephotographelibre/BlueNotebook/issues/32)
+Ajouter emoji memo 📝 question mark ❓ and exclamation mark emoji ❗à laliste des emojis du Menue Insérer > Emojis
+
  ## V2.9.3 Bug Fix Issue [#31]  Mise en forme paragraphe & Fix Issue [#30]
 
 Issue [#31](https://github.com/lephotographelibre/BlueNotebook/issues/31)

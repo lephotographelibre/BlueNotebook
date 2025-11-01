@@ -135,9 +135,9 @@ def get_book_info_from_amazon(isbn, region="fr"):
                 hidden_span.decompose()
             raw_summary = desc_elem.get_text(strip=True)
 
-            if len(raw_summary) > 200:
-                # Tronquer à la fin de la dernière phrase avant 200 caractères
-                trunc_limit = 200
+            if len(raw_summary) > 500:
+                # Tronquer à la fin de la dernière phrase avant 500 caractères
+                trunc_limit = 500
                 last_period_index = raw_summary.rfind(".", 0, trunc_limit)
                 if last_period_index != -1:
                     truncated_summary = raw_summary[: last_period_index + 1]
