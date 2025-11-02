@@ -71,6 +71,7 @@ from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
 from .outline import OutlinePanel
+from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
 from .preferences_dialog import PreferencesDialog
 from core.journal_backup_worker import JournalBackupWorker
@@ -104,6 +105,18 @@ from integrations.gps_map_handler import generate_gps_map_markdown
 
 from integrations.pdf_converter import PdfToMarkdownWorker
 from integrations.image_exif import format_exif_as_markdown
+
+# V3.0.1 - Enregistrer le schéma personnalisé avant de créer l'application
+from PyQt5.QtWebEngineCore import QWebEngineUrlScheme
+
+scheme = QWebEngineUrlScheme(b"epub")
+scheme.setSyntax(QWebEngineUrlScheme.Syntax.Host)
+scheme.setFlags(
+    QWebEngineUrlScheme.SecureScheme
+    | QWebEngineUrlScheme.LocalScheme
+    | QWebEngineUrlScheme.LocalAccessAllowed
+)
+QWebEngineUrlScheme.registerScheme(scheme)
 
 
 class BookWorker(QRunnable):
@@ -581,6 +594,7 @@ class MainWindow(QMainWindow):
         self.current_file = None
         self.is_modified = False
         self.daily_quote = None
+        self.last_document_reader = None
         self.daily_author = None
         self.tag_index_count = -1
         self.word_index_count = -1
@@ -619,6 +633,7 @@ class MainWindow(QMainWindow):
         self.show_quote_of_the_day()
         self.start_initial_indexing()
         self.update_calendar_highlights()
+        self.load_initial_document_reader()
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
@@ -679,10 +694,16 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.setCollapsible(1, False)
         main_splitter.addWidget(editor_preview_splitter)
 
+        self.epub_reader_panel = EpubReaderPanel()
+        main_splitter.addWidget(self.epub_reader_panel)
+
         self.navigation_panel.setFixedWidth(400)
         self.outline_panel.setFixedWidth(400)
-        main_splitter.setSizes([400, 400, 1400])
+        # V3.0.1 - Supprimer la largeur fixe pour permettre le redimensionnement
+        # self.epub_reader_panel.setFixedWidth(600)
+        main_splitter.setSizes([400, 400, 1400, 400])
         main_splitter.setCollapsible(0, False)
+        # V3.0.1 - Permettre au panneau lecteur d'être réduit
         main_splitter.setCollapsible(2, False)
 
         main_layout.addWidget(main_splitter)
@@ -724,6 +745,7 @@ class MainWindow(QMainWindow):
         file_menu = menubar.addMenu("&Fichier")
         file_menu.addAction(self.new_action)
         file_menu.addAction(self.open_action)
+        file_menu.addAction(self.open_document_action)
         file_menu.addSeparator()
         file_menu.addAction(self.save_action)
         file_menu.addAction(self.save_as_template_action)
@@ -754,6 +776,7 @@ class MainWindow(QMainWindow):
         self.addAction(self.toggle_navigation_action)
         self.addAction(self.toggle_outline_action)
         self.addAction(self.toggle_preview_action)
+        self.addAction(self.toggle_reader_action)
 
         # Menu Formatter
         format_menu = menubar.addMenu("F&ormater")
@@ -800,6 +823,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Ouvrir un répertoire de journal",
             triggered=self.open_journal,
+        )
+        self.open_document_action = QAction(
+            "Ouvrir Document...",
+            self,
+            statusTip="Ouvrir un document EPUB ou PDF dans le lecteur",
+            triggered=self.open_document_for_reader,
         )
         self.save_action = QAction(
             "Sauvegarder dans Journal",
@@ -897,6 +926,13 @@ class MainWindow(QMainWindow):
             shortcut="F5",
             checkable=True,
             triggered=self.toggle_preview,
+        )
+        self.toggle_reader_action = QAction(
+            "Basculer Lecteur",
+            self,
+            shortcut="F8",
+            checkable=True,
+            triggered=self.toggle_reader,
         )
         self.about_action = QAction(
             "À propos",
@@ -1154,11 +1190,17 @@ class MainWindow(QMainWindow):
         self.preview_button.toggled.connect(self.preview.setVisible)
         self.panels_toolbar.addWidget(self.preview_button)
 
+        # Bouton Lecteur
+        self.reader_button = SwitchButton(text="Lecteur")
+        self.reader_button.toggled.connect(self.toggle_reader_from_button)
+        self.panels_toolbar.addWidget(self.reader_button)
+
         # Note: Les états initiaux seront définis dans apply_settings() après le chargement des préférences
 
     def _sync_panel_controls(self):
         """Synchronise l'état des boutons et des menus avec la visibilité des panneaux."""
         # Bloquer les signaux pour éviter les boucles de rappel
+        self.reader_button.blockSignals(True)
         self.nav_button.blockSignals(True)
         self.outline_button.blockSignals(True)
         self.preview_button.blockSignals(True)
@@ -1172,7 +1214,11 @@ class MainWindow(QMainWindow):
         self.preview_button.setChecked(self.preview.isVisible())
         self.toggle_preview_action.setChecked(self.preview.isVisible())
 
+        self.reader_button.setChecked(self.epub_reader_panel.isVisible())
+        self.toggle_reader_action.setChecked(self.epub_reader_panel.isVisible())
+
         # Rétablir les signaux
+        self.reader_button.blockSignals(False)
         self.nav_button.blockSignals(False)
         self.outline_button.blockSignals(False)
         self.preview_button.blockSignals(False)
@@ -1321,6 +1367,13 @@ class MainWindow(QMainWindow):
                 return
 
         self.new_file()
+
+    def load_initial_document_reader(self):
+        """Charge le dernier document ouvert dans le lecteur."""
+        last_doc = self.settings_manager.get("reader.last_document")
+        if last_doc and os.path.exists(last_doc):
+            self.last_document_reader = last_doc
+            self.epub_reader_panel.load_document(last_doc)
 
     def on_text_changed(self):
         """Appelé quand le texte change"""
@@ -2210,6 +2263,21 @@ class MainWindow(QMainWindow):
             self.outline_panel.show()
         self._sync_panel_controls()
 
+    def toggle_reader(self):
+        """Basculer la visibilité du panneau lecteur."""
+        if self.epub_reader_panel.isVisible():
+            self.epub_reader_panel.hide()
+        else:
+            if not self.epub_reader_panel.has_document():
+                self.open_document_for_reader()
+            else:
+                self.epub_reader_panel.show()
+        self._sync_panel_controls()
+
+    def toggle_reader_from_button(self, checked):
+        """Gère le clic sur le bouton switch du lecteur."""
+        self.toggle_reader()
+
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
         base_path = os.path.dirname(os.path.abspath(__file__))
@@ -2254,6 +2322,41 @@ class MainWindow(QMainWindow):
             <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
             <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>""",
         )
+
+    def open_document_for_reader(self):
+        """Ouvre un document EPUB ou PDF dans le panneau lecteur."""
+        filename, _ = QFileDialog.getOpenFileName(
+            self,
+            "Ouvrir un document",
+            self.settings_manager.get("reader.last_directory", str(Path.home())),
+            "Documents (*.epub *.pdf);;Fichiers EPUB (*.epub);;Fichiers PDF (*.pdf)",
+        )
+
+        if filename:
+            if filename.lower().endswith(".epub"):
+                self.epub_reader_panel.load_document(filename)
+                self.epub_reader_panel.show()
+                self._sync_panel_controls()
+
+                # Sauvegarder le chemin pour la prochaine fois
+                self.last_document_reader = filename
+                self.settings_manager.set("reader.last_document", filename)
+                self.settings_manager.set(
+                    "reader.last_directory", os.path.dirname(filename)
+                )
+                self.settings_manager.save_settings()
+            elif filename.lower().endswith(".pdf"):
+                QMessageBox.information(
+                    self,
+                    "Fonctionnalité à venir",
+                    "La lecture des fichiers PDF sera bientôt disponible.",
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Format non supporté",
+                    "Ce format de fichier n'est pas supporté.",
+                )
 
     def check_save_changes(self):
         """Vérifier si il faut sauvegarder les modifications"""
@@ -3086,6 +3189,9 @@ class MainWindow(QMainWindow):
             self.settings_manager.set(
                 "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
             )
+            self.settings_manager.set(
+                "ui.show_reader_panel", dialog.show_reader_checkbox.isChecked()
+            )
 
             self.settings_manager.save_settings()
             self.apply_settings()
@@ -3099,6 +3205,9 @@ class MainWindow(QMainWindow):
             "ui.show_outline_panel", self.outline_panel.isVisible()
         )
         self.settings_manager.set("ui.show_preview_panel", self.preview.isVisible())
+        self.settings_manager.set(
+            "ui.show_reader_panel", self.epub_reader_panel.isVisible()
+        )
         self.settings_manager.save_settings()
 
     def apply_settings(self):
@@ -3107,26 +3216,31 @@ class MainWindow(QMainWindow):
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
         show_outline = self.settings_manager.get("ui.show_outline_panel", False)
         show_preview = self.settings_manager.get("ui.show_preview_panel", True)
+        show_reader = self.settings_manager.get("ui.show_reader_panel", False)
 
         # Bloquer temporairement les signaux pour éviter les appels en cascade
         self.nav_button.blockSignals(True)
         self.outline_button.blockSignals(True)
         self.preview_button.blockSignals(True)
+        self.reader_button.blockSignals(True)
 
         # Appliquer la visibilité des panneaux
         self.navigation_panel.setVisible(show_nav)
         self.outline_panel.setVisible(show_outline)
         self.preview.setVisible(show_preview)
+        self.epub_reader_panel.setVisible(show_reader)
 
         # Synchroniser les switchs avec l'état des panneaux
         self.nav_button.setChecked(show_nav)
         self.outline_button.setChecked(show_outline)
         self.preview_button.setChecked(show_preview)
+        self.reader_button.setChecked(show_reader)
 
         # Débloquer les signaux
         self.nav_button.blockSignals(False)
         self.outline_button.blockSignals(False)
         self.preview_button.blockSignals(False)
+        self.reader_button.blockSignals(False)
 
         # Synchroniser également les actions du menu
         self.toggle_navigation_action.setChecked(show_nav)

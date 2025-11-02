@@ -1,4 +1,55 @@
- ## V2.9.4 Bug Fix Issue [#26] & Fix issue [#25] & Fix issue [#24] & Fix issue [#27]
+## V3.0.2 Fix [#38]Buttons & Fix [#34] Table des Matières
+
+Fix [#28](https://github.com/lephotographelibre/BlueNotebook/issues/28)
+Fix [#34](https://github.com/lephotographelibre/BlueNotebook/issues/34)
+
+
+## V3.0.1 Panneau Lecteur & EPUB Reader
+
+Je voudrais inclure un nouveau panneau appelé "Lecteur". Ce panneau apparaitra toujours a droite de l'editeur. Si l'aperçu HTML est ouvert également l'ordre sera "Editeur Markdow -> Aperçu HTM --> Lecteur". Ce panneau sera dédié à l'affichage et la navigation dans des documents EPUB ou PDF.
+- Ce panneau respectera les memes caractéristiques que les autres panneaux
+	- Entete sous forme d'onglet
+	- Bouton poussoir dans la barre des boutons sous la barre de menu principale
+	- Par defaut ce panneau sera fermé et son bouton poussoir en mode fermé/Grisé
+	- Si on active le bouton poussoir "Lecteur" et qu'aucun document n'a été sélectionné alors on affichera une boite de dialogue demandant à l'utilisateur de sélectionner un fichier (EPUB ou PDF) à ouvrir dans le menu "Fichier > Ouvrir Document..."
+- On va donc créer le menu  "Fichier > Ouvrir Document..." qui permettra d'ouvrir des fichiers .pdf ou .epub locaux ou distants via URL
+    - Si un document est trouvé on va alors ouvrir le panneau "Lecteur" à la droite de l'éditeur avec le document à afficher.
+	- on pourra fermer ce panneau via le bouton poussoir "Lecteur" qui deviendra alors grisé lorsque le panneau est fermé.
+	- on conservera toujours la memoire du dernier document ouvert dans le "Lecteur" et cela sera persisté dans settings.json de l'utilisateur.
+
+Dans un premier temps on va developper le code nécessaire à la fonctionnalité de lecture des fichiers epub dans cet onglet. ne pas oublier que plus tard on pourra ouvrir également des fichiers PDF dans ce panneau **(a venir)**.
+
+- Les fonctionnalités de lecture d'un epub sont les suivantes:
+	- Affichage des pages et de la table des matières
+	- navigation dans le pages et les chapitres via la table des matières ou via une barre de naviagtion au dessus du texte
+	- affichage des images  diu livre **(a venir)**
+	- Recherche de mots dans le document (avec barre de recherche intégrée (Rechercher - Suivant - Précédent - Effacer))
+	- possiblités de couper coller du texte  pour le coller dans l'éditeur
+	- plus tard possibilité d'exporter un chapitre complet en Markdown dans l'editeur **(a venir)**
+	- lorsque un doument s'ouvre il est possitionné à la première pa eg la table des matières est affichée
+	- possiblité de cacher la table des matières **(a venir)**
+	- CSS du rendu externalisé dans un dossier bluenotebook/resources/css_epub/ **(a venir)**
+	- utilisation si possible des polices "embedded dans l'ouvrage **(a venir)**
+
+
+J'ai developpé le code `bluenotebook/tests/epub_readerV6.py` comme exemple et je souhaite que l'on puisse s'appuyer sur celui-ci.
+les prerequis sont les pacakges Python
+
+pip install PyQt5 PyQtWebEngine ebooklib
+
+En particulier (Table des matières et les barres de recherche et de navigation (avec boutons Permier, Dernier chapitre précédent, chapitre suivant et affichage central du chapitre courant avec boite déroulante pour changer de chapitre) . Il faudra trouver une place pour mettre la position courante dans le livre  Chapitre/Page (Exemple --> "Chapitre: 6 / 173") C'est dire Multi-méthodes de navigation : L'utilisateur peut naviguer via liste, combo box, ou boutons selon sa préférence
+beta1
+
+la taille du panneau  "Lecteur" en hauteur n'est pas correcte e donc la taille de l'onglet n'est pas correcte. Le panneau sans l'onglet est trop ramassé vers le bas et ne s'étend pas sur toute la taille du panneau. 
+beta2
+
+je voudrais juste a gauche du champ recherche dasn le panneau Lecteur une petit bouton avec une icone "fleche"  qui permette de cacher ou pas la table des matières
+- < pour fermer la table
+- > pour ouvrir la table des matières
+ 
+
+ 
+## V2.9.4 Bug Fix Issue [#26] & Fix issue [#25] & Fix issue [#24] & Fix issue [#27]
 
 Fix Issue [#26] Résultats de recherche header de colonne illisible
 dans search_results_panel.py 

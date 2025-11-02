@@ -997,14 +997,6 @@ class MarkdownEditor(QWidget):
 
             menu.addMenu(format_menu)
 
-            # Ajouter les menus personnalisés à la fin du menu standard
-            menu.addMenu(title_menu)
-            menu.addMenu(list_menu)
-            menu.addMenu(style_menu)
-            menu.addMenu(code_menu)
-            menu.addMenu(link_menu)
-            menu.addMenu(format_menu)
-
         # Afficher le menu à la position du curseur
         menu.exec_(self.text_edit.viewport().mapToGlobal(position))
 
