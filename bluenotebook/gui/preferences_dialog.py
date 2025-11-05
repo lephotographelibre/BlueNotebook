@@ -670,6 +670,13 @@ class PreferencesDialog(QDialog):
         )
         layout.addWidget(self.show_preview_checkbox)
 
+        # Case pour le panneau Lecteur
+        self.show_reader_checkbox = QCheckBox("Afficher le panneau 'Lecteur'")
+        self.show_reader_checkbox.setChecked(
+            self.settings_manager.get("ui.show_reader_panel", False)
+        )
+        layout.addWidget(self.show_reader_checkbox)
+
         layout.addStretch()  # Pour pousser les cases vers le haut
         return widget
 
@@ -695,6 +702,21 @@ class PreferencesDialog(QDialog):
         )
         self.youtube_integration_checkbox.setChecked(is_youtube_enabled)
         layout.addWidget(self.youtube_integration_checkbox)
+
+        self.youtube_transcript_checkbox = QCheckBox(
+            "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"
+        )
+        is_transcript_enabled = self.settings_manager.get(
+            "integrations.youtube_transcript_enabled", True
+        )
+        self.youtube_transcript_checkbox.setChecked(is_transcript_enabled)
+        self.youtube_transcript_checkbox.setEnabled(is_youtube_enabled)
+        layout.addWidget(self.youtube_transcript_checkbox)
+
+        # Lier les deux cases à cocher
+        self.youtube_integration_checkbox.toggled.connect(
+            self.youtube_transcript_checkbox.setEnabled
+        )
 
         # Météo Weatherapi.com
         weather_layout = QHBoxLayout()

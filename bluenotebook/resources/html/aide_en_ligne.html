@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V3.0.2</h1>
+            Aide en Ligne - BlueNotebook V3.0.3</h1>
     </header>
 
 <div class="main-container">
@@ -134,7 +134,9 @@
                     <li><a href="#meteo">9.1 Insérer la Météo du Jour</a></li>
                     <li><a href="#gpx-trace">9.2 Intégrer une Trace GPX</a></li>
                     <li><a href="#cartes-gps">9.3 Intégrer une Carte Statique (GPS)</a></li> 
-                    <li><a href="#youtube-video">9.4 Intégrer une Vidéo YouTube</a></li>
+                    <li><a href="#youtube-video">9.4 Intégrer une Vidéo YouTube</a>
+                        <ul><li><a href="#youtube-transcript">9.4.1 Récupération de la Transcription</a></li></ul>
+                    </li>
                     <li><a href="#amazon-isbn">9.5 Intégrer un Livre (Amazon ISBN)</a></li>
                     <li><a href="#quote-of-the-day">9.6 Insérer la Citation du Jour</a></li>
                     <li><a href="#astro-du-jour">9.7 Insérer les Données Astronomiques du Jour</a></li>
@@ -441,6 +443,17 @@
             </li>
         </ol>
         <p><strong>Astuce :</strong> Vous pouvez activer ou désactiver cette fonctionnalité dans <code>Préférences > Intégrations</code>.</p>
+        
+        <h4 id="youtube-transcript">9.4.1 Récupération de la Transcription</h4>
+        <p>Pour enrichir davantage vos notes, BlueNotebook peut automatiquement récupérer la transcription textuelle d'une vidéo YouTube, si elle est disponible.</p>
+        <ol>
+            <li><strong>Processus automatique :</strong> Lorsque vous intégrez une vidéo, l'application vérifie en arrière-plan si une transcription existe (en français ou en anglais). Cette recherche ne bloque pas l'interface, et un message <code>Récupération de la transcription en cours...</code> s'affiche dans la barre de statut.</li>
+            <li><strong>Proposition à l'utilisateur :</strong> Si une transcription est trouvée, une boîte de dialogue apparaît : <code>"Pour cette vidéo Youtube une transcription en {langue} existe, Voulez vous l'ajouter ?"</code>.</li>
+            <li><strong>Insertion formatée :</strong> Si vous acceptez, le texte de la transcription, intelligemment formaté en paragraphes, est ajouté sous le bloc de la vidéo, précédé du titre <code>**Transcript de la video Youtube**</code>.</li>
+        </ol>
+        <p>Cette fonctionnalité est extrêmement utile pour la prise de notes, la recherche de mots-clés dans une vidéo ou pour conserver une trace écrite d'un contenu oral.</p>
+        <p><strong>Configuration :</strong> Vous pouvez contrôler cette fonctionnalité dans <code>Préférences > Intégrations</code> via la case à cocher <code>"Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"</code>. Notez que cette option n'est active que si l'intégration YouTube principale est elle-même autorisée.</p>
+
 
         <h3 id="amazon-isbn">9.5 Intégrer un Livre (Amazon ISBN)</h3>
         <p>Enrichissez vos notes avec des fiches de lecture complètes en récupérant automatiquement les informations d'un livre depuis Amazon grâce à son numéro ISBN.</p>
@@ -1003,7 +1016,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.0.2 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.0.3 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

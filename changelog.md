@@ -1,3 +1,102 @@
+## V3.0.3 Integration: Add YT transcription Fix [#42]
+
+
+
+Fix [#42](https://github.com/lephotographelibre/BlueNotebook/issues/42)
+ 
+Tester youtube-transcript-api <https://github.com/jdepoix/youtube-transcript-api>
+
+- create git branch youtube-transcript-api
+- ajouter package `pip install youtube-transcript-api`
+- Créer un fichier read_transcript.py dans `bluenotebook/tests/`
+- Tester sur video <https://www.youtube.com/watch?v=S2TUommS3O0>  --> ID = S2TUommS3O0
+
+
+```python
+from youtube_transcript_api import YouTubeTranscriptApi
+
+ytt_api = YouTubeTranscriptApi()
+ytt_api.fetch(video_id)
+```
+
+Note: By default, this will try to access the English transcript of the video. If your video has a different language, or you are interested in fetching a transcript in a different language, please read the section below.
+
+Note: Pass in the video ID, NOT the video URL. For a video with the URL https://www.youtube.com/watch?v=12345 the ID is 12345
+
+1st release
+
+```python
+# From doc: https://github.com/jdepoix/youtube-transcript-api
+# Test Video: https://www.youtube.com/watch?v=S2TUommS3O0 --> ID = "S2TUommS3O0"
+# 2nd Yann Le Cun https://www.youtube.com/watch?v=Z208NMP7_-0 --> ID = "Z208NMP7_-0"
+#
+# Pre-requisite:
+#   pip install youtube-transcript-api
+
+
+from youtube_transcript_api import YouTubeTranscriptApi
+
+ytt_api = YouTubeTranscriptApi()
+# fetched_transcript = ytt_api.fetch("S2TUommS3O0")
+# fetched_transcript = ytt_api.fetch("S2TUommS3O0", languages=["fr", "en"])
+fetched_transcript = ytt_api.fetch(
+    "Z208NMP7_-0", languages=["fr", "en"], preserve_formatting=True
+)
+
+# provides a length
+snippet_count = len(fetched_transcript)
+print(f"snippet_count = {snippet_count}")
+
+# is iterable
+for snippet in fetched_transcript:
+    print(snippet.text)
+
+# indexable
+last_snippet = fetched_transcript[-1]
+
+
+```
+
+
+----
+
+Cela va me permettre de spécifier un ajout à l'integration de video Youtube.
+- Lorsque l'utilisateur veut integrer une video Youtube en fournissant une URL (code déja existant on ne le modifie pas)
+- on va aller verifier qu'il existe un transcript pour cette video e utilisant le package Python youtube_transcript_api (voir code `bluenotebook/tests/read_transcript_grok.py`
+- si un transcript existe alors on va proposer à l'utilisateur d'ajouter ce transcript en dessous de la video dans le fragment Markdown. généré par l'intégration Youtube , code déja existant) via une boite de dialogue:
+"Pour cette vidéo Youtube une transcription en {langage du transcript} existe, Voulez vous l'ajouter ?"
+- Le transcript sera préfixé par "** Transcript de la video Youtube**" puis le texte du transcript.
+- Le code pour récuperer le transcript sera basé sur le code `bluenotebook/tests/read_transcript_grok.py`
+- Affichage éventuel d'une fenetre avec le Message d'erreur mais le reste de l'intégration Youtube (code déja présent devra continuer à fonctionner) Erreur non Bloquante
+- Dans les préférences -> Intéfrations l'utilisateur pourra choisir s'il souhaite ou non l'affichage des transcripts Youtube via une boite à cocher: "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown" . Cette boite a cocher sera en dessous celle qui existe déjà "Autoriser l'intégration de vidéo Youtube dans l'éditeur Markdown".
+- Si la boite a cocher "Autoriser l'intégration de vidéo Youtube dans l'éditeur Markdown" n'est pas validée alors "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown" ne sera pas validée. 
+- Ces choix de préférences utilisateur seront persistés dans settings.json de l'utilisateur.
+
+beta1
+
+La géneration de Transcription est parfois longue. je voudrais 
+- que cette tache puisse etre asynchrone pour ne pas bloquer l'utilisateur
+- qu'un message "Récupération de la transcription en cours..." puisse etre affiché en rouge dans la barre de statut de l'editeur
+
+Création une nouvelle classe TranscriptWorker dans `youtube_video.py`. Cette classe, qui hérite de `QRunnable`, s'exécutera en arrière-plan pour ne pas bloquer l'interface.
+
+Elle encapsule la logique de `get_youtube_transcript`.
+Elle utilise des signaux (finished, error, no_transcript) pour communiquer le résultat à la fenêtre principale.
+
+Modification de `main_window.py` pour utiliser ce nouveau worker et gérer l'affichage dans la barre de statut.
+
+- Barre de statut : Ajout d'un label et d'un timer pour le message clignotant "Récupération de la transcription en cours...".
+- Logique asynchrone : La méthode insert_youtube_video lance maintenant le TranscriptWorker et connecte ses signaux à des méthodes de rappel (on_transcript_finished, on_transcript_error, etc.).
+- Insertion du contenu : Le bloc Markdown de la vidéo est inséré immédiatement. Si une transcription est trouvée plus tard, elle est ajoutée à la suite
+
+
+Ajouter table de correspondance fr --> Français de --> Allemand
+git branch
+
+
+
+
+
 ## V3.0.2 Fix [#38]Buttons & Fix [#34] Table des Matières
 
 Fix [#28](https://github.com/lephotographelibre/BlueNotebook/issues/28)

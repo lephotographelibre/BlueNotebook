@@ -22,6 +22,10 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.formatters import Formatter
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
+
 
 def _extract_youtube_id(url: str) -> str | None:
     """Extrait l'ID de la vidéo à partir de différentes formes d'URL YouTube."""
@@ -186,3 +190,152 @@ def generate_youtube_markdown_block(details: dict) -> str:
 [![{details['title']}]({thumbnail_url})]({details['url']})
 """
     return markdown_block.strip()
+
+
+class ParagraphFormatter(Formatter):
+    """
+    Formate le transcript en paragraphes en se basant sur les pauses temporelles
+    et la ponctuation de fin de phrase.
+    """
+
+    def format_transcript(self, transcript, pause_threshold=1.0):
+        """
+        Formate le transcript en paragraphes.
+        :param transcript: Liste de snippets du transcript.
+        :param pause_threshold: Seuil de pause (en secondes) pour séparer les paragraphes.
+        :return: Texte formaté en paragraphes.
+        """
+        paragraphs = []
+        current_paragraph = []
+        previous_end_time = 0
+
+        for snippet in transcript:
+            text = snippet.text.strip()
+            start_time = snippet.start
+            duration = snippet.duration
+            end_time = start_time + duration
+
+            # Ignorer les snippets vides ou les annotations comme [Musique]
+            if not text or re.match(r"^\[.*\]$", text):
+                continue
+
+            # Calculer la pause avec le snippet précédent
+            pause = start_time - previous_end_time if current_paragraph else 0
+
+            # Créer un nouveau paragraphe si la pause est significative ou si une phrase se termine
+            is_sentence_end = text.endswith((".", "!", "?"))
+            if pause > pause_threshold or (is_sentence_end and current_paragraph):
+                if current_paragraph:
+                    paragraphs.append(" ".join(current_paragraph))
+                    current_paragraph = []
+
+            current_paragraph.append(text)
+            previous_end_time = end_time
+
+        # Ajouter le dernier paragraphe s'il existe
+        if current_paragraph:
+            paragraphs.append(" ".join(current_paragraph))
+
+        return "\n\n".join(paragraphs)
+
+
+def get_youtube_transcript(video_id: str) -> tuple[str | None, str | None]:
+    """
+    Tente de récupérer et de formater la transcription pour une vidéo YouTube.
+
+    :param video_id: L'ID de la vidéo YouTube.
+    :return: Un tuple (formatted_transcript, language_code) ou (None, None) en cas d'échec.
+    """
+    print(f"🎥 [Transcript] Recherche de transcription pour la vidéo ID : {video_id}")
+    try:
+        ytt_api = YouTubeTranscriptApi()
+        # V3.0.3 - Utilisation de la méthode .list() qui est correcte pour la version installée
+        transcript_list = ytt_api.list(video_id)
+        print(
+            f"🎥 [Transcript] Langues disponibles trouvées : {[t.language_code for t in transcript_list]}"
+        )
+
+        # Essayer de trouver une transcription en français ou en anglais
+        target_transcript = None
+        for lang in ["fr", "en"]:
+            try:
+                target_transcript = transcript_list.find_transcript([lang])
+                print(
+                    f"🎥 [Transcript] Transcription trouvée pour la langue : '{lang}'"
+                )
+                break
+            except Exception:
+                print(f"🎥 [Transcript] Pas de transcription pour la langue : '{lang}'")
+                continue
+
+        if not target_transcript:
+            print(
+                "🎥 [Transcript] Aucune transcription trouvée en 'fr' ou 'en'. Abandon."
+            )
+            return None, None
+
+        fetched_transcript = target_transcript.fetch()
+        if not fetched_transcript:
+            print(
+                "🎥 [Transcript] Erreur : La transcription est vide après récupération."
+            )
+            return None, None
+
+        print("🎥 [Transcript] Formatage du texte...")
+        formatter = ParagraphFormatter()
+        formatted_text = formatter.format_transcript(
+            fetched_transcript, pause_threshold=1.5
+        )
+        return formatted_text, target_transcript.language_code
+    except Exception as e:
+        print(f"❌ [Transcript] Une erreur est survenue : {e}")
+        return None, None
+
+
+class TranscriptWorker(QRunnable):
+    """Worker pour récupérer la transcription en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str, str)  # transcript, lang
+        error = pyqtSignal(str)
+        no_transcript = pyqtSignal()
+
+    def __init__(self, video_id: str):
+        super().__init__()
+        self.video_id = video_id
+        self.signals = self.Signals()
+
+    @pyqtSlot()
+    def run(self):
+        """Exécute la tâche de récupération."""
+        try:
+            ytt_api = YouTubeTranscriptApi()
+            transcript_list = ytt_api.list(self.video_id)
+
+            target_transcript = None
+            for lang in ["fr", "en"]:
+                try:
+                    target_transcript = transcript_list.find_transcript([lang])
+                    break
+                except Exception:
+                    continue
+
+            if not target_transcript:
+                self.signals.no_transcript.emit()
+                return
+
+            fetched_transcript = target_transcript.fetch()
+            if not fetched_transcript:
+                self.signals.no_transcript.emit()
+                return
+
+            formatter = ParagraphFormatter()
+            formatted_text = formatter.format_transcript(
+                fetched_transcript, pause_threshold=1.5
+            )
+            self.signals.finished.emit(formatted_text, target_transcript.language_code)
+
+        except Exception as e:
+            self.signals.error.emit(
+                f"Erreur lors de la récupération de la transcription : {e}"
+            )

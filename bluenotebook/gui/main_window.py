@@ -99,6 +99,8 @@ from integrations.amazon_books import (
 from integrations.youtube_video import (
     get_youtube_video_details,
     generate_youtube_markdown_block,
+    get_youtube_transcript,
+    TranscriptWorker,
 )
 from integrations.sun_moon import get_sun_moon_markdown
 from integrations.gps_map_handler import generate_gps_map_markdown
@@ -1266,6 +1268,13 @@ class MainWindow(QMainWindow):
         self.pdf_convert_status_label.setVisible(False)
         self.statusbar.addWidget(self.pdf_convert_status_label, 1)
 
+        self.transcript_status_label = CenteredStatusBarLabel(
+            self.tr("Récupération de la transcription en cours...")
+        )
+        self.transcript_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.transcript_status_label.setVisible(False)
+        self.statusbar.addWidget(self.transcript_status_label, 1)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1296,6 +1305,11 @@ class MainWindow(QMainWindow):
             self._toggle_pdf_convert_status_visibility
         )
 
+        self.transcript_flash_timer = QTimer(self)
+        self.transcript_flash_timer.setInterval(500)
+        self.transcript_flash_timer.timeout.connect(
+            self._toggle_transcript_status_visibility
+        )
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
         self.editor.text_edit.verticalScrollBar().valueChanged.connect(
@@ -2454,8 +2468,21 @@ class MainWindow(QMainWindow):
                 result,
             )
         else:  # C'est un dictionnaire de détails
+            # On insère immédiatement le bloc Markdown de la vidéo
             markdown_block = generate_youtube_markdown_block(result)
             self.editor.insert_text(f"\n{markdown_block}\n")
+
+            # On lance la recherche de transcription en arrière-plan
+            transcript_enabled = self.settings_manager.get(
+                "integrations.youtube_transcript_enabled", True
+            )
+            if transcript_enabled and result["type"] == "video":
+                self._start_transcript_flashing()
+                worker = TranscriptWorker(result["video_id"])
+                worker.signals.finished.connect(self.on_transcript_finished)
+                worker.signals.error.connect(self.on_transcript_error)
+                worker.signals.no_transcript.connect(self.on_no_transcript)
+                self.thread_pool.start(worker)
 
     def insert_gps_map(self):
         """Gère la logique d'insertion d'une carte GPS."""
@@ -2707,6 +2734,39 @@ class MainWindow(QMainWindow):
         self.statusbar.clearMessage()
         QMessageBox.critical(self, "Erreur de recherche", error_message)
 
+    def on_transcript_finished(self, transcript, lang):
+        """Callback quand une transcription est trouvée."""
+        self._stop_transcript_flashing()
+        if not transcript:
+            return
+
+        reply = QMessageBox.question(
+            self,
+            "Transcription trouvée",
+            f"Une transcription en '{lang}' existe pour cette vidéo. Voulez-vous l'ajouter ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if reply == QMessageBox.Yes:
+            transcript_header = "\n\n**Transcription de la video Youtube**\n\n"
+            full_transcript_block = transcript_header + transcript
+            self.editor.insert_text(f"\n{full_transcript_block}\n")
+
+    def on_transcript_error(self, error_message):
+        """Callback en cas d'erreur de transcription."""
+        self._stop_transcript_flashing()
+        QMessageBox.warning(
+            self,
+            "Erreur de Transcription",
+            error_message,
+        )
+
+    def on_no_transcript(self):
+        """Callback quand aucune transcription n'est trouvée."""
+        self._stop_transcript_flashing()
+        # Pas de message à l'utilisateur, c'est un comportement normal
+        print("ℹ️ Aucune transcription trouvée pour cette vidéo.")
+
     def _start_book_search_flashing(self):
         """Démarre le message clignotant pour la recherche de livre."""
         self.book_search_status_label.setVisible(True)
@@ -2747,6 +2807,22 @@ class MainWindow(QMainWindow):
         """Bascule la visibilité du label de statut de conversion PDF."""
         self.pdf_convert_status_label.setVisible(
             not self.pdf_convert_status_label.isVisible()
+        )
+
+    def _start_transcript_flashing(self):
+        """Démarre le message clignotant pour la transcription."""
+        self.transcript_status_label.setVisible(True)
+        self.transcript_flash_timer.start()
+
+    def _stop_transcript_flashing(self):
+        """Arrête le message clignotant de transcription."""
+        self.transcript_flash_timer.stop()
+        self.transcript_status_label.setVisible(False)
+
+    def _toggle_transcript_status_visibility(self):
+        """Bascule la visibilité du label de statut de transcription."""
+        self.transcript_status_label.setVisible(
+            not self.transcript_status_label.isVisible()
         )
 
     def on_pdf_convert_finished(self, markdown_content):
@@ -3146,6 +3222,10 @@ class MainWindow(QMainWindow):
                 "integrations.youtube_enabled",
                 dialog.youtube_integration_checkbox.isChecked(),
             )
+            self.settings_manager.set(
+                "integrations.youtube_transcript_enabled",
+                dialog.youtube_transcript_checkbox.isChecked(),
+            )
 
             self.settings_manager.set(
                 "ui.show_indexing_stats",
@@ -3247,11 +3327,6 @@ class MainWindow(QMainWindow):
         self.toggle_outline_action.setChecked(show_outline)
         self.toggle_preview_action.setChecked(show_preview)
 
-        # Appliquer les paramètres de l'éditeur
-        show_stats = self.settings_manager.get("ui.show_indexing_stats", True)
-        if not show_stats:
-            self.tag_index_status_label.clear()
-
         font_family = self.settings_manager.get("editor.font_family")
         font_size = self.settings_manager.get("editor.font_size")
         font = QFont(font_family, font_size)
@@ -3319,6 +3394,12 @@ class MainWindow(QMainWindow):
         youtube_enabled = self.settings_manager.get(
             "integrations.youtube_enabled", True
         )
+        self.insert_youtube_video_action.setEnabled(youtube_enabled)
+
+        youtube_transcript_enabled = self.settings_manager.get(
+            "integrations.youtube_transcript_enabled", True
+        )
+        # L'action globale dépend des deux settings
         self.insert_youtube_video_action.setEnabled(youtube_enabled)
 
         # Appliquer les styles au panneau du plan
