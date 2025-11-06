@@ -1,3 +1,40 @@
+## V3.0.4 Fix [#44] Navigation Search table header results color
+
+Fix [#44](https://github.com/lephotographelibre/BlueNotebook/issues/44)
+comment the following line into `gui/search_results_panel.py`
+
+        # self.results_tree.setStyleSheet("border: none; background: transparent;")
+        
+
+```python
+    def setup_ui(self):
+        """Configuration de l'interface utilisateur du panneau."""
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 5, 0, 0)
+        layout.setSpacing(5)
+
+        self.label = QLabel("🔍 Résultats de la Recherche")
+        font = self.label.font()
+        font.setBold(True)
+        self.label.setFont(font)
+
+        self.label.setMaximumHeight(35)
+        layout.addWidget(self.label)
+
+        self.results_tree = QTreeWidget()
+        self.results_tree.setColumnCount(2)
+        self.results_tree.setHeaderLabels(["Date", "Texte"])
+        # self.results_tree.setHeaderLabels(["🗓️", ""])
+        self.results_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.results_tree.setSortingEnabled(True)
+        self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
+        # self.results_tree.setStyleSheet("border: none; background: transparent;")
+        layout.addWidget(self.results_tree)
+
+        self.setLayout(layout)
+```
+
 ## V3.0.3 Integration: Add YT transcription Fix [#42]
 
 Add comment1
