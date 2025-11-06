@@ -80,6 +80,7 @@ class SettingsManager:
                 "last_directory": str(Path.home()),
                 "last_author": "",
                 "last_title": "BlueNotebook Journal",
+                "last_image_save_directory": str(Path.home()),
             },
             "backup": {
                 "last_directory": "",

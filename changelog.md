@@ -1,3 +1,23 @@
+## V3.0.8 Onglet Lecteur (PDF) Fix [#46] Text Selection with mousewheel + Images
+
+fix [#46](https://github.com/lephotographelibre/BlueNotebook/issues/46) `pdf_viewer.py`
+
+@@Grok
+ J'ecris une application Python, j'ai un onglet lecteur qui permet d'afficher des fichiers PDF. Je ne suis pas satisfait de la solution mise en oeuvre de sélection de texte avec la souris pour copy/paste d'un mot ou quelques mots . La solution de "Copier le texte de la page" via le menu contextuel fonctionne correctement.
+Le principal probleme vient de la position de l'origine de la sélection avec la souris. si je clicke sur un mot puis je glisse avecla souris pour selectionner le paragraphe souhaité, souvent le texte sélection est surligné plusieur lignes plus haut !!
+il faudrair pouvoir définir un caret et sélectionner à partir de ce caret
+ que me propose tu ?
+beta1
+
+Je voudrais pouvoir pointer sur une image dans un page pdf et pouvoir avec le menu contextuel "Sauvegarder cette image" copier cette image et la sauvegarder au format .jpg dans un dossier choisi par l'utilsateur via une boite de dialogue 
+beta2
+
+ 
++ persistance du dossier de sauvegarde  dans settings.json
+
+
+
+
 ## V3.0.7 Onglet Lecteur (epub) Fix [#46] Cannot scroll with mousewheel
 
 dans le panneau "Lecteur" avec un fichier epub ouvert, j'essaye de faire defiler les pages avec la molette de la souris.

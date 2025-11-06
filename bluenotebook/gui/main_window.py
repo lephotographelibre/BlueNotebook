@@ -696,7 +696,7 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.setCollapsible(1, False)
         main_splitter.addWidget(editor_preview_splitter)
 
-        self.epub_reader_panel = EpubReaderPanel()
+        self.epub_reader_panel = EpubReaderPanel(settings_manager=self.settings_manager)
         main_splitter.addWidget(self.epub_reader_panel)
 
         self.navigation_panel.setFixedWidth(400)

@@ -190,7 +190,7 @@ class CustomWebEngineView(QWebEngineView):
 class EpubReaderPanel(QWidget):
     """Widget pour afficher et naviguer dans un fichier EPUB."""
 
-    def __init__(self, parent=None):
+    def __init__(self, settings_manager=None, parent=None):
         super().__init__(parent)
         self.book = None
         self.chapters = []
@@ -207,6 +207,7 @@ class EpubReaderPanel(QWidget):
         self.current_doc_type = None  # 'epub' ou 'pdf'
         self.pdf_toc = []
 
+        self.settings_manager = settings_manager
         # Initialiser le gestionnaire de schéma et le profil WebEngine
         self.scheme_handler = EpubSchemeHandler()
         self.profile = QWebEngineProfile()  # Utiliser un profil non-défaut
@@ -286,7 +287,7 @@ class EpubReaderPanel(QWidget):
         self.stacked_viewer.addWidget(self.web_view)
 
         # Lecteur PDF
-        self.pdf_viewer = PdfViewer()
+        self.pdf_viewer = PdfViewer(settings_manager=self.settings_manager)
         self.pdf_viewer.page_changed_by_search.connect(self.on_pdf_page_changed)
         # V3.0.6 - Connecter le nouveau signal pour synchroniser l'UI
         self.pdf_viewer.page_changed.connect(self.on_pdf_page_changed)
@@ -484,7 +485,7 @@ class EpubReaderPanel(QWidget):
         self.load_current_chapter()
         self.enable_navigation(True)
 
-        print(f"Livre PDF chargé: {page_count} pages trouvées")
+        print(f"📖 Livre PDF chargé: {page_count} pages trouvées")
 
     def _parse_toc(self, toc, level=0):
         """Parser récursivement la table des matières."""
