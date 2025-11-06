@@ -1,10 +1,66 @@
+## V3.0.5 Onglet Lecteur (EPUB/PDF) MaJ PDFReader
+
+--> Branch ---> pdf_reader   git checkout -b pdf_reader
+
+Prérequis
+```bash
+pip install PyMuPDF
+```
+
+Actuellement l'onglet "Lecteur" permet d'affichier un fichier epub avec sa table des matieres, barre de recherche et barre de navigation. Je vdrais également pouvoir afficher un document pdf avec les meme fonctionnalités si possible (avec sa table des matieres, barre de recherche et barre de navigation). L'interface utilisateur devra etre si possible similaire à celle du lecteur epub
+
+
+- Les fonctionnalités de lecture d'un fichier pdf sont les suivantes:
+	- Affichage des pages et de la table des matières
+	- navigation dans le pages et les chapitres via la table des matières ou via une barre de naviagtion au dessus du texte
+	 
+	- Recherche de mots dans le document (avec barre de recherche intégrée (Rechercher - Suivant - Précédent - Effacer))
+	- possiblités de couper coller du texte  pour le coller dans l'éditeur
+	- plus tard possibilité d'exporter un chapitre complet en Markdown dans l'editeur **(a venir)**
+	- lorsque un document s'ouvre il est possitionné à la première page  la table des matières est affichée
+	- possiblité de cacher la table des matières 
+	- CSS du rendu externalisé dans un dossier bluenotebook/resources/css_epub/ **(a venir)**
+
+- Le code spécifique à la gestion du pdf sera aussi externalisé dans ce répertoire  `bluenotebook/gui/`  
+beta1
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert, j'essaye de lancer la recherche sur un mot;
+- Le mot est trouvé, et le terme est mis en surbrillance PK
+- si j'appuie sur "Suivant" pour recherche l'occurence suivante de ce mot rien ne se passe.
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert, j'essaye de naviguer dans le document avec la barre de navigation qui est située dessous le document. 
+- Lorsque j'utilise les fleches l'affichage du document est bien remis à jour 
+- mais pas l'affichage dans la table des matières a gauche du document
+- mais pas l'affichage dans la liste déroulante (entre les flèches) de la barre de navigation
+
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert, j'essaye de lancer la recherche sur un mot;
+- Le mot est trouvé, afficher dans la bonne page, et le terme est mis en surbrillance 
+- mais l'affichage dans la table des matières a gauche du document n'est pas mise à jour
+
+beta2
+dans le panneau "Lecteur" avec un fichier pdf ouvert,
+- Pas de redimentionnement dynamique avec la molette de la souris
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert,
+- pas d'affichage d'un menu contextuel pour faire du copier coller de texte affichier dans la page pdf
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert,
+- je veux pouvoir sélectionner du texte dans la page pdf avec la souris
+- Je veu pouvoir copier ce texte selectionné pas toute la page dans le presse papier
+
+Cela ne fonctionne pas bien, le texte récupéré (paste) ne correspond pas au texte sélectionné (copy). je n'aime pas ce mode de sélectionn y a un autre mode que le rubber_band
+
+
+
+
 ## V3.0.4 Fix [#44] Navigation Search table header results color
 
 Fix [#44](https://github.com/lephotographelibre/BlueNotebook/issues/44)
 comment the following line into `gui/search_results_panel.py`
 
         # self.results_tree.setStyleSheet("border: none; background: transparent;")
-        
+
 
 ```python
     def setup_ui(self):

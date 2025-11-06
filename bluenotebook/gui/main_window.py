@@ -2347,7 +2347,8 @@ class MainWindow(QMainWindow):
         )
 
         if filename:
-            if filename.lower().endswith(".epub"):
+            file_ext = filename.lower()
+            if file_ext.endswith(".epub") or file_ext.endswith(".pdf"):
                 self.epub_reader_panel.load_document(filename)
                 self.epub_reader_panel.show()
                 self._sync_panel_controls()
@@ -2359,12 +2360,6 @@ class MainWindow(QMainWindow):
                     "reader.last_directory", os.path.dirname(filename)
                 )
                 self.settings_manager.save_settings()
-            elif filename.lower().endswith(".pdf"):
-                QMessageBox.information(
-                    self,
-                    "Fonctionnalité à venir",
-                    "La lecture des fichiers PDF sera bientôt disponible.",
-                )
             else:
                 QMessageBox.warning(
                     self,

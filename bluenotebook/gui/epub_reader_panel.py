@@ -22,6 +22,7 @@ import os
 import re
 import base64
 from ebooklib import epub
+from .pdf_viewer import PdfViewer
 import ebooklib
 
 from PyQt5.QtWidgets import (
@@ -35,6 +36,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QPushButton,
     QComboBox,
+    QStackedWidget,
     QMessageBox,
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineProfile
@@ -169,6 +171,11 @@ class EpubReaderPanel(QWidget):
         self.book_title = ""
         self.book_author = ""
 
+        # V3.0.5 - Ajout pour le lecteur PDF
+        self.pdf_viewer = None
+        self.current_doc_type = None  # 'epub' ou 'pdf'
+        self.pdf_toc = []
+
         # Initialiser le gestionnaire de schéma et le profil WebEngine
         self.scheme_handler = EpubSchemeHandler()
         self.profile = QWebEngineProfile()  # Utiliser un profil non-défaut
@@ -238,13 +245,22 @@ class EpubReaderPanel(QWidget):
         search_layout.addWidget(self.clear_search_btn)
         reader_layout.addLayout(search_layout)
 
-        # Vue Web
+        # V3.0.5 - Utiliser un QStackedWidget pour basculer entre les lecteurs
+        self.stacked_viewer = QStackedWidget()
+
+        # Lecteur EPUB (Vue Web)
         self.web_view = QWebEngineView()
         self.web_page = QWebEnginePage(self.profile, self.web_view)
         self.web_view.setPage(self.web_page)
+        self.stacked_viewer.addWidget(self.web_view)
+
+        # Lecteur PDF
+        self.pdf_viewer = PdfViewer()
+        self.pdf_viewer.page_changed_by_search.connect(self.on_pdf_page_changed)
+        self.stacked_viewer.addWidget(self.pdf_viewer)
         # V3.0.1 - Ajouter un facteur d'étirement pour que la vue web prenne tout l'espace vertical
         # Le '1' indique que ce widget doit s'étirer pour remplir l'espace disponible.
-        reader_layout.addWidget(self.web_view, 1)
+        reader_layout.addWidget(self.stacked_viewer, 1)
 
         # Barre de navigation
         nav_layout = QHBoxLayout()
@@ -281,9 +297,24 @@ class EpubReaderPanel(QWidget):
     def load_document(self, filepath):
         """Charge un document EPUB."""
         if not filepath or not os.path.exists(filepath):
-            self.web_view.setHtml("<h1>Fichier non trouvé</h1>")
+            self.show_error("<h1>Fichier non trouvé</h1>")
             return
 
+        _, ext = os.path.splitext(filepath)
+        ext = ext.lower()
+
+        if ext == ".epub":
+            self.current_doc_type = "epub"
+            self.stacked_viewer.setCurrentWidget(self.web_view)
+            self.load_epub(filepath)
+        elif ext == ".pdf":
+            self.current_doc_type = "pdf"
+            self.stacked_viewer.setCurrentWidget(self.pdf_viewer)
+            self.load_pdf(filepath)
+        else:
+            self.show_error(f"<h1>Format de fichier non supporté : {ext}</h1>")
+
+    def load_epub(self, filepath):
         try:
             self.book = epub.read_epub(filepath)
             self.scheme_handler.set_book(self.book)
@@ -378,6 +409,49 @@ class EpubReaderPanel(QWidget):
             traceback.print_exc()
             QMessageBox.critical(self, "Erreur de chargement EPUB", str(e))
             self.enable_navigation(False)
+
+    def load_pdf(self, filepath):
+        """Charge un document PDF."""
+        self.pdf_viewer.document_loaded.connect(self.on_pdf_document_loaded)
+        self.pdf_viewer.load_document(filepath)
+
+    def on_pdf_document_loaded(self, success, title, author, toc, page_count):
+        """Callback après le chargement du PDF."""
+        self.pdf_viewer.document_loaded.disconnect(self.on_pdf_document_loaded)
+
+        if not success:
+            self.enable_navigation(False)
+            return
+
+        self.book_title = title
+        self.book_author = author
+        self.pdf_toc = toc
+        self.chapters = list(range(page_count))  # Chaque page est un "chapitre"
+
+        self.toc_list.clear()
+        self.chapter_combo.clear()
+
+        if toc:
+            for level, toc_title, page_num in toc:
+                # page_num est 1-based, on le veut 0-based
+                item = QListWidgetItem("  " * (level - 1) + toc_title)
+                font = self.toc_list.font()
+                font.setBold(level == 1)
+                item.setFont(font)
+                self.toc_list.addItem(item)
+                self.chapter_combo.addItem("  " * (level - 1) + toc_title)
+        else:
+            # Si pas de TOC, créer une entrée par page
+            for i in range(page_count):
+                title = f"Page {i + 1}"
+                self.toc_list.addItem(title)
+                self.chapter_combo.addItem(title)
+
+        self.current_chapter_index = 0
+        self.load_current_chapter()
+        self.enable_navigation(True)
+
+        print(f"Livre PDF chargé: {page_count} pages trouvées")
 
     def _parse_toc(self, toc, level=0):
         """Parser récursivement la table des matières."""
@@ -506,6 +580,33 @@ class EpubReaderPanel(QWidget):
         if not self.chapters or self.current_chapter_index >= len(self.chapters):
             return
 
+        if self.current_doc_type == "pdf":
+            self.pdf_viewer.go_to_page(self.current_chapter_index)
+            self.update_position_label()
+
+            # V3.0.5 - Synchroniser la TOC et le ComboBox pour le PDF
+            toc_index_to_select = -1
+            if self.pdf_toc:
+                # Trouver l'entrée TOC la plus proche de la page actuelle
+                for i, (_, _, page_num) in reversed(list(enumerate(self.pdf_toc))):
+                    if page_num - 1 <= self.current_chapter_index:
+                        toc_index_to_select = i
+                        break
+            else:
+                # Si pas de TOC, l'index de la page correspond à l'index de la liste
+                toc_index_to_select = self.current_chapter_index
+
+            if toc_index_to_select != -1:
+                self.toc_list.blockSignals(True)
+                self.chapter_combo.blockSignals(True)
+
+                self.toc_list.setCurrentRow(toc_index_to_select)
+                self.chapter_combo.setCurrentIndex(toc_index_to_select)
+
+                self.toc_list.blockSignals(False)
+                self.chapter_combo.blockSignals(False)
+            return
+
         chapter = self.chapters[self.current_chapter_index]
         html_content = chapter.get_content().decode("utf-8", errors="ignore")
 
@@ -621,15 +722,18 @@ class EpubReaderPanel(QWidget):
 
     def load_chapter_from_list(self, item):
         """Charger un chapitre depuis la liste de la table des matières."""
-        toc_index = self.toc_list.currentRow()
-        if toc_index >= 0 and toc_index < len(self.toc_items):
+        index = self.toc_list.currentRow()
+        if index < 0:
+            return
+
+        if self.current_doc_type == "epub" and index < len(self.toc_items):
             # Stocker l'index TOC sélectionné
-            self.current_toc_index = toc_index
+            self.current_toc_index = index
             # Utiliser l'index du chapitre stocké dans toc_items
-            self.current_chapter_index = self.toc_items[toc_index]["chapter_index"]
+            self.current_chapter_index = self.toc_items[index]["chapter_index"]
 
             # Afficher des infos de debug
-            toc_item = self.toc_items[toc_index]
+            toc_item = self.toc_items[index]
             print(
                 f"Navigation TOC: {toc_item['title']} -> chapitre {self.current_chapter_index}"
             )
@@ -637,10 +741,24 @@ class EpubReaderPanel(QWidget):
                 print(f"  href: {toc_item['href']}")
 
             self.load_current_chapter()
+        elif self.current_doc_type == "pdf":
+            if self.pdf_toc:
+                # Le numéro de page est 1-based dans la TOC de PyMuPDF
+                page_num = self.pdf_toc[index][2] - 1
+                self.current_chapter_index = page_num
+            else:
+                self.current_chapter_index = index
+
+            self.load_current_chapter()
+            # V3.0.5 - Correction du debug pour PDF
+            print(f"Navigation PDF TOC: page {self.current_chapter_index + 1}")
 
     def load_chapter_from_combo(self, index):
         """Charger un chapitre depuis le combo box."""
-        if index >= 0 and index < len(self.toc_items):
+        if index < 0:
+            return
+
+        if self.current_doc_type == "epub" and index < len(self.toc_items):
             # Stocker l'index TOC sélectionné
             self.current_toc_index = index
             # Utiliser l'index du chapitre stocké dans toc_items
@@ -655,6 +773,16 @@ class EpubReaderPanel(QWidget):
                 print(f"  href: {toc_item['href']}")
 
             self.load_current_chapter()
+        elif self.current_doc_type == "pdf":
+            if self.pdf_toc:
+                page_num = self.pdf_toc[index][2] - 1
+                self.current_chapter_index = page_num
+            else:
+                self.current_chapter_index = index
+
+            self.load_current_chapter()
+            # V3.0.5 - Correction du debug pour PDF
+            print(f"Navigation PDF combo: page {self.current_chapter_index + 1}")
 
     def previous_chapter(self):
         if self.current_chapter_index > 0:
@@ -688,20 +816,38 @@ class EpubReaderPanel(QWidget):
         search_text = self.search_input.text()
         if search_text:
             self.search_text = search_text
-            self.web_page.findText(search_text)
+            if self.current_doc_type == "epub":
+                self.web_page.findText(search_text)
+            elif self.current_doc_type == "pdf":
+                self.pdf_viewer.find_text(search_text, new_search=True)
 
     def find_next(self):
         if self.search_text:
-            self.web_page.findText(self.search_text)
+            if self.current_doc_type == "epub":
+                self.web_page.findText(self.search_text)
+            elif self.current_doc_type == "pdf":
+                self.pdf_viewer.navigate_search_results(1)
 
     def find_previous(self):
         if self.search_text:
-            self.web_page.findText(self.search_text, QWebEnginePage.FindBackward)
+            if self.current_doc_type == "epub":
+                self.web_page.findText(self.search_text, QWebEnginePage.FindBackward)
+            elif self.current_doc_type == "pdf":
+                self.pdf_viewer.navigate_search_results(-1)
 
     def clear_search(self):
         self.search_input.clear()
         self.search_text = ""
-        self.web_page.findText("")
+        if self.current_doc_type == "epub":
+            self.web_page.findText("")
+        elif self.current_doc_type == "pdf":
+            self.pdf_viewer.clear_search()
+
+    def on_pdf_page_changed(self, page_num):
+        """Slot appelé lorsque le PdfViewer change de page (ex: via la recherche)."""
+        if self.current_chapter_index != page_num:
+            self.current_chapter_index = page_num
+            self.load_current_chapter()
 
     def enable_navigation(self, enabled):
         """Active ou désactive les contrôles de navigation."""
@@ -715,6 +861,10 @@ class EpubReaderPanel(QWidget):
         self.search_prev_btn.setEnabled(enabled)
         self.clear_search_btn.setEnabled(enabled)
         self.toc_list.setEnabled(enabled)
+
+    def show_error(self, message):
+        self.web_view.setHtml(message)
+        self.stacked_viewer.setCurrentWidget(self.web_view)
 
     def has_document(self):
         """Retourne True si un document est chargé."""
