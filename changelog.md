@@ -1,3 +1,18 @@
+## V3.0.6 Onglet Lecteur (PDF) Fix [#45] Cannot scroll with mousewheel
+
+
+Fix [#45](https://github.com/lephotographelibre/BlueNotebook/issues/45)
+
+dans le panneau "Lecteur" avec un fichier pdf ouvert, j'essaye de faire defiler les pages avec la molette de la souris.
+Cela ne fonctionne pas.
+
+Cela défile bien dans la page affichée mais je voudrais que le défilement m'affiche la page suivante ou précédente
+
+Cela fonctionne maintenant mais 
+- mais l'affichage dans la table des matières a gauche du document n'est pas mise à jour des changements de page, de chapitre
+-
+- mais pas l'affichage dans la liste déroulante (entre les flèches) de la barre de navigation n'est pas mise à jour des changements de page, de chapitre
+
 ## V3.0.5 Onglet Lecteur (EPUB/PDF) MaJ PDFReader
 
 --> Branch ---> pdf_reader   git checkout -b pdf_reader

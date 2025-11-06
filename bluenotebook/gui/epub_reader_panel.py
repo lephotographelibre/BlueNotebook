@@ -257,6 +257,8 @@ class EpubReaderPanel(QWidget):
         # Lecteur PDF
         self.pdf_viewer = PdfViewer()
         self.pdf_viewer.page_changed_by_search.connect(self.on_pdf_page_changed)
+        # V3.0.6 - Connecter le nouveau signal pour synchroniser l'UI
+        self.pdf_viewer.page_changed.connect(self.on_pdf_page_changed)
         self.stacked_viewer.addWidget(self.pdf_viewer)
         # V3.0.1 - Ajouter un facteur d'étirement pour que la vue web prenne tout l'espace vertical
         # Le '1' indique que ce widget doit s'étirer pour remplir l'espace disponible.

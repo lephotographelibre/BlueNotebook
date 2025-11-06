@@ -42,6 +42,7 @@ class PdfViewer(QWidget):
         bool, str, str, list, int
     )  # success, title, author, toc, page_count
     page_changed_by_search = pyqtSignal(int)  # page_num
+    page_changed = pyqtSignal(int)  # V3.0.6 - Signal émis lors d'un changement de page
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -152,6 +153,9 @@ class PdfViewer(QWidget):
             if self.current_page_num != page_num:
                 self.clear_search()
             self.render_page(page_num)
+            self.page_changed.emit(
+                page_num
+            )  # V3.0.6 - Émettre le signal de changement de page
 
     def find_text(self, text, new_search=False):
         """Rechercher du texte. Si new_search est True, relance une recherche complète."""
@@ -249,8 +253,29 @@ class PdfViewer(QWidget):
             # Re-rendre la page avec le nouveau zoom
             self.render_page(self.current_page_num)
         else:
-            # Comportement par défaut (scroll vertical)
-            super().wheelEvent(event)
+            # V3.0.6 - Gestion du défilement de page avec la molette
+            scrollbar = self.scroll_area.verticalScrollBar()
+            delta = event.angleDelta().y()
+
+            # Défilement vers le bas
+            if delta < 0:
+                # Si on est en bas de la page, passer à la page suivante
+                if scrollbar.value() == scrollbar.maximum():
+                    if self.current_page_num < self.doc.page_count - 1:
+                        self.go_to_page(self.current_page_num + 1)
+                        event.accept()
+                        return
+            # Défilement vers le haut
+            elif delta > 0:
+                # Si on est en haut de la page, passer à la page précédente
+                if scrollbar.value() == scrollbar.minimum():
+                    if self.current_page_num > 0:
+                        self.go_to_page(self.current_page_num - 1)
+                        event.accept()
+                        return
+
+            # Sinon, comportement par défaut (scroll vertical dans la page)
+            self.scroll_area.wheelEvent(event)
 
     def contextMenuEvent(self, event):
         """Affiche un menu contextuel pour copier le texte de la page."""
