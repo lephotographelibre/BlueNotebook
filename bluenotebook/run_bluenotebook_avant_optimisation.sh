@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script de lancement optimisé pour BlueNotebook sur Linux
+# Script de lancement pour BlueNotebook sur Linux
 
 set -e # Arrête le script si une commande échoue
 
@@ -9,7 +9,6 @@ cd "$(dirname "$0")"
 
 PYTHON_VERSION="3.13.5"
 VENV_NAME=".venv_bluenotebook"
-VENV_PATH="$(pyenv root)/versions/${VENV_NAME}"
 
 echo "🚀 Lancement de BlueNotebook..."
 
@@ -22,41 +21,38 @@ if ! command -v pyenv &> /dev/null; then
     exit 1
 fi
 
-# --- Vérification de l'environnement (uniquement si nécessaire) ---
-if [ ! -d "$VENV_PATH" ]; then
-    echo "🛠️ Environnement virtuel '${VENV_NAME}' non trouvé. Lancement de l'installation unique..."
-    
-    # Initialiser pyenv pour l'installation
-    eval "$(pyenv init --path)"
-    eval "$(pyenv virtualenv-init -)"
-    
-    # Vérifier si la version de Python requise est disponible
-    if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
-        echo "🐍 La version ${PYTHON_VERSION} de Python n'est pas installée. Tentative d'installation..."
-        pyenv install "${PYTHON_VERSION}"
-    fi
-    
-    # Créer l'environnement virtuel
-    echo "� Création de l'environnement virtuel..."
+# Initialiser pyenv dans le shell courant
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
+
+# 2. Vérifier si la version de Python requise est disponible
+if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
+    echo "🐍 La version ${PYTHON_VERSION} de Python n'est pas installée avec pyenv."
+    echo "Tentative d'installation..."
+    pyenv install "${PYTHON_VERSION}"
+fi
+
+# 3. Créer l'environnement virtuel s'il n'existe pas
+if ! pyenv virtualenvs --bare | grep -q "^${VENV_NAME}$"; then
+    echo "🛠️  Création de l'environnement virtuel '${VENV_NAME}'..."
     pyenv virtualenv "${PYTHON_VERSION}" "${VENV_NAME}"
-    
-    # Forcer la réinstallation des dépendances après la création
-    rm -f "${VENV_PATH}/.dependencies_installed"
 fi
 
-# --- Activation et Lancement ---
-PYTHON_EXEC="${VENV_PATH}/bin/python"
-PIP_EXEC="${VENV_PATH}/bin/pip"
+# 4. Activer l'environnement virtuel de manière robuste
+echo "🔌 Activation de l'environnement virtuel '${VENV_NAME}'..."
+source "$(pyenv root)/versions/${VENV_NAME}/bin/activate"
+echo "✅ Environnement virtuel activé. Python : $(which python)"
+echo "✅ Environnement virtuel activé. Pip : $(pip -V)"
 
-# Vérifier et installer les dépendances seulement si requirements.txt est plus récent
-if [ "requirements.txt" -nt "${VENV_PATH}/.dependencies_installed" ]; then
-    echo "📦 Mise à jour des dépendances..."
-    "$PIP_EXEC" install -q -r requirements.txt
-    touch "${VENV_PATH}/.dependencies_installed"
-    echo "✅ Dépendances à jour."
-fi
+
+# 5. Installer/vérifier les dépendances
+echo "📦 Vérification et installation des dépendances depuis requirements.txt..."
+pip install -q -r requirements.txt
+
+echo "✅ Dépendances à jour."
 
 # --- Lancement de l'application ---
+
 echo "🎨 Détection de l'environnement de bureau pour le thème Qt..."
 PLATFORM_THEME=""
 
@@ -93,5 +89,4 @@ export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
 # export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
 export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
-
-"$PYTHON_EXEC" main.py "$@"
+python main.py "$@"

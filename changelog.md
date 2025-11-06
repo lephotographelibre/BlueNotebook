@@ -1,3 +1,21 @@
+## V3.0.7 Onglet Lecteur (epub) Fix [#46] Cannot scroll with mousewheel
+
+dans le panneau "Lecteur" avec un fichier epub ouvert, j'essaye de faire defiler les pages avec la molette de la souris.
+Cela ne fonctionne pas.
+
+Fix [#47](https://github.com/lephotographelibre/BlueNotebook/issues/47)
+
+Amelioration de la vitesse de demarrage
+
+modifier le script run_bluenotebook.sh afin qu'il ne fasse les vérifications lourdes (comme l'installation des dépendances avec pip install) que si c'est vraiment nécessaire.
+
+La lenteur provient principalement de deux commandes qui sont exécutées à chaque fois :
+
+- eval "$(pyenv init --path)" et eval "$(pyenv virtualenv-init -)" : Ces commandes sont coûteuses en temps. Elles ne sont utiles que si votre shell n'est pas déjà configuré pour pyenv.
+- pip install -r requirements.txt : C'est le point le plus lent. Le script vérifie et installe les dépendances à chaque lancement, même si elles n'ont pas changé.
+le script sera nettement plus rapide au quotidien. Les vérifications complètes et l'installation des dépendances ne se feront que la toute première fois ou lorsque vous modifierez le fichier requirements.txt.
+
+
 ## V3.0.6 Onglet Lecteur (PDF) Fix [#45] Cannot scroll with mousewheel
 
 

@@ -156,6 +156,37 @@ class EpubSchemeHandler(QWebEngineUrlSchemeHandler):
             request.fail(QWebEngineUrlRequestJob.UrlNotFound)
 
 
+# 3.0.7 Onglet Lecteur (epub) Fix [#46] Cannot scroll with mousewheel
+class CustomWebEngineView(QWebEngineView):
+    """Vue web personnalisée pour gérer le défilement par chapitre avec la molette."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.epub_reader_panel = parent
+
+    def wheelEvent(self, event):
+        """Gère les événements de la molette de la souris."""
+        delta = event.angleDelta().y()
+
+        def handle_scroll_check(at_end):
+            if at_end:
+                if delta < 0:  # Défilement vers le bas
+                    self.epub_reader_panel.next_chapter()
+                elif delta > 0:  # Défilement vers le haut
+                    self.epub_reader_panel.previous_chapter()
+            else:
+                # Si on n'est pas au bout, on laisse l'événement de molette par défaut se produire
+                super(CustomWebEngineView, self).wheelEvent(event)
+
+        if delta < 0:  # Défilement vers le bas
+            self.page().runJavaScript(
+                "window.scrollY + window.innerHeight >= document.body.scrollHeight - 2",
+                handle_scroll_check,
+            )
+        elif delta > 0:  # Défilement vers le haut
+            self.page().runJavaScript("window.scrollY === 0", handle_scroll_check)
+
+
 class EpubReaderPanel(QWidget):
     """Widget pour afficher et naviguer dans un fichier EPUB."""
 
@@ -224,7 +255,7 @@ class EpubReaderPanel(QWidget):
         # Barre de recherche
         search_layout = QHBoxLayout()
         # V3.0.1 - Bouton pour masquer/afficher la table des matières
-        self.toggle_toc_btn = QPushButton("<")
+        self.toggle_toc_btn = QPushButton("◀")
         self.toggle_toc_btn.setFixedWidth(30)
         self.toggle_toc_btn.clicked.connect(self.toggle_toc_visibility)
         search_layout.addWidget(self.toggle_toc_btn)
@@ -249,7 +280,7 @@ class EpubReaderPanel(QWidget):
         self.stacked_viewer = QStackedWidget()
 
         # Lecteur EPUB (Vue Web)
-        self.web_view = QWebEngineView()
+        self.web_view = CustomWebEngineView(self)
         self.web_page = QWebEnginePage(self.profile, self.web_view)
         self.web_view.setPage(self.web_page)
         self.stacked_viewer.addWidget(self.web_view)
@@ -403,7 +434,7 @@ class EpubReaderPanel(QWidget):
             self.load_current_chapter()
             self.enable_navigation(True)
 
-            print(f"Livre chargé: {len(self.chapters)} chapitres trouvés")
+            print(f"📖 Livre chargé: {len(self.chapters)} chapitres trouvés")
 
         except Exception as e:
             import traceback
@@ -736,11 +767,11 @@ class EpubReaderPanel(QWidget):
 
             # Afficher des infos de debug
             toc_item = self.toc_items[index]
-            print(
-                f"Navigation TOC: {toc_item['title']} -> chapitre {self.current_chapter_index}"
-            )
-            if "href" in toc_item:
-                print(f"  href: {toc_item['href']}")
+            # print(
+            #     f"Navigation TOC: {toc_item['title']} -> chapitre {self.current_chapter_index}"
+            # )
+            # if "href" in toc_item:
+            #    print(f"  href: {toc_item['href']}")
 
             self.load_current_chapter()
         elif self.current_doc_type == "pdf":
@@ -768,11 +799,11 @@ class EpubReaderPanel(QWidget):
 
             # Afficher des infos de debug
             toc_item = self.toc_items[index]
-            print(
-                f"Navigation combo: {toc_item['title']} -> chapitre {self.current_chapter_index}"
-            )
-            if "href" in toc_item:
-                print(f"  href: {toc_item['href']}")
+            # print( f"Navigation combo: {toc_item['title']} -> chapitre {self.current_chapter_index}"
+            # )
+
+            # if "href" in toc_item:
+            #    print(f"  href: {toc_item['href']}")
 
             self.load_current_chapter()
         elif self.current_doc_type == "pdf":
@@ -784,7 +815,7 @@ class EpubReaderPanel(QWidget):
 
             self.load_current_chapter()
             # V3.0.5 - Correction du debug pour PDF
-            print(f"Navigation PDF combo: page {self.current_chapter_index + 1}")
+            # print(f"Navigation PDF combo: page {self.current_chapter_index + 1}")
 
     def previous_chapter(self):
         if self.current_chapter_index > 0:
