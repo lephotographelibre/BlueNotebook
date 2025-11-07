@@ -1,3 +1,49 @@
+## V3.1.1 Remove all the search words code
+
+create new branch `remove_word_indexer`
+
+
+Je veux supprimer tout le code qui était utilisé pour l'indexation de mots, la recherche de mots cela inclus
+- word_indexer.py et tout le code associé
+- default_excluded_words.py et tout le code associé
+- les fichiers index_words.json index_words.cvv et tout le code associé
+- dans Préférences -> Général --> Mots personnalisés à exclure de l'indexation
+- dans Préférences -> Général --> Mots à exclure du nuage de mots
+- dans le panneau Navigation le Nuage de Mots, le code lié à la recherche de mots e
+
+
+This version removes all functionality related to word indexing and searching.
+
+**Removed Files:**
+- `/home/jm/PycharmProjects/BlueNotebook/bluenotebook/core/word_indexer.py`
+- `/home/jm/PycharmProjects/BlueNotebook/bluenotebook/core/default_excluded_words.py`
+- `/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/word_cloud.py`
+
+**Removed Functionality:**
+- Word indexing and generation of `index_words.json` and `index_words.csv`.
+- "Mots personnalisés à exclure de l'indexation" and "Mots à exclure du nuage de mots" settings in Preferences.
+- The "Nuage de Mots" panel in Navigation.
+- Display of word count in the status bar (tag count remains).
+- All associated code for word searching in `main_window.py` and `navigation.py`.
+
+
+ 
+Suppression des fichiers Python liés à l'indexation de mots. 
+
+Les fichiers bluenotebook/core/word_indexer.py, 
+bluenotebook/core/default_excluded_words.py et 
+bluenotebook/gui/word_cloud.py 
+beta1
+ 
+modify aide_en_ligne.html
+
+Maintenant qu'il n'y a plus d'indexation de mots, je voudrais dans le panneau navigation toujours afficher le panneau de resultat de recherche search_results_panel.py meme s'il n'y a pas eu encore de recher. ce panneau d'affichage de resultats de rechercher sera toujours présent et dessous le nuage de tag jusqu'en bas du panneau navigation. il prendra donc toute la place restant sous le nuage de tag.
+beta2
+
+Si aucune recherche n'a été éffectuée je veux que soient affiché par default, le panneau de résultat de recherche  pour le tag @@TODO et que soit affiché dans le  header du panneau de recherche "✔ Liste des Tâches @@TODO". dès qu'une recherche est effectué on reprend l'affichage normal "🔍 Résultats de la Recherche". mais si l'utilisateur relance une recherche sur @@TODO alors on rebascule sur "✔ Liste des Tâches @@TODO"
+
+
+
 ## V3.0.8 Onglet Lecteur (PDF) Fix [#46] Text Selection with mousewheel + Images
 
 fix [#46](https://github.com/lephotographelibre/BlueNotebook/issues/46) `pdf_viewer.py`

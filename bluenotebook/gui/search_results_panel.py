@@ -64,14 +64,29 @@ class SearchResultsPanel(QWidget):
         self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
         # self.results_tree.setStyleSheet("border: none; background: transparent;")
         layout.addWidget(self.results_tree)
+        self.update_results(
+            [], "@@TODO"
+        )  # Initialise avec la vue des tâches par défaut
 
         self.setLayout(layout)
 
-    def update_results(self, results: list):
+    def update_results(self, results: list, search_query: str = ""):
         """Met à jour la liste des résultats."""
         self.results_tree.clear()
+
+        # Mettre à jour le titre du panneau en fonction de la recherche
+        if search_query.lower() == "@@todo":
+            self.label.setText("✔ Liste des Tâches @@TODO")
+        else:
+            self.label.setText("🔍 Résultats de la Recherche")
+
         if not results:
-            item = QTreeWidgetItem(["Aucun résultat trouvé.", ""])
+            # Afficher un message contextuel
+            if search_query.lower() == "@@todo":
+                message = "Aucune tâche @@TODO trouvée."
+            else:
+                message = "Aucun résultat trouvé."
+            item = QTreeWidgetItem(["", message])
             self.results_tree.addTopLevelItem(item)
         else:
             # results est une liste de tuples (date, text, filename, line_number)

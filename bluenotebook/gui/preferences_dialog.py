@@ -127,24 +127,12 @@ class PreferencesDialog(QDialog):
         )
         layout.addRow(self.show_indexing_stats_checkbox)
 
-        # Mots à exclure de l'indexation
-        user_excluded_words = self.settings_manager.get(
-            "indexing.user_excluded_words", []
-        )
-        self.excluded_words_edit = QTextEdit()
-        self.excluded_words_edit.setPlainText(", ".join(sorted(user_excluded_words)))
-        self.excluded_words_edit.setToolTip(
-            "Ajoutez ici des mots personnalisés (séparés par des virgules) à ignorer lors de l'indexation."
-        )
-        self.excluded_words_edit.setMaximumHeight(80)
-
-        label = QLabel("Mots personnalisés à exclure de l'indexation:")
-        label.setToolTip(
-            "Ces mots (en minuscules) ne seront pas inclus dans les fichiers d'index de mots."
-        )
-        layout.addRow(label, self.excluded_words_edit)
-
-        # Tags à exclure du nuage
+        # Tags à exclure du nuage de tags
+        # NOTE: The original code had a comment "Tags à exclure du nuage"
+        # and the label was "Tags à exclure du nuage:", but the setting key
+        # was "indexing.excluded_tags_from_cloud".
+        # I'm keeping the label consistent with the setting key and the
+        # remaining functionality.
         excluded_tags_list = self.settings_manager.get(
             "indexing.excluded_tags_from_cloud", []
         )
@@ -160,25 +148,6 @@ class PreferencesDialog(QDialog):
             "Ces tags n'apparaîtront pas dans le panneau 'Nuage de Tags'."
         )
         layout.addRow(label_tags, self.excluded_tags_edit)
-
-        # Mots à exclure du nuage de mots
-        excluded_words_cloud_list = self.settings_manager.get(
-            "indexing.excluded_words_from_cloud", []
-        )
-        self.excluded_words_cloud_edit = QTextEdit()
-        self.excluded_words_cloud_edit.setPlainText(
-            ", ".join(sorted(excluded_words_cloud_list))
-        )
-        self.excluded_words_cloud_edit.setToolTip(
-            "Liste de mots (séparés par des virgules) à ne pas afficher dans le nuage de mots."
-        )
-        self.excluded_words_cloud_edit.setMaximumHeight(80)
-
-        label_words_cloud = QLabel("Mots à exclure du nuage de mots:")
-        label_words_cloud.setToolTip(
-            "Ces mots n'apparaîtront pas dans le panneau 'Nuage de Mots'."
-        )
-        layout.addRow(label_words_cloud, self.excluded_words_cloud_edit)
 
         # Ajouter un espace extensible pour pousser les éléments vers le haut
         layout.addRow(QLabel())

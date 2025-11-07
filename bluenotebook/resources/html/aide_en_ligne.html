@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V3.0.8</h1>
+            Aide en Ligne - BlueNotebook V3.1.1</h1>
     </header>
 
 <div class="main-container">
@@ -167,7 +167,7 @@
         <h2>1. Introduction</h2>
         <p>Bienvenue dans BlueNotebook ! Ce guide vous explique comment utiliser l'application pour tenir votre journal personnel en Markdown.</p>
         <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe Markdown et affiche un aperçu en temps réel de votre document.</p>
-        <p>Des fonctionnalités avancées de recherche et navigation permettent aux utilisateurs de retrouver rapidement des informations dans les différentes notes journalières avec les support de tags et une indexation automatique des tous les mots utilisés..</p>
+        <p>Des fonctionnalités avancées de recherche et navigation permettent aux utilisateurs de retrouver rapidement des informations dans les différentes notes journalières avec le support de tags et une indexation automatique.</p>
     </section>
 
     <section id="lancement">
@@ -212,12 +212,12 @@
             <li>Le nom du <strong>fichier actuel</strong> (ex: <code>20250920.md</code>).</li>
             <li>Un indicateur de modification (<code>●</code>) qui apparaît si votre travail n'est pas enregistré.</li>
             <li>Des statistiques sur votre document (lignes, mots, caractères).</li>
-            <li>À l'extrémité droite, le chemin vers votre <strong>dossier de journal</strong> et les statistiques d'indexation (nombre de tags et de mots uniques).</li>
+            <li>À l'extrémité droite, le chemin vers votre <strong>dossier de journal</strong> et les statistiques d'indexation (nombre de tags uniques).</li>
         </ul>
     </section>
 
     <section id="concept-journal">
-        <h2>4. Le Concept de "Journal" et son fonctionnement</h2>
+        <h2>4. Le Concept de "Journal" et son Fonctionnement</h2>
         <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
         <h3>La Note du Jour</h3>
         <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
@@ -518,29 +518,33 @@
 
     <section id="recherche-avancee">
         <h2>10. Recherche et Navigation Avancée</h2>
-        <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : les nuages de tags/mots et un champ de recherche.</p>
+        <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : le nuage de tags et un champ de recherche.</p>
         
-        <h3>Les Nuages de Tags et de Mots</h3>
-        <p>Sous le calendrier, vous trouverez deux "nuages" :</p>
+        <h3>Le Nuage de Tags</h3>
+        <p>Sous le calendrier, vous trouverez le "nuage de tags" :</p>
         <ul>
             <li><strong>Nuage de Tags :</strong> Affiche les tags (<code>@@mot</code>) que vous utilisez le plus souvent. Plus un tag est fréquent, plus il apparaît en grand.</li>
-            <li><strong>Nuage de Mots :</strong> Affiche de la même manière les mots les plus fréquents de votre journal (hors mots courants).</li>
         </ul>
-        <p><strong>Interaction :</strong> Cliquez sur un tag ou un mot dans l'un des nuages pour l'insérer automatiquement dans le champ de recherche et <strong>lancer immédiatement la recherche</strong>.</p>
-        <p><strong>Attention:</strong> Les tags et tous les mots n’apparaissent pas tous dans les nuages, uniquement les plus fréquents. Néanmoins vous pouvez lancer une recherche sur n'importe quel tag ou mot par une saisie directe dans le champ Recherche.</p>
+        <p><strong>Interaction :</strong> Cliquez sur un tag dans le nuage pour l'insérer automatiquement dans le champ de recherche et <strong>lancer immédiatement la recherche</strong>.</p>
+        <p><strong>Attention:</strong> Les tags n’apparaissent pas tous dans le nuage, uniquement les plus fréquents. Néanmoins vous pouvez lancer une recherche sur n'importe quel tag par une saisie directe dans le champ Recherche.</p>
 
         <h3>Le Champ de Recherche</h3>
         <p>Situé sous le calendrier, ce champ vous permet de lancer une recherche précise. Il est conçu pour être rapide et efficace.</p>
         <ul>
-            <li><strong>Rechercher un mot :</strong> Tapez simplement le mot et appuyez sur <code>Entrée</code>.</li>
             <li><strong>Rechercher un tag :</strong> Vous devez préfixer votre recherche avec <code>@@</code> (ex: <code>@@projet</code>).</li>
             <li><strong>Liste des tags :</strong> Cliquez sur le bouton <code>▼</code> à droite du champ pour afficher la liste de tous vos tags. Cliquer sur un tag dans cette liste le sélectionne et <strong>lance automatiquement la recherche</strong>.</li>
             <li><strong>Effacer la recherche :</strong> Cliquez sur l'icône qui apparaît à droite dans le champ pour effacer son contenu et revenir à l'affichage des nuages.</li>
         </ul>
 
         <h3>Le Panneau de Résultats de Recherche</h3> 
-        <p>Après une recherche, les nuages sont remplacés par un panneau de résultats. Chaque ligne correspond à une occurrence trouvée et contient deux colonnes : "Date" et "Texte". Le contexte affiché correspond maintenant à <strong>toute la fin de la ligne</strong> où le mot ou le tag a été trouvé, vous donnant un aperçu beaucoup plus complet. Les résultats sont triés par défaut du plus récent au plus ancien (vous pouvez inverser le tri en cliquant sur l'en-tête "Date").</p>
-        <p><strong>Interaction :</strong> Cliquez sur une ligne de résultat pour ouvrir la note correspondante <strong>directement à la bonne ligne</strong> dans l'éditeur ! Si vous effacez le contenu du champ de recherche, les nuages de tags et de mots réapparaîtront.</p>
+        <p>Le panneau de résultats de recherche est toujours visible dans le panneau de navigation, juste en dessous du nuage de tags, et occupe tout l'espace restant. Chaque ligne correspond à une occurrence trouvée et contient deux colonnes : "Date" et "Texte". Le contexte affiché correspond à <strong>toute la fin de la ligne</strong> où le tag a été trouvé, vous donnant un aperçu beaucoup plus complet. Les résultats sont triés par défaut du plus récent au plus ancien (vous pouvez inverser le tri en cliquant sur l'en-tête "Date").</p>
+        <p><strong>Comportement par défaut et recherche :</strong></p>
+        <ul>
+            <li><strong>Par défaut</strong>, si aucune recherche n'a été effectuée, ce panneau affiche la liste des tâches <code>@@TODO</code> avec le titre "✔ Liste des Tâches @@TODO".</li>
+            <li>Dès qu'une <strong>recherche est lancée</strong>, le titre devient "🔍 Résultats de la Recherche" et le panneau affiche les résultats correspondants.</li>
+            <li>Si vous recherchez à nouveau le tag <code>@@TODO</code>, le titre rebascule sur "✔ Liste des Tâches @@TODO".</li>
+        </ul>
+        <p><strong>Interaction :</strong> Cliquez sur une ligne de résultat pour ouvrir la note correspondante <strong>directement à la bonne ligne</strong> dans l'éditeur !</p>
     </section> 
 
     <section id="menus">
@@ -698,10 +702,9 @@ Aide
         <h3>Onglet "Général"</h3>
         <ul>
             <li><strong>Statistiques d'indexation :</strong> Cochez pour afficher en permanence le nombre de mots et tags dans la barre de statut.</li>
-            <li><strong>Mots à exclure de l'indexation :</strong> Ajoutez des mots (séparés par des virgules) que vous ne voulez pas voir apparaître dans l'index de recherche ou le nuage de mots.</li>
-            <li><strong>Tags/Mots à exclure des nuages :</strong> Permet de masquer certains tags ou mots des nuages sans les retirer de l'index de recherche.</li>
+            <li><strong>Tags à exclure des nuages :</strong> Permet de masquer certains tags des nuages sans les retirer de l'index de recherche.</li>
         </ul>
-
+        
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
@@ -852,7 +855,7 @@ Aide
         <h3>Recherche et Navigation</h3>
         <dl>
             <dt>Q : Comment retrouver rapidement une information dans mon journal ?</dt>
-            <dd><strong>R :</strong> Utilisez le champ de recherche situé dans le panneau de Navigation, sous le calendrier. Vous pouvez y rechercher des mots ou des tags.</dd>
+            <dd><strong>R :</strong> Utilisez le champ de recherche situé dans le panneau de Navigation, sous le calendrier. Vous pouvez y rechercher des tags.</dd>
 
             <dt>Q : Comment rechercher un tag spécifique (ex: <code>@@projet</code>) ?</dt>
             <dd><strong>R :</strong> Tapez simplement <code>@@projet</code> dans le champ de recherche et appuyez sur <code>Entrée</code>. La recherche est insensible à la casse et aux accents : chercher <code>@@météo</code> trouvera le tag <code>@@METEO</code>. Vous pouvez aussi cliquer sur le bouton <code>▼</code> pour voir la liste de tous vos tags (qui sont affichés sous leur forme normalisée, en majuscules).</dd>
@@ -1030,7 +1033,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.0.8 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.1.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

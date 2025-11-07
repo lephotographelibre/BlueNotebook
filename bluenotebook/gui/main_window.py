@@ -76,13 +76,11 @@ from .date_range_dialog import DateRangeDialog
 from .preferences_dialog import PreferencesDialog
 from core.journal_backup_worker import JournalBackupWorker
 from core.quote_fetcher import QuoteFetcher
-from .word_cloud import WordCloudPanel
-from core.default_excluded_words import DEFAULT_EXCLUDED_WORDS
+
 from integrations.weather import get_weather_markdown
-import requests
 from bs4 import BeautifulSoup
 from integrations.gps_map_generator import get_location_name, create_gps_map
-from core.word_indexer import start_word_indexing
+
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
@@ -598,8 +596,7 @@ class MainWindow(QMainWindow):
         self.daily_quote = None
         self.last_document_reader = None
         self.daily_author = None
-        self.tag_index_count = -1
-        self.word_index_count = -1
+        self.tag_index_count = -1  # Only tag count remains
 
         from core.settings import SettingsManager
 
@@ -699,7 +696,9 @@ class MainWindow(QMainWindow):
         self.epub_reader_panel = EpubReaderPanel(settings_manager=self.settings_manager)
         main_splitter.addWidget(self.epub_reader_panel)
 
-        self.navigation_panel.setFixedWidth(400)
+        self.navigation_panel.setFixedWidth(
+            400
+        )  # This line was already there, but it's important to keep it for navigation panel width
         self.outline_panel.setFixedWidth(400)
         # V3.0.1 - Supprimer la largeur fixe pour permettre le redimensionnement
         # self.epub_reader_panel.setFixedWidth(600)
@@ -1525,7 +1524,6 @@ class MainWindow(QMainWindow):
                 )
                 self.start_initial_indexing()
                 self.update_calendar_highlights()
-                self.update_word_cloud()
                 self.update_tag_cloud()
 
     def open_file(self):
@@ -2915,39 +2913,22 @@ class MainWindow(QMainWindow):
             self.journal_directory, self.thread_pool, self.on_indexing_finished
         )
 
-        user_excluded = self.settings_manager.get("indexing.user_excluded_words", [])
-        excluded_words_set = set(DEFAULT_EXCLUDED_WORDS) | set(user_excluded)
-        start_word_indexing(
-            self.journal_directory,
-            excluded_words_set,
-            self.thread_pool,
-            self.on_word_indexing_finished,
-        )
-
     def on_indexing_finished(self, unique_tag_count):
         """Callback exécuté à la fin de l'indexation."""
         self.tag_index_count = unique_tag_count
         self.update_indexing_status_label()
 
-    def on_word_indexing_finished(self, unique_word_count):
-        """Callback exécuté à la fin de l'indexation des mots."""
-        self.word_index_count = unique_word_count
-        self.update_indexing_status_label()
+        # V3.1.1 - Lancer la recherche par défaut sur @@TODO après l'indexation
+        self.perform_search("@@TODO")
 
     def update_indexing_status_label(self):
         """Met à jour la barre de statut avec les résultats des deux indexations."""
-        if self.tag_index_count == -1 or self.word_index_count == -1:
+        # Now only checks for tag index count
+        if self.tag_index_count == -1:
             return
 
-        tag_msg = "Erreur tags"
-        if self.tag_index_count >= 0:
-            tag_msg = f"{self.tag_index_count} tags"
-
-        word_msg = "Erreur mots"
-        if self.word_index_count >= 0:
-            word_msg = f"{self.word_index_count} mots"
-
-        full_message = f"Index: {tag_msg} | {word_msg}"
+        tag_msg = f"{self.tag_index_count} tags"
+        full_message = f"Index: {tag_msg}"
         print(f"✅ {full_message}")
         self.tag_index_status_label.setText(full_message)
 
@@ -2955,7 +2936,6 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(15000, lambda: self.tag_index_status_label.clear())
 
         self.update_tag_cloud()
-        self.update_word_cloud()
         self.update_navigation_panel_data()
 
     def on_prev_day_button_clicked(self):
@@ -3102,7 +3082,6 @@ class MainWindow(QMainWindow):
                 f"Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
             )
         self.update_tag_cloud()
-        self.update_word_cloud()
 
     def _set_file_label_color(self, color):
         """Définit la couleur du texte pour le label du nom de fichier."""
@@ -3227,14 +3206,6 @@ class MainWindow(QMainWindow):
                 dialog.show_indexing_stats_checkbox.isChecked(),
             )
 
-            user_words_text = dialog.excluded_words_edit.toPlainText()
-            user_words_list = [
-                word.strip().lower()
-                for word in user_words_text.split(",")
-                if word.strip()
-            ]
-            self.settings_manager.set("indexing.user_excluded_words", user_words_list)
-
             excluded_tags_text = dialog.excluded_tags_edit.toPlainText()
             excluded_tags_list = [
                 tag.strip().lower()
@@ -3243,16 +3214,6 @@ class MainWindow(QMainWindow):
             ]
             self.settings_manager.set(
                 "indexing.excluded_tags_from_cloud", excluded_tags_list
-            )
-
-            excluded_words_cloud_text = dialog.excluded_words_cloud_edit.toPlainText()
-            excluded_words_cloud_list = [
-                word.strip().lower()
-                for word in excluded_words_cloud_text.split(",")
-                if word.strip()
-            ]
-            self.settings_manager.set(
-                "indexing.excluded_words_from_cloud", excluded_words_cloud_list
             )
 
             self.settings_manager.set(
@@ -3421,20 +3382,12 @@ class MainWindow(QMainWindow):
             self.journal_directory, excluded_tags_set
         )
 
-    def update_word_cloud(self):
-        """Met à jour le contenu du nuage de mots."""
-        excluded_words_list = self.settings_manager.get(
-            "indexing.excluded_words_from_cloud", []
-        )
-        excluded_words_set = set(excluded_words_list)
-        self.navigation_panel.word_cloud.update_cloud(
-            self.journal_directory, excluded_words_set
-        )
-
     def perform_search(self, query: str):
         """Effectue une recherche dans les index et affiche les résultats."""
         if not query or not self.journal_directory:
-            self.navigation_panel.show_clouds()
+            self.perform_search(
+                "@@TODO"
+            )  # Si la recherche est vide, afficher les TODO par défaut
             return
 
         results = []
@@ -3456,24 +3409,10 @@ class MainWindow(QMainWindow):
                                     detail.get("line", 1),
                                 )
                             )
-                        break
-        else:
-            index_file = self.journal_directory / "index_words.json"
-            if index_file.exists():
-                with open(index_file, "r", encoding="utf-8") as f:
-                    words_data = json.load(f)
-                if query_lower in words_data:
-                    for detail in words_data[query_lower]["details"]:
-                        results.append(
-                            (
-                                detail["date"],
-                                detail["context"],
-                                detail["filename"],
-                                detail.get("line", 1),
-                            )
-                        )
+                        break  # Break from the inner loop after finding the tag
+        # If query is not a tag, it will not be processed further
 
-        self.navigation_panel.show_search_results(results)
+        self.navigation_panel.show_search_results(results, query)
 
     def open_file_from_search(self, filename: str, line_number: int):
         """Ouvre un fichier sélectionné depuis les résultats de recherche."""

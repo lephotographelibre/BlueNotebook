@@ -35,7 +35,6 @@ from PyQt5.QtWidgets import (
     QToolButton,
 )
 from .search_results_panel import SearchResultsPanel
-from .word_cloud import WordCloudPanel
 from .tag_cloud import TagCloudPanel
 
 
@@ -70,7 +69,6 @@ class NavigationPanel(QWidget):
         self.tag_search_input.textChanged.connect(self.on_tag_search_changed)
         self.tag_search_input.returnPressed.connect(self.on_search_triggered)
         self.tag_cloud.tag_clicked.connect(self.on_tag_cloud_clicked)
-        self.word_cloud.word_clicked.connect(self.on_word_cloud_clicked)
         self.search_results_panel.item_selected.connect(self.file_open_requested.emit)
 
     def setup_ui(self):
@@ -128,7 +126,7 @@ class NavigationPanel(QWidget):
         self.tag_search_input = QLineEdit()
         # V 1.6.9 Ajoute le bouton pour effacer le contenu du champ de recherche
         self.tag_search_input.setClearButtonEnabled(True)
-        self.tag_search_input.setPlaceholderText("@@tag ou mot")
+        self.tag_search_input.setPlaceholderText("@@tag")
 
         # L'icône de loupe est maintenant gérée par le thème ou peut être ajoutée
         # via QSS si nécessaire, mais l'action est déclenchée par returnPressed.
@@ -151,33 +149,19 @@ class NavigationPanel(QWidget):
 
         layout.addWidget(search_container)
 
-        # Stacked widget pour basculer entre les nuages et les résultats de recherche
-        self.stacked_widget = QStackedWidget()
-
-        # Widget conteneur pour les deux nuages
-        clouds_container = QWidget()
-        clouds_layout = QVBoxLayout(clouds_container)
-        clouds_layout.setContentsMargins(0, 0, 0, 0)
-        clouds_layout.setSpacing(0)
-
-        # Nuage de tags
+        # Nuage de Tags (toujours visible)
         self.tag_cloud = TagCloudPanel()
-        self.tag_cloud.setFixedSize(400, 250)
-        clouds_layout.addWidget(self.tag_cloud)
+        layout.addWidget(self.tag_cloud)
 
-        # Nuage de mots
-        self.word_cloud = WordCloudPanel()
-        self.word_cloud.setFixedSize(400, 300)
-        clouds_layout.addWidget(self.word_cloud)
-
-        self.stacked_widget.addWidget(clouds_container)
+        # Panneau de résultats de recherche (toujours visible, prend l'espace restant)
         self.search_results_panel = SearchResultsPanel()
-        self.stacked_widget.addWidget(self.search_results_panel)
-
-        layout.addWidget(self.stacked_widget)
+        layout.addWidget(
+            self.search_results_panel, 1
+        )  # Stretch factor to take remaining space
 
         # Ajouter un espace flexible pour pousser tous les widgets vers le haut
-        layout.addStretch()
+        # Supprimé car search_results_panel prend maintenant l'espace restant
+        # layout.addStretch()
 
         self.setLayout(layout)
 
@@ -277,8 +261,9 @@ class NavigationPanel(QWidget):
 
     def on_tag_search_changed(self, text):
         """Gère le changement de texte dans le champ de recherche."""
+        # Si le champ de recherche est vidé, relancer la recherche par défaut sur @@TODO
         if not text:
-            self.show_clouds()
+            self.tag_search_triggered.emit("@@TODO")
 
     def on_search_triggered(self):
         """Déclenché lorsque l'icône de recherche est cliquée ou sur Entrée."""
@@ -318,16 +303,6 @@ class NavigationPanel(QWidget):
         self.tag_search_input.setText(f"@@{tag_name}")
         self.on_search_triggered()
 
-    def on_word_cloud_clicked(self, word: str):
-        """Met à jour le champ de recherche lorsqu'un mot est cliqué dans le nuage."""
-        self.tag_search_input.setText(word)
-        self.on_search_triggered()
-
-    def show_search_results(self, results: list):
-        """Affiche le panneau de résultats et masque les nuages."""
-        self.search_results_panel.update_results(results)
-        self.stacked_widget.setCurrentWidget(self.search_results_panel)
-
-    def show_clouds(self):
-        """Affiche les nuages et masque le panneau de résultats."""
-        self.stacked_widget.setCurrentIndex(0)
+    def show_search_results(self, results: list, search_query: str):
+        """Met à jour le panneau de résultats avec les résultats et la requête."""
+        self.search_results_panel.update_results(results, search_query)

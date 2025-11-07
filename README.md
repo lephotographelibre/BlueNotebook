@@ -18,7 +18,7 @@ La vision du produit est de combiner le meilleur des deux mondes :
 *   **La pérennité des données :** Le journal est un simple dossier de fichiers `.md`, lisibles par n'importe quel éditeur de texte.
 *   **L'efficacité d'une application dédiée :** Navigation par calendrier, recherche plein texte, indexation de tags, aperçu en temps réel, exports professionnels (PDF, EPUB), et intégrations de services web.
 
-Copyright (C) 2025 Jean-Marc DIGNE
+Copyright (C) 2025 Jean-Marc DIGNE (Word indexing and search removed in V3.1.1)
 
 *Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier conformément aux termes de la Licence Publique Générale GNU telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre choix) toute version ultérieure.*
 
@@ -87,7 +87,7 @@ Ce paquet contient la logique fondamentale de l'application, sans aucune dépend
 *   **`markdown_parser.py` (`MarkdownParser`)**: Encapsule la bibliothèque `markdown` pour convertir le texte Markdown en HTML.
 *   **`tag_indexer.py` (`TagIndexer`)** et **`word_indexer.py` (`WordIndexer`)**: Composants cruciaux pour la fonctionnalité de recherche. Ils opèrent de manière asynchrone (via `QRunnable`) pour scanner le répertoire du journal, extraire les tags (`@@tag`) et les mots, et générer des fichiers d'index (`index_tags.json`, `index_words.json`).
 *   **`quote_fetcher.py` (`QuoteFetcher`)**: Récupère la "citation du jour" en scrappant le site `citations.ouest-france.fr`. Inclut un mécanisme de cache pour éviter les requêtes répétées.
-
+<!-- Word indexing and search removed in V3.1.1 -->
 #### `gui/` (Interface Graphique)
 
 Ce paquet contient tous les widgets et fenêtres qui composent l'interface utilisateur, construits avec PyQt5.
@@ -100,7 +100,7 @@ Ce paquet contient tous les widgets et fenêtres qui composent l'interface utili
 *   **`navigation.py` (`NavigationPanel`)**: Le panneau latéral gauche, qui contient le calendrier pour la navigation temporelle, le champ de recherche, et les nuages de tags et de mots.
 *   **`outline.py` (`OutlinePanel`)**: Affiche une arborescence cliquable des titres (H1, H2, etc.) du document en cours.
 *   **`preferences_dialog.py` (`PreferencesDialog`)**: Une fenêtre complexe permettant à l'utilisateur de personnaliser en détail l'apparence (thèmes, polices, couleurs) et le comportement de l'application.
-*   Autres widgets : `date_range_dialog.py` (pour les exports), `search_results_panel.py`, `tag_cloud.py`, `word_cloud.py`.
+*   Autres widgets : `date_range_dialog.py` (pour les exports), `search_results_panel.py`, `tag_cloud.py`.
 
 #### `integrations/` (Services Externes)
 
@@ -141,7 +141,7 @@ L'application est construite sur un ensemble de bibliothèques Python robustes e
 *   **Indexation Asynchrone** : Au démarrage et lors de la sélection d'un journal, l'application lance des tâches de fond pour indexer tous les mots et les tags (`@@...`). Cela permet une recherche quasi-instantanée sans jamais bloquer l'interface utilisateur. Les index sont stockés dans des fichiers JSON pour des rechargements rapides.
 *   **Gestion Centralisée des Paramètres** : Toutes les préférences de l'utilisateur (thèmes de couleurs, polices, visibilité des panneaux, clés API) sont gérées par la classe `SettingsManager` et stockées dans un unique fichier `settings.json`, ce qui facilite la sauvegarde et la portabilité de la configuration.
 
-### 4.2. Interface Utilisateur (GUI)
+### 4.2. Interface Utilisateur (GUI) (Word indexing and search removed in V3.1.1)
 
 *   **Éditeur Markdown Avancé** :
     *   **Coloration Syntaxique en Temps Réel** : Le `MarkdownHighlighter` analyse le texte au fur et à mesure de la frappe pour colorer les titres, le gras, l'italique, les listes, le code, les liens, les tags, etc.
@@ -154,7 +154,7 @@ L'application est construite sur un ensemble de bibliothèques Python robustes e
 *   **Navigation Intelligente** :
     *   **Calendrier** : Met en évidence les jours où une note a été écrite, permettant un accès direct.
     *   **Nuages de Mots et de Tags** : Générés à partir des index, ils offrent une vue d'ensemble des thèmes récurrents du journal. Un clic sur un terme lance une recherche.
-    *   **Recherche Plein Texte** : Le champ de recherche permet de trouver des mots ou des tags dans tout le journal. Les résultats s'affichent avec leur contexte et un clic sur un résultat ouvre le fichier correspondant directement à la bonne ligne.
+    *   **Recherche Plein Texte** : Le champ de recherche permet de trouver des tags dans tout le journal. Les résultats s'affichent avec leur contexte et un clic sur un résultat ouvre le fichier correspondant directement à la bonne ligne.
 *   **Panneaux Modulables** : Les panneaux de Navigation, Plan et Aperçu peuvent être affichés ou masqués (via des boutons ou les touches `F5`-`F7`) pour créer un espace de travail personnalisé.
 
 ### 4.3. Intégrations Externes
@@ -180,8 +180,7 @@ C'est le dossier principal choisi par l'utilisateur. Il contient :
 ### 5.2. Fichiers d'Indexation
 Générés et mis à jour automatiquement dans le répertoire du journal :
 *   `index_tags.json`: Un dictionnaire où chaque clé est un tag et la valeur contient le nombre d'occurrences et une liste détaillée de chaque occurrence (fichier, ligne, contexte, date).
-*   `index_words.json`: Structure identique à `index_tags.json` mais pour les mots du journal.
-*   `index_tags.csv` et `index_words.csv`: Des versions alternatives des index au format CSV pour une éventuelle utilisation externe.
+*   `index_tags.csv`: Une version alternative de l'index des tags au format CSV pour une éventuelle utilisation externe.
 
 ### 5.3. Fichiers de Configuration
 *   `~/.config/BlueNotebook/settings.json`: Fichier unique contenant toutes les préférences de l'utilisateur (polices, couleurs, thèmes, clés API, etc.).
