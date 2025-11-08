@@ -745,8 +745,7 @@ class MainWindow(QMainWindow):
         # Menu Fichier
         file_menu = menubar.addMenu("&Fichier")
         file_menu.addAction(self.new_action)
-        file_menu.addAction(self.open_action)
-        file_menu.addAction(self.open_document_action)
+        file_menu.addAction(self.open_any_file_action)
         file_menu.addSeparator()
         file_menu.addAction(self.save_action)
         file_menu.addAction(self.save_as_template_action)
@@ -812,12 +811,12 @@ class MainWindow(QMainWindow):
             statusTip="Créer un nouveau fichier",
             triggered=self.new_file,
         )
-        self.open_action = QAction(
-            "Ouvrir",
+        self.open_any_file_action = QAction(
+            "Ouvrir...",
             self,
             shortcut=QKeySequence.Open,
             statusTip="Ouvrir un fichier existant",
-            triggered=self.open_file,
+            triggered=self.open_any_file,
         )
         self.open_journal_action = QAction(
             "Ouvrir Journal",
@@ -1525,18 +1524,6 @@ class MainWindow(QMainWindow):
                 self.start_initial_indexing()
                 self.update_calendar_highlights()
                 self.update_tag_cloud()
-
-    def open_file(self):
-        """Ouvrir un fichier"""
-        if self.check_save_changes():
-            filename, _ = QFileDialog.getOpenFileName(
-                self,
-                "Ouvrir un fichier Markdown",
-                "",
-                "Fichiers Markdown (*.md *.markdown *.txt);;Tous les fichiers (*)",
-            )
-
-            self.open_specific_file(filename)
 
     def open_specific_file(self, filename):
         """Ouvre un fichier spécifique depuis son chemin."""
@@ -2398,6 +2385,44 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def open_any_file(self):
+        """Ouvre un fichier et l'aiguille vers l'éditeur ou le lecteur."""
+        if not self.check_save_changes():
+            return
+
+        filename, _ = QFileDialog.getOpenFileName(
+            self,
+            "Ouvrir un document",
+            self.settings_manager.get("reader.last_directory", str(Path.home())),
+            "Tous les documents supportés (*.md *.markdown *.txt *.epub *.pdf);;"
+            "Fichiers Markdown (*.md *.markdown *.txt);;"
+            "Documents EPUB (*.epub);;"
+            "Documents PDF (*.pdf);;"
+            "Tous les fichiers (*)",
+        )
+
+        if not filename:
+            return
+
+        file_ext = filename.lower()
+
+        if file_ext.endswith((".epub", ".pdf")):
+            # Ouvrir dans le lecteur de documents
+            self.epub_reader_panel.load_document(filename)
+            self.epub_reader_panel.show()
+            self._sync_panel_controls()
+
+            # Sauvegarder le chemin pour la prochaine fois
+            self.last_document_reader = filename
+            self.settings_manager.set("reader.last_document", filename)
+            self.settings_manager.set(
+                "reader.last_directory", os.path.dirname(filename)
+            )
+            self.settings_manager.save_settings()
+        else:
+            # Ouvrir dans l'éditeur Markdown (par défaut pour les autres types)
+            self.open_specific_file(filename)
 
     def show_quote_of_the_day(self):
         """Affiche la citation du jour dans une boîte de dialogue."""

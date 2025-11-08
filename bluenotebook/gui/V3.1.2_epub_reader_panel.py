@@ -28,7 +28,6 @@ import mimetypes
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QApplication,  # Ajout pour QApplication.clipboard()
     QHBoxLayout,
     QSplitter,
     QLabel,
@@ -40,22 +39,10 @@ from PyQt5.QtWidgets import (
     QStackedWidget,
     QMessageBox,
 )
-from PyQt5.QtWebEngineWidgets import (
-    QWebEngineView,
-    QWebEnginePage,
-    QWebEngineProfile,
-    QWebEngineContextMenuData,
-)
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineProfile
 from PyQt5.QtWebEngineCore import QWebEngineUrlSchemeHandler, QWebEngineUrlRequestJob
 from PyQt5.QtCore import Qt, QUrl, QBuffer, QIODevice, QByteArray, pyqtSignal
 from PyQt5.QtGui import QPixmap
-
-# Ajoutez ces imports en haut du fichier
-from PyQt5.QtWidgets import QFileDialog, QMenu, QAction
-from PyQt5.QtWebEngineWidgets import QWebEngineContextMenuData
-from PIL import Image  # Nécessaire pour la sauvegarde d'image
-import io  # Nécessaire pour la sauvegarde d'image
-from pathlib import Path  # Nécessaire pour la sauvegarde d'image
 
 
 class EpubSchemeHandler(QWebEngineUrlSchemeHandler):
@@ -179,157 +166,6 @@ class CustomWebEngineView(QWebEngineView):
         self.epub_reader_panel = parent
         self.page().scrollPositionChanged.connect(self._on_scroll_changed)
 
-    def contextMenuEvent(self, event):
-        """Gère le menu contextuel personnalisé."""
-        menu = QMenu(self)
-        context_data = self.page().contextMenuData()
-
-        # Si c'est une image
-        if context_data.mediaType() == QWebEngineContextMenuData.MediaTypeImage:
-            save_image_action = QAction("Sauvegarder l'image", self)
-            save_image_action.triggered.connect(lambda: self.save_image(context_data))
-            menu.addAction(save_image_action)
-
-            copy_image_action = QAction("Copier l'image", self)
-            copy_image_action.triggered.connect(lambda: self.copy_image(context_data))
-            menu.addAction(copy_image_action)
-
-            copy_url_action = QAction("Copier l'adresse de l'image", self)
-            copy_url_action.triggered.connect(lambda: self.copy_image_url(context_data))
-            menu.addAction(copy_url_action)
-        else:
-            # Actions personnalisées pour le texte avec libellés en français
-            copy_text_action = QAction("Copier le texte sélectionné", self)
-            # Vérifier si du texte est sélectionné pour activer l'action
-            copy_text_action.setEnabled(self.page().selectedText().strip() != "")
-            copy_text_action.triggered.connect(
-                lambda: self.page().triggerAction(QWebEnginePage.Copy)
-            )
-            menu.addAction(copy_text_action)
-
-            select_all_text_action = QAction("Tout sélectionner", self)
-            select_all_text_action.triggered.connect(
-                lambda: self.page().triggerAction(QWebEnginePage.SelectAll)
-            )
-            menu.addAction(select_all_text_action)
-
-            # Ajouter un séparateur avant les actions standard si elles sont nécessaires
-            menu.addSeparator()
-
-        menu.exec_(event.globalPos())
-
-    def save_image(self, context_data):
-        """Sauvegarde l'image sur le disque."""
-        image_url = context_data.mediaUrl().toString()
-
-        if not image_url:
-            QMessageBox.warning(
-                self, "Erreur", "Impossible de récupérer l'URL de l'image"
-            )
-            return
-
-        # Extraire le chemin de l'image depuis l'URL epub://
-        if image_url.startswith("epub://epub/"):
-            image_path = image_url.replace("epub://epub/", "")
-
-            # Récupérer le contenu de l'image depuis le gestionnaire de schéma
-            scheme_handler = self.epub_reader_panel.scheme_handler
-            if image_path in scheme_handler.resources:
-                image_data = scheme_handler.resources[image_path]
-
-                # Changer l'extension du nom de fichier suggéré en .jpg
-                base_name = os.path.splitext(os.path.basename(image_path))[0]
-                suggested_filename = f"{base_name}.jpg"
-
-                # Récupérer le dernier répertoire de sauvegarde utilisé
-                last_save_dir = self.epub_reader_panel.settings_manager.get(
-                    "reader.last_image_save_directory", str(Path.home())
-                )
-                default_path = os.path.join(last_save_dir, suggested_filename)
-
-                # Demander à l'utilisateur où sauvegarder
-                file_filter = "Image JPEG (*.jpg)"
-                save_path, _ = QFileDialog.getSaveFileName(
-                    self,
-                    "Sauvegarder l'image",
-                    default_path,
-                    file_filter,
-                )
-
-                if save_path:
-                    try:
-                        # Utiliser Pillow pour convertir l'image en JPG
-                        img = Image.open(io.BytesIO(image_data))
-
-                        # Convertir en mode RGB si nécessaire (pour les PNG avec transparence, etc.)
-                        if img.mode != "RGB":
-                            img = img.convert("RGB")
-
-                        img.save(save_path, "JPEG", quality=90)
-
-                        # Mémoriser le répertoire pour la prochaine fois
-                        new_save_dir = os.path.dirname(save_path)
-                        self.epub_reader_panel.settings_manager.set(
-                            "reader.last_image_save_directory", new_save_dir
-                        )
-                        self.epub_reader_panel.settings_manager.save_settings()
-
-                        QMessageBox.information(
-                            self, "Succès", f"Image sauvegardée dans:\n{save_path}"
-                        )
-                    except Exception as e:
-                        QMessageBox.critical(
-                            self,
-                            "Erreur",
-                            f"Impossible de convertir ou sauvegarder l'image:\n{str(e)}",
-                        )
-            else:
-                QMessageBox.warning(
-                    self, "Erreur", "Image introuvable dans les ressources EPUB"
-                )
-
-    def copy_image(self, context_data):
-        """Copie l'image dans le presse-papiers."""
-        image_url = context_data.mediaUrl().toString()
-
-        if not image_url or not image_url.startswith("epub://epub/"):
-            return
-
-        image_path = image_url.replace("epub://epub/", "")
-        scheme_handler = self.epub_reader_panel.scheme_handler
-
-        if image_path in scheme_handler.resources:
-            image_data = scheme_handler.resources[image_path]
-
-            # Créer un QPixmap depuis les données
-            pixmap = QPixmap()
-            pixmap.loadFromData(QByteArray(image_data))
-
-            if not pixmap.isNull():
-                from PyQt5.QtWidgets import QApplication
-
-                clipboard = QApplication.clipboard()
-                clipboard.setPixmap(pixmap)
-
-                # Optionnel: afficher une notification
-                self.epub_reader_panel.position_label.setText(
-                    "Image copiée dans le presse-papiers"
-                )
-                from PyQt5.QtCore import QTimer
-
-                QTimer.singleShot(
-                    2000, lambda: self.epub_reader_panel.update_position_label()
-                )
-
-    def copy_image_url(self, context_data):
-        """Copie l'URL de l'image dans le presse-papiers."""
-        image_url = context_data.mediaUrl().toString()
-        if image_url:
-            from PyQt5.QtWidgets import QApplication
-
-            clipboard = QApplication.clipboard()
-            clipboard.setText(image_url)
-
     def wheelEvent(self, event):
         """Gère les événements de la molette de la souris."""
         # Si ce n'est pas un EPUB, passer l'événement au parent et ne rien faire d'autre.
@@ -340,6 +176,8 @@ class CustomWebEngineView(QWebEngineView):
         delta = event.angleDelta().y()
 
         def handle_scroll_check(at_end):
+            # Cette fonction est appelée par le JavaScript.
+            # Elle ne doit pas gérer le défilement, seulement le changement de chapitre.
             if at_end:
                 if delta < 0:  # Défilement vers le bas
                     self.epub_reader_panel.next_chapter()
@@ -354,6 +192,8 @@ class CustomWebEngineView(QWebEngineView):
         elif delta > 0:  # Défilement vers le haut
             self.page().runJavaScript("window.scrollY === 0", handle_scroll_check)
 
+        # Laisser le défilement natif se faire dans tous les cas pour l'EPUB.
+        # C'est cet appel qui manquait ou était mal placé.
         super().wheelEvent(event)
 
     def _on_scroll_changed(self, pos):
@@ -586,13 +426,13 @@ class EpubReaderPanel(QWidget):
                 self.load_current_chapter()
 
             # Debug : Lister les chapitres et TOC
-            # print(f"Chapters found: {len(self.chapters)}")
-            # for i, chap in enumerate(self.chapters):
-            #     print(f"Index {i}: {chap.get_name()}")
-            # for toc in self.toc_items:
-            #     print(
-            #         f"TOC: {toc['title']} -> index {toc['chapter_index']} href {toc['href']}"
-            #     )
+            print(f"Chapters found: {len(self.chapters)}")
+            for i, chap in enumerate(self.chapters):
+                print(f"Index {i}: {chap.get_name()}")
+            for toc in self.toc_items:
+                print(
+                    f"TOC: {toc['title']} -> index {toc['chapter_index']} href {toc['href']}"
+                )
 
         except Exception as e:
             self.show_error(f"<h1>Erreur lors du chargement de l'EPUB : {str(e)}</h1>")
@@ -612,7 +452,7 @@ class EpubReaderPanel(QWidget):
                         norm_key = os.path.normpath(key.replace("\\", "/"))
                         if clean_href == norm_key:
                             item_found = self.items_map[key]
-                            # print(f"Matched {clean_href} to key {norm_key}")
+                            print(f"Matched {clean_href} to key {norm_key}")
                             break
                     if item_found:
                         if item_found not in self.chapters:
@@ -653,7 +493,7 @@ class EpubReaderPanel(QWidget):
                         norm_key = os.path.normpath(key.replace("\\", "/"))
                         if clean_href == norm_key:
                             item_found = self.items_map[key]
-                            # print(f"Matched {clean_href} to key {norm_key}")
+                            print(f"Matched {clean_href} to key {norm_key}")
                             break
                     if item_found:
                         if item_found not in self.chapters:
@@ -741,7 +581,7 @@ class EpubReaderPanel(QWidget):
             # Injecter un script pour gérer le scroll après le chargement
             scroll_script = ""
             if anchor:
-                # print(f"Préparation scroll vers l'ancre: {anchor}")
+                print(f"Préparation scroll vers l'ancre: {anchor}")
                 scroll_script = f"""
                 <script>
                 window.addEventListener('load', function() {{
@@ -821,11 +661,11 @@ class EpubReaderPanel(QWidget):
             self.current_toc_index = index
             self.current_chapter_index = self.toc_items[index]["chapter_index"]
             toc_item = self.toc_items[index]
-            # print(
-            #     f"Navigation TOC: {toc_item['title']} -> chapitre {self.current_chapter_index}"
-            # )
-            # if "href" in toc_item:
-            #     print(f"  href: {toc_item['href']}")
+            print(
+                f"Navigation TOC: {toc_item['title']} -> chapitre {self.current_chapter_index}"
+            )
+            if "href" in toc_item:
+                print(f"  href: {toc_item['href']}")
             self.load_current_chapter()
         elif self.current_doc_type == "pdf":
             if self.pdf_toc:
@@ -837,7 +677,7 @@ class EpubReaderPanel(QWidget):
             self.chapter_combo.blockSignals(True)
             self.chapter_combo.setCurrentIndex(index)
             self.chapter_combo.blockSignals(False)
-            # print(f"Navigation PDF TOC: page {self.current_chapter_index + 1}")
+            print(f"Navigation PDF TOC: page {self.current_chapter_index + 1}")
 
     def load_chapter_from_combo(self, index):
         """Charger un chapitre depuis le combo box."""
@@ -848,11 +688,11 @@ class EpubReaderPanel(QWidget):
             self.current_toc_index = index
             self.current_chapter_index = self.toc_items[index]["chapter_index"]
             toc_item = self.toc_items[index]
-            # print(
-            #     f"Navigation combo: {toc_item['title']} -> chapitre {self.current_chapter_index}"
-            # )
-            # if "href" in toc_item:
-            #     print(f"  href: {toc_item['href']}")
+            print(
+                f"Navigation combo: {toc_item['title']} -> chapitre {self.current_chapter_index}"
+            )
+            if "href" in toc_item:
+                print(f"  href: {toc_item['href']}")
             self.load_current_chapter()
         elif self.current_doc_type == "pdf":
             if self.pdf_toc:
@@ -864,7 +704,7 @@ class EpubReaderPanel(QWidget):
             self.toc_list.blockSignals(True)
             self.toc_list.setCurrentRow(index)
             self.toc_list.blockSignals(False)
-            # print(f"Navigation PDF combo: page {self.current_chapter_index + 1}")
+            print(f"Navigation PDF combo: page {self.current_chapter_index + 1}")
 
     def previous_chapter(self):
         if self.current_chapter_index > 0:
@@ -960,7 +800,7 @@ class EpubReaderPanel(QWidget):
             # Mettre à jour la TOC et le combo
             self.toc_list.clear()
             self.chapter_combo.clear()
-            # print(f"TOC brute: {toc}")  # Trace pour déboguer la structure de la TOC
+            print(f"TOC brute: {toc}")  # Trace pour déboguer la structure de la TOC
             if toc:
                 for entry in toc:
                     # Vérifier la structure de l'entrée
@@ -999,7 +839,7 @@ class EpubReaderPanel(QWidget):
             self.enable_navigation(True)
             self.load_current_chapter()
             print(
-                f"📖 PDF chargé avec succès: {page_count} pages, TOC: {len(toc)} éléments"
+                f"PDF chargé avec succès: {page_count} pages, TOC: {len(toc)} éléments"
             )
         else:
             self.show_error("<h1>Échec du chargement du PDF</h1>")
