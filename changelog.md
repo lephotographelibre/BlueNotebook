@@ -1,3 +1,24 @@
+## V3.1.2 Fix Issue [#47] +EPUB TOC et synchro navigation EPUB/PDF
+
+Fix Issus [#47](https://github.com/lephotographelibre/BlueNotebook/issues/47)
+
+TOC EPUB OK
+beta1
+
+TOC/NAV Sync + Wheel PDF OK
+beta3
+
+TOC/NAV Sync + Wheel Epub
+beta4
+
+encore des erreurs de defilement souris et des sauts de chapitres epub
+
+Dans le lecteur EPUB je veux sauvegarder une image, je pointe dessus et un menu contextuel s'ouvre. je voudrait qu'il soit en français. Alors je voudrais définir un menu contextuel spécifique avec comme choix Sauvegarder l'Ilage su je suis sur une image, récupere le nom de cette image, ouvriri une boite de dialogue permettant de chaisir ou sauvegarder cette image au format jpg (la convertir si nécessaire). Memoriser le dossier de sauvegarde dans les préferences utilisateur settings.json. lors de la prochaine sauvegarde d'image ce dossier sera ouvert par la boite de dialogue.
+
+
+
+
+
 ## V3.1.1 Remove all the search words code
 
 create new branch `remove_word_indexer`

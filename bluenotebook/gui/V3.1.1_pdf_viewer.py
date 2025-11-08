@@ -44,7 +44,7 @@ class PdfViewer(QWidget):
     page_changed_by_search = pyqtSignal(int)  # page_num
     page_changed = pyqtSignal(int)  # V3.0.6 - Signal émis lors d'un changement de page
 
-    def __init__(self, parent=None, settings_manager=None):
+    def __init__(self, settings_manager=None, parent=None):
         super().__init__(parent)
         self.doc = None
         self.current_page_num = 0
