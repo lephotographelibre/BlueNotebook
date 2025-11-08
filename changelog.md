@@ -1,3 +1,29 @@
+## V3.1.4 Fix issue [#50] V3.1.3 Lecteur: crash lors de l'ouverture de l'onglet lecteur
+#50
+
+Fix issue [#50](https://github.com/lephotographelibre/BlueNotebook/issues/50) 
+
+D'après la trace d'erreur que vous avez fournie, le problème est très clair :
+
+- Vous cliquez sur le bouton pour ouvrir le panneau "Lecteur".
+
+- Le code vérifie si un document est déjà chargé en appelant epub_reader_panel.has_document().
+Cette méthode, dans [epub_reader_panel.py](code-assist-path:/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/epub_reader_panel.py), vérifie à son tour si le pdf_viewer a un document chargé en appelant self.pdf_viewer.has_document().
+
+- Le crash se produit ici : la classe PdfViewer dans [pdf_viewer.py](code-assist-path:/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/pdf_viewer.py) n'a pas de méthode has_document().
+
+La solution est simple : il suffit d'ajouter cette méthode manquante à la classe PdfViewer.
+
+Add pdf_viewer.py
+
+
+```python
+    def has_document(self):
+        """Retourne True si un document PDF est chargé."""
+        return self.doc is not None
+```
+
+
 ## V3.1.3 Lecteur Fix Issue [#41] Fix Issue [#34] Fix Issue [#37]
 
 Fix issue [#34](https://github.com/lephotographelibre/BlueNotebook/issues/34) Définir Menu contextuel en Français pour Lecteur
@@ -18,11 +44,7 @@ beta3
 TOC/NAV Sync + Wheel Epub
 beta4
 
-
-
-
-
-
+ 
 
 
 ## V3.1.1 Remove all the search words code

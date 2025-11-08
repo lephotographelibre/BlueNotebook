@@ -187,6 +187,10 @@ class PdfViewer(QWidget):
         self.selection_start_word = None
         self.render_page(self.current_page_num)
 
+    def has_document(self):
+        """Retourne True si un document PDF est chargé."""
+        return self.doc is not None
+
     def close_document(self):
         if self.doc:
             self.doc.close()
