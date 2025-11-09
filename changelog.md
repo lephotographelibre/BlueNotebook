@@ -1,3 +1,39 @@
+## V3.1.6 Fix Search Epub Full Text
+
+lorsque je recherche un mot dans un fichier epub en utilisant la barre de recherche en haut de la page affichée,la recherche est aléatoire.
+Parfois cela fonctionne, parfois cela ne fonctionne pas.
+- Si je recherche un mot qui est sur la page affichée cela fonctionne, le mot et toutes ses occurences sont trouvés
+- Si je recherche ce meme mot à partir d'une autre page affichée cela ne fonctionne pas
+Est-ce volontaire, je voudrais que peu importe ll'endroit ou l'on se trouve dasn le document on puisse touver toutes les occurence du mot dans TOUT le document et se déplacer d'une occurrence à l'autre avec les boutons Suivant et Précédent
+
+**Comportement actuel :**
+- La recherche utilise QWebEnginePage.findText(), une méthode intégrée à Qt WebEngine. Celle-ci ne recherche que dans le contenu HTML chargé dans la vue web actuelle (c'est-à-dire le chapitre courant).
+- Si le mot est dans le chapitre affiché, il est trouvé et surligné, et vous pouvez naviguer entre ses occurrences locales avec "Suivant" (findText() sans flag) et "Précédent" (findText() avec QWebEnginePage.FindBackward).
+- Si le mot n'est pas dans le chapitre courant (ou si vous commencez la recherche depuis un autre chapitre), rien n'est trouvé, car la recherche ne s'étend pas aux autres chapitres. Ce n'est pas "aléatoire" : c'est limité par conception au chapitre chargé.
+- c'est une limitation de l'implémentation actuelle. Le code charge les chapitres un par un pour des raisons de performance (les EPUB peuvent être volumineux), donc la recherche est locale par défaut.
+
+**Ce que vous voulez :**
+-Une recherche globale sur tout l'EPUB : trouver toutes les occurrences du mot dans tous les chapitres.
+-Navigation fluide avec "Suivant" et "Précédent" : changer automatiquement de chapitre si l'occurrence suivante/précédente est ailleurs, et scroller/surligner le mot.
+
+Ce n'est pas implémenté nativement, mais c'est tout à fait réalisable en modifiant le code. Je vais vous proposer une solution complète ci-dessous, sous forme de patch à appliquer à votre fichier epub_reader_panel.py. Cela impliquera :
+
+- Une indexation des occurrences lors de la recherche initiale.
+- Une gestion des résultats (liste de tuples : (chapitre_index, position_dans_texte)).
+- Une navigation qui charge le chapitre cible et utilise findText() pour surligner et scroller.
+
+MAJ Horodatage et A  Propos
+
+
+
+## V3.1.5 Fix issue [#33] Add export pdf pour fichiers hors journal #33
+
+Fix issue [#33](https://github.com/lephotographelibre/BlueNotebook/issues/33) 
+Rendre le menu export html plus générique
+
+TODO
+
+
 ## V3.1.4 Fix issue [#50] V3.1.3 Lecteur: crash lors de l'ouverture de l'onglet lecteur
 #50
 

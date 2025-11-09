@@ -1124,7 +1124,7 @@ class MainWindow(QMainWindow):
         insert_tag_action.triggered.connect(lambda: self.editor.format_text("tag"))
         insert_menu.addAction(insert_tag_action)
 
-        insert_time_action = QAction("Heure", self)
+        insert_time_action = QAction("Horodatage", self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
         insert_menu.addAction(insert_time_action)
         insert_menu.addSeparator()
@@ -2300,7 +2300,7 @@ class MainWindow(QMainWindow):
             self,
             "À propos de BlueNotebook",
             f"""<h2>BlueNotebook V{self.app_version}</h2>
-            <p><b>Éditeur de journal Markdown </b></p> 
+            <p><b>Éditeur de journal personnel </b></p> 
             <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel, 
             développé avec PyQt5 et QWebEngine.</p>
             <p>Très inspiré du logiciel <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
@@ -2308,15 +2308,17 @@ class MainWindow(QMainWindow):
             <ul>
             <li>Gestion d'un journal Personnel</li>
             <li>Navigation simple dans les notes du journal</li>
-            <li>Sauvegarde/Restauration</li>
+            <li>Sauvegarde/Restauration Journal</li>
             <li>Édition avec coloration syntaxique</li>
             <li>Aperçu HTML en temps réel</li>
-            <li>Export HTML des pages du journal</li>
-            <li>Export PDF du journal complet ou partiel</li>
-            <li>Gestion de Templates</li>
-            <li>Gestion de tags / Recherche par tags/mots-clés</li>
+            <li>Export HTML/PDF du journal complet ou partiel</li>
+            <li>Gestion de Templates personnalisables</li>
+            <li>Gestion de tags / Recherche par tags</li>
             <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
+            <li>Lecteur EPUB/PDF intégré avec recherche</li>
+            <li>Gestion de tâches / TODO Listes</li>
             </ul>
+
             <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
             <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
             <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>""",

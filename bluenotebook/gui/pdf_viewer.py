@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QColor
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF, QPoint
 from PyQt5.QtGui import QGuiApplication
-from pathlib import Path  # Ajout de cette ligne
+from pathlib import Path
 
 
 class PdfViewer(QWidget):
@@ -42,7 +42,7 @@ class PdfViewer(QWidget):
         bool, str, str, list, int
     )  # success, title, author, toc, page_count
     page_changed_by_search = pyqtSignal(int)  # page_num
-    page_changed = pyqtSignal(int)  # V3.0.6 - Signal émis lors d'un changement de page
+    page_changed = pyqtSignal(int)  # Signal émis lors d'un changement de page
 
     def __init__(self, parent=None, settings_manager=None):
         super().__init__(parent)
@@ -51,7 +51,7 @@ class PdfViewer(QWidget):
         self.search_results = []
         self.all_found_instances = []
         self.current_search_index = -1
-        self.zoom_factor = 2.0  # Facteur de zoom initial
+        self.zoom_factor = 2.0
         self.is_selecting = False
         self.selection_start_point = None
         self.selection_end_point = None
@@ -77,10 +77,8 @@ class PdfViewer(QWidget):
         self.setMouseTracking(True)
 
     def load_document(self, filepath):
-        # print(f"Loading PDF: {filepath}")
         try:
             self.doc = fitz.open(filepath)
-            # print(f"PDF loaded, page count: {self.doc.page_count}")
             toc = self.doc.get_toc()
             page_count = self.doc.page_count
             title = self.doc.metadata.get("title", "Titre inconnu")
@@ -88,7 +86,6 @@ class PdfViewer(QWidget):
             self.document_loaded.emit(True, title, author, toc, page_count)
             self.go_to_page(0)
         except Exception as e:
-            # print(f"Error loading PDF: {str(e)}")
             QMessageBox.critical(self, "Erreur de chargement PDF", str(e))
             self.document_loaded.emit(False, "", "", [], 0)
 
@@ -97,7 +94,6 @@ class PdfViewer(QWidget):
             return
         self.current_page_num = page_num
         page = self.doc.load_page(page_num)
-        # print(f"Page {page_num} dimensions: {page.rect}")
         zoom_matrix = fitz.Matrix(self.zoom_factor, self.zoom_factor)
         pix = page.get_pixmap(matrix=zoom_matrix)
         qimage = QImage(
@@ -151,13 +147,21 @@ class PdfViewer(QWidget):
                 for inst in instances:
                     self.all_found_instances.append((page_num, inst))
             self.current_search_index = -1
-        if not self.all_found_instances:
-            QMessageBox.information(
-                self, "Recherche", f"Le texte '{text}' n'a pas été trouvé."
-            )
-            self.clear_search()
-            return
-        self.navigate_search_results(1)
+            # Ajout de la boîte de message pour afficher le nombre d'occurrences
+            if self.all_found_instances:
+                QMessageBox.information(
+                    self,
+                    "Recherche",
+                    f"{len(self.all_found_instances)} occurrence(s) trouvée(s) dans l'ensemble du document.",
+                )
+            else:
+                QMessageBox.information(
+                    self, "Recherche", f"Le texte '{text}' n'a pas été trouvé."
+                )
+                self.clear_search()
+                return
+        if self.all_found_instances:
+            self.navigate_search_results(1)
 
     def navigate_search_results(self, direction):
         if not self.all_found_instances:
@@ -243,7 +247,6 @@ class PdfViewer(QWidget):
         menu.addSeparator()
         copy_page_action = menu.addAction("Copier le texte de la page")
 
-        # Vérifier si le clic est sur une image
         pdf_point = self._get_pdf_point(event.pos())
         xref, img_rect = self._get_image_at_point(pdf_point)
         save_image_action = menu.addAction("Sauvegarder cette image")
@@ -274,23 +277,19 @@ class PdfViewer(QWidget):
         from PIL import Image
         import io
 
-        # Récupérer le dernier répertoire de sauvegarde depuis les préférences
         last_dir = self.settings_manager.get(
             "pdf.last_image_save_directory", str(Path.home())
         )
 
         try:
-            # Extraire l'image du PDF
             image_data = self.doc.extract_image(xref)
             img_bytes = image_data["image"]
             img_ext = image_data["ext"].lower()
 
-            # Convertir en image PIL pour sauvegarde en JPG
             img = Image.open(io.BytesIO(img_bytes))
             if img.mode != "RGB":
                 img = img.convert("RGB")
 
-            # Ouvrir une boîte de dialogue pour choisir le fichier
             file_path, _ = QFileDialog.getSaveFileName(
                 self,
                 "Sauvegarder l'image",
@@ -299,7 +298,6 @@ class PdfViewer(QWidget):
             )
 
             if file_path:
-                # S'assurer que l'extension est .jpg
                 if not file_path.lower().endswith(".jpg"):
                     file_path += ".jpg"
                 img.save(file_path, "JPEG")
@@ -307,7 +305,6 @@ class PdfViewer(QWidget):
                     self, "Succès", f"Image sauvegardée sous {file_path}"
                 )
 
-                # Mémoriser le répertoire de destination pour la prochaine fois
                 self.settings_manager.set(
                     "pdf.last_image_save_directory", str(Path(file_path).parent)
                 )
@@ -324,7 +321,7 @@ class PdfViewer(QWidget):
         page = self.doc.load_page(self.current_page_num)
         images = page.get_images(full=True)
         for img in images:
-            xref = img[0]  # Identifiant de l'image
+            xref = img[0]
             rect = page.get_image_bbox(img)
             if rect.contains(pdf_point):
                 return xref, rect
@@ -389,31 +386,17 @@ class PdfViewer(QWidget):
         scroll_y = self.scroll_area.verticalScrollBar().value()
         pdf_x = (widget_pos.x() - offset_x + scroll_x) / self.zoom_factor
         pdf_y = (widget_pos.y() - offset_y + scroll_y) / self.zoom_factor
-        """print(
-            f"_get_pdf_point: widget_pos={widget_pos}, pixmap_size={pixmap_size}, "
-            f"viewport_size={viewport_size}, offset_x={offset_x}, offset_y={offset_y}, "
-            f"scroll_x={scroll_x}, scroll_y={scroll_y}, pdf_x={pdf_x}, pdf_y={pdf_y}"
-        )"""
-        pdf_x_simple = widget_pos.x() / self.zoom_factor
-        pdf_y_simple = widget_pos.y() / self.zoom_factor
-        # print(f"Simplified pdf_point: Point({pdf_x_simple}, {pdf_y_simple})")
         return fitz.Point(pdf_x, pdf_y)
 
     def mousePressEvent(self, event):
-        """print(
-            f"Mouse press event: button={event.button()}, pos={event.pos()}, zoom_factor={self.zoom_factor}"
-        )"""
         if event.button() == Qt.LeftButton and self.doc:
             self.is_selecting = True
             self.selected_word_rects = []
             self.selected_text = ""
 
             pdf_point = self._get_pdf_point(event.pos())
-            # print(f"PDF point: {pdf_point}")
-
             page = self.doc.load_page(self.current_page_num)
             text_dict = page.get_text("dict")
-            # print(f"Text dict: {len(text_dict['blocks'])} blocks found")
             closest_char = None
             min_distance = float("inf")
 
@@ -430,17 +413,11 @@ class PdfViewer(QWidget):
                                 (char_center.x - pdf_point.x) ** 2
                                 + (char_center.y - pdf_point.y) ** 2
                             ) ** 0.5
-                            """print(
-                                f"Char: {char['c']}, bbox={char['bbox']}, center={char_center}, distance={distance}"
-                            )"""
                             if distance < min_distance and distance < 50:
                                 min_distance = distance
                                 closest_char = char
 
             if closest_char:
-                """print(
-                    f"Selected caret: {closest_char['c']} at {closest_char['bbox']}, distance={min_distance}"
-                )"""
                 self.selection_start_char = closest_char
                 self.selection_start_point = fitz.Point(
                     closest_char["bbox"][0], closest_char["bbox"][1]
@@ -450,9 +427,7 @@ class PdfViewer(QWidget):
                 self.selected_text = closest_char["c"]
                 self.render_page(self.current_page_num)
             else:
-                # print(f"No character found near click, min_distance={min_distance}")
                 words = page.get_text("words")
-                # print(f"Words found: {len(words)}")
                 closest_word = None
                 min_distance = float("inf")
                 for word in words:
@@ -465,16 +440,10 @@ class PdfViewer(QWidget):
                         (word_center.x - pdf_point.x) ** 2
                         + (word_center.y - pdf_point.y) ** 2
                     ) ** 0.5
-                    """print(
-                        f"Word: {word[4]}, bbox={word[:4]}, center={word_center}, distance={distance}"
-                    )"""
                     if distance < min_distance and distance < 50:
                         min_distance = distance
                         closest_word = word
                 if closest_word:
-                    """print(
-                        f"Selected word: {closest_word[4]} at {closest_word[:4]}, distance={min_distance}"
-                    )"""
                     self.selection_start_word = closest_word
                     self.selection_start_point = fitz.Point(
                         closest_word[0], closest_word[1]
@@ -484,18 +453,15 @@ class PdfViewer(QWidget):
                     self.selected_text = closest_word[4]
                     self.render_page(self.current_page_num)
                 else:
-                    # print(f"No word found near click, min_distance={min_distance}")
                     self.is_selecting = False
                     self.clear_selection()
 
     def mouseMoveEvent(self, event):
-        # print(f"Mouse move event: pos={event.pos()}, is_selecting={self.is_selecting}")
         if self.is_selecting:
             self.selection_end_point = self._get_pdf_point(event.pos())
             self.update_selection()
 
     def mouseReleaseEvent(self, event):
-        # print(f"Mouse release event: button={event.button()}")
         if event.button() == Qt.LeftButton:
             self.is_selecting = False
 
