@@ -1,3 +1,63 @@
+## V1.3.8 Export PDF
+Voici une explication détaillée des étapes  pour ajouter une fonctionnalité d'exportation PDF pour un fichier Markdown ouvert, 
+
+L'approche consiste à reproduire la logique de la fonction `export_html` existante et à l'adapter pour le format PDF en utilisant la bibliothèque `weasyprint`, qui est déjà utilisée ailleurs dans l' application.
+
+Toutes les modifications se feront dans un seul fichier : `bluenotebook/gui/main_window.py`.
+
+
+### Étapes à réaliser
+
+#### 1. Créer une nouvelle action de menu
+
+Dans la méthode `_create_actions`, il faudrait ajouter une nouvelle `QAction` pour le menu "Exporter en PDF...". Elle serait placée juste après l'action existante pour l'export HTML.
+
+**Code à ajouter :**
+```python
+# Juste après self.export_action
+self.export_pdf_action = QAction(
+    "Exporter en PDF...",
+    self,
+    statusTip="Exporter le fichier actuel en PDF",
+    triggered=self.export_pdf,  # On la connecte à une nouvelle méthode
+)
+```
+
+#### 2. Ajouter l'action au menu "Fichier"
+
+Dans la méthode `setup_menu`, il faudrait insérer cette nouvelle action dans le menu `file_menu`.
+
+**Code à ajouter :**
+```python
+# Dans file_menu, juste après self.export_action
+file_menu.addAction(self.export_pdf_action)
+```
+
+#### 3. Implémenter la méthode `export_pdf`
+
+C'est le cœur de la fonctionnalité. Il faudrait créer une nouvelle méthode `export_pdf` dans la classe `MainWindow`.
+
+Attention à la résolution du chemin des images (tag liens Markdown de type [![2024_11_11_img_5812_01](images/20251110141452_2024_11_11_img_5812_01.jpg)](images/20251110141452_2024_11_11_img_5812_01.jpg)
+- Les images sont toujours dans le sous-répertoire images du journal Journal/images.
+- les fichiers Markdown a exporter en PDF peuvent etre:
+    - soit des notes journalières (dans le répertoire "Journal")
+    - Soit des notes (dans le répertoire "Journal/notes" et sous repertoires)
+    mais dans les deux cas les liens sont toujours du meme type par exemple ([![2024_11_11_img_5812_01](images/20251110141452_2024_11_11_img_5812_01.jpg)](images/20251110141452_2024_11_11_img_5812_01.jpg)
+
+beta1
+
+dans le cas ou j'exporte en PDF une note journaliere c'est ok c'est a dire une note qui est dans le répertoire journal
+mais dans le cas ou j'exporte en pdf une note qui est dans le répertoire (Journal/notes) ou un des sous répertoires cela ne marche pas par exemple il chercher a afficher une images comme [Le fichier ou le dossier /home/jm/Dropbox/BlueNotebookJournal/notes/Bluenotebook/images/20251110141452_2024_11_11_img_5812_01.jpg n'existe pas.](.) dans ce cas la notes est dans /home/jm/Dropbox/BlueNotebookJournal/notes/Bluenotebook/ et les images sont bien dans /home/jm/Dropbox/BlueNotebookJournal/images, alors que cette note dans l'apercu HTML affiche bien les images
+- 
+le Journal est dans /ssd/Dropbox/BlueNotebookJournal/ 
+cela fonctionne si j'exporte en PDF une note qui est dans /ssd/Dropbox/BlueNotebookJournal/notes/Bluenotebook/ (les images sont bien affichées)
+cela ne fonctionne pas si j'exporte en PDF une note qui est dans /ssd/Dropbox/BlueNotebookJournal/notes/Bluenotebook/ (les images ne sont pas bien affichées)
+le lien dans le PDF est: file:///home/jm/Dropbox/BlueNotebookJournal/notes/Bluenotebook/images/20251110141452_2024_11_11_img_5812_01.jpg 
+donc les images sont recherché en relatif par rapport la la localisation de la not et pas en absolu par rapport au répertoire images dans le Journal qui est /ssd/Dropbox/BlueNotebookJournal/images
+
+beta2
+mettre a jour aide ne ligne
+
 ## V3.1.7 Cleaning up the documentation
 
 

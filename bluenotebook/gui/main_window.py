@@ -90,7 +90,10 @@ from integrations.gpx_trace_generator import (
     get_gpx_data,
 )
 from integrations.pdf_exporter import create_pdf_export_worker, PdfExportWorker
-from integrations.amazon_books import (
+from integrations.pdf_exporter import (
+    get_pdf_theme_css,
+)  # V3.1.5 - Import the new helper
+from integrations.amazon_books import (  # V3.1.5 - Keep existing imports
     get_book_info_from_amazon,
     generate_book_markdown_fragment,
 )
@@ -756,6 +759,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.restore_journal_action)
         file_menu.addSeparator()
         file_menu.addAction(self.export_action)
+        file_menu.addAction(self.export_pdf_action)
         file_menu.addAction(self.export_journal_epub_action)
         file_menu.addAction(self.export_journal_pdf_action)
         file_menu.addSeparator()
@@ -867,6 +871,12 @@ class MainWindow(QMainWindow):
             self,
             statusTip="Exporter en HTML",
             triggered=self.export_html,
+        )
+        self.export_pdf_action = QAction(
+            "Exporter en PDF...",
+            self,
+            statusTip="Exporter le fichier actuel en PDF",
+            triggered=self.export_pdf,
         )
         self.export_journal_pdf_action = QAction(
             "Exporter Journal PDF...",
@@ -1776,6 +1786,108 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(
                     self, "Erreur", f"Impossible d'exporter en HTML :\n{str(e)}"
                 )
+
+    def export_pdf(self):
+        """Exporter le fichier actuel en PDF avec WeasyPrint."""
+        try:
+            from weasyprint import HTML, CSS
+        except ImportError:
+            QMessageBox.critical(
+                self,
+                "Module manquant",
+                "WeasyPrint n'est pas installé.\n\n"
+                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+                "pip install weasyprint",
+            )
+            return
+
+        # Construire un nom de fichier par défaut
+        if self.current_file:
+            base_name = os.path.basename(self.current_file)
+            file_stem = os.path.splitext(base_name)[0]
+            clean_filename = file_stem.lower().replace(" ", "-")
+        else:
+            clean_filename = "nouveau-fichier"
+
+        # Récupérer le dernier répertoire utilisé pour l'export PDF
+        last_pdf_dir = self.settings_manager.get("pdf.last_directory")
+        if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
+            last_pdf_dir = str(Path.home())
+
+        default_filename = f"{clean_filename}.pdf"
+        default_path = os.path.join(last_pdf_dir, default_filename)
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            "Exporter en PDF",
+            default_path,
+            "Fichiers PDF (*.pdf)",
+        )
+
+        if not filename:
+            return
+
+        try:
+            # CORRECTION : Déterminer le base_url correctement
+            # Pour les fichiers dans le journal (y compris sous-répertoires),
+            # on utilise toujours la racine du journal comme base_url
+            if (
+                self.journal_directory
+                and self.current_file
+                and str(self.current_file).startswith(str(self.journal_directory))
+            ):
+                base_url = str(self.journal_directory)
+            elif self.current_file:
+                base_url = str(Path(self.current_file).parent)
+            else:
+                base_url = str(Path.home())
+
+            # Récupérer le contenu HTML depuis la prévisualisation
+            html_content = self.preview.get_html()
+
+            # CORRECTION : Normaliser les chemins d'images dans le HTML
+            # Convertir tous les chemins relatifs en chemins absolus
+            if self.journal_directory and self.current_file:
+                from bs4 import BeautifulSoup
+
+                soup = BeautifulSoup(html_content, "html.parser")
+
+                # Traiter les balises <img>
+                for img in soup.find_all("img"):
+                    src = img.get("src")
+                    if src and not src.startswith(
+                        ("http://", "https://", "data:", "file://")
+                    ):
+                        # Chemin relatif détecté
+                        # Le résoudre par rapport au répertoire du journal (base)
+                        full_path = (self.journal_directory / src).resolve()
+                        if full_path.exists():
+                            img["src"] = str(full_path)
+
+                # Traiter les liens <a> qui pointent vers des images
+                for link in soup.find_all("a"):
+                    href = link.get("href")
+                    if href and not href.startswith(
+                        ("http://", "https://", "data:", "file://", "#")
+                    ):
+                        full_path = (self.journal_directory / href).resolve()
+                        if full_path.exists():
+                            link["href"] = str(full_path)
+
+                html_content = str(soup)
+
+            content_css_string = get_pdf_theme_css(self.settings_manager)
+
+            html = HTML(string=html_content, base_url=base_url)
+            html.write_pdf(filename, stylesheets=[CSS(string=content_css_string)])
+
+            self.statusbar.showMessage(f"Exporté en PDF : {filename}", 3000)
+            self.settings_manager.set("pdf.last_directory", str(Path(filename).parent))
+            self.settings_manager.save_settings()
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Erreur", f"Impossible d'exporter en PDF :\n{str(e)}"
+            )
 
     def export_journal_pdf(self):
         """Exporte l'ensemble du journal dans un unique fichier PDF avec WeasyPrint."""

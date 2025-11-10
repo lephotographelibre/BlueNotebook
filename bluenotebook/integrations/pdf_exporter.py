@@ -21,6 +21,30 @@ from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
 from pathlib import Path
 
 
+def get_pdf_theme_css(settings_manager) -> str:
+    """
+    Charge et retourne la chaîne de caractères du thème CSS pour les exports PDF.
+    """
+    pdf_theme_filename = settings_manager.get("pdf.css_theme", "default_preview.css")
+    base_path = Path(__file__).parent.parent
+
+    # Le thème peut être dans css_pdf ou css_preview
+    css_pdf_path = base_path / "resources" / "css_pdf" / pdf_theme_filename
+    css_preview_path = base_path / "resources" / "css_preview" / pdf_theme_filename
+
+    css_path_to_load = css_pdf_path if css_pdf_path.exists() else css_preview_path
+
+    content_css_string = ""
+    if css_path_to_load.exists():
+        try:
+            with open(css_path_to_load, "r", encoding="utf-8") as f:
+                content_css_string = f.read()
+        except IOError as e:
+            print(f"⚠️ Erreur de lecture du fichier CSS '{css_path_to_load}': {e}")
+
+    return content_css_string
+
+
 class PdfExportWorker(QRunnable):
     """Worker pour générer le PDF en arrière-plan, incluant la préparation du HTML."""
 
