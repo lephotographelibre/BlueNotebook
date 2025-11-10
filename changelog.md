@@ -1,3 +1,6 @@
+## V3.1.7 Cleaning up the documentation
+
+
 ## V3.1.6 Fix Search Epub Full Text
 
 lorsque je recherche un mot dans un fichier epub en utilisant la barre de recherche en haut de la page affichée,la recherche est aléatoire.
