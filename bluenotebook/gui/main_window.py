@@ -49,12 +49,14 @@ from PyQt5.QtWidgets import (
     QProgressDialog,
     QInputDialog,
     QToolBar,
-    QPushButton,
-    QRadioButton,
-    QComboBox,
 )
 from PyQt5.QtWidgets import QFormLayout, QLineEdit
 from PyQt5.QtWidgets import QSplitterHandle, QToolButton
+from PyQt5.QtWidgets import (
+    QPushButton,
+    QRadioButton,
+    QComboBox,  # Keep these if they are used elsewhere in MainWindow
+)
 
 from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
 from PyQt5.QtCore import (
@@ -72,6 +74,8 @@ from .editor import MarkdownEditor
 from .preview import MarkdownPreview
 from .navigation import NavigationPanel
 from .outline import OutlinePanel
+from .notes_panel import NotesPanel
+from .new_note_dialog import NewFileDialog
 from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
 from .backup_handler import backup_journal, restore_journal
@@ -616,12 +620,13 @@ class MainWindow(QMainWindow):
         self.thread_pool = QThreadPool()
 
         self.setup_ui()
+        self.setup_statusbar()
+        self.setup_journal_directory()
         self.setup_menu()
         self.setup_panels_toolbar()
-        self.setup_statusbar()
+        self.setup_notes_panel()
         self.apply_settings()
         self.setup_connections()
-        self.setup_journal_directory()
 
         # Timer pour mettre à jour l'aperçu
         self.update_timer = QTimer()
@@ -673,6 +678,9 @@ class MainWindow(QMainWindow):
             }
         """
         )
+        self.notes_panel = NotesPanel(settings_manager=self.settings_manager)
+        main_splitter.addWidget(self.notes_panel)
+
         self.navigation_panel = NavigationPanel()
         main_splitter.addWidget(self.navigation_panel)
 
@@ -706,13 +714,14 @@ class MainWindow(QMainWindow):
         self.epub_reader_panel = EpubReaderPanel(settings_manager=self.settings_manager)
         main_splitter.addWidget(self.epub_reader_panel)
 
+        self.notes_panel.setFixedWidth(400)
         self.navigation_panel.setFixedWidth(
             400
         )  # This line was already there, but it's important to keep it for navigation panel width
         self.outline_panel.setFixedWidth(400)
         # V3.0.1 - Supprimer la largeur fixe pour permettre le redimensionnement
         # self.epub_reader_panel.setFixedWidth(600)
-        main_splitter.setSizes([400, 400, 1400, 400])
+        main_splitter.setSizes([400, 400, 400, 1400, 400])
         main_splitter.setCollapsible(0, False)
         # V3.0.1 - Permettre au panneau lecteur d'être réduit
         main_splitter.setCollapsible(2, False)
@@ -920,6 +929,7 @@ class MainWindow(QMainWindow):
         self.find_action = QAction(
             "Rechercher",
             self,
+            # V3.2.1 - Add Notes Panel
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
         )
@@ -929,6 +939,13 @@ class MainWindow(QMainWindow):
             shortcut="F6",
             checkable=True,
             triggered=self.toggle_navigation,
+        )
+        self.toggle_notes_action = QAction(
+            "Basculer Explorateur de Notes",
+            self,
+            shortcut="F9",
+            checkable=True,
+            triggered=self.toggle_notes,
         )
         self.toggle_outline_action = QAction(
             "Basculer Plan du document",
@@ -1186,6 +1203,11 @@ class MainWindow(QMainWindow):
         # Style pour la barre d'outils pour un fond uni
         self.panels_toolbar.setStyleSheet("QToolBar { border: none; }")
 
+        # Bouton Notes
+        self.notes_button = SwitchButton(text="Notes")
+        self.notes_button.toggled.connect(self.notes_panel.setVisible)
+        self.panels_toolbar.addWidget(self.notes_button)
+
         # Bouton Navigation
         self.nav_button = SwitchButton(text="Navigation")
         self.nav_button.toggled.connect(self.navigation_panel.setVisible)
@@ -1217,10 +1239,14 @@ class MainWindow(QMainWindow):
     def _sync_panel_controls(self):
         """Synchronise l'état des boutons et des menus avec la visibilité des panneaux."""
         # Bloquer les signaux pour éviter les boucles de rappel
+        self.notes_button.blockSignals(True)
         self.reader_button.blockSignals(True)
         self.nav_button.blockSignals(True)
         self.outline_button.blockSignals(True)
         self.preview_button.blockSignals(True)
+
+        self.notes_button.setChecked(self.notes_panel.isVisible())
+        self.toggle_notes_action.setChecked(self.notes_panel.isVisible())
 
         self.nav_button.setChecked(self.navigation_panel.isVisible())
         self.toggle_navigation_action.setChecked(self.navigation_panel.isVisible())
@@ -1235,6 +1261,7 @@ class MainWindow(QMainWindow):
         self.toggle_reader_action.setChecked(self.epub_reader_panel.isVisible())
 
         # Rétablir les signaux
+        self.notes_button.blockSignals(False)
         self.reader_button.blockSignals(False)
         self.nav_button.blockSignals(False)
         self.outline_button.blockSignals(False)
@@ -1345,6 +1372,10 @@ class MainWindow(QMainWindow):
         self.navigation_panel.tag_search_triggered.connect(self.perform_search)
         self.navigation_panel.file_open_requested.connect(self.open_file_from_search)
 
+        # Connexions pour le nouveau panneau de notes
+        self.notes_panel.file_open_request.connect(self.open_file_from_notes)
+        self.notes_panel.directory_selected.connect(self.on_notes_dir_selected)
+
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
         journal_path = None
@@ -1377,6 +1408,13 @@ class MainWindow(QMainWindow):
             print(f"📔 Répertoire du journal: {self.journal_directory}")
         else:
             print("⚠️ Répertoire du journal non défini.")
+
+    def setup_notes_panel(self):
+        """Configure le panneau de notes avec le répertoire du journal."""
+        if self.journal_directory:
+            self.notes_panel.set_journal_directory(self.journal_directory)
+            last_dir = self.settings_manager.get("notes.last_selected_dir")
+            self.notes_panel.select_path(last_dir)
 
     def update_journal_dir_label(self):
         """Met à jour le label du répertoire de journal dans la barre de statut."""
@@ -1540,6 +1578,8 @@ class MainWindow(QMainWindow):
                 )
                 self.start_initial_indexing()
                 self.update_calendar_highlights()
+                # Mettre à jour le panneau de notes avec le nouveau journal
+                self.notes_panel.set_journal_directory(self.journal_directory)
                 self.update_tag_cloud()
 
     def open_specific_file(self, filename):
@@ -1847,6 +1887,14 @@ class MainWindow(QMainWindow):
             self.navigation_panel.hide()
         else:
             self.navigation_panel.show()
+        self._sync_panel_controls()
+
+    def toggle_notes(self):
+        """Basculer la visibilité du panneau de notes."""
+        if self.notes_panel.isVisible():
+            self.notes_panel.hide()
+        else:
+            self.notes_panel.show()
         self._sync_panel_controls()
 
     def toggle_outline(self):
@@ -2840,6 +2888,9 @@ class MainWindow(QMainWindow):
             )
 
             self.settings_manager.set(
+                "ui.show_notes_panel", dialog.show_notes_checkbox.isChecked()
+            )
+            self.settings_manager.set(
                 "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
             )
             self.settings_manager.set(
@@ -2857,6 +2908,7 @@ class MainWindow(QMainWindow):
 
     def save_panel_visibility_settings(self):
         """Sauvegarde l'état de visibilité actuel des panneaux."""
+        self.settings_manager.set("ui.show_notes_panel", self.notes_panel.isVisible())
         self.settings_manager.set(
             "ui.show_navigation_panel", self.navigation_panel.isVisible()
         )
@@ -2872,36 +2924,42 @@ class MainWindow(QMainWindow):
     def apply_settings(self):
         """Applique les paramètres chargés à l'interface utilisateur."""
         # Récupérer l'état des panneaux depuis les paramètres
+        show_notes = self.settings_manager.get("ui.show_notes_panel", True)
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
         show_outline = self.settings_manager.get("ui.show_outline_panel", False)
         show_preview = self.settings_manager.get("ui.show_preview_panel", True)
         show_reader = self.settings_manager.get("ui.show_reader_panel", False)
 
         # Bloquer temporairement les signaux pour éviter les appels en cascade
+        self.notes_button.blockSignals(True)
         self.nav_button.blockSignals(True)
         self.outline_button.blockSignals(True)
         self.preview_button.blockSignals(True)
         self.reader_button.blockSignals(True)
 
         # Appliquer la visibilité des panneaux
+        self.notes_panel.setVisible(show_notes)
         self.navigation_panel.setVisible(show_nav)
         self.outline_panel.setVisible(show_outline)
         self.preview.setVisible(show_preview)
         self.epub_reader_panel.setVisible(show_reader)
 
         # Synchroniser les switchs avec l'état des panneaux
+        self.notes_button.setChecked(show_notes)
         self.nav_button.setChecked(show_nav)
         self.outline_button.setChecked(show_outline)
         self.preview_button.setChecked(show_preview)
         self.reader_button.setChecked(show_reader)
 
         # Débloquer les signaux
+        self.notes_button.blockSignals(False)
         self.nav_button.blockSignals(False)
         self.outline_button.blockSignals(False)
         self.preview_button.blockSignals(False)
         self.reader_button.blockSignals(False)
 
         # Synchroniser également les actions du menu
+        self.toggle_notes_action.setChecked(show_notes)
         self.toggle_navigation_action.setChecked(show_nav)
         self.toggle_outline_action.setChecked(show_outline)
         self.toggle_preview_action.setChecked(show_preview)
@@ -3052,6 +3110,25 @@ class MainWindow(QMainWindow):
                 self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
             )
 
+    def open_file_from_notes(self, file_path: str, open_with: str):
+        """Ouvre un fichier sélectionné depuis le panneau de notes."""
+        if not self.check_save_changes():
+            return
+
+        if open_with == "editor":
+            self.open_specific_file(file_path)
+        elif open_with == "reader":
+            self.epub_reader_panel.load_document(file_path)
+            if not self.epub_reader_panel.isVisible():
+                self.epub_reader_panel.show()
+                self._sync_panel_controls()
+        elif open_with == "external":
+            webbrowser.open(f"file:///{os.path.abspath(file_path)}")
+        else:
+            QMessageBox.warning(
+                self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
+            )
+
     def go_to_line(self, line_number: int):
         """Déplace le curseur à la ligne spécifiée et la positionne en haut de l'éditeur."""
         if line_number <= 0:
@@ -3093,3 +3170,7 @@ class MainWindow(QMainWindow):
     def expand_outline(self):
         """Déplie entièrement l'arborescence du plan du document."""
         self.outline_panel.tree_widget.expandAll()
+
+    def on_notes_dir_selected(self, dir_path):
+        """Sauvegarde le dernier répertoire sélectionné dans le panneau de notes."""
+        self.settings_manager.set("notes.last_selected_dir", dir_path)

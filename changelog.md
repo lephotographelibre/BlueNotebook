@@ -1,11 +1,78 @@
 ## V3.2.1 Directory Navigation Panel
  
+git checkout -b notes_directory
 
-Pour créer une fenêtre dans une application Python avec une vue arborescente (treeview) affichant les fichiers d’un répertoire avec des nœuds cliquables, plusieurs bibliothèques Python peuvent être utilisées.  
+ 
 
-PyQt5 avec QTreeView
+Je voudrais crrér un nouveau panneau appelé Notes. Ce panneau apparaitra toujours a l'extreme gauche. 
+Il faudra créer un bouton poussoir dans la  barre des bouton à gauche de "Navigation". 
+ce panneau aura un label "Notes" sous la forme d'un onglet comme les autres panneaux (ex: Navigation"). et la vue arborescente prendra toute la place en hauteur.en dessous de l'onglet jusqu'au bas de la page. en largeur la taille initiale de ce panneau sera de 400px mais pourra etre agrandi.
+Il fera apparaitre   une vue arborescente (QTreeView) affichant les fichiers du répertoire 'Notes' du journal et ses sous-répertoires avec des nœuds cliquables. les fichiers affichés seront uniquement du type Markdown, PDF, Images, Vidéos ou musique mp3 ou flac ou HTML ou epub. Le dossier séléctionné apparitra en surbillance.
+Un menu contextuel de ce panneau 'Notes' permettra :
+- soit de créer un fichier .md dans ce dossier puis de l'ouvrir dans l'éduteur après avoir demandé à l'utilisateur le nom de ce fichier (la séquence est l'utilsateur clique sur un dossier, puis ouvre le menu contextuel créer une note, une boite de dialogue est ouverte  ou l'utilisateur donne le nom du fichier et peut choisir un modèle  de document du dossier `bluenotebook/resources/templates/`, le fichier est créé dans le dossier,  affiché dans le dossier de la vue arbirescente et ouver dans l'éditeur.)
+- soit d'ouvrir un fichier existant (dans l'editeur s'il s'agit d'un fichier .md ou .txt, dans le lecteur s'il s'agit d'un document pdf ou epub). Les fichiers images, video ou audio seront visualisé dans le navigateur externe par défault.
+- soit de copir/deplacer, renommer, effacer un fichier
 
-Gestion du glisser déposer ?
+le dernier dossier sélectionné dans l'arbre sera persisté dans les préférences utilisateur (settings.json) afin qu'à l'ouverture de l'application ou ou l'ouverture du panneau 'Notes' le dernier dossier sélectionné apparaisse dans l'arbre, sélectionné et en surbrillance
+
+beta2
+new_file_dialog.py --> new_note_dialog.py ?
+
+le nom du fichier gui/new_file_dialog.py n'est pas tres heureux. Peuc tu renommer ce fichier gui/
+beta3
+Panneau Note
+- si rien n'est affiché ou sélectionné dans l'arbre, me menu contextuel doit poivoir 
+    - créer un dossier à la racine des notes du journal (dossier `Journal/notes). un boite de dialogue doit pouvoir lui demander le nom du dossier à créer
+- si un dossier est sélectionné 
+    on doit poivoir à l'aide su menu contextuel créer un sous dossier  un boite de dialogue doit pouvoir lui demander le nom du dossier à créer
+    on doit pouvoir supprimer un dossier s'il est vide apres affichage d'une boite de dialue " Le dossier xxxx est vide voulez-vous le supprimer ?"
+    on doit pouvoir supprimer un dossier et ses sous dossiers mem s'il n'est pas vide .  apres affichage d'une boite de dialue " Le dossier xxxx n'est pas vide . Il contient X sous dossiers et Y fichiers Voulez-vous lTout supprimer   ?
+beat4
+
+Importer dans Notes 
+- si un dossier est sélectionné 
+    on doit poivoir à l'aide du menu contextuel "Importer un fichier" dans ce dosiier. Une noite de dialogue s'ouvre permettant de selectionner soit un fichier local soit un fichier distant via une URL. Le fichier sera importé/copié dans le dossier sélectionné s'il est d'un type valide c'est a dire:
+
+            [
+                "*.md",
+                "*.txt",
+                "*.pdf",
+                "*.epub",
+                "*.jpg",
+                "*.jpeg",
+                "*.png",
+                "*.gif",
+                "*.mp4",
+                "*.avi",
+                "*.mkv",
+                "*.mp3",
+                "*.flac",
+                "*.html",
+            ]
+Si le fichier n'est pas d'un type valide alors afficher une boite de dialogue mentionant " Le fichier que vous voulez importer n'est pas supporté dans les notes. Les types valides sont uniquement: ... la liste des types supportés...
+beta5
+
+
+
+Avec la souris il sera possible de zommer/dezommer l'arbre.
+icones systemes par default
+beta6
+
+peux tu implementer les fonctions de Presse-papiers (Couper/Copier/Coller) dans le panneau Notes
+
+En complément du glisser-déposer, ajouter des options "Couper", "Copier" et "Coller" au menu contextuel. Cela permettrait une gestion plus flexible des fichiers et dossiers, notamment pour les déplacer entre des dossiers non visibles simultanément à l'écran.
+beta7
+
+si un dossier est sélectionné via le menu contextue on va pouvoir déplier tous les sous répertoires ou au contraire réplier tous les sous répertoires.
+beta8
+
+lorsque je suis sur un dossier je voudrai pourvoir choisir une couleur parmi 10 pour colorer ce dossier
+
+A FAIE Redimmentionnement du panneau Notes
+
+
+
+
 
 ## V3.2.0 Add new English README.md + Images 
 

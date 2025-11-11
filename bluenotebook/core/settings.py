@@ -66,6 +66,7 @@ class SettingsManager:
                 "sun_moon": {"city": "", "latitude": "", "longitude": ""},
             },
             "ui": {
+                "show_notes_panel": True,  # Par défaut, visible
                 "show_navigation_panel": False,  # Par défaut, masqué
                 "show_outline_panel": False,  # Par défaut, masqué
                 "show_preview_panel": True,  # Par défaut, visible
@@ -75,6 +76,12 @@ class SettingsManager:
                 "user_excluded_words": [],
                 "excluded_tags_from_cloud": [],
                 "excluded_words_from_cloud": [],
+            },
+            "notes": {
+                "user_excluded_words": [],
+                "excluded_tags_from_cloud": [],
+                "excluded_words_from_cloud": [],
+                "folder_colors": {},
             },
             "pdf": {
                 "last_directory": str(Path.home()),

@@ -206,9 +206,6 @@ class PdfViewer(QWidget):
             return self.doc.load_page(page_num).get_text()
         return ""
 
-    def __del__(self):
-        self.close_document()
-
     def wheelEvent(self, event):
         if event.modifiers() == Qt.ControlModifier:
             delta = event.angleDelta().y()
