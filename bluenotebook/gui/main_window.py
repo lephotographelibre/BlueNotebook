@@ -12,6 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+#
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Fenêtre principale de BlueNotebook - Éditeur Markdown avec PyQt5
@@ -73,6 +74,7 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
+from .backup_handler import backup_journal, restore_journal
 from .preferences_dialog import PreferencesDialog
 from core.journal_backup_worker import JournalBackupWorker
 from core.quote_fetcher import QuoteFetcher
@@ -85,11 +87,16 @@ from integrations.gps_map_generator import get_location_name, create_gps_map
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
 from integrations.epub_exporter import EpubExportWorker
+from integrations.epub_exporter import export_journal_to_epub
 from integrations.gpx_trace_generator import (
     create_gpx_trace_map,
     get_gpx_data,
 )
-from integrations.pdf_exporter import create_pdf_export_worker, PdfExportWorker
+from integrations.pdf_exporter import (
+    create_pdf_export_worker,
+    export_journal_to_pdf,
+    export_single_pdf,
+)
 from integrations.pdf_exporter import (
     get_pdf_theme_css,
 )  # V3.1.5 - Import the new helper
@@ -1789,324 +1796,11 @@ class MainWindow(QMainWindow):
 
     def export_pdf(self):
         """Exporter le fichier actuel en PDF avec WeasyPrint."""
-        try:
-            from weasyprint import HTML, CSS
-        except ImportError:
-            QMessageBox.critical(
-                self,
-                "Module manquant",
-                "WeasyPrint n'est pas installé.\n\n"
-                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
-                "pip install weasyprint",
-            )
-            return
-
-        # Construire un nom de fichier par défaut
-        if self.current_file:
-            base_name = os.path.basename(self.current_file)
-            file_stem = os.path.splitext(base_name)[0]
-            clean_filename = file_stem.lower().replace(" ", "-")
-        else:
-            clean_filename = "nouveau-fichier"
-
-        # Récupérer le dernier répertoire utilisé pour l'export PDF
-        last_pdf_dir = self.settings_manager.get("pdf.last_directory")
-        if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
-            last_pdf_dir = str(Path.home())
-
-        default_filename = f"{clean_filename}.pdf"
-        default_path = os.path.join(last_pdf_dir, default_filename)
-
-        filename, _ = QFileDialog.getSaveFileName(
-            self,
-            "Exporter en PDF",
-            default_path,
-            "Fichiers PDF (*.pdf)",
-        )
-
-        if not filename:
-            return
-
-        try:
-            # CORRECTION : Déterminer le base_url correctement
-            # Pour les fichiers dans le journal (y compris sous-répertoires),
-            # on utilise toujours la racine du journal comme base_url
-            if (
-                self.journal_directory
-                and self.current_file
-                and str(self.current_file).startswith(str(self.journal_directory))
-            ):
-                base_url = str(self.journal_directory)
-            elif self.current_file:
-                base_url = str(Path(self.current_file).parent)
-            else:
-                base_url = str(Path.home())
-
-            # Récupérer le contenu HTML depuis la prévisualisation
-            html_content = self.preview.get_html()
-
-            # CORRECTION : Normaliser les chemins d'images dans le HTML
-            # Convertir tous les chemins relatifs en chemins absolus
-            if self.journal_directory and self.current_file:
-                from bs4 import BeautifulSoup
-
-                soup = BeautifulSoup(html_content, "html.parser")
-
-                # Traiter les balises <img>
-                for img in soup.find_all("img"):
-                    src = img.get("src")
-                    if src and not src.startswith(
-                        ("http://", "https://", "data:", "file://")
-                    ):
-                        # Chemin relatif détecté
-                        # Le résoudre par rapport au répertoire du journal (base)
-                        full_path = (self.journal_directory / src).resolve()
-                        if full_path.exists():
-                            img["src"] = str(full_path)
-
-                # Traiter les liens <a> qui pointent vers des images
-                for link in soup.find_all("a"):
-                    href = link.get("href")
-                    if href and not href.startswith(
-                        ("http://", "https://", "data:", "file://", "#")
-                    ):
-                        full_path = (self.journal_directory / href).resolve()
-                        if full_path.exists():
-                            link["href"] = str(full_path)
-
-                html_content = str(soup)
-
-            content_css_string = get_pdf_theme_css(self.settings_manager)
-
-            html = HTML(string=html_content, base_url=base_url)
-            html.write_pdf(filename, stylesheets=[CSS(string=content_css_string)])
-
-            self.statusbar.showMessage(f"Exporté en PDF : {filename}", 3000)
-            self.settings_manager.set("pdf.last_directory", str(Path(filename).parent))
-            self.settings_manager.save_settings()
-        except Exception as e:
-            QMessageBox.critical(
-                self, "Erreur", f"Impossible d'exporter en PDF :\n{str(e)}"
-            )
+        export_single_pdf(self)
 
     def export_journal_pdf(self):
         """Exporte l'ensemble du journal dans un unique fichier PDF avec WeasyPrint."""
-        try:
-            from weasyprint import HTML, CSS
-        except ImportError:
-            QMessageBox.critical(
-                self,
-                "Module manquant",
-                "WeasyPrint n'est pas installé.\n\n"
-                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
-                "pip install weasyprint",
-            )
-            return
-
-        if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                "Exportation impossible",
-                "Aucun répertoire de journal n'est actuellement défini.",
-            )
-            return
-
-        # V2.9.2 - Charger les tags disponibles pour le filtre
-        available_tags = []
-        tags_index_path = self.journal_directory / "index_tags.json"
-        if tags_index_path.exists():
-            try:
-                with open(tags_index_path, "r", encoding="utf-8") as f:
-                    tags_data = json.load(f)
-                    # On trie les tags par ordre alphabétique pour la liste déroulante
-                    available_tags = sorted(tags_data.keys())
-            except (json.JSONDecodeError, IOError) as e:
-                print(f"⚠️ Erreur de lecture de l'index des tags : {e}")
-
-        # Récupérer et trier toutes les notes du journal
-        note_files = []
-        for filename in os.listdir(self.journal_directory):
-            if filename.endswith(".md") and re.match(r"^\d{8}\.md$", filename):
-                note_files.append(filename)
-
-        if not note_files:
-            QMessageBox.information(
-                self, "Journal vide", "Aucune note à exporter dans le journal."
-            )
-            return
-
-        note_files.sort()
-
-        # Récupérer la dernière destination PDF enregistrée
-        last_pdf_dir = self.settings_manager.get("pdf.last_directory")
-        if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
-            last_pdf_dir = str(self.journal_directory.parent)
-
-        # Déterminer les dates min/max pour la boîte de dialogue
-        first_note_date_str = os.path.splitext(note_files[0])[0]
-        first_note_date_obj = datetime.strptime(first_note_date_str, "%Y%m%d")
-        min_date_q = QDate(
-            first_note_date_obj.year,
-            first_note_date_obj.month,
-            first_note_date_obj.day,
-        )
-        today_q = QDate.currentDate()
-
-        # Récupérer le dernier nom d'auteur utilisé
-        last_author = self.settings_manager.get("pdf.last_author", "")
-
-        # Récupérer le dernier titre utilisé, avec "BlueNotebook Journal" comme valeur par défaut
-        last_title = self.settings_manager.get("pdf.last_title", "BlueNotebook Journal")
-
-        # Définir l'image de couverture par défaut
-        default_logo_path = (
-            Path(__file__).parent.parent
-            / "resources"
-            / "images"
-            / "bluenotebook_256-x256_fond_blanc.png"
-        )
-        # Afficher la boîte de dialogue de sélection de dates
-        date_dialog = DateRangeDialog(
-            start_date_default=min_date_q,
-            end_date_default=today_q,
-            min_date=min_date_q,
-            max_date=today_q,
-            available_tags=available_tags,
-            default_title=last_title,
-            default_cover_image=str(default_logo_path),
-            default_author=last_author,
-            parent=self,
-        )
-
-        if date_dialog.exec_() != QDialog.Accepted:
-            return  # L'utilisateur a annulé
-
-        options = date_dialog.get_export_options()
-        start_date_q = options["start_date"]
-        end_date_q = options["end_date"]
-        pdf_title = options["title"]
-        pdf_author = options["author"]
-        cover_image_path = options["cover_image"]
-        selected_tag = options.get("selected_tag")
-
-        # Proposer un nom de fichier par défaut
-        default_filename = f"Journal-{start_date_q.toString('ddMMyyyy')}-{end_date_q.toString('ddMMyyyy')}.pdf"
-        default_path = os.path.join(last_pdf_dir, default_filename)
-
-        # Demander à l'utilisateur où sauvegarder le PDF
-        pdf_path, _ = QFileDialog.getSaveFileName(
-            self,
-            "Exporter le journal en PDF",
-            default_path,
-            "Fichiers PDF (*.pdf)",
-        )
-
-        if not pdf_path:
-            return
-
-        # V2.9.2 - Logique de filtrage combiné (dates et tag)
-        # 1. Filtrer par date
-        filtered_notes = []
-        for note_file in note_files:
-            note_date_str = os.path.splitext(note_file)[0]
-            note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
-            if start_date_q.toPyDate() <= note_date_obj <= end_date_q.toPyDate():
-                filtered_notes.append(note_file)
-
-        # 2. Si un tag est sélectionné, filtrer davantage
-        if selected_tag:
-            try:
-                with open(tags_index_path, "r", encoding="utf-8") as f:
-                    tags_data = json.load(f)
-                # Obtenir la liste des noms de fichiers contenant le tag
-                files_with_tag = {
-                    d["filename"] for d in tags_data[selected_tag]["details"]
-                }
-                # Conserver uniquement les notes qui sont dans la plage de dates ET qui ont le tag
-                filtered_notes = [
-                    note for note in filtered_notes if note in files_with_tag
-                ]
-            except (KeyError, FileNotFoundError) as e:
-                print(f"⚠️ Erreur lors du filtrage par tag : {e}")
-                filtered_notes = []
-
-        if not filtered_notes:
-            QMessageBox.information(
-                self,
-                "Aucune note",
-                "Aucune note trouvée dans la plage de dates sélectionnée.",
-            )
-            return
-
-        all_html_content = ""
-
-        # Page de garde
-        notes_data = []
-        for note_file in filtered_notes:
-            try:
-                with open(
-                    self.journal_directory / note_file, "r", encoding="utf-8"
-                ) as f:
-                    markdown_content = f.read()
-                self.preview.md.reset()
-                html_note = self.preview.md.convert(markdown_content)
-                date_obj = datetime.strptime(os.path.splitext(note_file)[0], "%Y%m%d")
-                notes_data.append((date_obj, html_note))
-            except Exception as e:
-                print(f"Erreur de lecture du fichier {note_file}: {e}")
-                continue
-
-        # Générer le PDF avec WeasyPrint
-        try:
-            self._start_export_flashing()
-
-            # V2.9.1 - Charger le thème CSS pour le contenu du PDF
-            pdf_theme_filename = self.settings_manager.get(
-                "pdf.css_theme", "default_preview.css"
-            )
-            # Le thème peut être dans css_pdf ou css_preview
-            base_path = Path(__file__).parent.parent
-            css_pdf_path = base_path / "resources" / "css_pdf" / pdf_theme_filename
-            css_preview_path = (
-                base_path / "resources" / "css_preview" / pdf_theme_filename
-            )
-
-            content_css_string = ""
-            css_path_to_load = (
-                css_pdf_path if css_pdf_path.exists() else css_preview_path
-            )
-            if css_path_to_load.exists():
-                with open(css_path_to_load, "r", encoding="utf-8") as f:
-                    content_css_string = f.read()
-
-            worker = create_pdf_export_worker(
-                options=options,
-                notes_data=notes_data,
-                content_css_string=content_css_string,
-                journal_dir=self.journal_directory,
-                output_path=pdf_path,
-            )
-            worker.signals.finished.connect(self._on_export_finished)
-            worker.signals.error.connect(self._on_export_error)
-
-            self.thread_pool.start(worker)
-
-            # Mémoriser le répertoire de destination pour la prochaine fois
-            self.settings_manager.set("pdf.last_directory", str(Path(pdf_path).parent))
-            # Mémoriser le nom de l'auteur pour la prochaine fois
-            if pdf_author:
-                self.settings_manager.set("pdf.last_author", pdf_author)
-            # Mémoriser le titre pour la prochaine fois (toujours, même s'il est vide)
-            self.settings_manager.set("pdf.last_title", pdf_title)
-            self.settings_manager.save_settings()
-
-        except Exception as e:
-            self._stop_export_flashing()
-            QMessageBox.critical(
-                self,
-                "Erreur d'exportation",
-                f"Une erreur est survenue lors de la création du PDF :\n{str(e)}",
-            )
+        export_journal_to_pdf(self)
 
     def _on_export_finished(self, file_path):
         """Callback générique pour la fin d'un export."""
@@ -2129,226 +1823,15 @@ class MainWindow(QMainWindow):
 
     def export_journal_epub(self):
         """Exporte l'ensemble du journal dans un unique fichier EPUB."""
-        try:
-            from ebooklib import epub
-            from PIL import Image
-        except ImportError:
-            QMessageBox.critical(
-                self,
-                "Modules manquants",
-                "Les bibliothèques 'EbookLib' et 'Pillow' sont requises.\n\n"
-                "Pour utiliser cette fonctionnalité, installez-les avec:\n"
-                "pip install EbookLib Pillow",
-            )
-            return
-
-        if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                "Exportation impossible",
-                "Aucun répertoire de journal n'est actuellement défini.",
-            )
-            return
-
-        # Récupérer et trier toutes les notes du journal
-        note_files = sorted(
-            [
-                f
-                for f in os.listdir(self.journal_directory)
-                if f.endswith(".md") and re.match(r"^\d{8}\.md$", f)
-            ]
-        )
-
-        if not note_files:
-            QMessageBox.information(
-                self, "Journal vide", "Aucune note à exporter dans le journal."
-            )
-            return
-
-        # Déterminer les dates min/max pour la boîte de dialogue
-        min_date_obj = datetime.strptime(os.path.splitext(note_files[0])[0], "%Y%m%d")
-        min_date_q = QDate(min_date_obj.year, min_date_obj.month, min_date_obj.day)
-        today_q = QDate.currentDate()
-
-        # Récupérer les derniers paramètres utilisés
-        last_author = self.settings_manager.get("epub.last_author", "")
-        last_title = self.settings_manager.get(
-            "epub.last_title", "BlueNotebook Journal"
-        )
-        default_logo_path = (
-            Path(__file__).parent.parent
-            / "resources"
-            / "images"
-            / "bluenotebook_256-x256_fond_blanc.png"
-        )
-
-        # Afficher la boîte de dialogue de sélection (identique à celle du PDF)
-        date_dialog = DateRangeDialog(
-            start_date_default=min_date_q,
-            end_date_default=today_q,
-            min_date=min_date_q,
-            max_date=today_q,
-            default_title=last_title,
-            default_cover_image=str(default_logo_path),
-            default_author=last_author,
-            parent=self,
-        )
-        date_dialog.setWindowTitle("Options d'exportation du Journal EPUB")
-
-        if date_dialog.exec_() != QDialog.Accepted:
-            return
-
-        options = date_dialog.get_export_options()
-
-        # Demander où sauvegarder le fichier EPUB
-        last_epub_dir = self.settings_manager.get("epub.last_directory")
-        if not last_epub_dir or not Path(last_epub_dir).is_dir():
-            last_epub_dir = str(self.journal_directory.parent)
-
-        default_filename = f"Journal-{options['start_date'].toString('ddMMyyyy')}-{options['end_date'].toString('ddMMyyyy')}.epub"
-        default_path = os.path.join(last_epub_dir, default_filename)
-
-        epub_path, _ = QFileDialog.getSaveFileName(
-            self, "Exporter le journal en EPUB", default_path, "Fichiers EPUB (*.epub)"
-        )
-
-        if not epub_path:
-            return
-
-        # Filtrer les notes et préparer les données
-        notes_data = []
-        for note_file in note_files:
-            note_date_str = os.path.splitext(note_file)[0]
-            note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
-            if (
-                options["start_date"].toPyDate()
-                <= note_date_obj
-                <= options["end_date"].toPyDate()
-            ):
-                with open(
-                    self.journal_directory / note_file, "r", encoding="utf-8"
-                ) as f:
-                    markdown_content = f.read()
-                self.preview.md.reset()
-                html_note = self.preview.md.convert(markdown_content)
-                notes_data.append((note_date_obj, html_note))
-
-        # Lancer le worker en arrière-plan
-        self._start_export_flashing()
-        worker = EpubExportWorker(
-            options, notes_data, epub_path, self.journal_directory
-        )
-        worker.signals.finished.connect(self._on_export_finished)
-        worker.signals.error.connect(self._on_export_error)
-        self.thread_pool.start(worker)
-
-        # Mémoriser les paramètres pour la prochaine fois
-        self.settings_manager.set("epub.last_directory", str(Path(epub_path).parent))
-        self.settings_manager.set("epub.last_author", options["author"])
-        self.settings_manager.set("epub.last_title", options["title"])
-        self.settings_manager.save_settings()
+        export_journal_to_epub(self)
 
     def backup_journal(self):
         """Sauvegarde le répertoire du journal dans une archive ZIP."""
-        if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                "Sauvegarde impossible",
-                "Aucun répertoire de journal n'est actuellement défini.",
-            )
-            return
-
-        initial_dir = os.getenv("BACKUP_DIRECTORY")
-        if not initial_dir or not os.path.isdir(initial_dir):
-            initial_dir = self.settings_manager.get("backup.last_directory")
-            if not initial_dir or not os.path.isdir(initial_dir):
-                initial_dir = str(self.journal_directory.parent)
-
-        backup_filename_default = f"BlueNotebook-Backup-{self.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
-        default_path = os.path.join(initial_dir, backup_filename_default)
-
-        backup_path, _ = QFileDialog.getSaveFileName(
-            self,
-            "Sauvegarder le journal",
-            default_path,
-            "Archives ZIP (*.zip)",
-            options=QFileDialog.DontConfirmOverwrite,
-        )
-
-        if backup_path:
-            # Démarrer le worker de sauvegarde en arrière-plan
-            self._start_backup_flashing()
-            worker = JournalBackupWorker(self.journal_directory, Path(backup_path))
-            worker.signals.finished.connect(self._on_journal_backup_finished)
-            worker.signals.error.connect(self._on_journal_backup_error)
-            self.thread_pool.start(worker)
-
-            # Mémoriser le répertoire de destination
-            new_backup_dir = os.path.dirname(backup_path)
-            self.settings_manager.set("backup.last_directory", new_backup_dir)
-            self.settings_manager.save_settings()
-
-            # Afficher un message immédiat (le message de fin viendra du worker)
-            self.statusbar.showMessage("Lancement de la sauvegarde...", 3000)
+        backup_journal(self)
 
     def restore_journal(self):
         """Restaure un journal depuis une archive ZIP."""
-        if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                "Restauration impossible",
-                "Aucun répertoire de journal de destination n'est défini.",
-            )
-            return
-
-        zip_path, _ = QFileDialog.getOpenFileName(
-            self, "Restaurer le journal", "", "Archives ZIP (*.zip)"
-        )
-
-        if not zip_path:
-            return
-
-        current_journal_backup_path = (
-            f"{self.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
-        )
-
-        msg_box = QMessageBox(self)
-        msg_box.setIcon(QMessageBox.Question)
-        msg_box.setWindowTitle("Confirmation de la restauration")
-        msg_box.setTextFormat(Qt.RichText)
-        msg_box.setText(
-            f"<p>Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.</p>"
-            f"<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{current_journal_backup_path}</b></p>"
-            f"<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
-        )
-        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg_box.button(QMessageBox.Yes).setText("Valider")
-        msg_box.button(QMessageBox.No).setText("Annuler")
-        msg_box.setDefaultButton(QMessageBox.No)
-        reply = msg_box.exec_()
-
-        if reply == QMessageBox.No:
-            return
-
-        try:
-            os.rename(self.journal_directory, current_journal_backup_path)
-            os.makedirs(self.journal_directory)
-
-            with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                zip_ref.extractall(self.journal_directory)
-
-            QMessageBox.information(
-                self,
-                "Restauration terminée",
-                "La restauration est terminée. L'application va maintenant se fermer.\n"
-                "Veuillez la relancer pour utiliser le journal restauré.",
-            )
-            self.close()
-
-        except Exception as e:
-            QMessageBox.critical(
-                self, "Erreur de restauration", f"La restauration a échoué : {e}"
-            )
+        restore_journal(self)
 
     def toggle_preview(self):
         """Basculer la visibilité de l'aperçu"""
@@ -2989,6 +2472,7 @@ class MainWindow(QMainWindow):
             "Sauvegarde terminée",
             f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
         )
+        print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
 
     def _on_journal_backup_error(self, error_message: str):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""

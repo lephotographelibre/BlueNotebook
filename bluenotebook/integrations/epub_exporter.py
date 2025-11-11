@@ -17,12 +17,17 @@
 Logique pour l'exportation du journal au format EPUB.
 """
 
+import re
 import os
 from pathlib import Path
 from datetime import datetime
 import io
 import requests
 from bs4 import BeautifulSoup
+
+from PyQt5.QtWidgets import QMessageBox, QDialog, QFileDialog
+from PyQt5.QtCore import QDate
+from gui.date_range_dialog import DateRangeDialog
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
 
@@ -483,3 +488,128 @@ BODY {
 
         except Exception as e:
             self.signals.error.emit(str(e))
+
+
+def export_journal_epub_worker(main_window, options, note_files, epub_path):
+    """Filtre les notes et lance le worker d'exportation EPUB."""
+    # Filtrer les notes et préparer les données
+    notes_data = []
+    for note_file in note_files:
+        note_date_str = os.path.splitext(note_file)[0]
+        note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
+        if (
+            options["start_date"].toPyDate()
+            <= note_date_obj
+            <= options["end_date"].toPyDate()
+        ):
+            with open(
+                main_window.journal_directory / note_file, "r", encoding="utf-8"
+            ) as f:
+                markdown_content = f.read()
+            main_window.preview.md.reset()
+            html_note = main_window.preview.md.convert(markdown_content)
+            notes_data.append((note_date_obj, html_note))
+
+    # Lancer le worker en arrière-plan
+    main_window._start_export_flashing()
+    worker = EpubExportWorker(
+        options, notes_data, epub_path, main_window.journal_directory
+    )
+    worker.signals.finished.connect(main_window._on_export_finished)
+    worker.signals.error.connect(main_window._on_export_error)
+    main_window.thread_pool.start(worker)
+
+    # Mémoriser les paramètres pour la prochaine fois
+    main_window.settings_manager.set("epub.last_directory", str(Path(epub_path).parent))
+    main_window.settings_manager.set("epub.last_author", options["author"])
+    main_window.settings_manager.set("epub.last_title", options["title"])
+    main_window.settings_manager.save_settings()
+
+
+def export_journal_to_epub(main_window):
+    """Exporte l'ensemble du journal dans un unique fichier EPUB."""
+    try:
+        from ebooklib import epub
+        from PIL import Image
+    except ImportError:
+        QMessageBox.critical(
+            main_window,
+            "Modules manquants",
+            "Les bibliothèques 'EbookLib' et 'Pillow' sont requises.\n\n"
+            "Pour utiliser cette fonctionnalité, installez-les avec:\n"
+            "pip install EbookLib Pillow",
+        )
+        return
+
+    if not main_window.journal_directory:
+        QMessageBox.warning(
+            main_window,
+            "Exportation impossible",
+            "Aucun répertoire de journal n'est actuellement défini.",
+        )
+        return
+
+    note_files = sorted(
+        [
+            f
+            for f in os.listdir(main_window.journal_directory)
+            if f.endswith(".md") and re.match(r"^\d{8}\.md$", f)
+        ]
+    )
+
+    if not note_files:
+        QMessageBox.information(
+            main_window, "Journal vide", "Aucune note à exporter dans le journal."
+        )
+        return
+
+    min_date_obj = datetime.strptime(os.path.splitext(note_files[0])[0], "%Y%m%d")
+    min_date_q = QDate(min_date_obj.year, min_date_obj.month, min_date_obj.day)
+    today_q = QDate.currentDate()
+
+    last_author = main_window.settings_manager.get("epub.last_author", "")
+    last_title = main_window.settings_manager.get(
+        "epub.last_title", "BlueNotebook Journal"
+    )
+    default_logo_path = (
+        Path(__file__).parent.parent
+        / "resources"
+        / "images"
+        / "bluenotebook_256-x256_fond_blanc.png"
+    )
+
+    date_dialog = DateRangeDialog(
+        start_date_default=min_date_q,
+        end_date_default=today_q,
+        min_date=min_date_q,
+        max_date=today_q,
+        default_title=last_title,
+        default_cover_image=str(default_logo_path),
+        default_author=last_author,
+        parent=main_window,
+    )
+    date_dialog.setWindowTitle("Options d'exportation du Journal EPUB")
+
+    if date_dialog.exec_() != QDialog.Accepted:
+        return
+
+    options = date_dialog.get_export_options()
+
+    last_epub_dir = main_window.settings_manager.get("epub.last_directory")
+    if not last_epub_dir or not Path(last_epub_dir).is_dir():
+        last_epub_dir = str(main_window.journal_directory.parent)
+
+    default_filename = f"Journal-{options['start_date'].toString('ddMMyyyy')}-{options['end_date'].toString('ddMMyyyy')}.epub"
+    default_path = os.path.join(last_epub_dir, default_filename)
+
+    epub_path, _ = QFileDialog.getSaveFileName(
+        main_window,
+        "Exporter le journal en EPUB",
+        default_path,
+        "Fichiers EPUB (*.epub)",
+    )
+
+    if not epub_path:
+        return
+
+    export_journal_epub_worker(main_window, options, note_files, epub_path)

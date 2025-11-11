@@ -14,11 +14,23 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-Logique pour l'exportation du journal au format PDF.
+Logique pour l'exportation au format PDF.
 """
+import json
+import os
+import re
+from datetime import datetime
 
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, QDate
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog
 from pathlib import Path
+
+from bs4 import BeautifulSoup
+
+from gui.date_range_dialog import DateRangeDialog
+
+# This will create a circular import if MainWindow is imported directly.
+# We will pass MainWindow as an argument to the functions.
 
 
 def get_pdf_theme_css(settings_manager) -> str:
@@ -187,3 +199,272 @@ def create_pdf_export_worker(
         base_url=str(journal_dir),
         output_path=output_path,
     )
+
+
+def export_single_pdf(main_window):
+    """Exporter le fichier actuel en PDF avec WeasyPrint."""
+    try:
+        from weasyprint import HTML, CSS
+    except ImportError:
+        QMessageBox.critical(
+            main_window,
+            "Module manquant",
+            "WeasyPrint n'est pas installé.\n\n"
+            "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+            "pip install weasyprint",
+        )
+        return
+
+    if main_window.current_file:
+        base_name = os.path.basename(main_window.current_file)
+        file_stem = os.path.splitext(base_name)[0]
+        clean_filename = file_stem.lower().replace(" ", "-")
+    else:
+        clean_filename = "nouveau-fichier"
+
+    last_pdf_dir = main_window.settings_manager.get("pdf.last_directory")
+    if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
+        last_pdf_dir = str(Path.home())
+
+    default_filename = f"{clean_filename}.pdf"
+    default_path = os.path.join(last_pdf_dir, default_filename)
+
+    filename, _ = QFileDialog.getSaveFileName(
+        main_window,
+        "Exporter en PDF",
+        default_path,
+        "Fichiers PDF (*.pdf)",
+    )
+
+    if not filename:
+        return
+
+    try:
+        if (
+            main_window.journal_directory
+            and main_window.current_file
+            and str(main_window.current_file).startswith(
+                str(main_window.journal_directory)
+            )
+        ):
+            base_url = str(main_window.journal_directory)
+        elif main_window.current_file:
+            base_url = str(Path(main_window.current_file).parent)
+        else:
+            base_url = str(Path.home())
+
+        html_content = main_window.preview.get_html()
+
+        if main_window.journal_directory and main_window.current_file:
+            soup = BeautifulSoup(html_content, "html.parser")
+            for img in soup.find_all("img"):
+                src = img.get("src")
+                if src and not src.startswith(
+                    ("http://", "https://", "data:", "file://")
+                ):
+                    full_path = (main_window.journal_directory / src).resolve()
+                    if full_path.exists():
+                        img["src"] = str(full_path)
+            for link in soup.find_all("a"):
+                href = link.get("href")
+                if href and not href.startswith(
+                    ("http://", "https://", "data:", "file://", "#")
+                ):
+                    full_path = (main_window.journal_directory / href).resolve()
+                    if full_path.exists():
+                        link["href"] = str(full_path)
+            html_content = str(soup)
+
+        content_css_string = get_pdf_theme_css(main_window.settings_manager)
+
+        html = HTML(string=html_content, base_url=base_url)
+        html.write_pdf(filename, stylesheets=[CSS(string=content_css_string)])
+
+        main_window.statusbar.showMessage(f"Exporté en PDF : {filename}", 3000)
+        main_window.settings_manager.set(
+            "pdf.last_directory", str(Path(filename).parent)
+        )
+        main_window.settings_manager.save_settings()
+    except Exception as e:
+        QMessageBox.critical(
+            main_window, "Erreur", f"Impossible d'exporter en PDF :\n{str(e)}"
+        )
+
+
+def export_journal_to_pdf(main_window):
+    """Exporte l'ensemble du journal dans un unique fichier PDF avec WeasyPrint."""
+    try:
+        from weasyprint import HTML, CSS
+    except ImportError:
+        QMessageBox.critical(
+            main_window,
+            "Module manquant",
+            "WeasyPrint n'est pas installé.\n\n"
+            "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+            "pip install weasyprint",
+        )
+        return
+
+    if not main_window.journal_directory:
+        QMessageBox.warning(
+            main_window,
+            "Exportation impossible",
+            "Aucun répertoire de journal n'est actuellement défini.",
+        )
+        return
+
+    tags_index_path = main_window.journal_directory / "index_tags.json"
+    available_tags = []
+    if tags_index_path.exists():
+        try:
+            with open(tags_index_path, "r", encoding="utf-8") as f:
+                tags_data = json.load(f)
+                available_tags = sorted(tags_data.keys())
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"⚠️ Erreur de lecture de l'index des tags : {e}")
+
+    note_files = sorted(
+        [
+            f
+            for f in os.listdir(main_window.journal_directory)
+            if f.endswith(".md") and re.match(r"^\d{8}\.md$", f)
+        ]
+    )
+
+    if not note_files:
+        QMessageBox.information(
+            main_window, "Journal vide", "Aucune note à exporter dans le journal."
+        )
+        return
+
+    first_note_date_obj = datetime.strptime(
+        os.path.splitext(note_files[0])[0], "%Y%m%d"
+    )
+    min_date_q = QDate(
+        first_note_date_obj.year, first_note_date_obj.month, first_note_date_obj.day
+    )
+    today_q = QDate.currentDate()
+
+    last_author = main_window.settings_manager.get("pdf.last_author", "")
+    last_title = main_window.settings_manager.get(
+        "pdf.last_title", "BlueNotebook Journal"
+    )
+    default_logo_path = (
+        Path(__file__).parent.parent
+        / "resources"
+        / "images"
+        / "bluenotebook_256-x256_fond_blanc.png"
+    )
+
+    date_dialog = DateRangeDialog(
+        start_date_default=min_date_q,
+        end_date_default=today_q,
+        min_date=min_date_q,
+        max_date=today_q,
+        available_tags=available_tags,
+        default_title=last_title,
+        default_cover_image=str(default_logo_path),
+        default_author=last_author,
+        parent=main_window,
+    )
+
+    if date_dialog.exec_() != QDialog.Accepted:
+        return
+
+    options = date_dialog.get_export_options()
+    export_journal_to_pdf_worker(main_window, options, note_files, tags_index_path)
+
+
+def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_path):
+    start_date_q = options["start_date"]
+    end_date_q = options["end_date"]
+    selected_tag = options.get("selected_tag")
+
+    filtered_notes = []
+    for note_file in note_files:
+        note_date_str = os.path.splitext(note_file)[0]
+        note_date_obj = datetime.strptime(note_date_str, "%Y%m%d").date()
+        if start_date_q.toPyDate() <= note_date_obj <= end_date_q.toPyDate():
+            filtered_notes.append(note_file)
+
+    if selected_tag:
+        try:
+            with open(tags_index_path, "r", encoding="utf-8") as f:
+                tags_data = json.load(f)
+            files_with_tag = {d["filename"] for d in tags_data[selected_tag]["details"]}
+            filtered_notes = [note for note in filtered_notes if note in files_with_tag]
+        except (KeyError, FileNotFoundError) as e:
+            print(f"⚠️ Erreur lors du filtrage par tag : {e}")
+            filtered_notes = []
+
+    if not filtered_notes:
+        QMessageBox.information(
+            main_window,
+            "Aucune note",
+            "Aucune note trouvée pour les critères sélectionnés.",
+        )
+        return
+
+    last_pdf_dir = main_window.settings_manager.get("pdf.last_directory")
+    if not last_pdf_dir or not Path(last_pdf_dir).is_dir():
+        last_pdf_dir = str(main_window.journal_directory.parent)
+
+    default_filename = f"Journal-{start_date_q.toString('ddMMyyyy')}-{end_date_q.toString('ddMMyyyy')}.pdf"
+    default_path = os.path.join(last_pdf_dir, default_filename)
+
+    pdf_path, _ = QFileDialog.getSaveFileName(
+        main_window,
+        "Exporter le journal en PDF",
+        default_path,
+        "Fichiers PDF (*.pdf)",
+    )
+
+    if not pdf_path:
+        return
+
+    notes_data = []
+    for note_file in filtered_notes:
+        try:
+            with open(
+                main_window.journal_directory / note_file, "r", encoding="utf-8"
+            ) as f:
+                markdown_content = f.read()
+            main_window.preview.md.reset()
+            html_note = main_window.preview.md.convert(markdown_content)
+            date_obj = datetime.strptime(os.path.splitext(note_file)[0], "%Y%m%d")
+            notes_data.append((date_obj, html_note))
+        except Exception as e:
+            print(f"Erreur de lecture du fichier {note_file}: {e}")
+            continue
+
+    try:
+        main_window._start_export_flashing()
+        content_css_string = get_pdf_theme_css(main_window.settings_manager)
+
+        worker = create_pdf_export_worker(
+            options=options,
+            notes_data=notes_data,
+            content_css_string=content_css_string,
+            journal_dir=main_window.journal_directory,
+            output_path=pdf_path,
+        )
+        worker.signals.finished.connect(main_window._on_export_finished)
+        worker.signals.error.connect(main_window._on_export_error)
+
+        main_window.thread_pool.start(worker)
+
+        main_window.settings_manager.set(
+            "pdf.last_directory", str(Path(pdf_path).parent)
+        )
+        if options["author"]:
+            main_window.settings_manager.set("pdf.last_author", options["author"])
+        main_window.settings_manager.set("pdf.last_title", options["title"])
+        main_window.settings_manager.save_settings()
+
+    except Exception as e:
+        main_window._stop_export_flashing()
+        QMessageBox.critical(
+            main_window,
+            "Erreur d'exportation",
+            f"Une erreur est survenue lors de la création du PDF :\n{str(e)}",
+        )

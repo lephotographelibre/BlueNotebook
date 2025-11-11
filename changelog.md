@@ -8,7 +8,29 @@ PyQt5 avec QTreeView
 
 Gestion du glisser déposer ?
 
+## V3.1.9 Refactoring Export PDF / Epub 
+dans une demarche de refactoring je voudrais alléger le fichier `bluenotebook/gui/main_window.py`.
+Dan sun premier temps je voudrais que les methodes 
+- def export_pdf(self):
+- def export_journal_pdf(self):
+soient exportées dans le fichier `bluenotebook/integrations/pdf_exporter.py`. Verifie bien les exports
+beta1
 
+dans une demarche de refactoring je voudrais alléger le fichier `bluenotebook/gui/main_window.py`.
+Dan sun premier temps je voudrais que la methode 
+- def export_journal_epub(self):
+soit exportée dans le fichier `bluenotebook/integrations/epub_exporter.py`. Verifie bien les exports
+beta2
+
+dans une demarche de refactoring je voudrais alléger le fichier `bluenotebook/gui/main_window.py`.
+
+peux tu egalement déplacer la methode 
+-  def restore_journal(self):
+dans le fichier `bluenotebook/gui/backup_handler.py  
+beta4
+
+Peux tu afficher un message dans la console a la fin du backup et a la fin du restaure précédé de cet emoji 🔁
+ 
 ## V3.1.8 Export PDF
 Voici une explication détaillée des étapes  pour ajouter une fonctionnalité d'exportation PDF pour un fichier Markdown ouvert, 
 
