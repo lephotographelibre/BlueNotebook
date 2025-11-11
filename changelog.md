@@ -1,12 +1,13 @@
-## V4.0.1 Directory Navigation Panel
-
-3 Boutons Notes Journal Utilisteur
+## V3.2.1 Directory Navigation Panel
+ 
 
 Pour créer une fenêtre dans une application Python avec une vue arborescente (treeview) affichant les fichiers d’un répertoire avec des nœuds cliquables, plusieurs bibliothèques Python peuvent être utilisées.  
 
 PyQt5 avec QTreeView
 
 Gestion du glisser déposer ?
+
+## V3.2.0 Add new English README.md + Images 
 
 ## V3.1.9 Refactoring Export PDF / Epub 
 dans une demarche de refactoring je voudrais alléger le fichier `bluenotebook/gui/main_window.py`.

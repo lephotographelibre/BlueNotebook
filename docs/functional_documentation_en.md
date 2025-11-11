@@ -1,15 +1,10 @@
+## BlueNotebook: A Functional Analysis by Levels
 
-![BlueNotebook](images/bluenotebook_bandeau.jpg)
-
+### Introduction
 
 BlueNotebook is a journaling and note-taking application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
 
-![BlueNotebook](docs/Screencopy/V2.6.2_bluenotebook_4_panneaux.jpg)
-
-![Bluenotebook_the_writing_experience](images/Bluenotebook_the_writing_experience.png)
-
-
-
+---
 
 ### Level 1: The Editor - The Heart of the Writing Experience
 
@@ -27,7 +22,16 @@ This level concerns the immediate writing environment: the ability to enter and 
     *   **Dynamic Zoom**: `Ctrl + Mouse Wheel` to adjust the text size on the fly.
     *   **Paragraph Cleanup**: A function to merge lines and remove superfluous spaces, very useful after a copy-paste.
 
- 
+#### Potential Improvements (What could be added)
+
+*   **Spell Checker**: Integration of a real-time spell checker to highlight typos.
+*   **Autocompletion**: Autocompletion for tags (`@@...`) or even for recurring text blocks (snippets).
+*   **Improved Table Editing**: A visual assistant for creating and modifying Markdown tables, which can be tedious to manage manually.
+*   **Writing Modes**:
+    *   **Focus Mode**: Dims the text that is not in the current paragraph or sentence being edited.
+    *   **Typewriter Mode**: Keeps the active line always in the center of the screen.
+
+---
 
 ### Level 2: The Journal - The Temporal Dimension
 
@@ -41,7 +45,14 @@ This level focuses on BlueNotebook's main feature: keeping a chronological journ
 *   **Complete Backup and Restore**: Integrated tools allow creating a `.zip` archive of the entire journal (notes, images, attachments) and restoring it securely (the current journal is backed up before being replaced).
 *   **Journal Export**: Ability to export a selection of notes (by date range and/or tag) into professional formats like **PDF** (paginated, with a cover) and **EPUB** (with a table of contents, cover, and embedded images).
 
- 
+#### Potential Improvements (What could be added)
+
+*   **Multiple Journal Management**: Allow the user to define and easily switch between multiple journal directories (e.g., "Personal Journal," "Project Journal").
+*   **Encryption**: An option to encrypt specific notes or the entire journal with a password for increased confidentiality.
+*   **Journal Statistics**: A dashboard displaying statistics on writing activity (word count per day, consecutive writing days, most used tags over a period, etc.).
+*   **"On This Day" View**: A feature that displays notes written on the same date in previous years.
+
+---
 
 ### Level 3: Note-Taking - Enriching the Content
 
@@ -62,7 +73,13 @@ This level covers the tools that allow for the creation of rich and structured n
     *   **EXIF Data**: Extraction and display of a photo's metadata (location, date, camera).
 *   **PDF to Markdown Conversion**: Integrated tool to convert a PDF document into editable Markdown text.
 
- 
+#### Potential Improvements (What could be added)
+
+*   **Web Clipper**: A browser extension or an "Import from URL" function that would capture the content of a web page and convert it into clean Markdown.
+*   **Audio Recording**: Ability to record short voice notes and embed them in a note as a clickable audio file.
+*   **Drawing and Schematics**: Integration of a small drawing canvas to create simple hand-drawn diagrams and insert them as images.
+
+---
 
 ### Level 4: Knowledge Management - Connecting Ideas
 
@@ -79,16 +96,9 @@ This level represents the application's ability to help the user organize, retri
     *   **Document Outline** (`F7`): Displays a hierarchical view of the current document's headings, allowing for quick navigation in long and structured notes.
 *   **Integrated Document Reader**: The reader panel (`F8`) allows displaying EPUB and PDF documents alongside the editor, facilitating note-taking from external sources.
 
- ---
+#### Potential Improvements (What could be added)
 
- **Documentation**
-
- **License**
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-Copyright (C) 2025 Jean-Marc DIGNE
+*   **Bidirectional Links (Backlinks)**: The flagship feature of "second brain" tools like Obsidian or Roam. For each note, display a section listing all other notes that link to it.
+*   **Graph View**: A visual representation of the journal as a network of nodes (notes) and links, allowing for the discovery of unexpected connections between ideas.
+*   **Advanced Search**: A more powerful search engine with boolean operators (`tag:project AND NOT tag:archive`), date range search, or search within the content of attachments (PDF, etc.).
+*   **Transclusion (Block Inclusion)**: The ability to embed (and display) a block of text from another note directly into the current note, while keeping the content synchronized.
