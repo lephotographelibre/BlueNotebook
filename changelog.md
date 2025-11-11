@@ -1,4 +1,15 @@
-## V1.3.8 Export PDF
+## V4.0.1 Directory Navigation Panel
+
+3 Boutons Notes Journal Utilisteur
+
+Pour créer une fenêtre dans une application Python avec une vue arborescente (treeview) affichant les fichiers d’un répertoire avec des nœuds cliquables, plusieurs bibliothèques Python peuvent être utilisées.  
+
+PyQt5 avec QTreeView
+
+Gestion du glisser déposer ?
+
+
+## V3.1.8 Export PDF
 Voici une explication détaillée des étapes  pour ajouter une fonctionnalité d'exportation PDF pour un fichier Markdown ouvert, 
 
 L'approche consiste à reproduire la logique de la fonction `export_html` existante et à l'adapter pour le format PDF en utilisant la bibliothèque `weasyprint`, qui est déjà utilisée ailleurs dans l' application.
@@ -94,7 +105,7 @@ MAJ Horodatage et A  Propos
 Fix issue [#33](https://github.com/lephotographelibre/BlueNotebook/issues/33) 
 Rendre le menu export html plus générique
 
-TODO
+V1.3.8
 
 
 ## V3.1.4 Fix issue [#50] V3.1.3 Lecteur: crash lors de l'ouverture de l'onglet lecteur
