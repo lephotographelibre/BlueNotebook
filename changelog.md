@@ -1,7 +1,7 @@
-## V3.2.2 Notes - Fix Issue [#55] Fix Issue [#57] Fix Issue [#59]
+## V3.2.2 Notes - Fix Issue [#58] Fix Issue [#57] Fix Issue [#59]
 
 
-Fix Issue [#55](https://github.com/lephotographelibre/BlueNotebook/issues/55) V3.2.1 Notes: Cannot Resize Notes Panel #58
+Fix Issue [#58](https://github.com/lephotographelibre/BlueNotebook/issues/55) V3.2.1 Notes: Cannot Resize Notes Panel #58
 
 Le panneau "Notes" n'est actuellement pas redimensionnable en largeur, ce qui peut être contraignant. la cause est bien une largeur fixe qui lui est appliquée lors de la configuration de l'interface dans `main_window.py`
 ```python
