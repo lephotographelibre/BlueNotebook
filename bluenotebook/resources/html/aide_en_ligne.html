@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Aide en Ligne - BlueNotebook V3.2.1</h1>
+            Aide en Ligne - BlueNotebook V3.2.2</h1>
     </header>
 
 <div class="main-container">
@@ -128,8 +128,10 @@
                     <li><a href="#exif-data">7.3 Insertion d'images avec données EXIF</a></li>
                 </ul>
             </li>
-            <li><a href="#lecteur-epub">8. Le Panneau Lecteur de Documents</a></li>
-            <li><a href="#gestion-notes">9. La Gestion des Notes (Explorateur de Fichiers)</a></li>
+            <li><a href="#lecteur-epub">8. Le Panneau Lecteur (EPUB et PDF)</a></li>
+            <li><a href="#gestion-notes">9. La Gestion des Notes (Explorateur de Fichiers)</a>
+                <ul><li><a href="#notes-recherche">9.1 Recherche et Tri</a></li><li><a href="#notes-colonnes">9.2 Affichage des colonnes de détails</a></li><li><a href="#notes-operations">9.3 Opérations sur les Fichiers et Dossiers</a></li></ul>
+            </li>
             <li><a href="#integrations">10. Intégrations (Météo, YouTube, etc.)</a>
                 <ul>
                     <li><a href="#meteo">10.1 Insérer la Météo du Jour</a></li>
@@ -355,7 +357,7 @@
     </section>
 
     <section id="lecteur-epub">
-        <h2>8. Le Panneau Lecteur de Documents</h2>
+        <h2>8. Le Panneau Lecteur (EPUB et PDF)</h2>
         <p>BlueNotebook intègre désormais un puissant lecteur de documents, vous permettant de consulter des livres au format <strong>EPUB</strong> et des documents <strong>PDF</strong> directement à côté de vos notes. C'est l'outil idéal pour la recherche, la prise de notes à partir de sources ou simplement pour la lecture.</p>
         <h3>Activation et Ouverture</h3>
         <ul>
@@ -384,11 +386,11 @@
 
         <h4>Fonctionnalités Clés du Panneau "Notes"</h4>
         <ul>
-            <li><strong>Exploration de Fichiers :</strong> Affiche une vue arborescente du dossier spécial <code>notes/</code> de votre journal. Vous pouvez y créer une hiérarchie de sous-dossiers pour organiser vos projets, recherches, ou collections de documents.</li>
+            <li><strong>Exploration de Fichiers :</strong> Affiche une vue arborescente du dossier spécial <code>notes/</code> de votre journal. Vous pouvez y créer une hiérarchie de sous-dossiers pour organiser vos projets, recherches, ou collections de documents. Le panneau est maintenant redimensionnable en largeur pour s'adapter à vos besoins.</li>
             <li><strong>Filtrage Intelligent :</strong> La vue est épurée pour n'afficher que les types de fichiers pertinents :
                 <ul>
                     <li><strong>Texte :</strong> <code>.md</code>, <code>.txt</code></li>
-                    <li><strong>Documents :</strong> <code>.pdf</code>, <code>.epub</code>, <code>.html</code></li>
+                    <li><strong>Documents :</strong> <code>.pdf</code>, <code>.epub</code>, <code>.html</code> (ouvrable dans l'éditeur)</li>
                     <li><strong>Médias :</strong> Images (<code>.jpg</code>, <code>.png</code>), vidéos (<code>.mp4</code>) et audio (<code>.mp3</code>).</li>
                 </ul>
             </li>
@@ -401,7 +403,20 @@
             <li><strong>Persistance :</strong> L'application mémorise le dernier dossier que vous avez sélectionné et le ré-ouvre automatiquement au prochain démarrage.</li>
         </ul>
 
-        <h4>Opérations sur les Fichiers et Dossiers (Menu Contextuel)</h4>
+        <h3 id="notes-recherche">9.1 Recherche et Tri</h3>
+        <p>Pour naviguer plus efficacement dans vos notes, le panneau intègre désormais des outils de recherche et de tri.</p>
+        <ul>
+            <li><strong>Barre de recherche :</strong> Située en haut du panneau, elle vous permet de filtrer instantanément l'arborescence. La recherche est insensible à la casse et aux accents. Appuyez sur <code>Entrée</code> ou sur le bouton "Rechercher" pour lancer le filtre. Un bouton d'effacement vous permet de réinitialiser la vue.</li>
+            <li><strong>Tri par colonne :</strong> Cliquez sur les en-têtes des colonnes ("Nom", "Taille", "Dernière modification") pour trier les fichiers et dossiers. Un second clic sur le même en-tête inverse l'ordre de tri.</li>
+        </ul>
+
+        <h3 id="notes-colonnes">9.2 Affichage des colonnes de détails</h3>
+        <p>Par défaut, seul le nom des fichiers est affiché. Vous pouvez afficher des informations supplémentaires :</p>
+        <ul>
+            <li>Utilisez le raccourci clavier <code>Ctrl+M</code> pour afficher ou masquer les colonnes "Taille", "Type" et "Dernière modification".</li>
+        </ul>
+
+        <h3 id="notes-operations">9.3 Opérations sur les Fichiers et Dossiers (Menu Contextuel)</h3>
         <p>Un clic droit dans le panneau "Notes" ouvre un menu contextuel riche qui s'adapte à ce que vous sélectionnez.</p>
         <p><strong>Sur un dossier :</strong></p>
         <ul>
@@ -415,7 +430,7 @@
         <p><strong>Sur un fichier :</strong></p>
         <ul>
             <li><strong><code>Ouvrir</code> :</strong> Ouvre le fichier dans le panneau approprié (Éditeur, Lecteur) ou avec l'application par défaut de votre système pour les médias.</li>
-            <li>Ainsi que les options <code>Couper</code>, <code>Copier</code>, <code>Renommer</code>, <code>Supprimer</code>.</li>
+            <li>Les fichiers <code>.html</code> sont maintenant ouverts directement dans l'éditeur Markdown.</li><li>Ainsi que les options <code>Couper</code>, <code>Copier</code>, <code>Renommer</code>, <code>Supprimer</code>.</li>
         </ul>
         <p><strong>Dans une zone vide :</strong></p>
         <ul>
@@ -837,6 +852,7 @@ Aide
                 <tr><td>Rétablir</td><td><code>Ctrl+Y</code></td></tr>
                 <tr><td>Rechercher</td><td><code>Ctrl+F</code></td></tr>
                 <tr><td>Mettre en gras</td><td><code>Ctrl+B</code></td></tr>
+                <tr><td>Afficher/Masquer les détails (Panneau Notes)</td><td><code>Ctrl+M</code></td></tr>
                 <tr><td>Insérer une image</td><td><code>Ctrl+I</code></td></tr>
                 <tr><td>Basculer l'aperçu</td><td><code>F5</code></td></tr>
                 <tr><td>Basculer la navigation</td><td><code>F6</code></td></tr>
@@ -1072,7 +1088,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.2.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.2.2 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

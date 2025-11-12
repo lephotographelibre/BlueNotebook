@@ -20,9 +20,10 @@ import os
 import webbrowser
 import shutil
 import requests
+import unicodedata
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, pyqtSignal, QDir
+from PyQt5.QtCore import Qt, pyqtSignal, QDir, QSortFilterProxyModel
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (
     QWidget,
@@ -30,6 +31,8 @@ from PyQt5.QtWidgets import (
     QTreeView,
     QHBoxLayout,
     QLabel,
+    QPushButton,
+    QLineEdit,
     QFileSystemModel,
     QMenu,
     QInputDialog,
@@ -75,7 +78,14 @@ class ColorableFileSystemModel(QFileSystemModel):
         """Charge le dictionnaire des couleurs de dossiers."""
         self.folder_colors = colors_dict if colors_dict else {}
         # Force une mise à jour de la vue
-        self.layoutChanged.emit()
+        # V3.2.2 - Correction finale du crash lors du changement de couleur.
+        # Émettre layoutChanged() est trop brutal et cause un crash avec le proxy model.
+        # dataChanged est plus approprié pour un changement de style. Il indique que
+        # les données (ici, la couleur de fond) ont changé, mais pas la structure.
+        # On notifie que toutes les données de toutes les colonnes ont potentiellement changé.
+        top_left = self.index(0, 0)
+        bottom_right = self.index(self.rowCount() - 1, self.columnCount() - 1)
+        self.dataChanged.emit(top_left, bottom_right, [Qt.BackgroundRole])
 
     def data(self, index, role=Qt.DisplayRole):
         """Retourne les données pour un index et un rôle donnés."""
@@ -84,6 +94,34 @@ class ColorableFileSystemModel(QFileSystemModel):
             if path in self.folder_colors:
                 return QColor(self.folder_colors[path])
         return super().data(index, role)
+
+
+class NoteFilterProxyModel(QSortFilterProxyModel):
+    """Proxy model pour filtrer l'arborescence des notes."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._normalized_filter_string = ""
+
+    def set_filter_string(self, text):
+        """Définit la chaîne de recherche, normalisée."""
+        self._normalized_filter_string = self._normalize(text)
+        self.invalidateFilter()
+
+    def _normalize(self, text):
+        """Convertit le texte en minuscules et sans accents."""
+        return "".join(
+            c
+            for c in unicodedata.normalize("NFD", text.lower())
+            if unicodedata.category(c) != "Mn"
+        )
+
+    def filterAcceptsRow(self, source_row, source_parent):
+        """Accepte une ligne si son nom correspond au filtre."""
+        index = self.sourceModel().index(source_row, 0, source_parent)
+        file_name = self.sourceModel().fileName(index)
+        normalized_name = self._normalize(file_name)
+        return self._normalized_filter_string in normalized_name
 
 
 class NotesPanel(QWidget):
@@ -156,8 +194,26 @@ class NotesPanel(QWidget):
         header_layout.addStretch()
         self.layout.addLayout(header_layout)
 
+        # V3.2.2 - Barre de recherche
+        search_layout = QHBoxLayout()
+        search_layout.setContentsMargins(5, 5, 5, 5)
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Tapez la chaine à rechercher")
+        self.search_input.setClearButtonEnabled(True)
+        search_layout.addWidget(self.search_input)
+
+        search_button = QPushButton("Rechercher")
+        search_layout.addWidget(search_button)
+        self.layout.addLayout(search_layout)
+
         self.tree_view = ZoomableTreeView()
         self.model = ColorableFileSystemModel()
+
+        # V3.2.2 - Utilisation d'un proxy model pour le filtrage
+        self.proxy_model = NoteFilterProxyModel(self)
+        self.proxy_model.setSourceModel(self.model)
+        # Le proxy doit pouvoir filtrer récursivement
+        self.proxy_model.setRecursiveFilteringEnabled(True)
 
         self.model.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
         # Filtres pour les types de fichiers à afficher
@@ -166,7 +222,12 @@ class NotesPanel(QWidget):
             False
         )  # Afficher les dossiers même s'ils sont vides
 
-        self.tree_view.setModel(self.model)
+        self.tree_view.setModel(self.proxy_model)
+        # V3.2.2 - Activer le tri par colonne
+        # Permet à l'utilisateur de cliquer sur les en-têtes pour trier.
+        self.tree_view.setSortingEnabled(True)
+        # Trier par nom par défaut, de manière ascendante.
+        self.tree_view.sortByColumn(0, Qt.AscendingOrder)
         self.tree_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.show_context_menu)
 
@@ -186,6 +247,22 @@ class NotesPanel(QWidget):
         self.tree_view.selectionModel().selectionChanged.connect(
             self.on_selection_changed
         )
+        # V3.2.2 - Connexions pour la recherche
+        search_button.clicked.connect(self.perform_search)
+        self.search_input.returnPressed.connect(self.perform_search)
+        self.search_input.textChanged.connect(self.on_search_text_changed)
+
+    def toggle_details_columns(self):
+        """Affiche ou masque les colonnes de détails (taille, type, date)."""
+        # On vérifie l'état de la première colonne de détail (Taille)
+        is_hidden = self.tree_view.isColumnHidden(1)
+
+        # On applique le nouvel état à toutes les colonnes de détail
+        for i in range(1, self.model.columnCount()):
+            if is_hidden:
+                self.tree_view.showColumn(i)
+            else:
+                self.tree_view.hideColumn(i)
 
     def set_journal_directory(self, journal_dir):
         """Définit le répertoire du journal et met à jour la vue."""
@@ -198,11 +275,40 @@ class NotesPanel(QWidget):
         notes_dir.mkdir(exist_ok=True)
 
         self.model.setRootPath(str(notes_dir))
-        self.tree_view.setRootIndex(self.model.index(self.model.rootPath()))
+        root_index = self.model.index(self.model.rootPath())
+        self.tree_view.setRootIndex(self.proxy_model.mapFromSource(root_index))
+
+    def perform_search(self):
+        """Filtre l'arborescence en fonction du texte de recherche."""
+        search_text = self.search_input.text()
+        self.proxy_model.set_filter_string(search_text)
+
+        # Vérifier si des résultats ont été trouvés
+        # On vérifie si la racine a des enfants après le filtrage
+        root_index = self.tree_view.rootIndex()
+        if self.proxy_model.rowCount(root_index) == 0 and search_text:
+            QMessageBox.information(
+                self,
+                "Recherche",
+                f"Aucun fichier ou dossier ne correspond à '{search_text}'.",
+            )
+            # On ne modifie pas la vue, donc on réinitialise le filtre
+            self.on_search_text_changed("")  # Appeler la méthode de réinitialisation
+
+    def on_search_text_changed(self, text):
+        """Réinitialise la vue si le champ de recherche est vidé."""
+        if not text:
+            self.proxy_model.set_filter_string("")
+            # V3.2.2 - Correction du bug de réinitialisation de la vue.
+            # Forcer la vue à se repositionner sur la racine du modèle (le dossier 'notes').
+            root_source_index = self.model.index(self.model.rootPath())
+            root_proxy_index = self.proxy_model.mapFromSource(root_source_index)
+            self.tree_view.setRootIndex(root_proxy_index)
 
     def on_item_double_clicked(self, index):
         """Gère le double-clic sur un élément."""
-        self.open_selected_item(index)
+        source_index = self.proxy_model.mapToSource(index)
+        self.open_selected_item(source_index)
 
     def on_selection_changed(self, selected, deselected):
         """Gère le changement de sélection pour sauvegarder le dernier dossier."""
@@ -210,7 +316,8 @@ class NotesPanel(QWidget):
         if not indexes:
             return
 
-        file_path = self.model.filePath(indexes[0])
+        source_index = self.proxy_model.mapToSource(indexes[0])
+        file_path = self.model.filePath(source_index)
         if os.path.isdir(file_path):
             self.directory_selected.emit(file_path)
 
@@ -230,8 +337,9 @@ class NotesPanel(QWidget):
             menu.exec_(self.tree_view.viewport().mapToGlobal(position))
             return
 
-        file_path = self.model.filePath(index)
-        is_dir = self.model.isDir(index)
+        source_index = self.proxy_model.mapToSource(index)
+        file_path = self.model.filePath(source_index)
+        is_dir = self.model.isDir(source_index)
 
         # Clic sur un élément existant
         menu = QMenu()
@@ -246,8 +354,12 @@ class NotesPanel(QWidget):
             )
             menu.addSeparator()
             # V3.2.1 - Ajout des actions Déplier/Réplier
-            menu.addAction("Déplier tout", lambda: self.expand_all_from_index(index))
-            menu.addAction("Réplier tout", lambda: self.collapse_all_from_index(index))
+            menu.addAction(
+                "Déplier tout", lambda: self.expand_all_from_index(source_index)
+            )
+            menu.addAction(
+                "Réplier tout", lambda: self.collapse_all_from_index(source_index)
+            )
             menu.addSeparator()
 
             # Sous-menu pour les couleurs
@@ -267,7 +379,7 @@ class NotesPanel(QWidget):
             menu.addSeparator()
 
         open_action = menu.addAction("Ouvrir")
-        open_action.triggered.connect(lambda: self.open_selected_item(index))
+        open_action.triggered.connect(lambda: self.open_selected_item(source_index))
 
         menu.addSeparator()
         menu.addAction("Copier", lambda: self.copy_item(file_path))
@@ -279,8 +391,8 @@ class NotesPanel(QWidget):
             paste_action.triggered.connect(lambda: self.paste_item(file_path))
 
         menu.addSeparator()
-        menu.addAction("Renommer...", lambda: self.rename_item(index))
-        menu.addAction("Supprimer...", lambda: self.delete_item(index))
+        menu.addAction("Renommer...", lambda: self.rename_item(source_index))
+        menu.addAction("Supprimer...", lambda: self.delete_item(source_index))
 
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 
@@ -292,7 +404,8 @@ class NotesPanel(QWidget):
             return
 
         ext = Path(file_path).suffix.lower()
-        if ext in [".md", ".txt"]:
+        # V3.2.2 - Ouvrir les fichiers HTML dans l'éditeur
+        if ext in [".md", ".txt", ".html"]:
             self.file_open_request.emit(file_path, "editor")
         elif ext in [".pdf", ".epub"]:
             self.file_open_request.emit(file_path, "reader")
@@ -374,7 +487,9 @@ class NotesPanel(QWidget):
 
         self.settings_manager.set("notes.folder_colors", folder_colors)
         self.settings_manager.save_settings()  # Sauvegarde immédiate
-        self.model.set_folder_colors(folder_colors)
+        self.model.set_folder_colors(
+            folder_colors
+        )  # Cette méthode va maintenant émettre dataChanged
 
     def import_file_to_folder(self, destination_folder):
         """Ouvre une boîte de dialogue pour importer un fichier local ou distant."""
@@ -615,27 +730,40 @@ class NotesPanel(QWidget):
         """Sélectionne un chemin dans l'arbre."""
         if not path:
             return
-        index = self.model.index(path)
-        if index.isValid():
-            self.tree_view.setCurrentIndex(index)
-            self.tree_view.scrollTo(index, QTreeView.PositionAtCenter)
+        source_index = self.model.index(path)
+        if source_index.isValid():
+            proxy_index = self.proxy_model.mapFromSource(source_index)
+            self.tree_view.setCurrentIndex(proxy_index)
+            self.tree_view.scrollTo(proxy_index, QTreeView.PositionAtCenter)
 
     def expand_all_from_index(self, index):
         """Déplie récursivement tous les sous-dossiers à partir d'un index."""
-        if not index.isValid() or not self.model.isDir(index):
+        source_index = (
+            self.proxy_model.mapToSource(index)
+            if isinstance(self.tree_view.model(), QSortFilterProxyModel)
+            else index
+        )
+        if not source_index.isValid() or not self.model.isDir(source_index):
             return
 
         self.tree_view.expand(index)
-        for i in range(self.model.rowCount(index)):
-            child_index = self.model.index(i, 0, index)
-            self.expand_all_from_index(child_index)
+        # Itérer sur les enfants dans le proxy model
+        for i in range(self.proxy_model.rowCount(index)):
+            child_proxy_index = self.proxy_model.index(i, 0, index)
+            self.expand_all_from_index(child_proxy_index)
 
     def collapse_all_from_index(self, index):
         """Réplie récursivement tous les sous-dossiers à partir d'un index."""
-        if not index.isValid() or not self.model.isDir(index):
+        source_index = (
+            self.proxy_model.mapToSource(index)
+            if isinstance(self.tree_view.model(), QSortFilterProxyModel)
+            else index
+        )
+        if not source_index.isValid() or not self.model.isDir(source_index):
             return
 
-        for i in range(self.model.rowCount(index)):
-            child_index = self.model.index(i, 0, index)
-            self.collapse_all_from_index(child_index)
+        # Itérer sur les enfants dans le proxy model
+        for i in range(self.proxy_model.rowCount(index)):
+            child_proxy_index = self.proxy_model.index(i, 0, index)
+            self.collapse_all_from_index(child_proxy_index)
         self.tree_view.collapse(index)

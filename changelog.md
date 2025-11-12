@@ -1,4 +1,48 @@
+## V3.2.2 Notes - Fix Issue [#55] Fix Issue [#57] Fix Issue [#59]
+
+
+Fix Issue [#55](https://github.com/lephotographelibre/BlueNotebook/issues/55) V3.2.1 Notes: Cannot Resize Notes Panel #58
+
+Le panneau "Notes" n'est actuellement pas redimensionnable en largeur, ce qui peut être contraignant. la cause est bien une largeur fixe qui lui est appliquée lors de la configuration de l'interface dans `main_window.py`
+```python
+ # self.notes_panel.setFixedWidth(400)
+```
+
+Fix Issue [#57](https://github.com/lephotographelibre/BlueNotebook/issues/57) V3.2.1 Notes: add size, Modify column to the file browser #57
+
+je voudrais dans le panneau Notes pouvoir afficher en plus de la liste arborescente des fichiers les colonnes de taille,  type et date de derniere modification. Ces colonnes additionnelles sont affichées si l'utilisateur utilise CRTL-M et sont cachées si l'utilisateur utilise `CRTL-M`  a nouveau
+beta1
+
+Le panneau "Notes" je voudrais en haut du panneau faire apparaitre un champ de saisie et un bouton à sa droite qui à pour label "Rechercher".
+le champ de recherche et le pouton prendront toute la largeur du panneu largueur qui sera redimmentionnée si le panneau Note est redommentionné
+si rien n' été sais dans le champ de recherche era affiché en grisé "Tapez la chaine à rechercher".
+Lorsque l'utilisateur appuie sur le bouton "Rechercher" on va rechercher dans toute l'arborescence tous les fichiers/dossiers qui contienne la chaine de cararctère saisie dans le champ de recherche, queque soient les majuscules, Minuscules, accents dans le nom des fichiers/dossiers. Les fichiers correspondants au critère de recherche seront affichés dans le TreeView.
+L'utilisateur pourra réinitialiser la recherche par un icone effacer à droite dans le champ de recher et le TreeView sera réinitilisé.
+Si au cun fichier ne correspond a cette recherche on ne modifira pas le TreeView et un message via une boite de dialogie sera affiché pour l'utilisateur
+beta2
+
+Tri sur les header de colonnes
+je voudais que les colonnes du treeview puisse etre triée en cliquant sur le header des colonnes (Nom, Taille, Dernière Modification). Au click suivant sur le meme header le tri sera inversé
+beta3
+
+Fix Issue [#59](https://github.com/lephotographelibre/BlueNotebook/issues/59) V3.2.1 Notes: Open HTML Files in Notes with the Editor #59
+
+Panneau Notes: je voudrais que lorsque l'on clique sur un fichier HTML qui est dans un dossier de Notes alors ce fichier soit ouvert dans l'editeur Markdown. Si un fichier est déja ouvert dans l'éditeur alors on demandera a l'utilisateur de Sauvegarder ou pas son document en cours avant d'ouvrir le fichier HTML dans l'éditeur et d'afficher l'aperçu HTML
+beta4
+
+aide en ligne a main.py
+
+beta5
+
+dans le Panneau Notes si je recherche la chaine "Spec" je trouve bien le dossier "Specs" qui apparait bien dans l'aborescence masi je ne peux cliquer dessus alors q'il contien des fichiers.  la premiere fois le repertoires Specs Trouvé est affiché avec un petite fleche a coté indiquant qu'il s agit d'un répertoire avec du contenu mais quand on clique de ssus le dossier ne s'ouvre pas et la flèche disparait.
+Et quand je clique sur le dossier Specs dans la console s'affiche une suite de message
+ 
+
+
 ## V3.2.1 Directory Navigation Panel
+
+Fix Issue [#53](https://github.com/lephotographelibre/BlueNotebook/issues/53) V3.1.4 Main Window: Add new panel: directory #53
+
  
 git checkout -b notes_directory
 

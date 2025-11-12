@@ -714,7 +714,8 @@ class MainWindow(QMainWindow):
         self.epub_reader_panel = EpubReaderPanel(settings_manager=self.settings_manager)
         main_splitter.addWidget(self.epub_reader_panel)
 
-        self.notes_panel.setFixedWidth(400)
+        # V3.2.2 - Supprimer la largeur fixe pour permettre le redimensionnement
+        # self.notes_panel.setFixedWidth(400)
         self.navigation_panel.setFixedWidth(
             400
         )  # This line was already there, but it's important to keep it for navigation panel width
@@ -795,6 +796,7 @@ class MainWindow(QMainWindow):
         # Les actions de basculement des panneaux sont conservées pour les raccourcis clavier
         self.addAction(self.toggle_navigation_action)
         self.addAction(self.toggle_outline_action)
+        self.addAction(self.toggle_notes_details_action)
         self.addAction(self.toggle_preview_action)
         self.addAction(self.toggle_reader_action)
 
@@ -946,6 +948,13 @@ class MainWindow(QMainWindow):
             shortcut="F9",
             checkable=True,
             triggered=self.toggle_notes,
+        )
+        # V3.2.2 - Action pour afficher/masquer les détails dans le panneau de notes
+        self.toggle_notes_details_action = QAction(
+            "Afficher/Masquer les détails des notes",
+            self,
+            shortcut="Ctrl+M",
+            triggered=self.notes_panel.toggle_details_columns,
         )
         self.toggle_outline_action = QAction(
             "Basculer Plan du document",
