@@ -1,3 +1,35 @@
+## V3.2.3 Fix Issue [#62] Notes Search
+
+Fix Issue [#62](https://github.com/lephotographelibre/BlueNotebook/issues/62)  V3.2.2 Notes: Search keyworks is not working correctly #62
+
+branch search_notes
+
+1 supprimer tout le code   qui concerne la recherche notes dans notes_panel.py excepté le champ de recherche et le bouton rechercher peux tu me montrer sans toucher au code les impacts sur le code 
+beta1
+
+
+2 demander a grok de 
+dans le panneau Notes 
+- mettre en oeuvre une recherche simple sur tous les fichiers et repétoires  dont le nom contient cette chaine de caractère recherchée quelle que soit la casse
+- quand l'utilisateur efface le critère de recherche reafficher l'arbre initial a partir de la racine notes
+- quand l'utilisateur appuie sur le bouton rechercher Si des fichiers correspondent au critère de recherche, afficher les et déplier les répertoires où ils se trouvent upour afficher tous les fichiers résultats de la recherche
+- afficher également dans la console la liste des fichiers correspondants au critère de recherche (path complet)
+beta2
+
+ 
+
+
+3 inclure les dossiers dans la recherche. 
+Si un ou plusieurs dossier correspond au critère de recherche afficher le ou les dossier pour qu'il soit clickable et que l'on puisse l'ouvrir en cliquant dessus pour voir les fichiers qu'il contient
+beta4
+
+- Probleme de reset
+beta5
+ 
+
+si l'utilisateur saisi une chaine de recherche dans le champ de recherche et qu'il fair return cela doit avoir le meme effet que s'in appuie sur le bouton rechercher
+beta6
+
 ## V3.2.2 Notes - Fix Issue [#58] Fix Issue [#57] Fix Issue [#59]
 
 

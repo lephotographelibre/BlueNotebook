@@ -17,12 +17,10 @@
 Panneau d'exploration des notes pour BlueNotebook.
 """
 import os
-import webbrowser
 import shutil
-import requests
-import unicodedata
 from pathlib import Path
 
+import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDir, QSortFilterProxyModel
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (
@@ -56,19 +54,16 @@ class ZoomableTreeView(QTreeView):
 
             if delta > 0:
                 font.setPointSize(current_size + 1)
-            elif current_size > 6:  # Empêche de rendre la police trop petite
+            elif current_size > 6:
                 font.setPointSize(current_size - 1)
 
             self.setFont(font)
         else:
-            # Comportement de défilement normal si Ctrl n'est pas pressé
             super().wheelEvent(event)
 
 
 class ColorableFileSystemModel(QFileSystemModel):
-    """
-    Un QFileSystemModel qui permet de colorer le fond des dossiers.
-    """
+    """Un QFileSystemModel qui permet de colorer le fond des dossiers."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -77,12 +72,6 @@ class ColorableFileSystemModel(QFileSystemModel):
     def set_folder_colors(self, colors_dict):
         """Charge le dictionnaire des couleurs de dossiers."""
         self.folder_colors = colors_dict if colors_dict else {}
-        # Force une mise à jour de la vue
-        # V3.2.2 - Correction finale du crash lors du changement de couleur.
-        # Émettre layoutChanged() est trop brutal et cause un crash avec le proxy model.
-        # dataChanged est plus approprié pour un changement de style. Il indique que
-        # les données (ici, la couleur de fond) ont changé, mais pas la structure.
-        # On notifie que toutes les données de toutes les colonnes ont potentiellement changé.
         top_left = self.index(0, 0)
         bottom_right = self.index(self.rowCount() - 1, self.columnCount() - 1)
         self.dataChanged.emit(top_left, bottom_right, [Qt.BackgroundRole])
@@ -96,44 +85,177 @@ class ColorableFileSystemModel(QFileSystemModel):
         return super().data(index, role)
 
 
-class NoteFilterProxyModel(QSortFilterProxyModel):
-    """Proxy model pour filtrer l'arborescence des notes."""
+class NotesFilterProxyModel(QSortFilterProxyModel):
+    """Custom proxy model to include matching files and directories with their parents."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._normalized_filter_string = ""
+        self.search_text = ""
+        self.expanded_dirs = set()
+        self.matching_paths = set()  # Cache matching paths during search
+        self.valid_extensions = {ext.lower() for ext in NotesPanel.VALID_EXTENSIONS}
 
-    def set_filter_string(self, text):
-        """Définit la chaîne de recherche, normalisée."""
-        self._normalized_filter_string = self._normalize(text)
+    def set_search_text(self, search_text):
+        """Set the search text, clear previous state, update matching paths, and invalidate the filter."""
+        # print(
+        #    f"Setting search text: '{search_text}', clearing expanded_dirs: {self.expanded_dirs}"
+        # )
+        self.search_text = search_text.lower()
+        self.expanded_dirs.clear()  # Clear expanded directories for new search
+        self.matching_paths.clear()
+        if self.search_text:
+            # Populate matching_paths with files and directories that match the search
+            root_path = self.sourceModel().rootPath() if self.sourceModel() else ""
+            for dirpath, dirnames, filenames in os.walk(root_path):
+                for dirname in dirnames:
+                    if self.search_text in dirname.lower():
+                        self.matching_paths.add(os.path.join(dirpath, dirname))
+                for filename in filenames:
+                    if self.search_text in filename.lower():
+                        self.matching_paths.add(os.path.join(dirpath, filename))
+            # print(f"Matching paths: {self.matching_paths}")
         self.invalidateFilter()
 
-    def _normalize(self, text):
-        """Convertit le texte en minuscules et sans accents."""
-        return "".join(
-            c
-            for c in unicodedata.normalize("NFD", text.lower())
-            if unicodedata.category(c) != "Mn"
-        )
-
     def filterAcceptsRow(self, source_row, source_parent):
-        """Accepte une ligne si son nom correspond au filtre."""
-        index = self.sourceModel().index(source_row, 0, source_parent)
-        file_name = self.sourceModel().fileName(index)
-        normalized_name = self._normalize(file_name)
-        return self._normalized_filter_string in normalized_name
+        """Accept rows that match the search text, are parents of matches, or are valid children of matching expanded dirs."""
+        source_model = self.sourceModel()
+        index = source_model.index(source_row, 0, source_parent)
+        if not index.isValid():
+            return False
+
+        file_path = source_model.filePath(index)
+        file_name = source_model.fileName(index).lower()
+        is_dir = source_model.isDir(index)
+
+        # Debug: Log filtering decision
+        # print(f"Filter checking: {file_path}, Search: {self.search_text}")
+
+        # If no search text, show all items (initial view)
+        if not self.search_text:
+            # print(f"Accepted: {file_path} (no search)")
+            return True
+
+        # Accept if the file or directory name contains the search text
+        if self.search_text in file_name:
+            # print(f"Accepted: {file_path} (direct match)")
+            return True
+
+        # Accept directories that are parents of matching items
+        if is_dir:
+            for path in self.matching_paths:
+                if path.startswith(file_path + os.sep):
+                    # print(f"Accepted: {file_path} (parent of match {path})")
+                    return True
+
+        # During a search, if the parent is an expanded directory that matches or is a parent of a match,
+        # handle children based on whether the parent matches the search text
+        if source_model.isDir(source_parent):
+            parent_path = source_model.filePath(source_parent)
+            if parent_path in self.expanded_dirs:
+                parent_name = source_model.fileName(source_parent).lower()
+                is_parent_matching = self.search_text in parent_name
+                is_parent_of_match = any(
+                    path.startswith(parent_path + os.sep)
+                    for path in self.matching_paths
+                )
+                if is_parent_matching:
+                    # If the parent matches (e.g., 'docs' for search 'docs'), accept all valid children
+                    if (
+                        is_dir
+                        or Path(file_path).suffix.lower() in self.valid_extensions
+                    ):
+                        # print(
+                        #    f"Accepted: {file_path} (child of expanded matching {parent_path}, parent matches)"
+                        # )
+                        return True
+                    # print(
+                    #    f"Rejected: {file_path} (child of expanded matching {parent_path}, invalid extension)"
+                    # )
+                    return False
+                elif is_parent_of_match:
+                    # If the parent is a parent of a match, accept children that match or are parents of matches
+                    if self.search_text in file_name:
+                        # print(
+                        #    f"Accepted: {file_path} (child of expanded {parent_path}, direct match)"
+                        # )
+                        return True
+                    if is_dir:
+                        for path in self.matching_paths:
+                            if path.startswith(file_path + os.sep):
+                                # print(
+                                #    f"Accepted: {file_path} (child of expanded {parent_path}, parent of match {path})"
+                                # )
+                                return True
+                    # print(
+                    #    f"Rejected: {file_path} (child of expanded {parent_path}, no match)"
+                    # )
+                    return False
+                else:
+                    # print(
+                    #    f"Rejected: {file_path} (child of expanded {parent_path}, parent not matching)"
+                    # )
+                    return False
+
+        # print(f"Rejected: {file_path}")
+        return False
+
+    def add_expanded_dir(self, path):
+        """Add a directory to the set of expanded directories."""
+        # print(f"Adding expanded dir: {path}")
+        self.expanded_dirs.add(path)
+        self.invalidateFilter()
+
+    def remove_expanded_dir(self, path):
+        """Remove a directory from the set of expanded directories."""
+        # print(f"Removing expanded dir: {path}")
+        self.expanded_dirs.discard(path)
+        self.invalidateFilter()
+
+    def hasChildren(self, index):
+        """Indicate if a directory has children in the proxy model, considering search filter."""
+        if not index.isValid():
+            return super().hasChildren(index)
+
+        source_index = self.mapToSource(index)
+        source_model = self.sourceModel()
+        if not source_model.isDir(source_index):
+            return super().hasChildren(index)
+
+        file_path = source_model.filePath(source_index)
+        # Check if the directory has any children that would pass the filter
+        for row in range(source_model.rowCount(source_index)):
+            child_index = source_model.index(row, 0, source_index)
+            child_path = source_model.filePath(child_index)
+            if self.filterAcceptsRow(row, source_index):
+                # print(f"Has children: {file_path} (child {child_path} accepted)")
+                return True
+            else:
+                # print(f"Child rejected: {child_path} for parent {file_path}")
+                pass
+
+        # print(f"No children: {file_path} (no filtered children)")
+        return False
+
+    def canFetchMore(self, index):
+        """Allow fetching more children for directories."""
+        if not index.isValid():
+            return False
+        source_index = self.mapToSource(index)
+        return self.sourceModel().canFetchMore(source_index)
+
+    def fetchMore(self, index):
+        """Fetch more children for directories."""
+        if index.isValid():
+            source_index = self.mapToSource(index)
+            self.sourceModel().fetchMore(source_index)
 
 
 class NotesPanel(QWidget):
-    """
-    Un panneau affichant une vue arborescente du répertoire 'Notes' du journal.
-    """
+    """Un panneau affichant une vue arborescente du répertoire 'Notes' du journal."""
 
-    # Signal émis lorsqu'un fichier doit être ouvert.
-    # Le premier argument est le chemin du fichier, le second est le type ('editor', 'reader', 'external')
     file_open_request = pyqtSignal(str, str)
     directory_selected = pyqtSignal(str)
-    settings_changed = pyqtSignal()  # Signal pour notifier un changement de settings
+    settings_changed = pyqtSignal()
 
     VALID_EXTENSIONS = [
         ".md",
@@ -152,7 +274,6 @@ class NotesPanel(QWidget):
         ".html",
     ]
 
-    # Palette de 10 couleurs pour les dossiers
     FOLDER_COLOR_PALETTE = [
         ("#ef9a9a", "Rouge clair"),
         ("#a5d6a7", "Vert clair"),
@@ -171,13 +292,12 @@ class NotesPanel(QWidget):
         self.journal_directory = None
         self.settings_manager = settings_manager
         self.source_path_for_paste = None
-        self.paste_operation = None  # Peut être 'copy' ou 'cut'
+        self.paste_operation = None
 
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 5, 0, 0)
         self.layout.setSpacing(0)
 
-        # En-tête de panneau (style onglet)
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
         label = QLabel("Notes")
@@ -194,11 +314,10 @@ class NotesPanel(QWidget):
         header_layout.addStretch()
         self.layout.addLayout(header_layout)
 
-        # V3.2.2 - Barre de recherche
         search_layout = QHBoxLayout()
         search_layout.setContentsMargins(5, 5, 5, 5)
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Tapez la chaine à rechercher")
+        self.search_input.setPlaceholderText("Saisir la chaine à rechercher")
         self.search_input.setClearButtonEnabled(True)
         search_layout.addWidget(self.search_input)
 
@@ -209,33 +328,23 @@ class NotesPanel(QWidget):
         self.tree_view = ZoomableTreeView()
         self.model = ColorableFileSystemModel()
 
-        # V3.2.2 - Utilisation d'un proxy model pour le filtrage
-        self.proxy_model = NoteFilterProxyModel(self)
-        self.proxy_model.setSourceModel(self.model)
-        # Le proxy doit pouvoir filtrer récursivement
-        self.proxy_model.setRecursiveFilteringEnabled(True)
-
         self.model.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
-        # Filtres pour les types de fichiers à afficher
         self.model.setNameFilters([f"*{ext}" for ext in self.VALID_EXTENSIONS])
-        self.model.setNameFilterDisables(
-            False
-        )  # Afficher les dossiers même s'ils sont vides
+        self.model.setNameFilterDisables(False)
 
+        self.proxy_model = NotesFilterProxyModel()
+        self.proxy_model.setSourceModel(self.model)
+        self.proxy_model.setRecursiveFilteringEnabled(True)
         self.tree_view.setModel(self.proxy_model)
-        # V3.2.2 - Activer le tri par colonne
-        # Permet à l'utilisateur de cliquer sur les en-têtes pour trier.
+
         self.tree_view.setSortingEnabled(True)
-        # Trier par nom par défaut, de manière ascendante.
         self.tree_view.sortByColumn(0, Qt.AscendingOrder)
         self.tree_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.show_context_menu)
 
-        # Cacher les colonnes inutiles (taille, type, date)
         for i in range(1, self.model.columnCount()):
             self.tree_view.hideColumn(i)
 
-        # Charger les couleurs des dossiers depuis les settings
         if self.settings_manager:
             self.model.set_folder_colors(
                 self.settings_manager.get("notes.folder_colors")
@@ -247,17 +356,16 @@ class NotesPanel(QWidget):
         self.tree_view.selectionModel().selectionChanged.connect(
             self.on_selection_changed
         )
-        # V3.2.2 - Connexions pour la recherche
+        self.tree_view.expanded.connect(self.on_directory_expanded)
+        self.tree_view.collapsed.connect(self.on_directory_collapsed)
+
         search_button.clicked.connect(self.perform_search)
-        self.search_input.returnPressed.connect(self.perform_search)
         self.search_input.textChanged.connect(self.on_search_text_changed)
+        self.search_input.returnPressed.connect(self.perform_search)
 
     def toggle_details_columns(self):
         """Affiche ou masque les colonnes de détails (taille, type, date)."""
-        # On vérifie l'état de la première colonne de détail (Taille)
         is_hidden = self.tree_view.isColumnHidden(1)
-
-        # On applique le nouvel état à toutes les colonnes de détail
         for i in range(1, self.model.columnCount()):
             if is_hidden:
                 self.tree_view.showColumn(i)
@@ -267,7 +375,9 @@ class NotesPanel(QWidget):
     def set_journal_directory(self, journal_dir):
         """Définit le répertoire du journal et met à jour la vue."""
         if not journal_dir:
-            self.tree_view.setRootIndex(self.model.index(""))
+            self.tree_view.setRootIndex(
+                self.proxy_model.mapFromSource(self.model.index(""))
+            )
             return
 
         self.journal_directory = Path(journal_dir)
@@ -279,43 +389,157 @@ class NotesPanel(QWidget):
         self.tree_view.setRootIndex(self.proxy_model.mapFromSource(root_index))
 
     def perform_search(self):
-        """Filtre l'arborescence en fonction du texte de recherche."""
-        search_text = self.search_input.text()
-        self.proxy_model.set_filter_string(search_text)
+        """Effectue une recherche et affiche les résultats."""
+        search_text = self.search_input.text().strip()
+        if not search_text:
+            self.reset_search()
+            return
 
-        # Vérifier si des résultats ont été trouvés
-        # On vérifie si la racine a des enfants après le filtrage
-        root_index = self.tree_view.rootIndex()
-        if self.proxy_model.rowCount(root_index) == 0 and search_text:
-            QMessageBox.information(
-                self,
-                "Recherche",
-                f"Aucun fichier ou dossier ne correspond à '{search_text}'.",
-            )
-            # On ne modifie pas la vue, donc on réinitialise le filtre
-            self.on_search_text_changed("")  # Appeler la méthode de réinitialisation
+        self.proxy_model.set_search_text(search_text)
+        root_index = self.model.index(self.model.rootPath())
+        proxy_root_index = self.proxy_model.mapFromSource(root_index)
+        self.tree_view.setRootIndex(proxy_root_index)
+
+        matching_files = self._find_matching_items(search_text)
+        # if matching_files:
+        #    print("Fichiers correspondants à la recherche :")
+        #    for file_path in matching_files:
+        #        print(file_path)
+        # else:
+        #    print("Aucun fichier correspondant trouvé.")
+
+        self._expand_matching_directories(matching_files)
 
     def on_search_text_changed(self, text):
         """Réinitialise la vue si le champ de recherche est vidé."""
-        if not text:
-            self.proxy_model.set_filter_string("")
-            # V3.2.2 - Correction du bug de réinitialisation de la vue.
-            # Forcer la vue à se repositionner sur la racine du modèle (le dossier 'notes').
-            root_source_index = self.model.index(self.model.rootPath())
-            root_proxy_index = self.proxy_model.mapFromSource(root_source_index)
-            self.tree_view.setRootIndex(root_proxy_index)
+        if not text.strip():
+            self.reset_search()
 
-    def on_item_double_clicked(self, index):
+    def reset_search(self):
+        """Réinitialise la vue pour afficher l'arbre complet."""
+        self.proxy_model.set_search_text("")
+        root_index = self.model.index(self.model.rootPath())
+        proxy_root_index = self.proxy_model.mapFromSource(root_index)
+        self.tree_view.setRootIndex(proxy_root_index)
+        self.tree_view.collapseAll()
+        self.tree_view.viewport().update()
+
+    def _find_matching_items(self, search_text):
+        """Trouve tous les fichiers et dossiers correspondant au critère de recherche."""
+        matching_files = []
+        root_path = self.model.rootPath()
+        search_text = search_text.lower()
+
+        for dirpath, dirnames, filenames in os.walk(root_path):
+            for dirname in dirnames:
+                if search_text in dirname.lower():
+                    matching_files.append(os.path.join(dirpath, dirname))
+            for filename in filenames:
+                if search_text in filename.lower():
+                    matching_files.append(os.path.join(dirpath, filename))
+
+        return matching_files
+
+    def _expand_matching_directories(self, matching_files):
+        """Déplie les répertoires parents pour rendre les fichiers ou dossiers correspondants visibles."""
+        for file_path in matching_files:
+            current_path = Path(file_path)
+            # Expand parent directories
+            parent_path = current_path.parent
+            while str(parent_path) != self.model.rootPath():
+                index = self.model.index(str(parent_path))
+                if index.isValid():
+                    proxy_index = self.proxy_model.mapFromSource(index)
+                    if proxy_index.isValid():
+                        self.tree_view.expand(proxy_index)
+                        self.proxy_model.add_expanded_dir(str(parent_path))
+                        self.tree_view.scrollTo(proxy_index, QTreeView.PositionAtCenter)
+                        # print(f"Expanded parent directory: {parent_path}")
+                    else:
+                        # print(f"Invalid proxy index for: {parent_path}")
+                        pass
+                else:
+                    # print(f"Invalid source index for: {parent_path}")
+                    pass
+                parent_path = parent_path.parent
+
+            # Ensure the matching item is visible; no need to expand if it's a file
+            index = self.model.index(str(current_path))
+            if index.isValid():
+                proxy_index = self.proxy_model.mapFromSource(index)
+                if proxy_index.isValid():
+                    self.tree_view.scrollTo(proxy_index, QTreeView.PositionAtCenter)
+                    if self.model.isDir(index):
+                        self.tree_view.collapse(proxy_index)
+                        # print(f"Ensured visible (collapsed): {current_path}")
+                    else:
+                        # print(f"Ensured visible (file): {current_path}")
+                        pass
+                else:
+                    # print(f"Invalid proxy index for matching item: {current_path}")
+                    pass
+            else:
+                # print(f"Invalid source index for matching item: {current_path}")
+                pass
+
+    def on_item_double_clicked(self, proxy_index):
         """Gère le double-clic sur un élément."""
-        source_index = self.proxy_model.mapToSource(index)
-        self.open_selected_item(source_index)
+        if not proxy_index.isValid():
+            # print("Double-clicked on invalid proxy index")
+            return
+
+        index = self.proxy_model.mapToSource(proxy_index)
+        if not index.isValid():
+            # print("Invalid source index for proxy index")
+            return
+
+        file_path = self.model.filePath(index)
+        # print(f"Double-clicked: {file_path}, is_dir: {self.model.isDir(index)}")
+
+        if self.model.isDir(index):
+            if self.tree_view.isExpanded(proxy_index):
+                # print(f"Collapsing directory: {file_path}")
+                self.tree_view.collapse(proxy_index)
+                self.proxy_model.remove_expanded_dir(file_path)
+            else:
+                # print(f"Expanding directory: {file_path}")
+                self.tree_view.expand(proxy_index)
+                self.proxy_model.add_expanded_dir(file_path)
+            return
+
+        self.open_selected_item(index)
+
+    def on_directory_expanded(self, proxy_index):
+        """Handle directory expansion."""
+        if not proxy_index.isValid():
+            # print("Expanded invalid proxy index")
+            return
+        index = self.proxy_model.mapToSource(proxy_index)
+        if not index.isValid():
+            # print("Invalid source index for expanded proxy index")
+            return
+        file_path = self.model.filePath(index)
+        # print(f"Directory expanded: {file_path}")
+        self.proxy_model.add_expanded_dir(file_path)
+
+    def on_directory_collapsed(self, proxy_index):
+        """Handle directory collapse."""
+        if not proxy_index.isValid():
+            # print("Collapsed invalid proxy index")
+            return
+        index = self.proxy_model.mapToSource(proxy_index)
+        if not index.isValid():
+            # print("Invalid source index for collapsed proxy index")
+            return
+        file_path = self.model.filePath(index)
+        # print(f"Directory collapsed: {file_path}")
+        self.proxy_model.remove_expanded_dir(file_path)
 
     def on_selection_changed(self, selected, deselected):
         """Gère le changement de sélection pour sauvegarder le dernier dossier."""
         indexes = selected.indexes()
         if not indexes:
             return
-
         source_index = self.proxy_model.mapToSource(indexes[0])
         file_path = self.model.filePath(source_index)
         if os.path.isdir(file_path):
@@ -325,7 +549,6 @@ class NotesPanel(QWidget):
         """Affiche le menu contextuel."""
         index = self.tree_view.indexAt(position)
         if not index.isValid():
-            # Clic dans une zone vide : proposer de créer un dossier à la racine
             menu = QMenu()
             menu.addAction("Créer un dossier...", self.create_root_folder)
             paste_action = menu.addAction("Coller")
@@ -333,7 +556,6 @@ class NotesPanel(QWidget):
             paste_action.triggered.connect(
                 lambda: self.paste_item(self.model.rootPath())
             )
-
             menu.exec_(self.tree_view.viewport().mapToGlobal(position))
             return
 
@@ -341,7 +563,6 @@ class NotesPanel(QWidget):
         file_path = self.model.filePath(source_index)
         is_dir = self.model.isDir(source_index)
 
-        # Clic sur un élément existant
         menu = QMenu()
 
         if is_dir:
@@ -353,7 +574,6 @@ class NotesPanel(QWidget):
                 "Importer un fichier...", lambda: self.import_file_to_folder(file_path)
             )
             menu.addSeparator()
-            # V3.2.1 - Ajout des actions Déplier/Réplier
             menu.addAction(
                 "Déplier tout", lambda: self.expand_all_from_index(source_index)
             )
@@ -362,7 +582,6 @@ class NotesPanel(QWidget):
             )
             menu.addSeparator()
 
-            # Sous-menu pour les couleurs
             color_menu = menu.addMenu("🎨 Couleur du dossier")
             for color_hex, color_name in self.FOLDER_COLOR_PALETTE:
                 action = color_menu.addAction(color_name)
@@ -371,9 +590,8 @@ class NotesPanel(QWidget):
                         p, c
                     )
                 )
-
             color_menu.addSeparator()
-            color_menu.addAction(
+            menu.addAction(
                 "Aucune couleur", lambda: self.set_folder_color(file_path, None)
             )
             menu.addSeparator()
@@ -400,16 +618,14 @@ class NotesPanel(QWidget):
         """Ouvre le fichier ou le dossier sélectionné."""
         file_path = self.model.filePath(index)
         if self.model.isDir(index):
-            # On pourrait expand/collapse ici, mais le double-clic le fait déjà
             return
 
         ext = Path(file_path).suffix.lower()
-        # V3.2.2 - Ouvrir les fichiers HTML dans l'éditeur
         if ext in [".md", ".txt", ".html"]:
             self.file_open_request.emit(file_path, "editor")
         elif ext in [".pdf", ".epub"]:
             self.file_open_request.emit(file_path, "reader")
-        else:  # Images, audio, video
+        else:
             self.file_open_request.emit(file_path, "external")
 
     def create_new_note(self, directory_path):
@@ -445,7 +661,6 @@ class NotesPanel(QWidget):
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
 
-            # Pas besoin de rafraîchir le modèle, QFileSystemModel le fait
             self.file_open_request.emit(str(file_path), "editor")
 
         except Exception as e:
@@ -468,7 +683,6 @@ class NotesPanel(QWidget):
 
             try:
                 os.mkdir(new_folder_path)
-                # Le QFileSystemModel se mettra à jour automatiquement
             except OSError as e:
                 QMessageBox.critical(
                     self, "Erreur", f"Impossible de créer le sous-dossier :\n{e}"
@@ -486,10 +700,8 @@ class NotesPanel(QWidget):
             del folder_colors[folder_path]
 
         self.settings_manager.set("notes.folder_colors", folder_colors)
-        self.settings_manager.save_settings()  # Sauvegarde immédiate
-        self.model.set_folder_colors(
-            folder_colors
-        )  # Cette méthode va maintenant émettre dataChanged
+        self.settings_manager.save_settings()
+        self.model.set_folder_colors(folder_colors)
 
     def import_file_to_folder(self, destination_folder):
         """Ouvre une boîte de dialogue pour importer un fichier local ou distant."""
@@ -501,19 +713,17 @@ class NotesPanel(QWidget):
         if not source_path:
             return
 
-        # Validation de l'extension
         file_extension = Path(source_path).suffix.lower()
         if file_extension not in self.VALID_EXTENSIONS:
             supported_types = ", ".join(self.VALID_EXTENSIONS)
             QMessageBox.warning(
                 self,
                 "Type de fichier non supporté",
-                "Le fichier que vous voulez importer n'est pas supporté dans les notes.\n"
+                "Le fichier que vous voulez importer n'est pas supporté dans les notes.",
                 f"Les types valides sont uniquement : {supported_types}",
             )
             return
 
-        # Copie/Téléchargement
         try:
             is_remote = source_path.lower().startswith(("http://", "https://"))
             filename = Path(source_path).name
@@ -532,18 +742,16 @@ class NotesPanel(QWidget):
 
             if is_remote:
                 response = requests.get(source_path, stream=True, timeout=10)
-                response.raise_for_status()  # Lève une exception pour les codes d'erreur HTTP
+                response.raise_for_status()
                 with open(destination_path, "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk)
-            else:  # Fichier local
+            else:
                 if not Path(source_path).is_file():
                     raise FileNotFoundError(
                         "Le chemin local spécifié n'est pas un fichier."
                     )
                 shutil.copy2(source_path, destination_path)
-
-            # Le QFileSystemModel se mettra à jour automatiquement.
 
         except Exception as e:
             QMessageBox.critical(
@@ -554,13 +762,13 @@ class NotesPanel(QWidget):
         """Met le chemin en mémoire pour une opération de copie."""
         self.source_path_for_paste = path
         self.paste_operation = "copy"
-        print(f"Prêt à copier : {path}")
+        # print(f"Prêt à copier : {path}")
 
     def cut_item(self, path):
         """Met le chemin en mémoire pour une opération de coupe."""
         self.source_path_for_paste = path
         self.paste_operation = "cut"
-        print(f"Prêt à couper : {path}")
+        # print(f"Prêt à couper : {path}")
 
     def paste_item(self, destination_folder):
         """Colle le fichier/dossier en mémoire dans le dossier de destination."""
@@ -588,7 +796,6 @@ class NotesPanel(QWidget):
             )
             if reply == QMessageBox.No:
                 return
-            # Supprimer l'élément existant avant de coller/déplacer
             try:
                 if dest_path.is_dir():
                     shutil.rmtree(dest_path)
@@ -613,7 +820,6 @@ class NotesPanel(QWidget):
                 self, "Erreur de collage", f"L'opération a échoué :\n{e}"
             )
         finally:
-            # Réinitialiser le presse-papiers après l'opération
             self.source_path_for_paste = None
             self.paste_operation = None
 
@@ -671,15 +877,12 @@ class NotesPanel(QWidget):
         item_name = Path(file_path).name
 
         if is_dir:
-            # Logique pour les dossiers
             sub_folders, files = self._count_folder_contents(file_path)
             if sub_folders == 0 and files == 0:
-                # Dossier vide
                 question = (
                     f"Le dossier '{item_name}' est vide. Voulez-vous le supprimer ?"
                 )
             else:
-                # Dossier non vide
                 question = (
                     f"Le dossier '{item_name}' n'est pas vide.\n"
                     f"Il contient {sub_folders} sous-dossier(s) et {files} fichier(s).\n\n"
@@ -693,7 +896,6 @@ class NotesPanel(QWidget):
                 QMessageBox.No,
             )
         else:
-            # Logique pour les fichiers
             reply = QMessageBox.question(
                 self,
                 "Confirmation de suppression",
@@ -705,12 +907,8 @@ class NotesPanel(QWidget):
         if reply == QMessageBox.Yes:
             try:
                 if is_dir:
-                    # QFileSystemModel.rmdir() ne supprime que les dossiers vides.
-                    # Pour une suppression récursive, il faut utiliser shutil.rmtree().
-                    # Le modèle se mettra à jour automatiquement car il surveille le système de fichiers.
                     shutil.rmtree(file_path)
                 else:
-                    # Pour les fichiers, model.remove() est correct.
                     self.model.remove(index)
             except Exception as e:
                 QMessageBox.critical(self, "Erreur", f"Impossible de supprimer :\n{e}")
@@ -719,7 +917,6 @@ class NotesPanel(QWidget):
         """Compte le nombre de sous-dossiers et de fichiers dans un dossier."""
         total_folders = 0
         total_files = 0
-        # os.walk parcourt récursivement toute l'arborescence
         for dirpath, dirnames, filenames in os.walk(folder_path):
             total_folders += len(dirnames)
             total_files += len(filenames)
@@ -738,32 +935,22 @@ class NotesPanel(QWidget):
 
     def expand_all_from_index(self, index):
         """Déplie récursivement tous les sous-dossiers à partir d'un index."""
-        source_index = (
-            self.proxy_model.mapToSource(index)
-            if isinstance(self.tree_view.model(), QSortFilterProxyModel)
-            else index
-        )
-        if not source_index.isValid() or not self.model.isDir(source_index):
+        if not index.isValid() or not self.model.isDir(index):
             return
 
-        self.tree_view.expand(index)
-        # Itérer sur les enfants dans le proxy model
-        for i in range(self.proxy_model.rowCount(index)):
-            child_proxy_index = self.proxy_model.index(i, 0, index)
-            self.expand_all_from_index(child_proxy_index)
+        proxy_index = self.proxy_model.mapFromSource(index)
+        self.tree_view.expand(proxy_index)
+        for i in range(self.model.rowCount(index)):
+            child_index = self.model.index(i, 0, index)
+            self.expand_all_from_index(child_index)
 
     def collapse_all_from_index(self, index):
         """Réplie récursivement tous les sous-dossiers à partir d'un index."""
-        source_index = (
-            self.proxy_model.mapToSource(index)
-            if isinstance(self.tree_view.model(), QSortFilterProxyModel)
-            else index
-        )
-        if not source_index.isValid() or not self.model.isDir(source_index):
+        if not index.isValid() or not self.model.isDir(index):
             return
 
-        # Itérer sur les enfants dans le proxy model
-        for i in range(self.proxy_model.rowCount(index)):
-            child_proxy_index = self.proxy_model.index(i, 0, index)
-            self.collapse_all_from_index(child_proxy_index)
-        self.tree_view.collapse(index)
+        for i in range(self.model.rowCount(index)):
+            child_index = self.model.index(i, 0, index)
+            self.collapse_all_from_index(child_index)
+        proxy_index = self.proxy_model.mapFromSource(index)
+        self.tree_view.collapse(proxy_index)
