@@ -1,3 +1,9 @@
+## V3.2.4 Refresh tag index Fix Issue [#63]
+
+I would like to be able to refresh the tag index on demand by clicking on the index display in the bottom right corner of the main window.
+Fix Issue [#63](https://github.com/lephotographelibre/BlueNotebook/issues/63) V3.2.3 main_windows: reload tag index #63
+
+
 ## V3.2.3 Fix Issue [#62] Notes Search
 
 Fix Issue [#62](https://github.com/lephotographelibre/BlueNotebook/issues/62)  V3.2.2 Notes: Search keyworks is not working correctly #62

@@ -1295,8 +1295,16 @@ class MainWindow(QMainWindow):
         self.journal_dir_label.setStyleSheet("color: #3498db;")
         self.statusbar.addPermanentWidget(self.journal_dir_label)
 
+        # V3.2.3 - Rendre le label de l'index cliquable pour le rafraîchissement
         self.tag_index_status_label = QLabel("")
-        self.tag_index_status_label.setStyleSheet("color: #3498db;")
+        self.tag_index_status_label.setStyleSheet(
+            "color: #3498db; text-decoration: underline;"
+        )
+        self.tag_index_status_label.setCursor(Qt.PointingHandCursor)
+        self.tag_index_status_label.setToolTip(
+            "Cliquez pour rafraîchir l'index des tags"
+        )
+        self.tag_index_status_label.mousePressEvent = self.refresh_tag_index
         self.statusbar.addPermanentWidget(self.tag_index_status_label)
 
         # Label pour les messages de sauvegarde, centré et vert
@@ -2592,6 +2600,15 @@ class MainWindow(QMainWindow):
         start_tag_indexing(
             self.journal_directory, self.thread_pool, self.on_indexing_finished
         )
+
+    def refresh_tag_index(self, event):
+        """Rafraîchit l'index des tags sur demande de l'utilisateur."""
+        if event.button() == Qt.LeftButton:
+            print("🔄 Rafraîchissement manuel de l'index des tags demandé.")
+            self.tag_index_status_label.setText("Indexation en cours...")
+            # Force l'interface à se mettre à jour avant de lancer la tâche de fond
+            self.tag_index_status_label.repaint()
+            self.start_initial_indexing()
 
     def on_indexing_finished(self, unique_tag_count):
         """Callback exécuté à la fin de l'indexation."""
