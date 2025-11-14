@@ -1,3 +1,18 @@
+## V3.2.5 Editor: remove whitespace characters Fix Issue [#65]
+Fix Issue [#65](https://github.com/lephotographelibre/BlueNotebook/issues/65) 
+V3.2. Editor: remove whitespace characters or tabs at the beginning of lines #65
+
+Add a new contextual menu "Mise en forme -> Supprime les blancs en début de ligne
+remove whitespace characters or tabs at the beginning of  lines agraphs as a new contextual menu
+
+For example, Grok's copied/pasted text contains spaces at the beginning of lines in code blocks, and these are not displayed correctly in the Markdown editor.
+
+- L'utilisateur sélectionn un ensemble de lignes
+- sur la première ligne compter combien il y a d'espace ou tab jusqu'au premier caractère
+- supprimer ces espaces ou tab jusqu'au premier caractère
+- puis passer à la ligne suivante en supprimant le meme nombre de caractère ou d'espace 
+- faire de meme jusqu'à la derniere ligne sélectionnée par l'utilisateur
+
 ## V3.2.4 Refresh tag index Fix Issue [#63]
 
 I would like to be able to refresh the tag index on demand by clicking on the index display in the bottom right corner of the main window.

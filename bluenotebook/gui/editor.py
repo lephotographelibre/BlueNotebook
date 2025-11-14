@@ -995,10 +995,41 @@ class MarkdownEditor(QWidget):
             cleanup_action = format_menu.addAction("Nettoyer le paragraphe")
             cleanup_action.triggered.connect(self.cleanup_paragraph)
 
+            # V3.2.5 - Ajouter l'action pour supprimer les espaces en début de ligne
+            remove_indent_action = format_menu.addAction(
+                "Supprime les blancs en début de ligne"
+            )
+            remove_indent_action.triggered.connect(self.remove_leading_whitespace)
+
             menu.addMenu(format_menu)
 
         # Afficher le menu à la position du curseur
         menu.exec_(self.text_edit.viewport().mapToGlobal(position))
+
+    def remove_leading_whitespace(self):
+        """
+        Supprime l'indentation commune (basée sur la première ligne)
+        de toutes les lignes sélectionnées.
+        """
+        cursor = self.text_edit.textCursor()
+        if not cursor.hasSelection():
+            return
+
+        selected_text = cursor.selectedText()
+        lines = selected_text.splitlines()
+
+        if not lines:
+            return
+
+        # Calculer l'indentation de la première ligne
+        first_line = lines[0]
+        indent_len = len(first_line) - len(first_line.lstrip())
+
+        # Appliquer la dé-indentation à toutes les lignes
+        new_lines = [line[indent_len:] for line in lines]
+        new_text = "\n".join(new_lines)
+
+        cursor.insertText(new_text)
 
     def cleanup_paragraph(self):
         """Nettoie le paragraphe sélectionné en supprimant les sauts de ligne superflus."""
