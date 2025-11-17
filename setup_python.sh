@@ -1,12 +1,15 @@
 # pyenv versions
-# pyenv install 3.13.5
-# pyenv virtualenv 3.13.5 .venv_bluenotebook
-# pyenv activate .venv_bluenotebook
+pyenv install 3.13.5 
+# pyenv install 3.11.9
+pyenv virtualenv 3.13.5 .venv_bluenotebook
+# pyenv virtualenv-delete .venv_bluenotebook
+#pyenv virtualenv 3.11.9 .venv_bluenotebook
+pyenv activate .venv_bluenotebook
 # python -V
 # pip -V
- 
+#xargs pip uninstall -y
 # pip freeze > requirements.txt
-# pip install -r requirements.txt
+pip install -r requirements.txt
 # deactivate
 
 
@@ -40,3 +43,4 @@ $ git push			# Push to remote repo
 ```
 $ git branch -D youtube-transcript-api  
 ```
+# pip install --upgrade pymupdf --> solve  "import" fitz error

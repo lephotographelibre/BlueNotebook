@@ -1,3 +1,26 @@
+## V3.3.1 Windows + Linux Python virtual environments and requirements.txt
+
+lot of errors on Linux about   
+```python
+File "/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/pdf_viewer.py", line 21, in <module>
+    import fitz  # PyMuPDF
+    ^^^^^^^^^^^
+```
+See <https://pymupdf.readthedocs.io/en/latest/installation.html>
+
+PyMuPDF should be installed using pip with:
+
+pip install --upgrade pymupdf
+
+Attention si erreur
+
+```
+ModuleNotFoundError: No module named 'frontend'
+```
+
+pip uninstall fitz
+pip install --force-reinstall pymupdf
+
 ## V3.2.6 Add Local Markdown link (to  Journal documents notes, images) Fix Issue [#56]
 
 Fix Issue [#56](https://github.com/lephotographelibre/BlueNotebook/issues/56)
