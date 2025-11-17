@@ -799,9 +799,8 @@ class MainWindow(QMainWindow):
 
         # V3.2.2 - Supprimer la largeur fixe pour permettre le redimensionnement
         # self.notes_panel.setFixedWidth(400)
-        self.navigation_panel.setFixedWidth(
-            400
-        )  # This line was already there, but it's important to keep it for navigation panel width
+        # Rendre le panneau de navigation redimensionnable
+        # self.navigation_panel.setFixedWidth(500)
         self.outline_panel.setFixedWidth(400)
         # V3.0.1 - Supprimer la largeur fixe pour permettre le redimensionnement
         # self.epub_reader_panel.setFixedWidth(600)
@@ -3058,6 +3057,15 @@ class MainWindow(QMainWindow):
                 dialog.show_line_numbers_checkbox.isChecked(),
             )
             self.settings_manager.set(
+                "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_outline_panel", dialog.show_outline_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
+            )
+            self.settings_manager.set(
                 "integrations.show_quote_of_the_day",
                 dialog.show_quote_checkbox.isChecked(),
             )
@@ -3083,22 +3091,6 @@ class MainWindow(QMainWindow):
             ]
             self.settings_manager.set(
                 "indexing.excluded_tags_from_cloud", excluded_tags_list
-            )
-
-            self.settings_manager.set(
-                "ui.show_notes_panel", dialog.show_notes_checkbox.isChecked()
-            )
-            self.settings_manager.set(
-                "ui.show_navigation_panel", dialog.show_nav_checkbox.isChecked()
-            )
-            self.settings_manager.set(
-                "ui.show_outline_panel", dialog.show_outline_checkbox.isChecked()
-            )
-            self.settings_manager.set(
-                "ui.show_preview_panel", dialog.show_preview_checkbox.isChecked()
-            )
-            self.settings_manager.set(
-                "ui.show_reader_panel", dialog.show_reader_checkbox.isChecked()
             )
 
             self.settings_manager.save_settings()

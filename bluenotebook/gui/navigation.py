@@ -108,9 +108,9 @@ class NavigationPanel(QWidget):
         # Calendrier
         self.calendar = QCalendarWidget()
         self.calendar.setGridVisible(True)
-        # Assurer que le calendrier garde une taille constante (carrée)
-        # La largeur du panneau parent est fixée à 400px dans main_window.py
-        self.calendar.setFixedSize(400, 250)
+        # Le calendrier s'adapte maintenant à la largeur du panneau
+        self.calendar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.calendar.setFixedHeight(250)
         self.calendar.clicked.connect(self.date_clicked.emit)
         layout.addWidget(self.calendar)
 

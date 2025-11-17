@@ -122,9 +122,8 @@ class PreferencesDialog(QDialog):
         self.show_indexing_stats_checkbox = QCheckBox(
             "Afficher les statistiques d'indexation (mots et tags) dans la barre d'état"
         )
-        self.show_indexing_stats_checkbox.setChecked(
-            self.settings_manager.get("ui.show_indexing_stats", True)
-        )
+        show_indexing_stats = self.settings_manager.get("ui.show_indexing_stats", True)
+        self.show_indexing_stats_checkbox.setChecked(str(show_indexing_stats).lower() == 'true')
         layout.addRow(self.show_indexing_stats_checkbox)
 
         # Tags à exclure du nuage de tags
@@ -228,9 +227,9 @@ class PreferencesDialog(QDialog):
 
         # === SECTION AFFICHAGE LIGNES ===
         self.show_line_numbers_checkbox = QCheckBox("Affichage des numéros de lignes ?")
-        self.show_line_numbers_checkbox.setChecked(
-            self.settings_manager.get("editor.show_line_numbers", False)
-        )
+        show_line_numbers_setting = self.settings_manager.get("editor.show_line_numbers", False)
+        is_checked = str(show_line_numbers_setting).lower() == 'true'
+        self.show_line_numbers_checkbox.setChecked(is_checked)
         layout.addWidget(self.show_line_numbers_checkbox, row, 0, 1, 4)
         row += 1
 
@@ -612,18 +611,22 @@ class PreferencesDialog(QDialog):
         layout = QVBoxLayout(widget)
         layout.setSpacing(10)
 
+        # Case pour le panneau de Notes
+        self.show_notes_checkbox = QCheckBox("Afficher le panneau 'Notes'")
+        show_notes = self.settings_manager.get("ui.show_notes_panel", True)
+        self.show_notes_checkbox.setChecked(str(show_notes).lower() == 'true')
+        layout.addWidget(self.show_notes_checkbox)
+
         # Case pour le panneau de Navigation
         self.show_nav_checkbox = QCheckBox("Afficher le panneau de Navigation")
-        self.show_nav_checkbox.setChecked(
-            self.settings_manager.get("ui.show_navigation_panel", False)
-        )
+        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+        self.show_nav_checkbox.setChecked(str(show_nav).lower() == 'true')
         layout.addWidget(self.show_nav_checkbox)
 
         # Case pour le panneau Plan du document
         self.show_outline_checkbox = QCheckBox("Afficher le panneau 'Plan du document'")
-        self.show_outline_checkbox.setChecked(
-            self.settings_manager.get("ui.show_outline_panel", True)
-        )
+        show_outline = self.settings_manager.get("ui.show_outline_panel", True)
+        self.show_outline_checkbox.setChecked(str(show_outline).lower() == 'true')
         layout.addWidget(self.show_outline_checkbox)
 
         # Case pour le panneau Éditeur (toujours visible et désactivé)
@@ -634,16 +637,14 @@ class PreferencesDialog(QDialog):
 
         # Case pour le panneau Aperçu HTML
         self.show_preview_checkbox = QCheckBox("Afficher le panneau 'Aperçu HTML'")
-        self.show_preview_checkbox.setChecked(
-            self.settings_manager.get("ui.show_preview_panel", False)
-        )
+        show_preview = self.settings_manager.get("ui.show_preview_panel", False)
+        self.show_preview_checkbox.setChecked(str(show_preview).lower() == 'true')
         layout.addWidget(self.show_preview_checkbox)
 
         # Case pour le panneau Lecteur
         self.show_reader_checkbox = QCheckBox("Afficher le panneau 'Lecteur'")
-        self.show_reader_checkbox.setChecked(
-            self.settings_manager.get("ui.show_reader_panel", False)
-        )
+        show_reader = self.settings_manager.get("ui.show_reader_panel", False)
+        self.show_reader_checkbox.setChecked(str(show_reader).lower() == 'true')
         layout.addWidget(self.show_reader_checkbox)
 
         layout.addStretch()  # Pour pousser les cases vers le haut
@@ -657,29 +658,23 @@ class PreferencesDialog(QDialog):
         self.show_quote_checkbox = QCheckBox(
             "Afficher la citation du jour au démarrage"
         )
-        is_checked = self.settings_manager.get(
-            "integrations.show_quote_of_the_day", False
-        )
-        self.show_quote_checkbox.setChecked(is_checked)
+        show_quote = self.settings_manager.get("integrations.show_quote_of_the_day", False)
+        self.show_quote_checkbox.setChecked(str(show_quote).lower() == 'true')
         layout.addWidget(self.show_quote_checkbox)
 
         self.youtube_integration_checkbox = QCheckBox(
             "Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown"
         )
-        is_youtube_enabled = self.settings_manager.get(
-            "integrations.youtube_enabled", True
-        )
-        self.youtube_integration_checkbox.setChecked(is_youtube_enabled)
+        is_youtube_enabled = self.settings_manager.get("integrations.youtube_enabled", True)
+        self.youtube_integration_checkbox.setChecked(str(is_youtube_enabled).lower() == 'true')
         layout.addWidget(self.youtube_integration_checkbox)
 
         self.youtube_transcript_checkbox = QCheckBox(
             "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"
         )
-        is_transcript_enabled = self.settings_manager.get(
-            "integrations.youtube_transcript_enabled", True
-        )
-        self.youtube_transcript_checkbox.setChecked(is_transcript_enabled)
-        self.youtube_transcript_checkbox.setEnabled(is_youtube_enabled)
+        is_transcript_enabled = self.settings_manager.get("integrations.youtube_transcript_enabled", True)
+        self.youtube_transcript_checkbox.setChecked(str(is_transcript_enabled).lower() == 'true')
+        self.youtube_transcript_checkbox.setEnabled(str(is_youtube_enabled).lower() == 'true')
         layout.addWidget(self.youtube_transcript_checkbox)
 
         # Lier les deux cases à cocher
