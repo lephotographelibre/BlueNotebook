@@ -1,3 +1,39 @@
+## V3.2.6 Add Local Markdown link (to  Journal documents notes, images) Fix Issue [#56]
+
+Fix Issue [#56](https://github.com/lephotographelibre/BlueNotebook/issues/56)
+
+Actuellement le menu Insérer -> Lien Markdown ne permet d'inserer les lien inline que de doucument distant. Je voudrais que la boite de dialogue permette d'inserer des liens vers des documents locaux c'es à dire qui se trouve dans le répertoire du Journal ou ses dossiers.
+
+- comme pour image Markdown on va donc ajouter un bouton "Parcourir" permettra d'ouvrir un sélecteur de fichier par defaut ouvert à la racine du Journal
+- Tous les types de documents seront visibles 
+- dans le cas d'un fichier local  le lien généré sera du type
+    [[[Nom fichier]]] (notes/Bluenotebook/docs/adetruire.md) -> le chemin du fichier sera relatif à la racine du journal 
+ 
+ par exemple = (notes/Bluenotebook/docs/adetruire.md) si la racine du journal est file:///ssd/Dropbox/BlueNotebookJournal/ et que le fichier est file:///ssd/Dropbox/BlueNotebookJournal/notes/Bluenotebook/docs/adetruire.md
+ - Si le fichier local à insérer est en dehors du répertoire du Journal alors 
+    - une  boite de dialogue s'ouvrira demandant la confirmation à l'utilisateur qu"il veut bien inserer un lien vers un document local qui est à l'extérieur du journal
+    - Si non on annule l'insertion du lien
+    - Si oui on va informer l'utilisateur que l'on va copier le document vers un répertoire du journal on va ouvrir un sélecteur de fichier pour que l'utilisateur puis choisir le répertoire du journal (à partir du répertoire "notes" du journal) 
+    - une fois que l'utilisateur valide le répertoire on copie le fichier dans ce répertoire et l'on génére un lien du type
+    [[[Nom fichier]]] (notes/Bluenotebook/docs/adetruire.md) -> le chemin du fichier sera relatif à la racine du journal  comme pour les autres documents locaux dans le journal
+ je ne sais pas s'il faut URL encoder le nom du fichier pour que celui ci soit clickable ensuite dans l'aperçu HTML ou bien si cela est faut automatiquement.
+ - Pour les fichiers distants (http*, ou ftp*) ne rien changer
+
+ beta1
+
+ Supprimer le Menu Insérer -> Image (<img ... >)
+ Modifier le label "Insérer -> Lien Markdown" en "Inserer -> Lien" 
+ Modifier le label "Insérer -> Image Markdown" en "Insérer -> Image"
+ Modifier l'aide en lign epour refleter ces changements de Menu "Insérer"
+
+beta1
+
+Je voudrais que les liens de type [[[Nom fichier]]] (notes/Bluenotebook/docs/adetruire.md) soient reconnu par le parser de l'editeur Markdown comme des liens simples  de type [Nom fichier] (notes/Bluenotebook/docs/adetruire.md). Uniquement dans l'editeur cela ne doit rien changer pour l'Aperçu HTML
+Beta3
+
+mettre a jour le menu contextuel Lien Markdown de l'editeur
+
+
 ## V3.2.5 Editor: remove whitespace characters Fix Issue [#65]
 Fix Issue [#65](https://github.com/lephotographelibre/BlueNotebook/issues/65) 
 V3.2. Editor: remove whitespace characters or tabs at the beginning of lines #65

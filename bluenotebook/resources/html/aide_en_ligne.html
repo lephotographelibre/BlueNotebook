@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Aide en Ligne - BlueNotebook V3.2.5</h1>
+            Aide en Ligne - BlueNotebook V3.2.6</h1>
     </header>
 
 <div class="main-container">
@@ -126,6 +126,7 @@
                     <li><a href="#images-markdown">7.1 Insertion d'Images (Markdown et HTML)</a></li>
                     <li><a href="#attachements">7.2 Gestion des Pièces Jointes</a></li>
                     <li><a href="#exif-data">7.3 Insertion d'images avec données EXIF</a></li>
+                    <li><a href="#liens-locaux">7.4 Insertion de Liens (locaux et distants)</a></li>
                 </ul>
             </li>
             <li><a href="#lecteur-epub">8. Le Panneau Lecteur (EPUB et PDF)</a></li>
@@ -354,6 +355,29 @@
             <li><strong>Informations techniques :</strong> Modèle de l'appareil, ouverture, vitesse, focale et sensibilité ISO.</li>
         </ul>
         <p>Cette fonctionnalité transforme une simple image en une fiche d'information complète, parfaite pour se souvenir des détails de chaque moment capturé.</p>
+    </section>
+
+    <section id="liens-locaux">
+        <h3>7.4 Insertion de Liens (locaux et distants)</h3>
+        <p>Le menu <code>Insérer > Lien</code> a été amélioré pour vous permettre de créer des liens non seulement vers des sites web, mais aussi vers n'importe quel fichier local de votre ordinateur, tout en garantissant la portabilité de votre journal.</p>
+        <h4>Comment ça marche ?</h4>
+        <ol>
+            <li>Allez dans le menu <code>Insérer > Lien</code>. Une boîte de dialogue s'ouvre.</li>
+            <li><strong>Pour un lien web :</strong> Remplissez le "Texte du lien" et collez l'URL (<code>http://...</code>) dans le champ "URL ou chemin".</li>
+            <li><strong>Pour un fichier local :</strong>
+                <ul>
+                    <li>Cliquez sur le bouton <strong>"Parcourir..."</strong>. Un sélecteur de fichiers s'ouvrira, positionné par défaut à la racine de votre journal.</li>
+                    <li>Sélectionnez n'importe quel fichier (document, image, note, etc.). Le champ "Texte du lien" sera automatiquement rempli avec le nom du fichier.</li>
+                </ul>
+            </li>
+        </ol>
+        <h4>Gestion intelligente des fichiers locaux</h4>
+        <ul>
+            <li><strong>Si le fichier est déjà dans votre journal :</strong> Un lien relatif est créé. Votre journal reste portable.</li>
+            <li><strong>Si le fichier est en dehors de votre journal :</strong> Une boîte de dialogue vous demandera si vous souhaitez copier le fichier dans votre journal. Si vous acceptez, vous pourrez choisir un dossier de destination (par défaut <code>notes/</code> ou <code>attachments/</code>). Le fichier y sera copié, et un lien relatif sera créé. Cela garantit que vous ne perdrez jamais un lien si vous déplacez votre journal.</li>
+        </ul>
+        <p>Le lien généré pour un fichier local aura le format suivant : <code>🔗 [[[Texte du lien]]](chemin/relatif/vers/le/fichier)</code>. L'emoji 🔗 vous permet d'identifier visuellement les liens vers des fichiers locaux, et la syntaxe <code>[[[...]]]</code> est reconnue par l'éditeur pour la coloration syntaxique, tout en restant un lien parfaitement fonctionnel dans l'aperçu.</p>
+        <p>Cette fonctionnalité vous permet de lier entre elles vos notes, vos documents de référence et vos images de manière simple et robuste.</p>
     </section>
 
     <section id="lecteur-epub">
@@ -643,9 +667,8 @@ Formater
 └── RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
 Insérer
-├── Image (<img ...>) : Insère une image via une balise HTML. Copie les images locales dans le journal.
-├── Image Markdown : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
-├── Lien Markdown : Ouvre une boîte de dialogue pour créer un lien `texte`. Fonctionne avec ou sans sélection.
+├── Image : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
+├── Lien : Ouvre une boîte de dialogue pour créer un lien `texte`. Gère les liens distants et les fichiers locaux (avec copie dans le journal si nécessaire).
 ├── Lien URL/Email : Encadre une URL ou un email sélectionné avec des chevrons `< >` pour le rendre cliquable.
 ├── 📎 Attachement : Insère un lien vers un fichier attaché (local ou distant), copié dans le répertoire `attachments` du journal.
 ├── ---
@@ -1088,7 +1111,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.2.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.2.6 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

@@ -511,6 +511,11 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         for match in re.finditer(link_pattern, text):
             self.setFormat(match.start(), match.end() - match.start(), self.link_format)
 
+        # V3.2.6 - Règle pour les liens locaux personnalisés [[[...]]](...)
+        # Cette règle est uniquement pour la coloration syntaxique dans l'éditeur.
+        for match in re.finditer(r"\[\[\[(.*?)\]\]\]\((.*?)\)", text):
+            self.setFormat(match.start(), match.end() - match.start(), self.link_format)
+
         # Auto-liens (<url> ou <email>)
         autolink_pattern = r"<((?:https?://|mailto:)[^>]+|[^>@]+@[^>]+)>"
         for match in re.finditer(autolink_pattern, text):
@@ -978,10 +983,12 @@ class MarkdownEditor(QWidget):
 
             # --- Liens ---
             link_menu = QMenu("Liens", self)
+            link_menu.setToolTip("Insérer un lien (local ou distant)")
             link_menu.setStyleSheet(self.menu_stylesheet)
-            markdown_link_action = link_menu.addAction("Lien Markdown")
+            # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
+            markdown_link_action = link_menu.addAction("Lien...")
             markdown_link_action.triggered.connect(
-                lambda: self.format_text("markdown_link")
+                self.main_window._handle_markdown_link
             )
             url_link_action = link_menu.addAction("Lien URL/Email")
             url_link_action.triggered.connect(lambda: self.format_text("url_link"))

@@ -27,6 +27,7 @@ import json
 import shutil
 from datetime import datetime
 import zipfile
+from urllib.parse import quote
 from datetime import datetime
 
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -599,6 +600,88 @@ class InsertTemplateDialog(QDialog):
             self.template_combo.addItems(template_files)
 
 
+class InsertLinkDialog(QDialog):
+    """Boîte de dialogue pour insérer un lien Markdown (local ou distant)."""
+
+    def __init__(self, parent=None, journal_dir=None, selected_text=""):
+        super().__init__(parent)
+        self.journal_dir = journal_dir
+        self.setWindowTitle("Insérer un lien")
+        self.setMinimumWidth(500)
+
+        self.layout = QFormLayout(self)
+
+        self.text_edit = QLineEdit(selected_text, self)
+        self.url_layout = QHBoxLayout()
+        self.url_edit = QLineEdit(self)
+        self.url_edit.setPlaceholderText("https://... ou chemin/local/fichier.ext")
+        self.url_layout.addWidget(self.url_edit)
+
+        if self.journal_dir:
+            self.browse_button = QPushButton("Parcourir...", self)
+            self.browse_button.clicked.connect(self._browse_local_file)
+            self.url_layout.addWidget(self.browse_button)
+
+        self.layout.addRow("Texte du lien:", self.text_edit)
+        self.layout.addRow("URL ou chemin:", self.url_layout)
+
+        self.button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
+        self.button_box.button(QDialogButtonBox.Ok).setText("Insérer")
+        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.accepted.connect(self.validate_and_accept)
+        self.button_box.rejected.connect(self.reject)
+
+        self.layout.addRow(self.button_box)
+
+    def _browse_local_file(self):
+        """Ouvre un sélecteur de fichier pour les fichiers locaux."""
+        start_dir = (
+            str(self.journal_dir)
+            if self.journal_dir and self.journal_dir.is_dir()
+            else str(Path.home())
+        )
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Sélectionner un fichier local", start_dir, "Tous les fichiers (*)"
+        )
+        if path:
+            # Si le journal_dir n'était pas défini, on le met à jour si possible
+            if not self.journal_dir and "bluenotebook" in path.lower():
+                # Heuristique simple pour trouver la racine du journal
+                self.journal_dir = Path(path.split("bluenotebook")[0])
+            self.url_edit.setText(path)
+            if not self.text_edit.text():
+                # Pré-remplir le texte du lien avec le nom du fichier sans extension
+                file_name = Path(path).stem
+                self.text_edit.setText(file_name)
+
+    def validate_and_accept(self):
+        """Vérifie que les champs ne sont pas vides avant d'accepter."""
+        link_text = self.text_edit.text().strip()
+        url_text = self.url_edit.text().strip()
+
+        if not link_text or not url_text:
+            QMessageBox.warning(
+                self,
+                "Champs requis",
+                "Le texte du lien et l'URL/chemin sont tous les deux obligatoires.",
+            )
+        else:
+            self.accept()
+
+    def get_link_data(self):
+        """Retourne le texte du lien et l'URL/chemin."""
+        link_path = self.url_edit.text().strip()
+        link_text = self.text_edit.text().strip()
+
+        # Si le chemin est local (ne commence pas par http/ftp), forcer le texte du lien
+        if not link_path.lower().startswith(("http://", "https://", "ftp://")):
+            link_text = Path(link_path).stem
+
+        return link_text, link_path
+
+
 class MainWindow(QMainWindow):
     def __init__(self, journal_dir_arg=None, app_version="2.4.4"):
         super().__init__()
@@ -1119,25 +1202,25 @@ class MainWindow(QMainWindow):
 
     def _setup_insert_menu(self, insert_menu):
         """Configure le menu d'insertion de manière dynamique."""
-        action_img_html = QAction("Image (<img ...>)", self)
-        action_img_html.setShortcut(QKeySequence.Italic)
-        action_img_html.triggered.connect(self.insert_html_image)
-        insert_menu.addAction(action_img_html)
-
         insert_actions_data = [
             (
-                "Image Markdown",
+                "Image",
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("Lien Markdown", "markdown_link"),
+            ("Lien", "markdown_link"),
             ("Lien URL/Email", "url_link"),
             ("📎 Attachement", "attachment"),
         ]
 
         for name, data, *shortcut in insert_actions_data:  # type: ignore
             action = QAction(name, self)
-            action.triggered.connect(functools.partial(self.editor.format_text, data))
+            if data == "markdown_link":
+                action.triggered.connect(self._handle_markdown_link)
+            else:
+                action.triggered.connect(
+                    functools.partial(self.editor.format_text, data)
+                )
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
@@ -2315,6 +2398,95 @@ class MainWindow(QMainWindow):
                 self.editor.insert_text(img_tag)
         else:
             self.editor.insert_text(img_tag)
+
+    def _handle_markdown_link(self):
+        """Gère l'insertion d'un lien Markdown (local ou distant)."""
+        selected_text = self.editor.text_edit.textCursor().selectedText().strip()
+
+        dialog = InsertLinkDialog(self, self.journal_directory, selected_text)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        link_text, link_path = dialog.get_link_data()
+
+        # Si c'est une URL distante, on insère directement
+        if link_path.lower().startswith(("http://", "https://", "ftp://")):
+            markdown_link = f"[{link_text}]({link_path})"
+            self.editor.insert_text(markdown_link)
+            return
+
+        # C'est un chemin local
+        local_path = Path(link_path)
+        if not local_path.exists():
+            QMessageBox.warning(
+                self,
+                "Fichier non trouvé",
+                f"Le fichier local '{link_path}' n'existe pas.",
+            )
+            return
+
+        final_relative_path = None
+
+        # Cas 1: Le fichier est déjà dans le journal
+        if self.journal_directory and local_path.is_relative_to(self.journal_directory):
+            final_relative_path = local_path.relative_to(self.journal_directory)
+
+        # Cas 2: Le fichier est en dehors du journal
+        else:
+            reply = QMessageBox.question(
+                self,
+                "Fichier hors du journal",
+                "Le fichier que vous avez sélectionné est en dehors du répertoire du journal.\n\n"
+                "Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes ?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            if reply == QMessageBox.No:
+                # L'utilisateur veut un lien absolu, on le crée
+                final_absolute_path = local_path.as_uri()
+                markdown_link = f"[{link_text}]({final_absolute_path})"
+                self.editor.insert_text(markdown_link)
+                return
+
+            # L'utilisateur veut copier le fichier
+            notes_dir = self.journal_directory / "notes"
+            attachments_dir = self.journal_directory / "attachments"
+            default_dir = (
+                str(notes_dir)
+                if notes_dir.is_dir()
+                else (
+                    str(attachments_dir)
+                    if attachments_dir.is_dir()
+                    else str(self.journal_directory)
+                )
+            )
+
+            dest_dir_str = QFileDialog.getExistingDirectory(
+                self, "Choisir un dossier de destination dans le journal", default_dir
+            )
+            if not dest_dir_str:
+                return  # Annulé par l'utilisateur
+
+            dest_dir = Path(dest_dir_str)
+            dest_path = dest_dir / local_path.name
+
+            try:
+                shutil.copy2(local_path, dest_path)
+                final_relative_path = dest_path.relative_to(self.journal_directory)
+                self.statusbar.showMessage(
+                    f"Fichier copié dans {final_relative_path}", 4000
+                )
+            except Exception as e:
+                QMessageBox.critical(
+                    self, "Erreur de copie", f"Impossible de copier le fichier :\n{e}"
+                )
+                return
+
+        if final_relative_path:
+            # URL-encode le chemin pour gérer les espaces et caractères spéciaux
+            encoded_path = quote(str(final_relative_path).replace(os.sep, "/"))
+            markdown_link = f"🔗 [[[{link_text}]]]({encoded_path})"
+            self.editor.insert_text(markdown_link)
 
     def insert_weather(self):
         """Récupère et insère la météo actuelle dans l'éditeur."""
