@@ -1,3 +1,10 @@
+## V3.3.2 Windows Fix Issue [#69] Wrong locale detected at startup #69
+
+
+Fix Issue [#69](https://github.com/lephotographelibre/BlueNotebook/issues/69)
+
+ l'application me propose de créer une note du jour en anglais or le code de main_window.py devrait bien détecter ma locale et malgré tout me propose d'ouvrir la version anglaise . 
+
 ## V3.3.1 Windows + Linux Python virtual environments and requirements.txt
 
 lot of errors on Linux about   

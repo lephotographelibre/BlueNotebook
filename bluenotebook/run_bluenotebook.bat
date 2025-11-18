@@ -76,8 +76,9 @@ if defined CAIRO_PATH (
     echo "AVERTISSEMENT: Impossible de trouver la bibliotheque Cairo (GTK3 ou msys64). L'export PDF/SVG pourrait echouer."
 )
 
-REM --- Positionnement du repertoire du journal ---
+REM --- Positionnement du repertoire du journal et locale---
 set "JOURNAL_DIRECTORY=E:\Dropbox\BlueNotebookJournal"
+set "BLUENOTEBOOK_LOCALE=fr_FR"
 
 REM Transmet tous les arguments (%*) au script python
 call "%VENV_PYTHON%" main.py %*

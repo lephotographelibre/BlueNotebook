@@ -3,6 +3,7 @@
 # Copyright (C) 2025 Jean-Marc DIGNE
 #
 # This program is free software: you can redistribute it and/or modify
+#
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -22,6 +23,7 @@ Point d'entrée principal de l'application
 
 import sys
 import os
+import locale as locale_module
 import argparse
 
 # Ajouter le répertoire racine au path pour les imports
@@ -50,6 +52,16 @@ def main():
         locale = QLocale.system()
         print(f"🌍 Locale système détectée : {locale.name()}")
 
+    # --- Configuration de la locale Python standard (pour time, etc.) ---
+    # Essayer de définir la locale pour tout le programme Python.
+    # Important pour que `locale.getlocale()` fonctionne comme attendu dans les autres modules.
+    try:
+        locale_str_for_python = forced_locale_str if forced_locale_str else ""
+        locale_module.setlocale(locale_module.LC_TIME, locale_str_for_python)
+        print(f"✅ Locale Python (LC_TIME) configurée sur : '{locale_module.getlocale(locale_module.LC_TIME)[0]}'")
+    except locale_module.Error:
+        print(f"⚠️ Impossible de configurer la locale Python pour '{locale_str_for_python}'. Utilisation de la locale système par défaut.")
+
     # Chemin vers les traductions Qt intégrées
     qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
     # Charger le fichier de traduction (ex: qtbase_fr.qm)
@@ -72,7 +84,7 @@ def main():
 
     try:
         # Définir les informations de l'application
-        version = "3.3.1"
+        version = "3.3.2"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
