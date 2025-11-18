@@ -787,7 +787,7 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.addWidget(self.editor)
 
         self.preview = MarkdownPreview()
-        editor_preview_splitter.addWidget(self.preview)Fif not today_note_exists:
+        editor_preview_splitter.addWidget(self.preview) 
 
         editor_preview_splitter.setSizes([700, 700])
         editor_preview_splitter.setCollapsible(0, False)
