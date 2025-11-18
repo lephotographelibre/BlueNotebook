@@ -15,7 +15,21 @@ Ajout de la logique : J'ai ajouté le bloc de code qui :
 Avec ce correctif, la création de votre note [Fr]Notes.md dans le dossier "notes" fonctionnera comme vous l'attendez, et les placeholders seront bien remplacés.
 
 ```python
+                    # --- V3.3.3 - Ajout de la substitution des placeholders ---
+                    # Cette logique manquait pour la création de notes depuis le panneau.
+                    try:
+                        import locale
+                        from datetime import datetime
+                        locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+                    except locale.Error:
+                        locale.setlocale(locale.LC_TIME, "")
 
+                    today_str = datetime.now().strftime("%A %d %B %Y").title()
+                    timestamp_str = datetime.now().strftime("%H:%M")
+
+                    content = content.replace("{{date}}", today_str)
+                    content = content.replace("{{horodatage}}", timestamp_str)
+                    # --- Fin de l'ajout ---
 ```
 
 **Explication des changements**
