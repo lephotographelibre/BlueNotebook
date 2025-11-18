@@ -1,3 +1,33 @@
+## V3.3.3 Notes placeholder substitution isn't working
+
+la logique de remplacement des placeholders ({{date}}, {{horodatage}}) n'a été implémentée que pour la création de la note du jour, mais pas pour la création d'une note générique via le menu Fichier > Nouveau....
+
+**Explication du problème**
+
+Localisation du problème : La méthode create_new_note dans `notes_panel.py` lisait bien le contenu du modèle, mais elle l'écrivait directement dans le nouveau fichier sans traiter les placeholders.
+
+Ajout de la logique : J'ai ajouté le bloc de code qui :
+
+- Récupère la date et l'heure actuelles.
+- Recherche et remplace {{date}} et {{horodatage}} dans le contenu du modèle.
+- Correction ciblée : Cette modification assure que, quel que soit l'endroit où vous créez une note à partir d'un modèle (menu principal ou panneau "Notes"), les placeholders seront correctement interprétés.
+
+Avec ce correctif, la création de votre note [Fr]Notes.md dans le dossier "notes" fonctionnera comme vous l'attendez, et les placeholders seront bien remplacés.
+
+```python
+
+```
+
+**Explication des changements**
+
+- Centralisation de la logique : J'ai déplacé la logique de remplacement des placeholders pour qu'elle s'applique à tous les cas où un modèle est utilisé, et non plus seulement dans un contexte spécifique.
+
+- Remplacement des placeholders : Le code recherche maintenant {{date}} et {{horodatage}} dans le contenu de n'importe quel modèle et les remplace par les valeurs actuelles.
+
+- Application universelle : Que vous créiez une note du jour ou une note standard à partir d'un modèle, les placeholders seront désormais correctement interprétés et remplacés.
+
+Avec ce correctif, l'utilisation des modèles sera beaucoup plus cohérente et prévisible dans toute l'application.
+
 ## V3.3.2 Windows Fix Issue [#69] Wrong locale detected at startup #69
 
 

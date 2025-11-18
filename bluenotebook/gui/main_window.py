@@ -1641,11 +1641,15 @@ class MainWindow(QMainWindow):
                     )
 
                 with open(template_path, "r", encoding="utf-8") as f:
-                    template_content = f.read()
+                    content = f.read()
 
-                # Remplacer les placeholders
-                content = template_content.replace("{{date}}", today_str)
-                content = content.replace("{{horodatage}}", timestamp_str)
+                # --- V3.3.3 - Remplacement des placeholders pour TOUS les templates ---
+                # Remplacer {{date}} par la date formatée
+                if "{{date}}" in content:
+                    content = content.replace("{{date}}", today_str)
+                # Remplacer {{horodatage}} par l'heure actuelle
+                if "{{horodatage}}" in content:
+                    content = content.replace("{{horodatage}}", timestamp_str)
 
             except FileNotFoundError as e:
                 QMessageBox.warning(self, "Template manquant", str(e))
@@ -1828,9 +1832,9 @@ class MainWindow(QMainWindow):
                 )
 
             with open(template_path, "r", encoding="utf-8") as f:
-                template_content = f.read()
+                content = f.read()
 
-            # Remplacer les placeholders
+            # --- V3.3.3 - Remplacement des placeholders pour l'insertion de template ---
             try:
                 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
             except locale.Error:
@@ -1839,8 +1843,10 @@ class MainWindow(QMainWindow):
             today_str = datetime.now().strftime("%A %d %B %Y").title()
             timestamp_str = datetime.now().strftime("%H:%M")
 
-            content = template_content.replace("{{date}}", today_str)
-            content = content.replace("{{horodatage}}", timestamp_str)
+            if "{{date}}" in content:
+                content = content.replace("{{date}}", today_str)
+            if "{{horodatage}}" in content:
+                content = content.replace("{{horodatage}}", timestamp_str)
 
             # Insérer le contenu dans l'éditeur
             self.editor.insert_text(content)

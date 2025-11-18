@@ -658,6 +658,22 @@ class NotesPanel(QWidget):
                     with open(template_path, "r", encoding="utf-8") as f:
                         content = f.read()
 
+                    # --- V3.3.3 - Ajout de la substitution des placeholders ---
+                    # Cette logique manquait pour la création de notes depuis le panneau.
+                    try:
+                        import locale
+                        from datetime import datetime
+                        locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+                    except locale.Error:
+                        locale.setlocale(locale.LC_TIME, "")
+
+                    today_str = datetime.now().strftime("%A %d %B %Y").title()
+                    timestamp_str = datetime.now().strftime("%H:%M")
+
+                    content = content.replace("{{date}}", today_str)
+                    content = content.replace("{{horodatage}}", timestamp_str)
+                    # --- Fin de l'ajout ---
+
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
 
