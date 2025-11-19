@@ -62,10 +62,14 @@ class NavigationPanel(QWidget):
     # Signal pour ouvrir un fichier depuis les résultats de recherche
     file_open_requested = pyqtSignal(str, int)
 
+    # Signal pour demander un rafraîchissement de l'index
+    refresh_requested = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.available_tags = []
         self.setup_ui()
+        self.search_results_panel.refresh_requested.connect(self.refresh_requested.emit)
         self.tag_search_input.textChanged.connect(self.on_tag_search_changed)
         self.tag_search_input.returnPressed.connect(self.on_search_triggered)
         self.tag_cloud.tag_clicked.connect(self.on_tag_cloud_clicked)
@@ -82,22 +86,21 @@ class NavigationPanel(QWidget):
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 5, 0, 0)  # Marge en haut pour l'esthétique
 
-        title_label = QLabel("Navigation Journal")
-        title_label.setStyleSheet(
+        self.title_label = QLabel("Navigation Journal")
+        self.title_label.setStyleSheet(
             """
             QLabel {
                 background-color: #f6f8fa;
                 padding: 8px 12px;
                 font-weight: bold;
                 color: #24292e;
-                border: 1px solid #d1d5da;
-                border-bottom: none;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
             }
         """
         )
-        header_layout.addWidget(title_label)
+        self.title_label.setCursor(Qt.PointingHandCursor)
+        self.title_label.setToolTip("Cliquez pour rafraîchir l'index des tags")
+        self.title_label.mousePressEvent = self.on_title_clicked
+        header_layout.addWidget(self.title_label)
         header_layout.addStretch()
         layout.addLayout(header_layout)
 
@@ -306,3 +309,7 @@ class NavigationPanel(QWidget):
     def show_search_results(self, results: list, search_query: str):
         """Met à jour le panneau de résultats avec les résultats et la requête."""
         self.search_results_panel.update_results(results, search_query)
+
+    def on_title_clicked(self, event):
+        """Émet un signal lorsque le titre est cliqué."""
+        self.refresh_requested.emit()

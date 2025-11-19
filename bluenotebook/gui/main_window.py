@@ -1472,6 +1472,7 @@ class MainWindow(QMainWindow):
         self.navigation_panel.file_open_requested.connect(self.open_file_from_search)
 
         # Connexions pour le nouveau panneau de notes
+        self.navigation_panel.refresh_requested.connect(self.refresh_tag_index_from_nav)
         self.notes_panel.file_open_request.connect(self.open_file_from_notes)
         self.notes_panel.directory_selected.connect(self.on_notes_dir_selected)
 
@@ -2786,6 +2787,13 @@ class MainWindow(QMainWindow):
             # Force l'interface à se mettre à jour avant de lancer la tâche de fond
             self.tag_index_status_label.repaint()
             self.start_initial_indexing()
+
+    def refresh_tag_index_from_nav(self):
+        """Rafraîchit l'index des tags sur demande depuis le panneau de navigation."""
+        print("🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation.")
+        self.tag_index_status_label.setText("Indexation en cours...")
+        self.tag_index_status_label.repaint()
+        self.start_initial_indexing()
 
     def on_indexing_finished(self, unique_tag_count):
         """Callback exécuté à la fin de l'indexation."""
