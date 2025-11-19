@@ -1,3 +1,10 @@
+## V3.3.6 Fix Issue [#72] Attachments: Check filetype for local or remote files
+
+Fix Issue [#72](https://github.com/lephotographelibre/BlueNotebook/issues/72)V3.3.5 Attachments: Cherck filetype or remote files #72
+ 
+
+
+
 ## V3.3.5 Fix Issue [#67] Navigation: Refrech Index @@TODO 
 
 Naviagtion: Click on liste des taches @@todo to refresh Index, and List of tasks
