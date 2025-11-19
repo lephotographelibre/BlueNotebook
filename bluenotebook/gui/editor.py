@@ -766,7 +766,18 @@ class AttachmentSourceDialog(QDialog):
         self.layout.addWidget(self.button_box)
 
     def _browse_file(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Sélectionner un fichier", "")
+        # V3.3.6 - Ajout d'un filtre pour les types de fichiers courants
+        file_filter = (
+            "Tous les fichiers (*);;"
+            "Documents (PDF, DOCX, TXT, ODT, KML) (*.pdf *.docx *.txt *.odt *.kml);;"
+            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg);;"
+            "Archives (*.zip *.rar *.7z);;"
+            "Audio (MP3, WAV) (*.mp3 *.wav);;"
+            "Vidéo (MP4, AVI) (*.mp4 *.avi)"
+        )
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Sélectionner un fichier", "", file_filter
+        )
         if path:
             self.path_edit.setText(path)
 
@@ -1344,9 +1355,85 @@ class MarkdownEditor(QWidget):
             if is_remote:
                 response = requests.get(source_path, stream=True, timeout=10)
                 response.raise_for_status()
+
+                # V3.3.6 - Vérification du type MIME pour les fichiers distants
+                content_type = (
+                    response.headers.get("Content-Type", "").split(";")[0].strip()
+                )
+                allowed_mime_types = {  # Note: Garder cet ensemble synchronisé avec allowed_extensions
+                    # Documents
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "text/plain",
+                    "application/vnd.oasis.opendocument.text",
+                    "application/vnd.google-earth.kml+xml",  # KML
+                    # Images
+                    "image/png",
+                    "image/jpeg",
+                    "image/gif",
+                    "image/bmp",
+                    "image/svg+xml",
+                    # Archives
+                    "application/zip",
+                    "application/x-rar-compressed",
+                    "application/x-7z-compressed",
+                    # Audio/Vidéo
+                    "audio/mpeg",
+                    "audio/wav",
+                    "video/mp4",
+                    "video/x-msvideo",
+                }
+
+                if content_type not in allowed_mime_types:
+                    allowed_types_str = "\n".join(sorted(list(allowed_mime_types)))
+                    QMessageBox.warning(
+                        self,
+                        "Type de fichier non autorisé",
+                        f"Le type de fichier distant '{content_type}' n'est pas autorisé.\n\n"
+                        f"Les types MIME autorisés sont :\n"
+                        f"{allowed_types_str}",
+                    )
+                    return None
+
                 with open(destination_file, "wb") as f:
                     shutil.copyfileobj(response.raw, f)
-            else:  # Fichier local
+            else:  # Fichier local - V3.3.8 Ajout de la validation par extension
+                file_extension = Path(source_path).suffix.lower()
+                allowed_extensions = {  # Note: Garder cet ensemble synchronisé avec allowed_mime_types
+                    # Documents
+                    ".pdf",
+                    ".docx",
+                    ".txt",
+                    ".odt",
+                    ".md",
+                    ".kml",
+                    # Images
+                    ".png",
+                    ".jpg",
+                    ".jpeg",
+                    ".gif",
+                    ".bmp",
+                    ".svg",
+                    # Archives
+                    ".zip",
+                    ".rar",
+                    ".7z",
+                    # Audio/Vidéo
+                    ".mp3",
+                    ".wav",
+                    ".mp4",
+                    ".avi",
+                }
+                if file_extension not in allowed_extensions:
+                    allowed_ext_str = ", ".join(sorted(list(allowed_extensions)))
+                    QMessageBox.warning(
+                        self,
+                        "Type de fichier non autorisé",
+                        f"Le type de fichier local '{file_extension}' n'est pas autorisé.\n\n"
+                        f"Les extensions autorisées sont : {allowed_ext_str}",
+                    )
+                    return None
                 shutil.copy2(source_path, destination_file)
             return f"attachments/{new_filename}"
         except Exception as e:

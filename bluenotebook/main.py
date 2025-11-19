@@ -58,9 +58,13 @@ def main():
     try:
         locale_str_for_python = forced_locale_str if forced_locale_str else ""
         locale_module.setlocale(locale_module.LC_TIME, locale_str_for_python)
-        print(f"✅ Locale Python (LC_TIME) configurée sur : '{locale_module.getlocale(locale_module.LC_TIME)[0]}'")
+        print(
+            f"✅ Locale Python (LC_TIME) configurée sur : '{locale_module.getlocale(locale_module.LC_TIME)[0]}'"
+        )
     except locale_module.Error:
-        print(f"⚠️ Impossible de configurer la locale Python pour '{locale_str_for_python}'. Utilisation de la locale système par défaut.")
+        print(
+            f"⚠️ Impossible de configurer la locale Python pour '{locale_str_for_python}'. Utilisation de la locale système par défaut."
+        )
 
     # Chemin vers les traductions Qt intégrées
     qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
@@ -84,7 +88,7 @@ def main():
 
     try:
         # Définir les informations de l'application
-        version = "3.3.5"
+        version = "3.3.6"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
