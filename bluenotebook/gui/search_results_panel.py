@@ -14,9 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Panneau affichant les résultats de recherche.
+Panneau d'affichage des résultats de recherche de BlueNotebook
 """
 
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -25,20 +26,18 @@ from PyQt5.QtWidgets import (
     QTreeWidgetItem,
     QHeaderView,
 )
-from PyQt5.QtCore import Qt, pyqtSignal
 
 
 class SearchResultsPanel(QWidget):
-    """
-    Panneau affichant les résultats d'une recherche de tag ou de mot.
-    """
+    """Panneau qui affiche les résultats d'une recherche par tag ou mot."""
 
-    item_selected = pyqtSignal(str, int)  # Émet le nom du fichier et le numéro de ligne
+    item_selected = pyqtSignal(str, int)
+    refresh_requested = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
-        self.results_tree.itemClicked.connect(self.on_item_clicked)
+        self.results_tree.itemDoubleClicked.connect(self.on_item_double_clicked)
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur du panneau."""
@@ -50,6 +49,9 @@ class SearchResultsPanel(QWidget):
         font = self.label.font()
         font.setBold(True)
         self.label.setFont(font)
+        self.label.setCursor(Qt.PointingHandCursor)
+        self.label.setToolTip("Cliquez pour rafraîchir l'index des tags")
+        self.label.mousePressEvent = self.on_title_clicked
 
         self.label.setMaximumHeight(35)
         layout.addWidget(self.label)
@@ -57,51 +59,32 @@ class SearchResultsPanel(QWidget):
         self.results_tree = QTreeWidget()
         self.results_tree.setColumnCount(2)
         self.results_tree.setHeaderLabels(["Date", "Texte"])
-        # self.results_tree.setHeaderLabels(["🗓️", ""])
         self.results_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.results_tree.setSortingEnabled(True)
-        self.results_tree.sortByColumn(0, Qt.DescendingOrder)  # Trier par date
-        # self.results_tree.setStyleSheet("border: none; background: transparent;")
+        self.results_tree.sortByColumn(0, Qt.DescendingOrder)
         layout.addWidget(self.results_tree)
-        self.update_results(
-            [], "@@TODO"
-        )  # Initialise avec la vue des tâches par défaut
 
         self.setLayout(layout)
 
-    def update_results(self, results: list, search_query: str = ""):
+    def update_results(self, results: list, search_query: str):
         """Met à jour la liste des résultats."""
         self.results_tree.clear()
-
-        # Mettre à jour le titre du panneau en fonction de la recherche
         if search_query.lower() == "@@todo":
             self.label.setText("✔ Liste des Tâches @@TODO")
         else:
             self.label.setText("🔍 Résultats de la Recherche")
 
-        if not results:
-            # Afficher un message contextuel
-            if search_query.lower() == "@@todo":
-                message = "Aucune tâche @@TODO trouvée."
-            else:
-                message = "Aucun résultat trouvé."
-            item = QTreeWidgetItem(["", message])
+        for date, context, filename, line in results:
+            item = QTreeWidgetItem([date, context])
+            item.setData(0, Qt.UserRole, (filename, line))
             self.results_tree.addTopLevelItem(item)
-        else:
-            # results est une liste de tuples (date, text, filename, line_number)
-            for date, text, filename, line_number in results:
-                item = QTreeWidgetItem([date, text])
-                # Stocker le nom du fichier et le numéro de ligne dans les données de l'item
-                item.setData(0, Qt.UserRole, filename)
-                item.setData(1, Qt.UserRole, line_number)
-                self.results_tree.addTopLevelItem(item)
 
-    def on_item_clicked(self, item: QTreeWidgetItem, column: int):
-        """Gère le clic sur un résultat de recherche."""
-        filename = item.data(0, Qt.UserRole)
-        line_number = item.data(1, Qt.UserRole)
+    def on_item_double_clicked(self, item, column):
+        """Émet un signal lorsqu'un élément est double-cliqué."""
+        filename, line = item.data(0, Qt.UserRole)
+        self.item_selected.emit(filename, line)
 
-        if filename:
-            # Émettre le nom du fichier ET le numéro de ligne
-            self.item_selected.emit(filename, line_number)
+    def on_title_clicked(self, event):
+        """Émet un signal lorsque le titre est cliqué."""
+        self.refresh_requested.emit()

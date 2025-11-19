@@ -1,3 +1,27 @@
+## V3.3.5 Fix Issue [#67] Navigation: Refrech Index @@TODO 
+
+Naviagtion: Click on liste des taches @@todo to refresh Index, and List of tasks
+ 
+
+Fix Issue [#67](https://github.com/lephotographelibre/BlueNotebook/issues/67) V3.2.4 Navigtion: Click on liste des taches @@TODO to refresh Index, and List of tasks #67
+
+Just like we did perviously in the main window: I would like to be able to refresh the tag index on demand by clicking on the index display in the bottom right corner of the main window. I would like to implement refresh the tag index on demand by clicking on the label "liste des taches @@TODO" in the Navigation Panel
+
+
+
+## V3.3.4 Fix Issue [#55] Aide en ligne: menu" "Exporter en PDF ..." manquant
+ 
+Fix Issue [#55](https://github.com/lephotographelibre/BlueNotebook/issues/55)
+
+```txt
+├── ---
+├── Exporter HTML... : Exporte la note en fichier HTML.
+├── Exporter en PDF... : Exporte la note actuelle en fichier PDF.
+├── Exporter Journal PDF... : Crée un document PDF de votre journal, avec sélection de dates, titre et auteur.
+├── Exporter Journal EPUB... : Crée un livre numérique au format EPUB de votre journal.
+├── ---
+``` 
+
 ## V3.3.3 Notes placeholder substitution isn't working
 
 la logique de remplacement des placeholders ({{date}}, {{horodatage}}) n'a été implémentée que pour la création de la note du jour, mais pas pour la création d'une note générique via le menu Fichier > Nouveau....
