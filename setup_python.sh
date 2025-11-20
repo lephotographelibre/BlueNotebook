@@ -39,6 +39,8 @@ $ git log 			# check the commit
 $ git push			# Push to remote repo
 ```
 
+Pour memoire git checkout -b youtube-transcript-api 
+
   Voici la commande pour supprimer la branche experimental-branch :
 ```
 $ git branch -D youtube-transcript-api  

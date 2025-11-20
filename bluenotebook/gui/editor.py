@@ -997,12 +997,18 @@ class MarkdownEditor(QWidget):
             link_menu.setToolTip("Insérer un lien (local ou distant)")
             link_menu.setStyleSheet(self.menu_stylesheet)
             # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
-            markdown_link_action = link_menu.addAction("Lien...")
+            markdown_link_action = link_menu.addAction("🔗 Lien")
             markdown_link_action.triggered.connect(
                 self.main_window._handle_markdown_link
             )
             url_link_action = link_menu.addAction("Lien URL/Email")
             url_link_action.triggered.connect(lambda: self.format_text("url_link"))
+
+            # Ajouter l'action pour le bookmark
+            bookmark_action = link_menu.addAction("🔖 Bookmark")
+            bookmark_action.triggered.connect(
+                self.main_window.insert_bookmark_action.trigger
+            )
 
             menu.addMenu(link_menu)
 
