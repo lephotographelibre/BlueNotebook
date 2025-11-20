@@ -1,3 +1,32 @@
+## V3.3.7 Add Bookmark Link 
+
+- 🔖 [Bookmark | Titre de la page - URL de la page](URL de la page) 
+git branch add_bookmark_menu
+
+
+je voudrais rajouter un menu "Bookmark" dans le menu principal "Insérer --> 🔖 Bookmark" dessous "Insérer --> 📎Attachement"
+
+- Lorsque l'utilisateur appelle ce menu "Insérer --> 🔖 Bookmark"
+	- Soit l'utilisateur a déja sélectionné une URL dans l'éditeur alors cette URL et choisie
+	- Soit l'utilisateur n'a pas sélectionné  de texte dans l"éditeur et une boite de dialogue lui permet de saisir cette UTL à bourkmarker
+- On va alors vérifier cette URL en faisant un appel à celle ci
+	- SI l'appel est un succes on essaye de récuperer le titre de la page
+	- Si l'appel est infructueux on informe l'utilisateur par une boite de dialogue "Cette URL n'est pas valide + code erreur"
+- Si l'appel est un succes alors on va générer le fragment Marldown:
+
+🔖 [Bookmark | Titre de la page - URL de la page](URL de la page) 
+- Si toutefois le Titre de la page n'avait pas pu etre récupéré on suprime "Titre de la page" dans le fragment Markdown
+beta1
+
+Ajouter également "🔖 Bookmark" au menu contextuel de l'editeur comme sous menu de "Liens"
+
+Modifier le label du menu "Insérer --> Lien" en "Insérer -> 🔗 Lien" dans le menu principal
+et modifier dans le sous menu contextuel de l'éditeur "Liens --> Lien..." "Liens --> 🔗 Lien"
+beta2
+
+Refactoring du code lié aux bookmarks dans  `bluenotebook/gui/bookmark_handler.py`
+
+
 ## V3.3.6 Fix Issue [#72] Attachments: Check filetype for local or remote files
 
 Fix Issue [#72](https://github.com/lephotographelibre/BlueNotebook/issues/72)V3.3.5 Attachments: Cherck filetype or remote files #72

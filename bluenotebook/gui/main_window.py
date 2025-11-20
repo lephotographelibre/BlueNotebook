@@ -29,6 +29,7 @@ from datetime import datetime
 import zipfile
 from urllib.parse import quote
 from datetime import datetime
+import requests
 
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from pathlib import Path
@@ -77,6 +78,7 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .notes_panel import NotesPanel
 from .new_note_dialog import NewFileDialog
+from .bookmark_handler import handle_insert_bookmark
 from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
 from .backup_handler import backup_journal, restore_journal
@@ -117,8 +119,6 @@ from integrations.youtube_video import (
 )
 from integrations.sun_moon import get_sun_moon_markdown
 from integrations.gps_map_handler import generate_gps_map_markdown
-
-from integrations.pdf_converter import PdfToMarkdownWorker
 from integrations.image_exif import format_exif_as_markdown
 
 # V3.0.1 - Enregistrer le schéma personnalisé avant de créer l'application
@@ -787,7 +787,7 @@ class MainWindow(QMainWindow):
         editor_preview_splitter.addWidget(self.editor)
 
         self.preview = MarkdownPreview()
-        editor_preview_splitter.addWidget(self.preview) 
+        editor_preview_splitter.addWidget(self.preview)
 
         editor_preview_splitter.setSizes([700, 700])
         editor_preview_splitter.setCollapsible(0, False)
@@ -1126,6 +1126,12 @@ class MainWindow(QMainWindow):
             statusTip="Convertir un fichier PDF en Markdown avec 'markit'",
             triggered=self.convert_pdf_to_markdown,
         )
+        self.insert_bookmark_action = QAction(
+            "🔖 Bookmark",
+            self,
+            statusTip="Insérer un signet à partir d'une URL",
+            triggered=lambda: handle_insert_bookmark(self),
+        )
 
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
@@ -1207,7 +1213,7 @@ class MainWindow(QMainWindow):
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("Lien", "markdown_link"),
+            ("🔗 Lien", "markdown_link"),
             ("Lien URL/Email", "url_link"),
             ("📎 Attachement", "attachment"),
         ]
@@ -1216,6 +1222,8 @@ class MainWindow(QMainWindow):
             action = QAction(name, self)
             if data == "markdown_link":
                 action.triggered.connect(self._handle_markdown_link)
+            elif data == "attachment":
+                action.triggered.connect(self.editor.insert_attachment)
             else:
                 action.triggered.connect(
                     functools.partial(self.editor.format_text, data)
@@ -1223,6 +1231,8 @@ class MainWindow(QMainWindow):
             if shortcut:
                 action.setShortcut(shortcut[0])
             insert_menu.addAction(action)
+
+        insert_menu.addAction(self.insert_bookmark_action)
 
         insert_menu.addSeparator()
 
@@ -1416,6 +1426,13 @@ class MainWindow(QMainWindow):
         self.transcript_status_label.setVisible(False)
         self.statusbar.addWidget(self.transcript_status_label, 1)
 
+        self.bookmark_status_label = CenteredStatusBarLabel(
+            self.tr("Vérification de l'URL...")
+        )
+        self.bookmark_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.bookmark_status_label.setVisible(False)
+        self.statusbar.addWidget(self.bookmark_status_label, 1)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1450,6 +1467,12 @@ class MainWindow(QMainWindow):
         self.transcript_flash_timer.setInterval(500)
         self.transcript_flash_timer.timeout.connect(
             self._toggle_transcript_status_visibility
+        )
+
+        self.bookmark_flash_timer = QTimer(self)
+        self.bookmark_flash_timer.setInterval(500)
+        self.bookmark_flash_timer.timeout.connect(
+            self._toggle_bookmark_status_visibility
         )
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -2683,6 +2706,22 @@ class MainWindow(QMainWindow):
             not self.transcript_status_label.isVisible()
         )
 
+    def _start_bookmark_flashing(self):
+        """Démarre le message clignotant pour la vérification d'URL."""
+        self.bookmark_status_label.setVisible(True)
+        self.bookmark_flash_timer.start()
+
+    def _stop_bookmark_flashing(self):
+        """Arrête le message clignotant de vérification d'URL."""
+        self.bookmark_flash_timer.stop()
+        self.bookmark_status_label.setVisible(False)
+
+    def _toggle_bookmark_status_visibility(self):
+        """Bascule la visibilité du label de statut de vérification d'URL."""
+        self.bookmark_status_label.setVisible(
+            not self.bookmark_status_label.isVisible()
+        )
+
     def on_pdf_convert_finished(self, markdown_content):
         """Callback pour la fin de la conversion PDF."""
         self._stop_pdf_convert_flashing()
@@ -2790,7 +2829,9 @@ class MainWindow(QMainWindow):
 
     def refresh_tag_index_from_nav(self):
         """Rafraîchit l'index des tags sur demande depuis le panneau de navigation."""
-        print("🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation.")
+        print(
+            "🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation."
+        )
         self.tag_index_status_label.setText("Indexation en cours...")
         self.tag_index_status_label.repaint()
         self.start_initial_indexing()
