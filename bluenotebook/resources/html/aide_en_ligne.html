@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -106,8 +106,8 @@
 
     <header>
         <h1>
-            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon" />
-            Aide en Ligne - BlueNotebook V3.3.5</h1>
+            <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
+            Aide en Ligne - BlueNotebook V3.3.7</h1>
     </header>
 
 <div class="main-container">
@@ -123,10 +123,11 @@
             <li><a href="#navigation-temporelle">6. Navigation dans le Journal</a></li>
             <li><a href="#images-fichiers">7. Gestion des Images et Pièces Jointes</a>
                 <ul>
-                    <li><a href="#images-markdown">7.1 Insertion d'Images (Markdown et HTML)</a></li>
-                    <li><a href="#attachements">7.2 Gestion des Pièces Jointes</a></li>
-                    <li><a href="#exif-data">7.3 Insertion d'images avec données EXIF</a></li>
-                    <li><a href="#liens-locaux">7.4 Insertion de Liens (locaux et distants)</a></li>
+                    <li><a href="#bookmarks">7.1 Insérer un Bookmark (Signet)</a></li>
+                    <li><a href="#images-markdown">7.2 Insertion d'Images (Markdown et HTML)</a></li>
+                    <li><a href="#attachements">7.3 Gestion des Pièces Jointes (Attachements)</a></li>
+                    <li><a href="#exif-data">7.4 Insertion d'images avec données EXIF</a></li>
+                    <li><a href="#liens-locaux">7.5 Insertion de Liens (locaux et distants)</a></li>
                 </ul>
             </li>
             <li><a href="#lecteur-epub">8. Le Panneau Lecteur (EPUB et PDF)</a></li>
@@ -295,7 +296,25 @@
 
     <section id="images-fichiers">
         <h2>7. Gestion des Images et Pièces Jointes</h2>
-        <h3 id="images-markdown">7.1 Insertion d'Images (Markdown et HTML)</h3>
+        <h3 id="bookmarks">7.1 Insérer un Bookmark (Signet)</h3>
+        <p>La fonctionnalité "Bookmark" vous permet de créer des liens enrichis vers des pages web. BlueNotebook va vérifier l'URL, récupérer le titre de la page et générer un lien Markdown formaté.</p>
+        <h4>Comment ça marche ?</h4>
+        <ol>
+            <li><strong>Lancer l'action :</strong> Allez dans <code>Insérer > 🔖 Bookmark</code> ou faites un clic droit dans l'éditeur et choisissez <code>Liens > 🔖 Bookmark</code>.</li>
+            <li><strong>Sélection d'URL :</strong>
+                <ul>
+                    <li>Si vous avez déjà sélectionné une URL dans l'éditeur, elle sera utilisée automatiquement.</li>
+                    <li>Sinon, une boîte de dialogue s'ouvrira pour que vous puissiez saisir l'URL.</li>
+                </ul>
+            </li>
+            <li><strong>Vérification et formatage :</strong> L'application vérifie l'URL en arrière-plan. Si elle est valide, un lien formaté est inséré.
+                <ul>
+                    <li>Si un titre de page est trouvé : <code>🔖 [Bookmark | Titre de la page - URL](URL)</code></li>
+                    <li>Si aucun titre n'est trouvé : <code>🔖 [Bookmark | URL](URL)</code></li>
+                </ul>
+            </li>
+        </ol>
+        <h3 id="images-markdown">7.2 Insertion d'Images (Markdown et HTML)</h3>
         <p>Pour garantir que votre journal reste complet et portable, BlueNotebook adopte une gestion robuste et intelligente des images que vous insérez, qu'elles proviennent de votre ordinateur ou d'une URL distante.</p>
         <h4>Le Processus Automatique</h4>
         <p>Que vous utilisiez <code>Insérer > Image Markdown</code> ou <code>Insérer > Image (&lt;img...&gt;)</code>, l'application effectue systématiquement les actions suivantes en arrière-plan :</p>
@@ -315,7 +334,7 @@
     </section>
 
     <section id="attachements">
-        <h3>7.2 Gestion des Pièces Jointes (Attachements)</h3>
+        <h3>7.3 Gestion des Pièces Jointes (Attachements)</h3> 
         <p>En plus des images, BlueNotebook vous permet d'attacher n'importe quel type de fichier à vos notes (PDF, documents, archives, etc.). Cette fonctionnalité est conçue pour centraliser toutes les ressources liées à votre journal en un seul endroit.</p>
         <h4>Comment insérer une pièce jointe ?</h4>
         <ol>
@@ -339,7 +358,7 @@
     </section>
 
     <section id="exif-data">
-        <h3>7.3 Insertion d'images avec données EXIF</h3>
+        <h3>7.4 Insertion d'images avec données EXIF</h3> 
         <p>Pour enrichir vos notes, notamment pour un journal de voyage, BlueNotebook peut extraire et afficher les données EXIF (Exchangeable image file format) contenues dans vos photos.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
@@ -360,7 +379,7 @@
     </section>
 
     <section id="liens-locaux">
-        <h3>7.4 Insertion de Liens (locaux et distants)</h3>
+        <h3>7.5 Insertion de Liens (locaux et distants)</h3> 
         <p>Le menu <code>Insérer > Lien</code> a été amélioré pour vous permettre de créer des liens non seulement vers des sites web, mais aussi vers n'importe quel fichier local de votre ordinateur, tout en garantissant la portabilité de votre journal.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
@@ -676,12 +695,13 @@ Formater
 └── RaZ (Effacer le formatage) : Supprime tout le formatage Markdown de la sélection.
 
 Insérer
-├── Image : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
-├── Lien : Ouvre une boîte de dialogue pour créer un lien `texte`. Gère les liens distants et les fichiers locaux (avec copie dans le journal si nécessaire).
+├── Image (Ctrl+Shift+I) : Insère une image avec la syntaxe Markdown `!`. Copie les images locales dans le journal.
+├── 🔗 Lien : Ouvre une boîte de dialogue pour créer un lien `texte`. Gère les liens distants et les fichiers locaux (avec copie dans le journal si nécessaire).
 ├── Lien URL/Email : Encadre une URL ou un email sélectionné avec des chevrons `< >` pour le rendre cliquable.
 ├── 📎 Attachement : Insère un lien vers un fichier attaché (local ou distant), copié dans le répertoire `attachments` du journal.
+├── 🔖 Bookmark : Crée un lien enrichi vers une page web, avec récupération automatique du titre.
 ├── ---
-├── Ligne Horizontale
+├── Ligne Horizontale : Insère une ligne de séparation `---`.
 ├── Commentaire HTML
 ├── Tableau
 ├── Citation
@@ -1120,7 +1140,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.3.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.3.7 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

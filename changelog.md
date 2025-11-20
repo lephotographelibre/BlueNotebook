@@ -24,6 +24,8 @@ Modifier le label du menu "Insérer --> Lien" en "Insérer -> 🔗 Lien" dans le
 et modifier dans le sous menu contextuel de l'éditeur "Liens --> Lien..." "Liens --> 🔗 Lien"
 beta2
 
+Mise à jour de la documentation en ligne.
+
 Refactoring du code lié aux bookmarks dans  `bluenotebook/gui/bookmark_handler.py`
 
 
