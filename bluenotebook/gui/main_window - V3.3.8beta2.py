@@ -708,6 +708,13 @@ class MainWindow(QMainWindow):
         self.current_file = None
         self.is_modified = False
 
+        # V3.3.8 - Augmenter la taille de la police par défaut de l'application
+        app = QApplication.instance()
+        if app:
+            default_font = app.font()
+            default_font.setPointSize(default_font.pointSize() + 4)
+            app.setFont(default_font)
+
         self.daily_quote = None
         self.last_document_reader = None
         self.daily_author = None
@@ -716,14 +723,6 @@ class MainWindow(QMainWindow):
         from core.settings import SettingsManager
 
         self.settings_manager = SettingsManager()
-
-        # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
-        app = QApplication.instance()
-        if app:
-            app_font_family = self.settings_manager.get("ui.app_font_family", app.font().family())
-            app_font_size = self.settings_manager.get("ui.app_font_size", app.font().pointSize())
-            global_font = QFont(app_font_family, app_font_size)
-            app.setFont(global_font)
 
         # Initialiser le pool de threads pour les tâches de fond
         self.thread_pool = QThreadPool()
@@ -3203,14 +3202,6 @@ class MainWindow(QMainWindow):
             self.settings_manager.set(
                 "indexing.excluded_tags_from_cloud", excluded_tags_list
             )
-            # V3.3.8 - Sauvegarde des paramètres de police de l'application
-            self.settings_manager.set(
-                "ui.app_font_family", dialog.current_app_font.family()
-            )
-            self.settings_manager.set(
-                "ui.app_font_size", dialog.current_app_font.pointSize()
-            )
-            QMessageBox.information(self, "Redémarrage requis", "Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.")
 
             self.settings_manager.save_settings()
             self.apply_settings()
@@ -3268,15 +3259,6 @@ class MainWindow(QMainWindow):
         self.reader_button.blockSignals(False)
 
         # Synchroniser également les actions du menu
-        # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
-        app = QApplication.instance()
-        if app:
-            app_font_family = self.settings_manager.get("ui.app_font_family", app.font().family())
-            app_font_size = self.settings_manager.get("ui.app_font_size", app.font().pointSize())
-            global_font = QFont(app_font_family, app_font_size)
-            app.setFont(global_font)
-            self.setFont(global_font) # Appliquer à la fenêtre principale aussi
-
         self.toggle_notes_action.setChecked(show_notes)
         self.toggle_navigation_action.setChecked(show_nav)
         self.toggle_outline_action.setChecked(show_outline)

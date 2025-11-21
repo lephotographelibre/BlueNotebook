@@ -1043,7 +1043,6 @@ class EpubReaderPanel(QWidget):
                     if href_anchor and href_anchor <= anchor:
                         best_match_index = i
                         break
-
             if (
                 best_match_index != -1
                 and self.toc_list.currentRow() != best_match_index
@@ -1056,3 +1055,15 @@ class EpubReaderPanel(QWidget):
                 self.chapter_combo.blockSignals(False)
 
         self.web_page.runJavaScript(js_script, find_toc_entry)
+
+    def closeEvent(self, event):
+        """
+        V3.3.8 - S'assure que la page web est correctement libérée pour éviter
+        l'erreur "WebEnginePage still not deleted".
+        """
+        self.web_view.setPage(None)
+        self.web_view.deleteLater()
+        if self.web_view:
+            self.web_view.setPage(None)
+            self.web_view.deleteLater()
+        super().closeEvent(event)

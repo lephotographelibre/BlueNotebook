@@ -66,6 +66,8 @@ class SettingsManager:
                 "sun_moon": {"city": "", "latitude": "", "longitude": ""},
             },
             "ui": {
+                "app_font_family": "Noto Sans",
+                "app_font_size": 10,
                 "show_notes_panel": True,  # Par défaut, visible
                 "show_navigation_panel": False,  # Par défaut, masqué
                 "show_outline_panel": False,  # Par défaut, masqué
