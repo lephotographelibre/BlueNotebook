@@ -1,3 +1,47 @@
+## V3.3.8 Fix [#76] Windows Port: font size of Navigation panel too small
+
+Fix [#76](https://github.com/lephotographelibre/BlueNotebook/issues/76)
+Windows Port: font size of Navigation panel too small #76
+
+Quand je lance mon application sous windows je vois que les polices dans la fenetre principale sont de differentes tailles.  Certaines sont controllées par la taille de la police systeme d'autres non. Je voudrais que toutes les polices de la fenetre princiaple respecte la (police + taille)  de la police system en particulier:
+status bar -> Nom du fichier en bas a droite
+status bar -> Journal + nom du journal
+status bar -> Index: XX tags
+barre de bouton sous la barre de menu principale --> Police des labels des bouton
+onglet des panneaux
+
+par exemple lesur la brre de status le fragment qui affiche nb ligne+nb mots +nb caractères lui suit bien la police systeme
+ ce qui fonctionne actuellement c'est que tous les widgets Qt5 ont la meme police et taille de la police mais cette taille est fixe et n'est pas modifiable en faisant varier la taille de la police systeme
+
+ beta1
+
+modifié le constructeur de la fenêtre principale (MainWindow) pour récupérer la police par défaut de l'application, augmenter sa taille de 4 points, puis l'appliquer globalement. Cela garantira que tous les widgets qui n'ont pas de police spécifique définie utiliseront cette nouvelle taille par défaut.
+
+faire varier la taille de cette police par defaut par du code dans l'application pour l'instant augmenter la taille de 4 partout pour tout les widgets
+`bluenotebook/gui/main_window.py`  
+
+```python
+        # V3.3.8 - Augmenter la taille de la police par défaut de l'application
+        app = QApplication.instance()
+        if app:
+            default_font = app.font()
+            default_font.setPointSize(default_font.pointSize() + 4)
+            app.setFont(default_font)
+```
+
+beta2
+
+comme cela été fait manuellement précédenment:        
+```python
+# V3.3.8 - Augmenter la taille de la police par défaut de l'application
+        app = QApplication.instance()
+        if app:
+            default_font = app.font()
+            default_font.setPointSize(default_font.pointSize() + 4)
+            app.setFont(default_font)
+```
+Définir une préférence utilisateur dans le panneau "Préférences --> Général"    "Police de caractères de Bluenotebook" en première position qui permette de selectionner une police et une taille de police qui seront ensuite appliquée partout à tous les widgets Qt5. Cette préférence utilsateur sera persistée dans le fichier preferences utilisateurs settings.json et sera reutilisée a chaque lancement de l'application
+
 ## V3.3.7 Add Bookmark Link 
 
 - 🔖 [Bookmark | Titre de la page - URL de la page](URL de la page) 

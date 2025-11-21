@@ -118,6 +118,21 @@ class PreferencesDialog(QDialog):
         layout = QFormLayout(widget)
         layout.setSpacing(10)
 
+        # V3.3.8 - Police de l'application
+        app_font_family = self.settings_manager.get("ui.app_font_family", "Noto Sans")
+        app_font_size = self.settings_manager.get("ui.app_font_size", 10)
+        self.current_app_font = QFont(app_font_family, app_font_size)
+
+        self.app_font_button = QPushButton(
+            f"{self.current_app_font.family()}, {self.current_app_font.pointSize()}pt"
+        )
+        self.app_font_button.setToolTip(
+            "Définit la police et la taille de base pour l'ensemble de l'application."
+        )
+        self.app_font_button.clicked.connect(self._select_app_font)
+        layout.addRow("Police de l'application:", self.app_font_button)
+
+        layout.addRow(QLabel())  # Espace
         # Case pour l'affichage des statistiques d'indexation
         self.show_indexing_stats_checkbox = QCheckBox(
             "Afficher les statistiques d'indexation (mots et tags) dans la barre d'état"
@@ -151,6 +166,13 @@ class PreferencesDialog(QDialog):
         # Ajouter un espace extensible pour pousser les éléments vers le haut
         layout.addRow(QLabel())
         return widget
+
+    def _select_app_font(self):
+        """Sélectionne la police pour l'application."""
+        font, ok = QFontDialog.getFont(self.current_app_font, self)
+        if ok:
+            self.current_app_font = font
+            self.app_font_button.setText(f"{font.family()}, {font.pointSize()}pt")
 
     def _create_display_tab(self):
         """Crée l'onglet 'Affichage' avec layout en grille."""
@@ -1171,6 +1193,11 @@ class PreferencesDialog(QDialog):
     def accept(self):
         """Sauvegarde les paramètres lorsque l'utilisateur clique sur 'Valider'."""
         # ... (sauvegarde des autres paramètres)
+        # V3.3.8 - Sauvegarde de la police de l'application
+        self.settings_manager.set("ui.app_font_family", self.current_app_font.family())
+        self.settings_manager.set(
+            "ui.app_font_size", self.current_app_font.pointSize()
+        )
 
         # Sauvegarde du thème CSS de l'aperçu
         self.settings_manager.set("preview.css_theme", self.selected_html_theme)
