@@ -1,3 +1,11 @@
+## V3.3.9 Fix Issue [#74] HTML Preview: When the mouse hovers over a link, display the URL
+
+Fixes Issue [#74](https://github.com/lephotographelibre/BlueNotebook/issues/74): In the HTML Preview, when the mouse hovers over a link, the URL is now displayed over the link as a tool tip in the HTML Preview
+
+beta1
+
+ 
+ 
 ## V3.3.8 Fix [#76] Windows Port: font size of Navigation panel too small
 
 Fix [#76](https://github.com/lephotographelibre/BlueNotebook/issues/76)

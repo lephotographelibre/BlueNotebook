@@ -318,7 +318,22 @@ class MarkdownPreview(QWidget):
                 base_url = QUrl.fromLocalFile(journal_dir + os.path.sep)
             else:
                 base_url = QUrl("file:///")
-            self.web_view.setHtml(full_html, baseUrl=base_url)
+
+            # V3.3.9 - Ajout d'un script pour afficher l'URL au survol des liens
+            script = """
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var links = document.getElementsByTagName('a');
+                    for (var i = 0; i < links.length; i++) {
+                        links[i].setAttribute('title', links[i].href);
+                    }
+                });
+            </script>
+            """
+            # Insérer le script juste avant la fermeture de la balise </body>
+            full_html_with_script = full_html.replace("</body>", script + "</body>")
+
+            self.web_view.setHtml(full_html_with_script, baseUrl=base_url)
             self.current_html = full_html
 
         except Exception as e:
