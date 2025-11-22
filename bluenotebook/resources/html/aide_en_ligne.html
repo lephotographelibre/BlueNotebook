@@ -5,101 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aide en ligne - BlueNotebook</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background-color: #f9f9f9; 
+            padding: 20px 0; 
+            margin: 0;
+        }
         header { 
             text-align: center; 
             border-bottom: 2px solid #3498db; 
             padding-bottom: 10px; 
-            margin: 0 auto 20px auto; 
+            margin: 0 auto 30px auto; 
             width: 90%;
             max-width: 1200px;
         }
-        h1 { color: #2c3e50; }
+        h1 { color: #2c3e50; margin: 0; }
         .header-icon { vertical-align: middle; margin-right: 10px; width: 48px; height: 48px; }
-        h2 { color: #2980b9; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-top: 30px; }
-
-        /* Layout principal avec Flexbox */
+        h2 { color: #2980b9; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-top: 40px; }
+        h3 { color: #34495e; }
+    
+        code { background:#ecf0f1; padding:2px 6px; border-radius:4px; font-family:'Courier New',monospace; }
+        pre code { display:block; padding:12px; overflow-x:auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; vertical-align: top; }
+        th { background:#ecf0f1; }
+        tr:nth-child(even) { background:#fdfdfd; }
+        a { color:#2980b9; }
+        a:hover { text-decoration:underline; }
+    
+        /* ============================================= */
+        /* NOUVELLE MISE EN PAGE – CORRIGÉE & OPTIMISÉE */
+        /* ============================================= */
+    
         .main-container {
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 30px; /* Espace entre la TOC et le contenu */
+            flex-wrap: wrap;                 /* permet le passage en colonne sur petit écran */
+            gap: 30px;
             width: 90%;
-            max-width: 1200px;
+            max-width: 1400px;               /* un peu plus large que 1200px pour respirer */
             margin: 0 auto;
+            padding: 0 15px;
         }
-
-
-        h3 { color: #34495e; }
-        code { background-color: #ecf0f1; padding: 2px 5px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
-        ul, ol { list-style-type: square; padding-left: 20px; }
-        li { margin-bottom: 10px; }
-        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-        th, td { border: 1px solid #bdc3c7; padding: 8px 12px; text-align: left; }
-        th { background-color: #ecf0f1; color: #2c3e50; }
-        a { color: #2980b9; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        tr:nth-child(even) { background-color: #fdfdfd; }
-
-        /* Table des matières */
+    
+        /* === PANNEAU GAUCHE : Table des matières === */
         .toc-container {
-            background-color: #f8f9fa;
+            flex: 0 0 280px;                 /* largeur fixe mais raisonnable */
+            background: #f8f9fa;
             border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            padding: 16px;
-            flex-shrink: 0; /* Empêche la TOC de rétrécir */
-            width: 280px;
-            position: sticky; /* Rend la TOC "collante" */
-            top: 20px; /* Distance du haut de la page */
-            max-height: calc(100vh - 40px); /* Hauteur max pour permettre le scroll interne */
-            overflow-y: auto; /* Ajoute une barre de défilement si la TOC est trop haute */
+            border-radius: 8px;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            align-self: flex-start;          /* empêche l’étirement vertical */
         }
-        .toc-container h2 {
-            margin-top: 0;
-            font-size: 1.1em;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .toc ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .toc ul ul {
-            padding-left: 20px;
-        }
-        .toc ul ul li {
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
-        .toc a {
-            text-decoration: none;
-            color: #0366d6;
-            font-size: 0.9em;
-        }
-
-        /* Contenu principal */
+    
+        /* === PANNEAU DROIT : Contenu principal === */
         .content-container {
-            flex-grow: 1; /* Le contenu prend toute la place restante */
+            flex: 1;                         /* prend tout l’espace restant */
+            min-width: 0;                    /* important pour éviter le débordement */
+            max-width: 900px;                /* largeur maximale confortable pour la lecture */
+            margin: 0 auto;                  /* centre le bloc de texte */
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 20px;
-                font-size: 14px;
-            }
+    
+        /* Optionnel : un petit fond blanc pour plus de lisibilité */
+        .content-container > section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+    
+        /* ============================================= */
+        /* RESPONSIVE – Mobile & petites résolutions   */
+        /* ============================================= */
+        @media (max-width: 900px) {
             .main-container {
-                flex-direction: column; /* Passe en mode colonne sur mobile */
+                flex-direction: column;
             }
             .toc-container {
-                position: static; /* Annule le sticky */
-                width: auto; /* Prend toute la largeur */
-                max-height: none; /* Annule la hauteur max */
-                margin-bottom: 20px;
-                order: -1; /* Place la TOC en haut */
+                position: static;
+                flex: none;
+                width: 100%;
+                max-height: none;
+                order: -1;                   /* TOC en haut sur mobile */
+            }
+            .content-container {
+                max-width: none;
             }
         }
-
+    
+        /* Petit confort supplémentaire */
+        img { max-width: 100%; height: auto; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V3.3.9</h1>
+            Aide en Ligne - BlueNotebook V3.3.10</h1>
     </header>
 
 <div class="main-container">
@@ -174,9 +174,10 @@
     <div class="content-container">
         <section id="introduction">
         <h2>1. Introduction</h2>
-        <p>Bienvenue dans BlueNotebook ! Ce guide vous explique comment utiliser l'application pour tenir votre journal personnel en Markdown.</p>
+        <p>Bienvenue dans BlueNotebook ! Ce guide vous explique comment utiliser l'application pour tenir votre journal personnel en Markdown et gérer vos notes et documents associés.</p>
         <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe Markdown et affiche un aperçu en temps réel de votre document.</p>
         <p>Des fonctionnalités avancées de recherche et navigation permettent aux utilisateurs de retrouver rapidement des informations dans les différentes notes journalières avec le support de tags et une indexation automatique.</p>
+        <p>De nouvelles fonctionnalités de gestion de documents vous permettent de gérér, conjointement aux notes chronologiques du journal, des documents Markdown, PDF, ebooks Epub, cartes et images qui constituront peu à peu votre base de connaissance personnelle intégrée au journal à travers des objets liens, bookmarks et pièces jointes</p>
     </section>
 
     <section id="lancement">
@@ -1141,7 +1142,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.3.9 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.3.10 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>

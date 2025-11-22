@@ -1,3 +1,52 @@
+## V3.3.10 Fix Issue [#79] "A propos" windows should be at least 500 px width
+ 
+
+Fix Issue [#79](https://github.com/lephotographelibre/BlueNotebook/issues/79) Windows: " A propos windows should be at least 500 px width"
+
+modifier la méthode `show_about` dans le fichier `/home/jm/PycharmProjects/BlueNotebook/bluenotebook/gui/main_window.py`  Au lieu d'utiliser la fonction statique QMessageBox.about(), nous allons créer une instance de QMessageBox que nous pourrons configurer avant de l'afficher.
+
+
+```python
+ def show_about(self):
+        """Afficher la boîte À propos"""
+        about_box = QMessageBox(self)
+        about_box.setWindowTitle("À propos de BlueNotebook")
+        about_box.setIcon(QMessageBox.Information)
+        about_box.setTextFormat(Qt.RichText)
+        about_box.setText(
+            f"""<h2>BlueNotebook V{self.app_version}</h2>
+        <p><b>Éditeur de journal personnel </b></p>
+        <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,
+        développé avec PyQt5 et QWebEngine.</p>
+        <p>A partir d'une idée initiale de Jendrik Seipp <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a> </p>
+        <p><b>Fonctionnalités :</b></p>
+        <ul>
+        <li>Gestion d'un journal Personnel</li>
+        <li>Navigation simple dans les notes du journal</li>
+        <li>Sauvegarde/Restauration Journal</li>
+        <li>Édition avec coloration syntaxique</li>
+        <li>Aperçu HTML en temps réel</li>
+        <li>Export HTML/PDF du journal complet ou partiel</li>
+        <li>Gestion de Templates personnalisables</li>
+        <li>Gestion de tags / Recherche par tags</li>
+        <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
+        <li>Lecteur EPUB/PDF intégré avec recherche</li>
+        <li>Gestion de tâches / TODO Listes</li>
+        </ul>
+        <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
+        <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
+        <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"""
+        )
+        about_box.setStandardButtons(QMessageBox.Ok)
+        about_box.resize(800, about_box.height())
+        about_box.exec_()
+```
+
+The width is defined  there `about_box.resize(800, about_box.height())`
+beta1
+
+MAJ Aide en ligne (formattage HTML)
+
 ## V3.3.9 Fix Issue [#74] HTML Preview: When the mouse hovers over a link, display the URL
 
 Fixes Issue [#74](https://github.com/lephotographelibre/BlueNotebook/issues/74): In the HTML Preview, when the mouse hovers over a link, the URL is now displayed over the link as a tool tip in the HTML Preview
