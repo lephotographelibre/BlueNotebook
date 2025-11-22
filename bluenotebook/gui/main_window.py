@@ -720,8 +720,12 @@ class MainWindow(QMainWindow):
         # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
         app = QApplication.instance()
         if app:
-            app_font_family = self.settings_manager.get("ui.app_font_family", app.font().family())
-            app_font_size = self.settings_manager.get("ui.app_font_size", app.font().pointSize())
+            app_font_family = self.settings_manager.get(
+                "ui.app_font_family", app.font().family()
+            )
+            app_font_size = self.settings_manager.get(
+                "ui.app_font_size", app.font().pointSize()
+            )
             global_font = QFont(app_font_family, app_font_size)
             app.setFont(global_font)
 
@@ -2102,33 +2106,37 @@ class MainWindow(QMainWindow):
 
     def show_about(self):
         """Afficher la boîte À propos"""
-        QMessageBox.about(
-            self,
-            "À propos de BlueNotebook",
+        about_box = QMessageBox(self)
+        about_box.setWindowTitle("À propos de BlueNotebook")
+        about_box.setIcon(QMessageBox.Information)
+        about_box.setTextFormat(Qt.RichText)
+        about_box.setText(
             f"""<h2>BlueNotebook V{self.app_version}</h2>
-            <p><b>Éditeur de journal personnel </b></p> 
-            <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel, 
-            développé avec PyQt5 et QWebEngine.</p>
-            <p>Très inspiré du logiciel <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a>  développé par Jendrik Seipp</p>
-            <p><b>Fonctionnalités :</b></p>
-            <ul>
-            <li>Gestion d'un journal Personnel</li>
-            <li>Navigation simple dans les notes du journal</li>
-            <li>Sauvegarde/Restauration Journal</li>
-            <li>Édition avec coloration syntaxique</li>
-            <li>Aperçu HTML en temps réel</li>
-            <li>Export HTML/PDF du journal complet ou partiel</li>
-            <li>Gestion de Templates personnalisables</li>
-            <li>Gestion de tags / Recherche par tags</li>
-            <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
-            <li>Lecteur EPUB/PDF intégré avec recherche</li>
-            <li>Gestion de tâches / TODO Listes</li>
-            </ul>
-
-            <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
-            <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
-            <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>""",
+        <p><b>Éditeur de journal personnel </b></p>
+        <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,
+        développé avec PyQt5 et QWebEngine.</p>
+        <p>A partir d'une idée initiale de Jendrik Seipp <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a> </p>
+        <p><b>Fonctionnalités :</b></p>
+        <ul>
+        <li>Gestion d'un journal Personnel</li>
+        <li>Navigation simple dans les notes du journal</li>
+        <li>Sauvegarde/Restauration Journal</li>
+        <li>Édition avec coloration syntaxique </li>
+        <li>Aperçu HTML en temps réel</li>
+        <li>Export HTML/PDF du journal complet ou partiel</li>
+        <li>Gestion de Templates personnalisables</li>
+        <li>Gestion de tags / Recherche par tags</li>
+        <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
+        <li>Lecteur EPUB/PDF intégré avec recherche</li>
+        <li>Gestion de tâches / TODO Listes</li>
+        </ul>
+        <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
+        <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
+        <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"""
         )
+        about_box.setStandardButtons(QMessageBox.Ok)
+        about_box.resize(800, about_box.height())
+        about_box.exec_()
 
     def open_document_for_reader(self):
         """Ouvre un document EPUB ou PDF dans le panneau lecteur."""
@@ -3210,7 +3218,11 @@ class MainWindow(QMainWindow):
             self.settings_manager.set(
                 "ui.app_font_size", dialog.current_app_font.pointSize()
             )
-            QMessageBox.information(self, "Redémarrage requis", "Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.")
+            QMessageBox.information(
+                self,
+                "Redémarrage requis",
+                "Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.",
+            )
 
             self.settings_manager.save_settings()
             self.apply_settings()
@@ -3271,11 +3283,15 @@ class MainWindow(QMainWindow):
         # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
         app = QApplication.instance()
         if app:
-            app_font_family = self.settings_manager.get("ui.app_font_family", app.font().family())
-            app_font_size = self.settings_manager.get("ui.app_font_size", app.font().pointSize())
+            app_font_family = self.settings_manager.get(
+                "ui.app_font_family", app.font().family()
+            )
+            app_font_size = self.settings_manager.get(
+                "ui.app_font_size", app.font().pointSize()
+            )
             global_font = QFont(app_font_family, app_font_size)
             app.setFont(global_font)
-            self.setFont(global_font) # Appliquer à la fenêtre principale aussi
+            self.setFont(global_font)  # Appliquer à la fenêtre principale aussi
 
         self.toggle_notes_action.setChecked(show_notes)
         self.toggle_navigation_action.setChecked(show_nav)
