@@ -2111,17 +2111,19 @@ class MainWindow(QMainWindow):
         about_box.setIcon(QMessageBox.Information)
         about_box.setTextFormat(Qt.RichText)
         about_box.setText(
-            f"""<h2>BlueNotebook V{self.app_version}</h2>
-        <p><b>Éditeur de journal personnel </b></p>
+            f"""<h2> BlueNotebook V{self.app_version}</h2>
+                <h2>_____________________________________________________________</h2>
+        <p><b>Éditeur de journal personnel </b></p>      
         <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,
         développé avec PyQt5 et QWebEngine.</p>
         <p>A partir d'une idée initiale de Jendrik Seipp <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a> </p>
+        <h2>_____________________________________________________________</h2>
         <p><b>Fonctionnalités :</b></p>
         <ul>
         <li>Gestion d'un journal Personnel</li>
         <li>Navigation simple dans les notes du journal</li>
         <li>Sauvegarde/Restauration Journal</li>
-        <li>Édition avec coloration syntaxique </li>
+        <li>Édition avec coloration syntaxique                                                                                    </li>
         <li>Aperçu HTML en temps réel</li>
         <li>Export HTML/PDF du journal complet ou partiel</li>
         <li>Gestion de Templates personnalisables</li>
@@ -2130,6 +2132,7 @@ class MainWindow(QMainWindow):
         <li>Lecteur EPUB/PDF intégré avec recherche</li>
         <li>Gestion de tâches / TODO Listes</li>
         </ul>
+        <h2>_____________________________________________________________</h2>
         <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
         <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
         <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"""
