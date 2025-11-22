@@ -2123,7 +2123,7 @@ class MainWindow(QMainWindow):
         <li>Gestion d'un journal Personnel</li>
         <li>Navigation simple dans les notes du journal</li>
         <li>Sauvegarde/Restauration Journal</li>
-        <li>Édition avec coloration syntaxique                                                                                    </li>
+        <li>Édition avec coloration syntaxique </li>
         <li>Aperçu HTML en temps réel</li>
         <li>Export HTML/PDF du journal complet ou partiel</li>
         <li>Gestion de Templates personnalisables</li>
