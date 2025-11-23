@@ -1,3 +1,16 @@
+## V3.3.11 Fix Issue [#66] Notes: After pressing CTRL-M, the file browser displays a list that is too small. #66
+
+Fix Issue [#66](https://github.com/lephotographelibre/BlueNotebook/issues/66)  Notes: After pressing CTRL-M, the file browser displays a list that is too small. #66
+
+
+Dans le panneau Notes quand je presse CTRL-M le TreeView affiche les differents colonnes Nom, Taille, Type, Date.
+la taille de la colonne Nom est tres petite et pas defaut ne permet pas de lire le nom des fichier.
+Ce que je souhaite si l'ultilisateur presse CTRL-M s'est:
+
+- Afficher la colonne "Nom" avec au moins 200px
+beta1
+
+- Doubler la taille en largeur du volet "Notes"
 ## V3.3.10 Fix Issue [#79] "A propos" windows should be at least 500 px width
  
 

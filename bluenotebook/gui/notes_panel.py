@@ -36,6 +36,7 @@ from PyQt5.QtWidgets import (
     QInputDialog,
     QMessageBox,
     QDialog,
+    QSplitter,
 )
 
 from .new_note_dialog import NewFileDialog
@@ -364,13 +365,85 @@ class NotesPanel(QWidget):
         self.search_input.returnPressed.connect(self.perform_search)
 
     def toggle_details_columns(self):
-        """Affiche ou masque les colonnes de détails (taille, type, date)."""
-        is_hidden = self.tree_view.isColumnHidden(1)
-        for i in range(1, self.model.columnCount()):
-            if is_hidden:
+        """Affiche ou masque les colonnes de détails (taille, type, date).
+        Quand on les affiche : double la largeur du panneau et force la colonne Nom à ≥ 250px.
+        Version ultra-stable – ne plante jamais."""
+        currently_hidden = self.tree_view.isColumnHidden(1)  # Colonne 1 = Taille
+
+        # ===================================================================
+        # 1. Trouver le QSplitter qui contient réellement le NotesPanel
+        # ===================================================================
+        splitter = self.parent()
+        while splitter and not isinstance(splitter, QSplitter):
+            splitter = splitter.parent()
+        # Si on ne trouve pas de splitter → on abandonne la partie redimensionnement (pas de crash)
+        has_splitter = splitter is not None
+
+        if currently_hidden:
+            # ─── ACTIVATION du mode détails ───
+            for i in range(1, self.model.columnCount()):
                 self.tree_view.showColumn(i)
-            else:
+
+            # Colonne Nom bien large
+            if self.tree_view.columnWidth(0) < 250:
+                self.tree_view.setColumnWidth(0, 280)
+
+            # Redimensionner les autres colonnes proprement
+            self.tree_view.resizeColumnToContents(1)
+            self.tree_view.resizeColumnToContents(2)
+            self.tree_view.resizeColumnToContents(3)
+
+            # Doubler la largeur du panneau (seulement si on a un splitter)
+            if has_splitter:
+                sizes = splitter.sizes()
+                if len(sizes) > 1:
+                    idx = splitter.indexOf(self)
+                    if idx != -1 and sizes[idx] > 0:
+                        total = sum(s for s in sizes if s > 0)
+                        # On veut ~50–60 % de l’espace total quand les détails sont affichés
+                        target = int(total * 0.55)
+                        sizes[idx] = max(target, sizes[idx] * 2)  # au moins le double
+                        # Réduire les autres panneaux proportionnellement
+                        remaining = sum(s for i, s in enumerate(sizes) if i != idx)
+                        if remaining > 0:
+                            factor = (total - sizes[idx]) / remaining
+                            for i in range(len(sizes)):
+                                if i != idx and sizes[i] > 0:
+                                    sizes[i] = max(
+                                        50, int(sizes[i] * factor)
+                                    )  # garde un minimum
+                        splitter.setSizes(sizes)
+
+        else:
+            # ─── DÉSACTIVATION du mode détails → retour compact ───
+            for i in range(1, self.model.columnCount()):
                 self.tree_view.hideColumn(i)
+
+            # Réduire la colonne Nom (mais garder lisible)
+            current = self.tree_view.columnWidth(0)
+            if current > 300:
+                self.tree_view.setColumnWidth(0, 200)
+
+            # Revenir à une largeur compacte (~20–25 % de l’écran)
+            if has_splitter:
+                sizes = splitter.sizes()
+                if len(sizes) > 1:
+                    idx = splitter.indexOf(self)
+                    if idx != -1:
+                        total = sum(s for s in sizes if s > 0)
+                        compact = max(180, int(total * 0.22))  # jamais trop petit
+                        sizes[idx] = compact
+                        # Redistribuer l’espace libéré
+                        remaining = total - compact
+                        other_count = len(
+                            [s for i, s in enumerate(sizes) if i != idx and s > 0]
+                        )
+                        if other_count > 0:
+                            per_other = remaining // other_count
+                            for i in range(len(sizes)):
+                                if i != idx and sizes[i] > 0:
+                                    sizes[i] = per_other
+                        splitter.setSizes(sizes)
 
     def set_journal_directory(self, journal_dir):
         """Définit le répertoire du journal et met à jour la vue."""
@@ -663,6 +736,7 @@ class NotesPanel(QWidget):
                     try:
                         import locale
                         from datetime import datetime
+
                         locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
                     except locale.Error:
                         locale.setlocale(locale.LC_TIME, "")
