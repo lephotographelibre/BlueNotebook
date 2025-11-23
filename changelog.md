@@ -1,3 +1,15 @@
+## V3.3.12 Set Env BLUENOTEBOOK_LOCALE correctly
+
+Pour eviter l'erreur au demarrage 
+
+⚠️ Impossible de configurer la locale Python pour 'fr_FR'. Utilisation de la locale système par défaut.
+vérifier les locales disponibles sur votre machine. Ouvrez un terminal et tapez la commande suivante : $locale -c  --> fr_FR.utf8 
+
+# locale -c  
+# export BLUENOTEBOOK_LOCALE=de_DE
+# export BLUENOTEBOOK_LOCALE=fr_FR -- Ancienne valeur généranr l'erreur
+export BLUENOTEBOOK_LOCALE="fr_FR.utf8"
+
 ## V3.3.11 Fix Issue [#66] Notes: After pressing CTRL-M, the file browser displays a list that is too small. #66
 
 Fix Issue [#66](https://github.com/lephotographelibre/BlueNotebook/issues/66)  Notes: After pressing CTRL-M, the file browser displays a list that is too small. #66
