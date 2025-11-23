@@ -88,7 +88,7 @@ def main():
 
     try:
         # Définir les informations de l'application
-        version = "3.3.11"
+        version = "3.3.12"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
