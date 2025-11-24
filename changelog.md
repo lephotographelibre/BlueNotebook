@@ -1,3 +1,40 @@
+## V3.4.0 Start Screen
+
+Je voudrais définir un processus pour le 1er demarrage de l'application:
+
+- le 1er demarrage de l'application est lancé lorsque il n'y a pas de fichier settings.json defini pour l'utilisateur. tout le code nécessaire pour réaliser ce demarrage sera stocké dans gui/first_start.py
+Ceci devra etre la premiere tache a accomplir avant tout autre chose et à afficher avant d'afficher la fenètre principale de BlueNotebook.
+
+liste des taches a accomplir
+
+- on va afficher un écran de demarrage 800px x 600px centré dans l'ecran utilisateur avec le logo de bulenotebook `bluenotebook/resources/images/bluenotebook_256-x256_fond_blanc.png` et comme titre en grosse police "Bienvenue pour cette première utilisation". Pour cet écran de demarrage je voudrais un ordonnacement des differents champs harmonieux 
+
+on va alors initialiser un fichier settings.json de l'utilisateur avec les valeur par default de Bluenotebook.
+
+Puis le texte suivant sera affiché: " Pour ce démarrage il va falloir d'abord définir certains paramètres:"
+(ces diiferents paramètres devront etre persisté  dans le fichier settings.json de l'utilisateur)
+Puis dessous "Langue de l'utilisateur:" avec un memu déroulant (Français, Anglais)
+Puis dessous "Le répertoire du Journal :" + un champ affichant le chemin du répertoire du Journal + un bouton Choisir qui lance une boite de dialogue permettant à l'utilisateur de choisir l'emplacement de son répertoire . Le dossier Jounal créé sera toujours "BlueNotebookJournal"
+	On va créer le répertoire du Journal. Si le dossier existe déja on va demander confirmation à l'utilisateur.
+	On va créer les sous répertoire dans le journal: notes, images, attachments, gpx
+Puis dessous "Le répertoire de sauvegarde du Journal:" + un champ affichant le chemin du répertoire de sauvegarde du Journal + un bouton Choisir qui lance une boite de dialogue permettant à l'utilisateur de choisir l'emplacement de son répertoire de sauvegarde du Journal.  Le dossier de sauvegarde  créé sera toujours "BlueNotebookBackup"
+Enfin un bouton "Terminé" en bas à droite de cet écran de demarrage.
+Sauvengarder ces  differents paramètres   dans le fichier settings.json de l'utilisateur. 
+Pour terminer on ouvrira la fenètre principale.
+beta1
+
+je voudrais ajouter aux "Préférences -> Général" en premier "Langue de l'utilisateur:" avec un memu déroulant (Français, Anglais). Ce choix a été persisté dans settings.json lors qu premier demarrage. Il doit pouvoir etre modifié par ce menu déroulant et persisté dans settings.json si l'on souhaite modifier le choix initial.
+Pour ce panneau "Préférences -> Général" je voudrais un ordonnacement des differents champs plus harmonieux 
+
+beta2
+
+Correct font size on Windows
+```python
+
+        title_label = QLabel("Bienvenue dans BlueNotebook", self)
+        font = QFont()
+        # font.setPointSize(24)
+```
 ## V3.3.12 Set Env BLUENOTEBOOK_LOCALE correctly
 
 Pour eviter l'erreur au demarrage 

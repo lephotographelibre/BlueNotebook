@@ -1543,6 +1543,11 @@ class MainWindow(QMainWindow):
 
         if self.journal_dir_arg and Path(self.journal_dir_arg).is_dir():
             journal_path = Path(self.journal_dir_arg).resolve()
+        elif self.settings_manager.get("journal.directory"):
+            # Priorité aux paramètres définis lors du premier démarrage
+            journal_path = Path(
+                self.settings_manager.get("journal.directory")
+            ).resolve()
         elif "JOURNAL_DIRECTORY" in os.environ:
             env_path = Path(os.environ["JOURNAL_DIRECTORY"])
             if env_path.is_dir():

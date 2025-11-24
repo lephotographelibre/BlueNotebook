@@ -43,6 +43,7 @@ from PyQt5.QtWidgets import (
     QInputDialog,
     QFileDialog,
     QLineEdit,
+    QComboBox,
 )
 from PyQt5.QtCore import QDir
 from geopy.geocoders import Nominatim
@@ -115,14 +116,28 @@ class PreferencesDialog(QDialog):
     def _create_general_tab(self):
         """Crée l'onglet 'Général'."""
         widget = QWidget()
-        layout = QFormLayout(widget)
-        layout.setSpacing(10)
+        layout = QGridLayout(widget)
+        layout.setSpacing(15)
+        layout.setColumnStretch(1, 1)
 
-        # V3.3.8 - Police de l'application
+        # --- Langue de l'application ---
+        self.lang_combo = QComboBox()
+        self.lang_combo.addItems(["Français", "English"])
+        current_lang = self.settings_manager.get("app.language", "fr_FR")
+        if current_lang == "en_US":
+            self.lang_combo.setCurrentIndex(1)
+        else:
+            self.lang_combo.setCurrentIndex(0)
+        self.lang_combo.setToolTip(
+            "Définit la langue de l'interface. Un redémarrage est nécessaire."
+        )
+        layout.addWidget(QLabel("Langue de l'application:"), 0, 0)
+        layout.addWidget(self.lang_combo, 0, 1)
+
+        # --- Police de l'application ---
         app_font_family = self.settings_manager.get("ui.app_font_family", "Noto Sans")
         app_font_size = self.settings_manager.get("ui.app_font_size", 10)
         self.current_app_font = QFont(app_font_family, app_font_size)
-
         self.app_font_button = QPushButton(
             f"{self.current_app_font.family()}, {self.current_app_font.pointSize()}pt"
         )
@@ -130,23 +145,30 @@ class PreferencesDialog(QDialog):
             "Définit la police et la taille de base pour l'ensemble de l'application."
         )
         self.app_font_button.clicked.connect(self._select_app_font)
-        layout.addRow("Police de l'application:", self.app_font_button)
+        layout.addWidget(QLabel("Police de l'application:"), 1, 0)
+        layout.addWidget(self.app_font_button, 1, 1)
 
-        layout.addRow(QLabel())  # Espace
-        # Case pour l'affichage des statistiques d'indexation
+        # --- Ligne de séparation ---
+        separator1 = QLabel()
+        separator1.setMinimumHeight(20)
+        layout.addWidget(separator1, 2, 0, 1, 2)
+
+        # --- Options d'affichage ---
         self.show_indexing_stats_checkbox = QCheckBox(
             "Afficher les statistiques d'indexation (mots et tags) dans la barre d'état"
         )
         show_indexing_stats = self.settings_manager.get("ui.show_indexing_stats", True)
-        self.show_indexing_stats_checkbox.setChecked(str(show_indexing_stats).lower() == 'true')
-        layout.addRow(self.show_indexing_stats_checkbox)
+        self.show_indexing_stats_checkbox.setChecked(
+            str(show_indexing_stats).lower() == "true"
+        )
+        layout.addWidget(self.show_indexing_stats_checkbox, 3, 0, 1, 2)
 
-        # Tags à exclure du nuage de tags
-        # NOTE: The original code had a comment "Tags à exclure du nuage"
-        # and the label was "Tags à exclure du nuage:", but the setting key
-        # was "indexing.excluded_tags_from_cloud".
-        # I'm keeping the label consistent with the setting key and the
-        # remaining functionality.
+        # --- Ligne de séparation ---
+        separator2 = QLabel()
+        separator2.setMinimumHeight(20)
+        layout.addWidget(separator2, 4, 0, 1, 2)
+
+        # --- Tags à exclure ---
         excluded_tags_list = self.settings_manager.get(
             "indexing.excluded_tags_from_cloud", []
         )
@@ -155,16 +177,10 @@ class PreferencesDialog(QDialog):
         self.excluded_tags_edit.setToolTip(
             "Liste de tags (sans @@, séparés par des virgules) à ne pas afficher dans le nuage de tags."
         )
-        self.excluded_tags_edit.setMaximumHeight(80)
+        layout.addWidget(QLabel("Tags à exclure du nuage:"), 5, 0, Qt.AlignTop)
+        layout.addWidget(self.excluded_tags_edit, 5, 1)
 
-        label_tags = QLabel("Tags à exclure du nuage:")
-        label_tags.setToolTip(
-            "Ces tags n'apparaîtront pas dans le panneau 'Nuage de Tags'."
-        )
-        layout.addRow(label_tags, self.excluded_tags_edit)
-
-        # Ajouter un espace extensible pour pousser les éléments vers le haut
-        layout.addRow(QLabel())
+        layout.setRowStretch(6, 1)  # Pousse les éléments vers le haut
         return widget
 
     def _select_app_font(self):
@@ -249,8 +265,10 @@ class PreferencesDialog(QDialog):
 
         # === SECTION AFFICHAGE LIGNES ===
         self.show_line_numbers_checkbox = QCheckBox("Affichage des numéros de lignes ?")
-        show_line_numbers_setting = self.settings_manager.get("editor.show_line_numbers", False)
-        is_checked = str(show_line_numbers_setting).lower() == 'true'
+        show_line_numbers_setting = self.settings_manager.get(
+            "editor.show_line_numbers", False
+        )
+        is_checked = str(show_line_numbers_setting).lower() == "true"
         self.show_line_numbers_checkbox.setChecked(is_checked)
         layout.addWidget(self.show_line_numbers_checkbox, row, 0, 1, 4)
         row += 1
@@ -636,19 +654,19 @@ class PreferencesDialog(QDialog):
         # Case pour le panneau de Notes
         self.show_notes_checkbox = QCheckBox("Afficher le panneau 'Notes'")
         show_notes = self.settings_manager.get("ui.show_notes_panel", True)
-        self.show_notes_checkbox.setChecked(str(show_notes).lower() == 'true')
+        self.show_notes_checkbox.setChecked(str(show_notes).lower() == "true")
         layout.addWidget(self.show_notes_checkbox)
 
         # Case pour le panneau de Navigation
         self.show_nav_checkbox = QCheckBox("Afficher le panneau de Navigation")
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
-        self.show_nav_checkbox.setChecked(str(show_nav).lower() == 'true')
+        self.show_nav_checkbox.setChecked(str(show_nav).lower() == "true")
         layout.addWidget(self.show_nav_checkbox)
 
         # Case pour le panneau Plan du document
         self.show_outline_checkbox = QCheckBox("Afficher le panneau 'Plan du document'")
         show_outline = self.settings_manager.get("ui.show_outline_panel", True)
-        self.show_outline_checkbox.setChecked(str(show_outline).lower() == 'true')
+        self.show_outline_checkbox.setChecked(str(show_outline).lower() == "true")
         layout.addWidget(self.show_outline_checkbox)
 
         # Case pour le panneau Éditeur (toujours visible et désactivé)
@@ -660,13 +678,13 @@ class PreferencesDialog(QDialog):
         # Case pour le panneau Aperçu HTML
         self.show_preview_checkbox = QCheckBox("Afficher le panneau 'Aperçu HTML'")
         show_preview = self.settings_manager.get("ui.show_preview_panel", False)
-        self.show_preview_checkbox.setChecked(str(show_preview).lower() == 'true')
+        self.show_preview_checkbox.setChecked(str(show_preview).lower() == "true")
         layout.addWidget(self.show_preview_checkbox)
 
         # Case pour le panneau Lecteur
         self.show_reader_checkbox = QCheckBox("Afficher le panneau 'Lecteur'")
         show_reader = self.settings_manager.get("ui.show_reader_panel", False)
-        self.show_reader_checkbox.setChecked(str(show_reader).lower() == 'true')
+        self.show_reader_checkbox.setChecked(str(show_reader).lower() == "true")
         layout.addWidget(self.show_reader_checkbox)
 
         layout.addStretch()  # Pour pousser les cases vers le haut
@@ -680,23 +698,35 @@ class PreferencesDialog(QDialog):
         self.show_quote_checkbox = QCheckBox(
             "Afficher la citation du jour au démarrage"
         )
-        show_quote = self.settings_manager.get("integrations.show_quote_of_the_day", False)
-        self.show_quote_checkbox.setChecked(str(show_quote).lower() == 'true')
+        show_quote = self.settings_manager.get(
+            "integrations.show_quote_of_the_day", False
+        )
+        self.show_quote_checkbox.setChecked(str(show_quote).lower() == "true")
         layout.addWidget(self.show_quote_checkbox)
 
         self.youtube_integration_checkbox = QCheckBox(
             "Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown"
         )
-        is_youtube_enabled = self.settings_manager.get("integrations.youtube_enabled", True)
-        self.youtube_integration_checkbox.setChecked(str(is_youtube_enabled).lower() == 'true')
+        is_youtube_enabled = self.settings_manager.get(
+            "integrations.youtube_enabled", True
+        )
+        self.youtube_integration_checkbox.setChecked(
+            str(is_youtube_enabled).lower() == "true"
+        )
         layout.addWidget(self.youtube_integration_checkbox)
 
         self.youtube_transcript_checkbox = QCheckBox(
             "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"
         )
-        is_transcript_enabled = self.settings_manager.get("integrations.youtube_transcript_enabled", True)
-        self.youtube_transcript_checkbox.setChecked(str(is_transcript_enabled).lower() == 'true')
-        self.youtube_transcript_checkbox.setEnabled(str(is_youtube_enabled).lower() == 'true')
+        is_transcript_enabled = self.settings_manager.get(
+            "integrations.youtube_transcript_enabled", True
+        )
+        self.youtube_transcript_checkbox.setChecked(
+            str(is_transcript_enabled).lower() == "true"
+        )
+        self.youtube_transcript_checkbox.setEnabled(
+            str(is_youtube_enabled).lower() == "true"
+        )
         layout.addWidget(self.youtube_transcript_checkbox)
 
         # Lier les deux cases à cocher
@@ -1192,12 +1222,16 @@ class PreferencesDialog(QDialog):
 
     def accept(self):
         """Sauvegarde les paramètres lorsque l'utilisateur clique sur 'Valider'."""
+        # --- Onglet Général ---
+        # Sauvegarde de la langue
+        lang_map = {"Français": "fr_FR", "English": "en_US"}
+        selected_lang = self.lang_combo.currentText()
+        self.settings_manager.set("app.language", lang_map.get(selected_lang, "fr_FR"))
+
         # ... (sauvegarde des autres paramètres)
         # V3.3.8 - Sauvegarde de la police de l'application
         self.settings_manager.set("ui.app_font_family", self.current_app_font.family())
-        self.settings_manager.set(
-            "ui.app_font_size", self.current_app_font.pointSize()
-        )
+        self.settings_manager.set("ui.app_font_size", self.current_app_font.pointSize())
 
         # Sauvegarde du thème CSS de l'aperçu
         self.settings_manager.set("preview.css_theme", self.selected_html_theme)
