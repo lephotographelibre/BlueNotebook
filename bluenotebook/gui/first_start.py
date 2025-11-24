@@ -76,7 +76,7 @@ class FirstStartWindow(QDialog):
 
         title_label = QLabel("Bienvenue dans BlueNotebook", self)
         font = QFont()
-        font.setPointSize(24)
+        # font.setPointSize(24)
         font.setBold(True)
         title_label.setFont(font)
         title_label.setAlignment(Qt.AlignCenter)

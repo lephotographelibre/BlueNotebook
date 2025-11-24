@@ -28,6 +28,13 @@ Pour ce panneau "Préférences -> Général" je voudrais un ordonnacement des di
 
 beta2
 
+Correct font size on Windows
+```python
+
+        title_label = QLabel("Bienvenue dans BlueNotebook", self)
+        font = QFont()
+        # font.setPointSize(24)
+```
 ## V3.3.12 Set Env BLUENOTEBOOK_LOCALE correctly
 
 Pour eviter l'erreur au demarrage 
