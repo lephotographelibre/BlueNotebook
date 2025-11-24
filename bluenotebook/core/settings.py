@@ -31,6 +31,9 @@ class SettingsManager:
 
         # Définir les paramètres par défaut
         self.defaults = {
+            "app": {
+                "language": "fr_FR",
+            },
             "editor": {
                 "font_family": "Noto Sans",
                 "font_size": 14,
