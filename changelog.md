@@ -1,3 +1,15 @@
+## 3.5.0 Add integration URL to Markdown
+
+- Based on work <https://github.com/macsplit/urltomarkdown> converted to Python.
+- create test lib  code `bluenotebook/tests/urltomarkdown.py` + tests
+
+```bash
+pip install requests beautifulsoup4 readability-lxml markdownify validators
+```
+
+
+
+
 ## V3.4.1 Gitflow test with a fictive feature/change_version_3.4.1
 ## V3.4.0 Start Screen
 

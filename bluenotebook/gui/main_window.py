@@ -120,6 +120,9 @@ from integrations.youtube_video import (
 )
 from integrations.sun_moon import get_sun_moon_markdown
 from integrations.gps_map_handler import generate_gps_map_markdown
+from integrations.url_to_markdown_handler import (
+    run_url_to_markdown_conversion,
+)
 from integrations.image_exif import format_exif_as_markdown
 
 # V3.0.1 - Enregistrer le schéma personnalisé avant de créer l'application
@@ -933,6 +936,7 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_amazon_book_action)
         integrations_menu.addAction(self.insert_sun_moon_action)
         integrations_menu.addAction(self.convert_pdf_markdown_action)
+        integrations_menu.addAction(self.convert_url_markdown_action)
 
         # Menu Aide
         help_menu = menubar.addMenu("&Aide")
@@ -1156,8 +1160,14 @@ class MainWindow(QMainWindow):
         self.convert_pdf_markdown_action = QAction(
             "Conversion PDF-Markdown",
             self,
-            statusTip="Convertir un fichier PDF en Markdown avec 'markit'",
+            statusTip="Convertir un fichier PDF en Markdown avec 'markitdown'",
             triggered=self.convert_pdf_to_markdown,
+        )
+        self.convert_url_markdown_action = QAction(
+            "Conversion URL(HTML)-Markdown",
+            self,
+            statusTip="Convertir une page Web (URL ou fichier local) en Markdown",
+            triggered=self.convert_url_to_markdown,
         )
         self.insert_bookmark_action = QAction(
             "🔖 Bookmark",
@@ -1471,6 +1481,25 @@ class MainWindow(QMainWindow):
         self.bookmark_status_label.setVisible(False)
         self.statusbar.addWidget(self.bookmark_status_label, 1)
 
+        # V3.5.0 - Status label for URL to Markdown conversion
+        self.url_convert_status_label = CenteredStatusBarLabel(
+            self.tr("Conversion URL en cours...")
+        )
+        self.url_convert_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.url_convert_status_label.setVisible(False)
+        self.statusbar.addWidget(self.url_convert_status_label, 1)
+
+        # V3.5.0 - Label générique pour les tâches de fond
+        self.task_status_label = CenteredStatusBarLabel("")
+        self.task_status_label.setStyleSheet("color: red; font-weight: bold;")
+        self.task_status_label.setVisible(False)
+        self.statusbar.addWidget(self.task_status_label, 1)
+
+        # V3.5.0 - Timer générique pour le clignotement
+        self.task_flash_timer = QTimer(self)
+        self.task_flash_timer.setInterval(500)
+        self.task_flash_timer.timeout.connect(self._toggle_task_status_visibility)
+
     def setup_connections(self):
         self.pdf_flash_timer = QTimer(self)
         self.pdf_flash_timer.setInterval(500)
@@ -1511,6 +1540,12 @@ class MainWindow(QMainWindow):
         self.bookmark_flash_timer.setInterval(500)
         self.bookmark_flash_timer.timeout.connect(
             self._toggle_bookmark_status_visibility
+        )
+
+        self.url_convert_flash_timer = QTimer(self)
+        self.url_convert_flash_timer.setInterval(500)
+        self.url_convert_flash_timer.timeout.connect(
+            self._toggle_url_convert_status_visibility
         )
         """Configuration des connexions de signaux"""
         self.editor.textChanged.connect(self.on_text_changed)
@@ -2777,6 +2812,22 @@ class MainWindow(QMainWindow):
             not self.bookmark_status_label.isVisible()
         )
 
+    def _start_url_convert_flashing(self):
+        """Démarre le message clignotant pour la conversion URL."""
+        self.url_convert_status_label.setVisible(True)
+        self.url_convert_flash_timer.start()
+
+    def _stop_url_convert_flashing(self):
+        """Arrête le message clignotant de conversion URL."""
+        self.url_convert_flash_timer.stop()
+        self.url_convert_status_label.setVisible(False)
+
+    def _toggle_url_convert_status_visibility(self):
+        """Bascule la visibilité du label de statut de conversion URL."""
+        self.url_convert_status_label.setVisible(
+            not self.url_convert_status_label.isVisible()
+        )
+
     def on_pdf_convert_finished(self, markdown_content):
         """Callback pour la fin de la conversion PDF."""
         self._stop_pdf_convert_flashing()
@@ -2816,6 +2867,50 @@ class MainWindow(QMainWindow):
         self._stop_backup_flashing()
         QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
 
+    def start_task(self, message):
+        """Démarre un message de tâche de fond clignotant."""
+        self.task_status_label.setText(message)
+        self.task_status_label.setVisible(True)
+        self.task_flash_timer.start()
+
+    def stop_task(self):
+        """Arrête le message de tâche de fond clignotant."""
+        self.task_flash_timer.stop()
+        self.task_status_label.setVisible(False)
+
+    def _toggle_task_status_visibility(self):
+        self.task_status_label.setVisible(not self.task_status_label.isVisible())
+
+    def on_task_error(self, error_message):
+        self.stop_task()
+        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
+
+    def convert_url_to_markdown(self):
+        """Gère la conversion d'une URL/HTML en Markdown."""
+        if not self.check_save_changes():
+            return
+
+        cursor = self.editor.text_edit.textCursor()
+        selected_text = cursor.selectedText().strip()
+
+        run_url_to_markdown_conversion(self, initial_url=selected_text)
+
+    def on_url_to_markdown_finished(self, markdown_content, output_file_path):
+        """Slot appelé lorsque la conversion URL -> MD est terminée."""
+        self.stop_task()
+        try:
+            with open(output_file_path, "w", encoding="utf-8") as f:
+                f.write(markdown_content)
+
+            QMessageBox.information(
+                self,
+                "Conversion terminée",
+                f"La page a été convertie et sauvegardée dans :\n{output_file_path}",
+            )
+            self.open_specific_file(output_file_path)
+        except Exception as e:
+            pass
+
     def convert_pdf_to_markdown(self):
         """Gère la conversion d'un PDF en Markdown."""
         if not self.check_save_changes():
@@ -2831,11 +2926,28 @@ class MainWindow(QMainWindow):
 
         self._start_pdf_convert_flashing()
 
+        from integrations.pdf_to_markdown_converter import PdfToMarkdownWorker
+
         worker = PdfToMarkdownWorker(pdf_path)
         worker.signals.finished.connect(self.on_pdf_convert_finished)
         worker.signals.error.connect(self.on_pdf_convert_error)
 
         self.thread_pool.start(worker)
+
+    def _on_journal_backup_finished(self, backup_path: str):
+        """Slot appelé lorsque la sauvegarde du journal est terminée avec succès."""
+        self._stop_backup_flashing()
+        QMessageBox.information(
+            self,
+            "Sauvegarde terminée",
+            f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+        )
+        print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
+
+    def _on_journal_backup_error(self, error_message: str):
+        """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
+        self._stop_backup_flashing()
+        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
