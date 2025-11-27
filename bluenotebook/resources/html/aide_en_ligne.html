@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V3.4.1 </h1>
+            Aide en Ligne - BlueNotebook V3.5.1 </h1>
     </header>
 
 <div class="main-container">
@@ -145,6 +145,8 @@
                     <li><a href="#amazon-isbn">10.5 Intégrer un Livre (Amazon ISBN)</a></li>
                     <li><a href="#quote-of-the-day">10.6 Insérer la Citation du Jour</a></li>
                     <li><a href="#astro-du-jour">10.7 Insérer les Données Astronomiques du Jour</a></li>
+                    <li><a href="#pdf-to-markdown">10.8 Convertir un PDF en Markdown</a></li>
+                    <li><a href="#url-to-markdown">10.9 Convertir une URL/HTML en Markdown</a></li>
                 </ul>
             </li>
             <li><a href="#recherche-avancee">11. Recherche et Navigation Avancée</a></li>
@@ -607,6 +609,32 @@
             </ul>
         </li>
     </ol>
+
+        <h3 id="pdf-to-markdown">10.8 Convertir un PDF en Markdown</h3>
+        <p>Cette intégration puissante vous permet de transformer le contenu textuel d'un fichier PDF (local ou distant) en un document Markdown propre et éditable. C'est l'outil parfait pour extraire le contenu d'articles, de rapports ou de documents que vous souhaitez archiver et rendre consultables dans votre journal.</p>
+        <ol>
+            <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code>.</li>
+            <li>Une boîte de dialogue s'ouvre, vous invitant à fournir le chemin vers un fichier PDF local (via le bouton "Parcourir...") ou à coller l'URL d'un PDF en ligne.</li>
+            <li>Après validation, l'application télécharge et analyse le PDF en arrière-plan.</li>
+            <li>Une fois la conversion terminée, le contenu Markdown est automatiquement chargé dans l'éditeur, prêt à être modifié, annoté et sauvegardé comme une nouvelle note.</li>
+        </ol>
+        <p><strong>Note :</strong> Cette fonctionnalité s'appuie sur la bibliothèque <code>markitdown</code> de Microsoft. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).</p>
+
+        <h3 id="url-to-markdown">10.9 Convertir une URL/HTML en Markdown</h3>
+        <p>Transformez n'importe quelle page web ou fichier HTML local en une note Markdown propre et lisible. Cette fonctionnalité est idéale pour archiver des articles de blog, des documentations techniques ou toute autre page web que vous souhaitez conserver et annoter.</p>
+        <ol>
+            <li>Allez dans le menu <code>Intégrations > Conversion URL(HTML)-Markdown</code>.</li>
+            <li>Une boîte de dialogue s'ouvre. Si vous aviez sélectionné une URL dans l'éditeur, elle sera déjà pré-remplie. Vous pouvez aussi coller une URL ou parcourir votre disque pour choisir un fichier <code>.html</code>.</li>
+            <li>Vous pouvez affiner la conversion avec plusieurs options :
+                <ul>
+                    <li><strong>Ajouter le titre en # :</strong> Ajoute automatiquement le titre de la page comme un titre de niveau 1 en haut du document.</li>
+                    <li><strong>Conserver les liens Markdown :</strong> Garde tous les hyperliens de la page originale.</li>
+                    <li><strong>Utiliser Readability pour nettoyer :</strong> C'est l'option la plus puissante. Elle utilise un algorithme pour extraire uniquement le contenu principal de l'article, en supprimant les publicités, les menus et autres éléments superflus.</li>
+                </ul>
+            </li>
+            <li>Après validation, une fenêtre vous demande où sauvegarder le nouveau fichier <code>.md</code> (par défaut dans le dossier <code>notes/</code> de votre journal).</li>
+            <li>Le fichier est créé et immédiatement ouvert dans l'éditeur, prêt à être utilisé.</li>
+        </ol>
 
         <h3 id="quote-of-the-day">10.6 Insérer la Citation du Jour</h3>
         <p>Commencez votre journée avec une pensée inspirante. BlueNotebook peut récupérer une citation célèbre et l'insérer dans votre note.</p>
@@ -1156,7 +1184,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V3.4.1 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V3.5.1 de BlueNotebook.</em></p>
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>
