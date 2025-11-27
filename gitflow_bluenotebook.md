@@ -27,9 +27,14 @@ git push --set-upstream origin develop
 ```bash
 $ git switch develop
 $ git pull
-$ git checkout -b myfeature develop
-Switched to a new branch "myfeature"
+$ git checkout -b vX.Y.Z_feature develop
+Switched to a new branch "vX.Y.Z_feature"
 ...
+do work
+....
+$ git add .
+$ git commit -a -m "zerzerzerze"
+
 do work
 ....
 $ git add .
@@ -41,11 +46,11 @@ $ git commit -a -m "zerzerzerze"
 ```bash
 $ git checkout develop
 Switched to branch 'develop'
-$ git merge --no-ff myfeature
+$ git merge --no-ff vX.Y.Z_feature
 Updating ea1b82a..05e9557
 (Summary of changes)
-$ git branch -d myfeature
-Deleted branch myfeature (was 05e9557).
+$ git branch -d vX.Y.Z_feature
+Deleted branch vX.Y.Z_feature (was 05e9557).
 $ git push origin develop
 ```
 
