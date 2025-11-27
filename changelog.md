@@ -1,14 +1,42 @@
-## 3.5.0 Add integration URL to Markdown
+## V3.5.1 Fix Issues  [#90] [#88] [#88] 
+
+MAJ V3.5.0 Versions et Aide en ligne
+
+Fix Issue [#90](https://github.com/lephotographelibre/BlueNotebook/issues/90) Integration Modify YT Integration Markdown fragment
+
+Fix Issue [#89](https://github.com/lephotographelibre/BlueNotebook/issues/89) V3.4.1 Notes Panel: Modifier text Search Box
+
+Fix Issue [#88](https://github.com/lephotographelibre/BlueNotebook/issues/88) V3.4.1 Navigation Panel: add emoji refresh "Liste des Tâches @@TODO 🗘"
+
+## V3.5.0 Add integration URL to Markdown
 
 - Based on work <https://github.com/macsplit/urltomarkdown> converted to Python.
 - create test lib  code `bluenotebook/tests/urltomarkdown.py` + tests
 
 ```bash
 pip install requests beautifulsoup4 readability-lxml markdownify validators
+pip install -r requirements.txt
 ```
 
+ - je voudrais mettre en place une nouvelle intégration  "Conversion URL(HTML)-Markdown" qui convertit en Markdown une page HTML soit local soit accessible via une URL.
+- le code généré pour cette exension sera stocké dans le répertoire `bluenotebook/integrations/`
+- tu t'apppuieras au maximun sur le code `bluenotebook/tests/urltomarkdown.py` que j'ai testé et debuggé.
+- un choix de menu sera aujouté dans le menu principal "Intégrations -->Conversion URL(HTML)-Markdown" en dessous "Intégrations -->Conversion PDF-Markdown" 
+- Si dans l'editeur l'utilisateur à déja sélectionne une URL on va l'utiliser et dans tous les cas faire apparaitre une voite de dialogue demandant à l'utilisateur  le "Chemin ou URL:" choisi via un champ de saisie (pour une URL) et un bouton parcourrir dans le cas d'un fichier local (qui fait apparaitre un sélecteur de fichier). Si l'utilisatuer avait sélectionné une URL dans l'editeur c'est cette URL qui apparaitra dans le champ de saisie .
+- dans la boite de dialogue l'utilisateur pourra choisir les options supportées par la librairie `bluenotebook/tests/urltomarkdown.py` via des boites à cocher:
 
+  --Titre  Ajouter le titre en # (défaut: oui)
+  --Liens  Conserver les liens Markdown (défaut: oui)
+  --Nettoyage Utiliser Readability pour nettoyer le contenu (défaut: oui)
+ 
+- On va alors valider l'existance de cette url (distante) ou fichier local (affichage d'une boite de dialogue avec un message d'erreur si problèmes comme fichier non existant, accès interdis URL, etc...)
+- si le fichier local HTML existe ou l'URL existe alors on fera apparaitre un sélecteur de fichier pour choisir le nom et la destination du fichier Markdown à créer. Par defaut on va proposer le répertoire "notes" à la racine du journal.
+- Créer le fichier  (non choisi par l'utilisateur) dans le répertoire (choisi par l'utilisateur)
+- Un fois le ficher créé il sera ouvert dans l'editeur Markdown en ayant sauvegardé le fichier en cours d'édition.
 
+beta1
+
+Cela ne fonctionne pas creectement 
 
 ## V3.4.1 Gitflow test with a fictive feature/change_version_3.4.1
 ## V3.4.0 Start Screen
