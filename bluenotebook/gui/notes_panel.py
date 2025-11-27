@@ -318,7 +318,7 @@ class NotesPanel(QWidget):
         search_layout = QHBoxLayout()
         search_layout.setContentsMargins(5, 5, 5, 5)
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Saisir la chaine à rechercher")
+        self.search_input.setPlaceholderText("Rechercher nom de fichier")
         self.search_input.setClearButtonEnabled(True)
         search_layout.addWidget(self.search_input)
 
