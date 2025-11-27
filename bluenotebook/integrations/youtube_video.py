@@ -173,7 +173,7 @@ def generate_youtube_markdown_block(details: dict) -> str:
     Génère le fragment Markdown complet pour une vidéo ou une playlist YouTube.
     """
     if details["type"] == "video":
-        tags = f"@@Video @@Youtube {details['title']} [Voir sur YouTube : {details['url']}]({details['url']})"
+        tags = f"@@Youtube {details['title']} [Voir sur YouTube : {details['url']}]({details['url']})"
         thumbnail_url = (
             f"https://img.youtube.com/vi/{details['video_id']}/hqdefault.jpg"
         )
