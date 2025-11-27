@@ -27,18 +27,18 @@ git push --set-upstream origin develop
 ```bash
 $ git switch develop
 $ git pull
-$ git checkout -b vX.Y.Z_feature develop
+$ git checkout -b vX.Y.Z_feature develop   !!!!! Attention ne pas oublier develop !!!!
 Switched to a new branch "vX.Y.Z_feature"
 ...
 do work
 ....
 $ git add .
-$ git commit -a -m "zerzerzerze"
+$ git commit -a -m "vX.Y.Z zerzerzerze"
 
 do work
 ....
 $ git add .
-$ git commit -a -m "zerzerzerze"
+$ git commit -a -m "vX.Y.Z zerzerzerze"
 ```
 
 ## Incorporating a finished feature on develop
