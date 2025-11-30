@@ -45,4 +45,14 @@ Pour memoire git checkout -b youtube-transcript-api
 ```
 $ git branch -D youtube-transcript-api  
 ```
+Pour tester une pull request
+# Récupère toutes les branches distantes
+git fetch origin
+# Liste les branches distantes pour vérifier le nom exact
+git branch -r
+# Ensuite checkout de la branche
+git checkout -b nom-branche-local origin/nom-de-la-branche-distante
+
+
+# pour mémoire
 # pip install --upgrade pymupdf --> solve  "import" fitz error
