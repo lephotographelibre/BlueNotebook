@@ -1,3 +1,25 @@
+## V3.5.2 Fix issue [#61] Epub cover & QWebEngineView cache
+
+Fix issue [#61](https://github.com/lephotographelibre/BlueNotebook/issues/60) V3.1.2 Reader: Epub cover image is not found
+#61
+
+### L'explication en bref
+
+Le problème vient de la façon dont les ressources (images, CSS, etc.) sont chargées et mises en cache par le `EpubSchemeHandler`. Ce gestionnaire tente d'être malin en stockant les ressources sous plusieurs chemins possibles (chemin complet, nom de fichier seul, chemins partiels). Cependant, cette stratégie crée une ambiguïté : si plusieurs fichiers dans l'EPUB ont le même nom de fichier (par exemple, `cover.jpg`), seul le *premier* rencontré lors du chargement initial sera stocké sous ce nom.
+
+Dans beaucoup d'EPUBs, l'image de couverture existe en deux exemplaires ou est référencée de deux manières :
+1.  Une version de l'image dans un dossier (ex: `OEBPS/images/cover.jpg`).
+2.  Une référence à cette même image, mais parfois avec un chemin simplifié ou différent dans la page de couverture HTML (ex: `cover.jpg`).
+
+
+### Préconisations
+
+1.  **Simplifier le stockage des ressources :** Au lieu de tenter de deviner tous les chemins partiels possibles pour une ressource, nous allons stocker chaque ressource avec une seule clé : son **chemin canonique complet** tel que défini dans le fichier EPUB (par exemple, `OEBPS/Images/cover.jpg`). Cela élimine tout risque de collision de noms et rend le cache de ressources clair et prévisible.
+
+2.  **Améliorer la recherche de ressources :** Lors d'une requête (par exemple, pour `Images/cover.jpg`), si le chemin exact n'est pas trouvé, nous ne devons pas nous fier à une recherche approximative par nom de fichier. À la place, nous effectuerons une recherche intelligente qui vérifie si le chemin demandé correspond à la *fin* d'un des chemins canoniques que nous avons stockés. Ainsi, une requête pour `Images/cover.jpg` trouvera bien la ressource stockée sous `OEBPS/Images/cover.jpg`.
+
+
+
 ## V3.5.1 Fix Issues  [#90] [#88] [#88] 
 
 MAJ V3.5.0 Versions et Aide en ligne

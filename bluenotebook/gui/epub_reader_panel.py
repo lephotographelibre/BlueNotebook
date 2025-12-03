@@ -71,76 +71,37 @@ class EpubSchemeHandler(QWebEngineUrlSchemeHandler):
         self.resources = {}
 
         if self.book:
+            # Parcourir tous les éléments du livre et les stocker
             for item in self.book.get_items():
-                if item.get_type() in [
-                    ebooklib.ITEM_IMAGE,
-                    ebooklib.ITEM_STYLE,
-                    ebooklib.ITEM_SCRIPT,
-                    ebooklib.ITEM_FONT,
-                ]:
-                    filename = item.get_name().replace("\\", "/")
-                    content = item.get_content()
-
-                    # Stocker avec le chemin complet
-                    self.resources[filename] = content
-
-                    # Stocker avec le nom de base
-                    basename = os.path.basename(filename)
-                    if basename not in self.resources:
-                        self.resources[basename] = content
-
-                    # Stocker avec les chemins partiels
-                    parts = filename.split("/")
-                    for i in range(len(parts)):
-                        partial_path = "/".join(parts[i:])
-                        if partial_path not in self.resources:
-                            self.resources[partial_path] = content
+                # Stocker la ressource en utilisant son chemin canonique comme clé unique.
+                # Cela évite les ambiguïtés et les collisions de noms.
+                # ex: 'OEBPS/Images/cover.jpg'
+                self.resources[item.get_name()] = item.get_content()
 
     def requestStarted(self, request):
         """Gérer les requêtes de ressources."""
         url = request.requestUrl()
-        path = url.path()
+        # Normaliser le chemin demandé en retirant le slash initial
+        path = url.path().lstrip("/")
 
-        if path.startswith("/"):
-            path = path[1:]
+        # Tentative de trouver la ressource avec le chemin exact
+        content = self.resources.get(path)
 
-        path = path.replace("\\", "/")
-
-        # Chercher la ressource avec différentes stratégies
-        content = None
-        found_key = None
-
-        if path in self.resources:
-            content = self.resources[path]
-            found_key = path
-        else:
-            dir_name = os.path.dirname(path)
-            base_name = os.path.basename(path)
-
-            # Stratégie 1: Chercher par nom de fichier dans le même dossier ou similaire
-            for key in self.resources.keys():
-                if key == path:
-                    content = self.resources[key]
-                    found_key = key
-                    break
-                elif os.path.basename(key) == base_name:
-                    key_dir = os.path.dirname(key)
-                    if (
-                        dir_name in key_dir
-                        or key_dir in dir_name
-                        or dir_name == key_dir
-                    ):
-                        content = self.resources[key]
-                        found_key = key
-                        break
-
-            # Stratégie 2: Chercher juste par nom de fichier
-            if not content:
-                for key in self.resources.keys():
-                    if os.path.basename(key) == base_name:
-                        content = self.resources[key]
-                        found_key = key
-                        break
+        # Si le chemin exact n'est pas trouvé (ex: requête pour 'Images/cover.jpg'
+        # alors que la ressource est stockée sous 'OEBPS/Images/cover.jpg'),
+        # on cherche une clé qui se termine par le chemin demandé.
+        # C'est une manière robuste de résoudre les chemins relatifs sans ambiguïté.
+        if content is None:
+            for key, value in self.resources.items():
+                # Utiliser os.path.normpath pour gérer les différences de slashes ( / vs \ )
+                # et s'assurer que la comparaison est fiable.
+                # La normalisation des chemins est implicite avec endswith sur des chemins propres.
+                # On s'assure que les chemins sont propres (pas de './' ou '../' etc.)
+                # en ne stockant que les chemins canoniques.
+                normalized_key = key.replace("\\", "/")
+                if normalized_key.endswith(path):
+                    content = value
+                    break  # On a trouvé une correspondance, on s'arrête.
 
         if content:
             content_type = b"application/octet-stream"
@@ -460,6 +421,11 @@ class EpubReaderPanel(QWidget):
         if not filepath or not os.path.exists(filepath):
             self.show_error("<h1>Fichier non trouvé</h1>")
             return
+
+        # V3.5.1.1 - Correction du problème de cache de couverture EPUB.
+        # Vider le cache HTTP du profil web avant de charger un nouveau document.
+        # Cela force le rechargement de toutes les ressources (images, etc.).
+        self.profile.clearHttpCache()
 
         mime_type, _ = mimetypes.guess_type(filepath)
         file_ext = os.path.splitext(filepath)[1].lower()
