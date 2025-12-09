@@ -1,3 +1,22 @@
+## V4.0.2 i18n Phase1
+
+**Git branch develop**: i18n/V4.0.2_i18n_phase1
+**Commit:** V4.0.2 i18n Phase1
+ 
+**Mise ne place de l'infrastructure pour la traduction. Test à petite éckhelle avant de de généraliser.**
+
+- les outils pyupdate5, lrelease, liguist
+- les règles de traductions (strngs, F*strings, messgaes ligne de commandes
+- English only
+- Focus sur le GUI
+- scripts de trad (dans scripts et update_translations_pyqt5.sh)
+- dans tests testappQt5
+- MAJ de l'environnement Windows Python 3.11.9 testé avec projet tesappQt5
+
+**A voir pour la suite** 
+- la mise en place de la traduction itérative (fichier .ts ecrasé et AMJ update_translations_pyqt5.sh)
+
+
 ## V3.5.2 Fix issue [#61] Epub cover & QWebEngineView cache
 
 Fix issue [#61](https://github.com/lephotographelibre/BlueNotebook/issues/60) V3.1.2 Reader: Epub cover image is not found

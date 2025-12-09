@@ -24,6 +24,7 @@ import json
 from pathlib import Path
 from datetime import date
 from appdirs import user_cache_dir
+from PyQt5.QtCore import QCoreApplication
 
 
 class QuoteFetcher:
@@ -51,7 +52,12 @@ class QuoteFetcher:
                 if data.get("date") == today_str:
                     return data.get("quote"), data.get("author")
             except (json.JSONDecodeError, IOError) as e:
-                print(f"Erreur de lecture du cache : {e}")
+
+                def tr(text):
+                    return QCoreApplication.translate("QuoteFetcher", text)
+
+                error_message = tr("Erreur de lecture du cache : %s") % e
+                print(error_message)
 
         return None, None
 
@@ -80,8 +86,11 @@ class QuoteFetcher:
 
             # Trouver l'auteur
             author_tag = soup.select_one(".quotenav .who a")
-            author = author_tag.get_text(strip=True) if author_tag else "Auteur inconnu"
-
+            author = (
+                author_tag.get_text(strip=True)
+                if author_tag
+                else QCoreApplication.translate("QuoteFetcher", "Auteur inconnu")
+            )
             if quote:
                 # 2. Sauvegarder dans le cache si la récupération a réussi
                 cache_file = QuoteFetcher._get_cache_path()
@@ -96,6 +105,11 @@ class QuoteFetcher:
                 return quote, author
 
         except requests.RequestException as e:
-            print(f"Erreur lors de la récupération de la citation : {e}")
+
+            def tr(text):
+                return QCoreApplication.translate("QuoteFetcher", text)
+
+            error_message = tr("Erreur lors de la récupération de la citation : %s") % e
+            print(error_message)
 
         return None, None

@@ -1,0 +1,1108 @@
+CONVERSION F-STRINGS → self.tr().arg() — VERSION FINALE & SÉCURISÉE
+
+main.py → EXCLU automatiquement
+wrap_fstrings.py → EXCLU automatiquement
+
+markdown_parser.py → 1 f-string(s) convertie(s) :
+  ligne  37 : return f"<p>Erreur de conversion: {e}</p>"
+           → return self.tr("<p>Erreur de conversion: %1</p>").arg(e)
+
+journal_backup_worker.py → 1 f-string(s) convertie(s) :
+  ligne  64 : f"Une erreur est survenue lors de la sauvegarde : {e}"
+           → self.tr("Une erreur est survenue lors de la sauvegarde : %1").arg(e)
+
+tag_indexer.py → 5 f-string(s) convertie(s) :
+  ligne 109 : normalized_tag = f"@@{without_accents.upper()}"
+           → normalized_tag = self.tr("@@%1").arg(without_accents.upper())
+
+  ligne 140 : print(f"❌ Erreur lors de l'indexation des tags : {e}")
+           → print(self.tr("❌ Erreur lors de l'indexation des tags : %1").arg(e))
+
+  ligne 199 : date_str = f"{year}-{month}-{day}"  # Format ISO 8601
+           → date_str = self.tr("%1-%2-%3").arg(year).arg(month).arg(day)  # Format ISO 8601
+
+  ligne 218 : print(f"🚀 Lancement de l'indexation des tags pour : {journal_directory}")
+           → print(self.tr("🚀 Lancement de l'indexation des tags pour : %1").arg(journal_directory))
+
+settings.py → 1 f-string(s) convertie(s) :
+  ligne 134 : print(f"Erreur lors de la sauvegarde des paramètres : {e}")
+           → print(self.tr("Erreur lors de la sauvegarde des paramètres : %1").arg(e))
+
+quote_fetcher.py → 2 f-string(s) convertie(s) :
+  ligne  54 : print(f"Erreur de lecture du cache : {e}")
+           → print(self.tr("Erreur de lecture du cache : %1").arg(e))
+
+  ligne  99 : print(f"Erreur lors de la récupération de la citation : {e}")
+           → print(self.tr("Erreur lors de la récupération de la citation : %1").arg(e))
+
+amazon_books.py → 13 f-string(s) convertie(s) :
+  ligne  40 : domain = f"amazon.{region}"
+           → domain = self.tr("amazon.%1").arg(region)
+
+  ligne  41 : search_url = f"https://www.{domain}/s?k={isbn}&i=stripbooks"
+           → search_url = self.tr("https://www.%1/s?k=%2&i=stripbooks").arg(domain).arg(isbn)
+
+  ligne  54 : # print(f"Recherche sur {search_url}")
+           → # print(self.tr("Recherche sur %1").arg(search_url))
+
+  ligne  82 : product_url = f"https://www.{domain}/dp/{asin}"
+           → product_url = self.tr("https://www.%1/dp/%2").arg(domain).arg(asin)
+
+  ligne  83 : print(f"📚 Amazon ISBN:Lien produit sélectionné: {product_url}")
+           → print(self.tr("📚 Amazon ISBN:Lien produit sélectionné: %1").arg(product_url))
+
+  ligne  94 : print(f"📚 Amazon ISBN:Page produit: {product_url}")
+           → print(self.tr("📚 Amazon ISBN:Page produit: %1").arg(product_url))
+
+  ligne 221 : resume_more_link_markdown = f"[En lire plus...]({product_url})"
+           → resume_more_link_markdown = self.tr("[En lire plus...](%1)").arg(product_url)
+
+  ligne 223 : markdown_fragment = f"""
+           → markdown_fragment = self.tr("\n@@Book **%1 de %2**\n\n![Couverture](%3)\n\n**Auteur :** %4  \n**Éditeur :** %5  \n**Date de publication :** %6  \n**ISBN :** %7  \n**Pages :** %8  \n**Note :** %9  \n\n**Résumé :** %10  \n%11\n\n[Voir sur Amazon.fr](%12)\n").arg(title).arg(author).arg(cover_url).arg(author).arg(publisher).arg(pub_date).arg(isbn).arg(pages).arg(note).arg(resume_text).arg(resume_more_link_markdown).arg(product_url)
+
+url_to_markdown_handler.py → 3 f-string(s) convertie(s) :
+  ligne 102 : f"Le chemin ou l'URL '{url_or_path}' n'est pas valide."
+           → self.tr("Le chemin ou l'URL '%1' n'est pas valide.").arg(url_or_path)
+
+  ligne 114 : url_for_base = f"file://{os.path.abspath(url_or_path)}"
+           → url_for_base = self.tr("file://%1").arg(os.path.abspath(url_or_path))
+
+  ligne 131 : self.signals.error.emit(f"Erreur lors de la conversion : {e}")
+           → self.signals.error.emit(self.tr("Erreur lors de la conversion : %1").arg(e))
+
+gpx_trace_generator.py → 14 f-string(s) convertie(s) :
+  ligne  42 : print(f"Erreur de téléchargement du fichier GPX : {e}")
+           → print(self.tr("Erreur de téléchargement du fichier GPX : %1").arg(e))
+
+  ligne  49 : print(f"Fichier GPX local non trouvé : {gpx_input}")
+           → print(self.tr("Fichier GPX local non trouvé : %1").arg(gpx_input))
+
+  ligne  68 : return f"❌ Carte GPX:Erreur lors de l'analyse du fichier GPX : {e}"
+           → return self.tr("❌ Carte GPX:Erreur lors de l'analyse du fichier GPX : %1").arg(e)
+
+  ligne  88 : gpx_filename = f"{date_str}_{safe_location_name}.gpx"
+           → gpx_filename = self.tr("%1_%2.gpx").arg(date_str).arg(safe_location_name)
+
+  ligne 119 : image_filename = f"{date_str}_{safe_location_name}_gpx.png"
+           → image_filename = self.tr("%1_%2_gpx.png").arg(date_str).arg(safe_location_name)
+
+  ligne 127 : return f"❌ Carte GPX:Erreur lors de la génération de l'image de la carte : {e}"
+           → return self.tr("❌ Carte GPX:Erreur lors de la génération de l'image de la carte : %1").arg(e)
+
+  ligne 130 : location_osm_link = f"https://www.openstreetmap.org/?mlat={start_point.latitude}&mlon={start_point.longitude}#map=16/{start_point.latitude}/{start_point.longitude}"
+           → location_osm_link = self.tr("https://www.openstreetmap.org/?mlat=%1&mlon=%2#map=16/%3/%4").arg(start_point.latitude).arg(start_point.longitude).arg(start_point.latitude).arg(start_point.longitude)
+
+  ligne 131 : alt_text = f"Trace GPX - {location_name}"
+           → alt_text = self.tr("Trace GPX - %1").arg(location_name)
+
+  ligne 132 : relative_image_path = f"images/{image_filename}"
+           → relative_image_path = self.tr("images/%1").arg(image_filename)
+
+  ligne 137 : f"**Trace GPX :** [{location_name}]({location_osm_link})",
+           → self.tr("**Trace GPX :** [%1](%2)").arg(location_name).arg(location_osm_link),
+
+  ligne 144 : caption_parts.append(f"Durée: {duration_str}")
+           → caption_parts.append(self.tr("Durée: %1").arg(duration_str))
+
+  ligne 149 : f"[![{alt_text}]({relative_image_path})]({relative_image_path})\n\n"
+           → self.tr("[![%1](%2)](%3)\n\n").arg(alt_text).arg(relative_image_path).arg(relative_image_path)
+
+  ligne 150 : f"{caption_markdown}"
+           → self.tr("%1").arg(caption_markdown)
+
+  ligne 153 : status_message = f"Trace GPX '{alt_text}' insérée avec succès."
+           → status_message = self.tr("Trace GPX '%1' insérée avec succès.").arg(alt_text)
+
+sun_moon.py → 6 f-string(s) convertie(s) :
+  ligne  63 : f"**Données Astronomiques du jour pour {city}**\n\n"
+           → self.tr("**Données Astronomiques du jour pour %1**\n\n").arg(city)
+
+  ligne  64 : f"🌅 Lever: **{sun_rise_str}** - 🌇 Coucher: **{sun_set_str}**\n"
+           → self.tr("🌅 Lever: **%1** - 🌇 Coucher: **%2**\n").arg(sun_rise_str).arg(sun_set_str)
+
+  ligne  65 : f"{moon_emoji} Phase lune: {moon_phase} ({illumination} illuminée)"
+           → self.tr("%1 Phase lune: %2 (%3 illuminée)").arg(moon_emoji).arg(moon_phase).arg(illumination)
+
+  ligne  79 : url = f"https://aa.usno.navy.mil/api/rstt/oneday?date={today}&coords={latitude},{longitude}&tz=1&dst=true"
+           → url = self.tr("https://aa.usno.navy.mil/api/rstt/oneday?date=%1&coords=%2,%3&tz=1&dst=true").arg(today).arg(latitude).arg(longitude)
+
+  ligne 107 : return None, f"Erreur de requête HTTP : {e}"
+           → return None, self.tr("Erreur de requête HTTP : %1").arg(e)
+
+  ligne 109 : return None, f"Une erreur inattendue est survenue : {e}"
+           → return None, self.tr("Une erreur inattendue est survenue : %1").arg(e)
+
+weather.py → 7 f-string(s) convertie(s) :
+  ligne  90 : print(f"☀️ Récupération des données météo pour {city} ")
+           → print(self.tr("☀️ Récupération des données météo pour %1 ").arg(city))
+
+  ligne 102 : # print(f"Météo URL  : {url}")
+           → # print(self.tr("Météo URL  : %1").arg(url))
+
+  ligne 137 : markdown_fragment = f"**{weather_emoji} Météo pour {city_name} :** {condition_text}, **{temp_c}°C** à {time_str}  Vent : {wind_kph} km/h, Humidité : {humidity}%"
+           → markdown_fragment = self.tr("**%1 Météo pour %2 :** %3, **%4°C** à %5  Vent : %6 km/h, Humidité : %7%").arg(weather_emoji).arg(city_name).arg(condition_text).arg(temp_c).arg(time_str).arg(wind_kph).arg(humidity)
+
+  ligne 144 : return None, f"Ville non trouvée : '{city}'. Vérifiez le nom de la ville."
+           → return None, self.tr("Ville non trouvée : '%1'. Vérifiez le nom de la ville.").arg(city)
+
+  ligne 146 : return None, f"Erreur HTTP : {e}"
+           → return None, self.tr("Erreur HTTP : %1").arg(e)
+
+  ligne 148 : return None, f"Erreur de connexion : {e}"
+           → return None, self.tr("Erreur de connexion : %1").arg(e)
+
+  ligne 150 : return None, f"Une erreur inattendue est survenue : {e}"
+           → return None, self.tr("Une erreur inattendue est survenue : %1").arg(e)
+
+pdf_converter.py → 1 f-string(s) convertie(s) :
+  ligne  78 : f"❌ Conversion PDF: Une erreur est survenue lors de la conversion : {e}\n\nAssurez-vous d'avoir installé 'markitdown[pdf]'."
+           → self.tr("❌ Conversion PDF: Une erreur est survenue lors de la conversion : %1\n\nAssurez-vous d'avoir installé 'markitdown[pdf]'.").arg(e)
+
+url_converter.py → 12 f-string(s) convertie(s) :
+  ligne 106 : md = f"# {page_title}\n\n{md}"
+           → md = self.tr("# %1\n\n%2").arg(page_title).arg(md)
+
+  ligne 143 : return f"https://developer.apple.com/tutorials/data/{'/'.join(parts)}.json"
+           → return self.tr("https://developer.apple.com/tutorials/data/%1.json").arg('/'.join(parts))
+
+  ligne 178 : text += f"```\n{code}\n```\n\n"
+           → text += self.tr("```\n%1\n```\n\n").arg(code)
+
+  ligne 260 : md += f"  * **{headers[i]}**: {row[i]}\n"  # Bold clé pour meilleure lisibilité
+           → md += self.tr("  * **%1**: %2\n").arg(headers[i]).arg(row[i])  # Bold clé pour meilleure lisibilité
+
+  ligne 281 : md = f"# {page_title}\n\n{md}"
+           → md = self.tr("# %1\n\n%2").arg(page_title).arg(md)
+
+  ligne 287 : lambda m: f"]({urljoin(base_url, m.group(1))})",
+           → lambda m: self.tr("](%1)").arg(urljoin(base_url, m.group(1))),
+
+image_exif.py → 19 f-string(s) convertie(s) :
+  ligne 113 : osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
+           → osm_link = self.tr("https://www.openstreetmap.org/?mlat=%1&mlon=%2#map=16/%3/%4").arg(lat).arg(lon).arg(lat).arg(lon)
+
+  ligne 114 : caption_parts.append(f'<a href="{osm_link}">{location_name}</a>')
+           → caption_parts.append(self.tr("<a href="%1">%2</a>").arg(osm_link).arg(location_name))
+
+  ligne 129 : caption_parts.append(f"ƒ/{f_number}")
+           → caption_parts.append(self.tr("ƒ/%1").arg(f_number))
+
+  ligne 134 : speed = f"1/{int(1/exposure_time)}s"
+           → speed = self.tr("1/%1s").arg(int(1/exposure_time))
+
+  ligne 136 : speed = f"{exposure_time}s"
+           → speed = self.tr("%1s").arg(exposure_time)
+
+  ligne 138 : speed = f"{exposure_time}"
+           → speed = self.tr("%1").arg(exposure_time)
+
+  ligne 139 : caption_parts.append(f"Vitesse: {speed}")
+           → caption_parts.append(self.tr("Vitesse: %1").arg(speed))
+
+  ligne 142 : caption_parts.append(f"Focale: {focal_length}mm")
+           → caption_parts.append(self.tr("Focale: %1mm").arg(focal_length))
+
+  ligne 145 : caption_parts.append(f"ISO: {iso}")
+           → caption_parts.append(self.tr("ISO: %1").arg(iso))
+
+  ligne 148 : return f'<figcaption style="font-weight: bold;">{caption_text}</figcaption>'
+           → return self.tr("<figcaption style="font-weight: bold;">%1</figcaption>").arg(caption_text)
+
+  ligne 169 : osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
+           → osm_link = self.tr("https://www.openstreetmap.org/?mlat=%1&mlon=%2#map=16/%3/%4").arg(lat).arg(lon).arg(lat).arg(lon)
+
+  ligne 170 : location_part = f"[{location_name}]({osm_link}) : "
+           → location_part = self.tr("[%1](%2) : ").arg(location_name).arg(osm_link)
+
+  ligne 185 : details_parts.append(f"ƒ/{f_number}")
+           → details_parts.append(self.tr("ƒ/%1").arg(f_number))
+
+  ligne 188 : f"1/{int(1/exposure_time)}s" if exposure_time > 0 else f"{exposure_time}s"
+           → self.tr("1/%1s").arg(int(1/exposure_time)) if exposure_time > 0 else self.tr("%1s").arg(exposure_time)
+
+  ligne 190 : details_parts.append(f"Vitesse: {speed}")
+           → details_parts.append(self.tr("Vitesse: %1").arg(speed))
+
+  ligne 192 : details_parts.append(f"Focale: {focal_length}mm")
+           → details_parts.append(self.tr("Focale: %1mm").arg(focal_length))
+
+  ligne 194 : details_parts.append(f"ISO: {iso}")
+           → details_parts.append(self.tr("ISO: %1").arg(iso))
+
+  ligne 197 : return f"{location_part}**{details_text}**"
+           → return self.tr("%1**%2**").arg(location_part).arg(details_text)
+
+gps_map_generator.py → 1 f-string(s) convertie(s) :
+  ligne  77 : print(f"Erreur lors de la création de la carte : {e}")
+           → print(self.tr("Erreur lors de la création de la carte : %1").arg(e))
+
+gps_map_handler.py → 7 f-string(s) convertie(s) :
+  ligne  61 : image_filename = f"{timestamp}_carte_{safe_location_name}.png"
+           → image_filename = self.tr("%1_carte_%2.png").arg(timestamp).arg(safe_location_name)
+
+  ligne  74 : relative_image_path = f"images/{image_filename}"
+           → relative_image_path = self.tr("images/%1").arg(image_filename)
+
+  ligne  76 : f"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=16/{lat}/{lon}"
+           → self.tr("https://www.openstreetmap.org/?mlat=%1&mlon=%2#map=16/%3/%4").arg(lat).arg(lon).arg(lat).arg(lon)
+
+  ligne  78 : alt_text = f"Carte de {location_name}, coordonnées {lat}, {lon}"
+           → alt_text = self.tr("Carte de %1, coordonnées %2, %3").arg(location_name).arg(lat).arg(lon)
+
+  ligne  81 : f"[![{alt_text}]({relative_image_path})]({osm_link})\n\n"
+           → self.tr("[![%1](%2)](%3)\n\n").arg(alt_text).arg(relative_image_path).arg(osm_link)
+
+  ligne  82 : f"**GPS :** [{lat}, {lon}] - [{location_name}]({osm_link})"
+           → self.tr("**GPS :** [%1, %2] - [%3](%4)").arg(lat).arg(lon).arg(location_name).arg(osm_link)
+
+  ligne  85 : status_message = f"Carte pour '{location_name}' insérée avec succès."
+           → status_message = self.tr("Carte pour '%1' insérée avec succès.").arg(location_name)
+
+pdf_exporter.py → 17 f-string(s) convertie(s) :
+  ligne  55 : print(f"⚠️ Erreur de lecture du fichier CSS '{css_path_to_load}': {e}")
+           → print(self.tr("⚠️ Erreur de lecture du fichier CSS '%1': %2").arg(css_path_to_load).arg(e))
+
+  ligne  90 : f'<img src="{image_abs_path}" alt="Image de couverture" style="max-width: 400px; max-height: 400px; width: auto; height: auto;">'
+           → self.tr("<img src="%1" alt="Image de couverture" style="max-width: 400px; max-height: 400px; width: auto; height: auto;">").arg(image_abs_path)
+
+  ligne 103 : f'<p class="cover-tag">Filtré par tag : <strong>{selected_tag}</strong></p>'
+           → self.tr("<p class="cover-tag">Filtré par tag : <strong>%1</strong></p>").arg(selected_tag)
+
+  ligne 108 : cover_page_html = f"""
+           → cover_page_html = self.tr("\n        <div class=\"cover-page\">\n            %1\n            <h1>%2</h1>\n            %3\n            <p class=\"cover-date\">Période du %4 au %5</p>\n            %6\n        </div>\n        ").arg(image_html).arg(options.get(self.tr('title'), self.tr('Journal'))).arg(author_html).arg(options[self.tr('start_date')].toString(self.tr('d MMMM yyyy'))).arg(options[self.tr('end_date')].toString(self.tr('d MMMM yyyy'))).arg(tag_html)
+
+  ligne 122 : all_html_content += f"""
+           → with open(base_css_path, "r", encoding="utf-8") as f:
+
+  ligne 138 : print(f"⚠️ Fichier CSS par défaut non trouvé : {base_css_path}")
+           → all_css = [weasyprint_css, content_css_string]
+
+  ligne 143 : dynamic_css = f"""
+           → 
+
+  ligne 159 : full_html = f"""
+           → self.signals.error.emit(
+
+  ligne 229 : default_filename = f"{clean_filename}.pdf"
+           → else:
+
+  ligne 283 : main_window.statusbar.showMessage(f"Exporté en PDF : {filename}", 3000)
+           → 
+
+  ligne 324 : print(f"⚠️ Erreur de lecture de l'index des tags : {e}")
+           → last_author = main_window.settings_manager.get(self.tr("pdf.last_author"), self.tr(""))
+
+  ligne 397 : print(f"⚠️ Erreur lors du filtrage par tag : {e}")
+           → 
+
+  ligne 437 : print(f"Erreur de lecture du fichier {note_file}: {e}")
+           → main_window.settings_manager.set(self.tr("pdf.last_title"), options[self.tr("title")])
+
+youtube_video.py → 12 f-string(s) convertie(s) :
+  ligne  84 : return f"Impossible de vérifier la vidéo : {e}"
+           → return self.tr("Impossible de vérifier la vidéo : %1").arg(e)
+
+  ligne 168 : return f"Impossible de vérifier la playlist : {e}"
+           → return self.tr("Impossible de vérifier la playlist : %1").arg(e)
+
+  ligne 187 : markdown_block = f"""
+           → markdown_block = self.tr("\n%1\n\n[![%2](%3)](%4)\n").arg(tags).arg(details[self.tr('title')]).arg(thumbnail_url).arg(details[self.tr('url')])
+
+  ligne 249 : print(f"🎥 [Transcript] Recherche de transcription pour la vidéo ID : {video_id}")
+           → transcript_list = ytt_api.list(video_id)
+
+  ligne 255 : f"🎥 [Transcript] Langues disponibles trouvées : {[t.language_code for t in transcript_list]}"
+           → target_transcript = None
+
+  ligne 264 : f"🎥 [Transcript] Transcription trouvée pour la langue : '{lang}'"
+           → print(self.tr("🎥 [Transcript] Pas de transcription pour la langue : '%1'").arg(lang))
+
+  ligne 268 : print(f"🎥 [Transcript] Pas de transcription pour la langue : '{lang}'")
+           → print(
+
+  ligne 291 : print(f"❌ [Transcript] Une erreur est survenue : {e}")
+           → class TranscriptWorker(QRunnable):
+
+epub_exporter.py → 31 f-string(s) convertie(s) :
+  ligne  78 : print(f"Erreur lors du chargement de l'image de couverture : {e}")
+           → print(self.tr("Erreur lors du chargement de l'image de couverture : %1").arg(e))
+
+  ligne 153 : tag_name = f"@@{span.string.strip()}"
+           → tag_name = self.tr("@@%1").arg(span.string.strip())
+
+  ligne 154 : anchor_id = f"tag_anchor_{tag_counter}"
+           → anchor_id = self.tr("tag_anchor_%1").arg(tag_counter)
+
+  ligne 207 : f"Impossible de traiter l'image SVG {original_src}: la bibliothèque 'cairosvg' est requise."
+           → self.tr("Impossible de traiter l'image SVG %1: la bibliothèque 'cairosvg' est requise.").arg(original_src)
+
+  ligne 214 : f"Erreur de conversion SVG pour {original_src}: {svg_error}"
+           → self.tr("Erreur de conversion SVG pour %1: %2").arg(original_src).arg(svg_error)
+
+  ligne 234 : epub_img_filename = f"Images/img_{image_counter}.jpg"
+           → epub_img_filename = self.tr("Images/img_%1.jpg").arg(image_counter)
+
+  ligne 236 : uid=f"img_{image_counter}",
+           → uid=self.tr("img_%1").arg(image_counter),
+
+  ligne 249 : print(f"Impossible de traiter l'image {original_src}: {e}")
+           → print(self.tr("Impossible de traiter l'image %1: %2").arg(original_src).arg(e))
+
+  ligne 270 : book.set_identifier(f"urn:uuid:{datetime.now().strftime('%Y%m%d%H%M%S')}")
+           → book.set_identifier(self.tr("urn:uuid:%1").arg(datetime.now().strftime('%Y%m%d%H%M%S')))
+
+  ligne 307 : file_name = f"chap_{i+1}.xhtml"
+           → file_name = self.tr("chap_%1.xhtml").arg(i+1)
+
+  ligne 332 : anchor_id = f"header_{i+1}_{j}"
+           → anchor_id = self.tr("header_%1_%2").arg(i+1).arg(j)
+
+  ligne 337 : link_href = f"{file_name}#{anchor_id}"
+           → link_href = self.tr("%1#%2").arg(file_name).arg(anchor_id)
+
+  ligne 339 : link_uid = f"link_{i+1}_{j}"
+           → link_uid = self.tr("link_%1_%2").arg(i+1).arg(j)
+
+  ligne 342 : #    f"DEBUG: Création lien - href: {link_href}, title: {link_title}, uid: #{link_uid}"
+           → #    self.tr("DEBUG: Création lien - href: %1, title: %2, uid: #%3").arg(link_href).arg(link_title).arg(link_uid)
+
+  ligne 349 : print(f"DEBUG: Erreur création lien: {link_error}")
+           → print(self.tr("DEBUG: Erreur création lien: %1").arg(link_error))
+
+  ligne 355 : chapter.content = f"<h1>{chapter_title}</h1>{processed_html}"
+           → chapter.content = self.tr("<h1>%1</h1>%2").arg(chapter_title).arg(processed_html)
+
+  ligne 370 : index_content = f"<h1>{index_title}</h1>"
+           → index_content = self.tr("<h1>%1</h1>").arg(index_title)
+
+  ligne 377 : index_content += f"<h2>{tag_name}</h2><ul>"
+           → index_content += self.tr("<h2>%1</h2><ul>").arg(tag_name)
+
+  ligne 381 : f'<li><a href="{link_href}">Page {i+1}</a></li>'
+           → self.tr("<li><a href="%1">Page %2</a></li>").arg(link_href).arg(i+1)
+
+  ligne 393 : #    f"DEBUG: Nombre de chapitres dans toc_structure: {len(toc_structure)}"
+           → #    self.tr("DEBUG: Nombre de chapitres dans toc_structure: %1").arg(len(toc_structure))
+
+  ligne 398 : #    f"DEBUG: Chapitre {idx}: {main_chap.title}, sous-liens: {len(sub_links)}"
+           → #    self.tr("DEBUG: Chapitre %1: %2, sous-liens: %3").arg(idx).arg(main_chap.title).arg(len(sub_links))
+
+  ligne 405 : # print(f"DEBUG: Lien valide: {link.title} -> {link.href}")
+           → # print(self.tr("DEBUG: Lien valide: %1 -> %2").arg(link.title).arg(link.href))
+
+  ligne 408 : print(f"DEBUG: Lien invalide détecté: {link}")
+           → print(self.tr("DEBUG: Lien invalide détecté: %1").arg(link))
+
+  ligne 422 : # print(f"DEBUG: Ajout de l'index des tags: {index_page.title}")
+           → # print(self.tr("DEBUG: Ajout de l'index des tags: %1").arg(index_page.title))
+
+  ligne 465 : # print(f"DEBUG: Écriture de l'EPUB avec {len(book.toc)} entrées dans la TOC")
+           → # print(self.tr("DEBUG: Écriture de l'EPUB avec %1 entrées dans la TOC").arg(len(book.toc)))
+
+  ligne 466 : # print(f"DEBUG: Structure de book.toc: {book.toc}")
+           → # print(self.tr("DEBUG: Structure de book.toc: %1").arg(book.toc))
+
+  ligne 472 : # print(f"DEBUG: Erreur lors de l'écriture: {write_error}")
+           → # print(self.tr("DEBUG: Erreur lors de l'écriture: %1").arg(write_error))
+
+  ligne 484 : f"Impossible de supprimer l'image temporaire : {cleanup_error}"
+           → self.tr("Impossible de supprimer l'image temporaire : %1").arg(cleanup_error)
+
+image_markdown_handler.py → 16 f-string(s) convertie(s) :
+  ligne 159 : osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
+           → osm_link = self.tr("https://www.openstreetmap.org/?mlat=%1&mlon=%2#map=16/%3/%4").arg(lat).arg(lon).arg(lat).arg(lon)
+
+  ligne 160 : location_part = f"[{location_name}]({osm_link}) : "
+           → location_part = self.tr("[%1](%2) : ").arg(location_name).arg(osm_link)
+
+  ligne 173 : details_parts.append(f"ƒ/{f_number}")
+           → details_parts.append(self.tr("ƒ/%1").arg(f_number))
+
+  ligne 176 : f"1/{int(1/exposure_time)}s" if exposure_time > 0 else f"{exposure_time}s"
+           → self.tr("1/%1s").arg(int(1/exposure_time)) if exposure_time > 0 else self.tr("%1s").arg(exposure_time)
+
+  ligne 178 : details_parts.append(f"Vitesse: {speed}")
+           → details_parts.append(self.tr("Vitesse: %1").arg(speed))
+
+  ligne 180 : details_parts.append(f"Focale: {focal_length}mm")
+           → details_parts.append(self.tr("Focale: %1mm").arg(focal_length))
+
+  ligne 182 : details_parts.append(f"ISO: {iso}")
+           → details_parts.append(self.tr("ISO: %1").arg(iso))
+
+  ligne 184 : return f"{location_part}**{details_text}**"
+           → return self.tr("%1**%2**").arg(location_part).arg(details_text)
+
+  ligne 216 : new_filename = f"{timestamp}_{original_filename}"
+           → new_filename = self.tr("%1_%2").arg(timestamp).arg(original_filename)
+
+  ligne 233 : new_filename = f"{timestamp}_{source_file.name}"
+           → new_filename = self.tr("%1_%2").arg(timestamp).arg(source_file.name)
+
+  ligne 241 : relative_path = f"images/{new_filename}"
+           → relative_path = self.tr("images/%1").arg(new_filename)
+
+  ligne 243 : markdown_link = f"[![{alt_text}]({relative_path})]({relative_path})"
+           → markdown_link = self.tr("[![%1](%2)](%3)").arg(alt_text).arg(relative_path).arg(relative_path)
+
+  ligne 256 : editor.insert_text(f"{markdown_link}\n{exif_caption}\n")
+           → editor.insert_text(self.tr("%1\n%2\n").arg(markdown_link).arg(exif_caption))
+
+pdf_viewer.py → 5 f-string(s) convertie(s) :
+  ligne 155 : f"{len(self.all_found_instances)} occurrence(s) trouvée(s) dans l'ensemble du document.",
+           → self.tr("%1 occurrence(s) trouvée(s) dans l'ensemble du document.").arg(len(self.all_found_instances)),
+
+  ligne 293 : str(Path(last_dir) / f"image_{xref}.jpg"),
+           → str(Path(last_dir) / self.tr("image_%1.jpg").arg(xref)),
+
+main_window.py → 69 f-string(s) convertie(s) :
+  ligne 770 : self.setWindowTitle(f"BlueNotebook V{self.app_version} - Éditeur Markdown")
+           → self.setWindowTitle(self.tr("BlueNotebook V%1 - Éditeur Markdown").arg(self.app_version))
+
+  ligne 869 : print(f"✅ Icône chargée : {icon_path}")
+           → print(self.tr("✅ Icône chargée : %1").arg(icon_path))
+
+  ligne 872 : print(f"⚠️ Erreur lors du chargement de {icon_path}: {e}")
+           → print(self.tr("⚠️ Erreur lors du chargement de %1: %2").arg(icon_path).arg(e))
+
+  ligne 1602 : f"Impossible de créer le répertoire de journal par défaut:\n{e}",
+           → self.tr("Impossible de créer le répertoire de journal par défaut:\n%1").arg(e),
+
+  ligne 1609 : print(f"📔 Répertoire du journal: {self.journal_directory}")
+           → print(self.tr("📔 Répertoire du journal: %1").arg(self.journal_directory))
+
+  ligne 1623 : self.journal_dir_label.setText(f"Journal: {self.journal_directory}")
+           → self.journal_dir_label.setText(self.tr("Journal: %1").arg(self.journal_directory))
+
+  ligne 1631 : journal_file_path = self.journal_directory / f"{today_str}.md"
+           → journal_file_path = self.journal_directory / self.tr("%1.md").arg(today_str)
+
+  ligne 1674 : self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename} *")
+           → self.setWindowTitle(self.tr("BlueNotebook V%1 - %2 *").arg(self.app_version).arg(filename))
+
+  ligne 1677 : self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename}")
+           → self.setWindowTitle(self.tr("BlueNotebook V%1 - %2").arg(self.app_version).arg(filename))
+
+  ligne 1687 : self.stats_label.setText(f"{lines} lignes | {words} mots | {chars} caractères")
+           → self.stats_label.setText(self.tr("%1 lignes | %2 mots | %3 caractères").arg(lines).arg(words).arg(chars))
+
+  ligne 1698 : journal_file_path = self.journal_directory / f"{today_str}.md"
+           → journal_file_path = self.journal_directory / self.tr("%1.md").arg(today_str)
+
+  ligne 1742 : f"Le fichier template '{template_name}' est introuvable."
+           → self.tr("Le fichier template '%1' est introuvable.").arg(template_name)
+
+  ligne 1758 : content = f"# {today_str}\n\n"
+           → content = self.tr("# %1\n\n").arg(today_str)
+
+  ligne 1782 : f"Le répertoire du journal est maintenant :\n{self.journal_directory}",
+           → self.tr("Le répertoire du journal est maintenant :\n%1").arg(self.journal_directory),
+
+  ligne 1824 : file_to_save_path = self.journal_directory / f"{today_str}.md"
+           → file_to_save_path = self.journal_directory / self.tr("%1.md").arg(today_str)
+
+  ligne 1837 : QLabel(f"Le fichier journal '{journal_file_path.name}' existe déjà.")
+           → QLabel(self.tr("Le fichier journal '%1' existe déjà.").arg(journal_file_path.name))
+
+  ligne 1910 : f"Modèle sauvegardé : {Path(filename).name}", 3000
+           → self.tr("Modèle sauvegardé : %1").arg(Path(filename).name), 3000
+
+  ligne 1933 : f"Le fichier modèle '{template_name}' est introuvable."
+           → self.tr("Le fichier modèle '%1' est introuvable.").arg(template_name)
+
+  ligne 1969 : self._show_transient_save_status(f"Fichier sauvegardé : {filename}")
+           → self._show_transient_save_status(self.tr("Fichier sauvegardé : %1").arg(filename))
+
+  ligne 1988 : self._show_transient_save_status(f"Contenu ajouté à : {filename}")
+           → self._show_transient_save_status(self.tr("Contenu ajouté à : %1").arg(filename))
+
+  ligne 2013 : default_filename = f"BlueNotebook-{clean_filename}-{date_str}.html"
+           → default_filename = self.tr("BlueNotebook-%1-%2.html").arg(clean_filename).arg(date_str)
+
+  ligne 2032 : self.statusbar.showMessage(f"Exporté en HTML : {filename}", 3000)
+           → self.statusbar.showMessage(self.tr("Exporté en HTML : %1").arg(filename), 3000)
+
+  ligne 2059 : f"Le journal a été exporté avec succès au format {file_type} dans :\n{file_path}",
+           → self.tr("Le journal a été exporté avec succès au format %1 dans :\n%2").arg(file_type).arg(file_path),
+
+  ligne 2068 : f"Une erreur est survenue lors de la création du fichier :\n{error_message}",
+           → self.tr("Une erreur est survenue lors de la création du fichier :\n%1").arg(error_message),
+
+  ligne 2138 : url = f"file:///{os.path.abspath(help_file_path)}"
+           → url = self.tr("file:///%1").arg(os.path.abspath(help_file_path))
+
+  ligne 2144 : f"Le fichier d'aide n'a pas été trouvé:\n{help_file_path}",
+           → self.tr("Le fichier d'aide n'a pas été trouvé:\n%1").arg(help_file_path),
+
+  ligne 2154 : f"""<h2> BlueNotebook V{self.app_version}</h2>
+           → self.tr("<h2> BlueNotebook V%1</h2>\n                <h2>_____________________________________________________________</h2>\n        <p><b>Éditeur de journal personnel </b></p>      \n        <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,\n        développé avec PyQt5 et QWebEngine.</p>\n        <p>A partir d'une idée initiale de Jendrik Seipp <a href=\"https://github.com/jendrikseipp/rednotebook\">RedNotebook</a> </p>\n        <h2>_____________________________________________________________</h2>\n        <p><b>Fonctionnalités :</b></p>\n        <ul>\n        <li>Gestion d'un journal Personnel</li>\n        <li>Navigation simple dans les notes du journal</li>\n        <li>Sauvegarde/Restauration Journal</li>\n        <li>Édition avec coloration syntaxique </li>\n        <li>Aperçu HTML en temps réel</li>\n        <li>Export HTML/PDF du journal complet ou partiel</li>\n        <li>Gestion de Templates personnalisables</li>\n        <li>Gestion de tags / Recherche par tags</li>\n        <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>\n        <li>Lecteur EPUB/PDF intégré avec recherche</li>\n        <li>Gestion de tâches / TODO Listes</li>\n        </ul>\n        <h2>_____________________________________________________________</h2>\n        <p>Dépôt GitHub : <a href=\"https://github.com/lephotographelibre/BlueNotebook\">BlueNotebook</a></p>\n        <p>Licence : <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU GPLv3</a></p>\n        <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>").arg(self.app_version)
+
+  ligne 2299 : f"<blockquote><i>« {self.daily_quote} »</i></blockquote>"
+           → video_url = self.tr("")
+
+  ligne 2301 : msg_box.setInformativeText(f"<b>{self.daily_author}</b>")
+           → video_url = selected_text
+
+  ligne 2355 : self.editor.insert_text(f"\n{markdown_block}\n")
+           → lat, lon = None, None
+
+  ligne 2418 : self.editor.insert_text(f"\n{markdown_block}\n")
+           → width, ok = QInputDialog.getInt(
+
+  ligne 2460 : f"Impossible de lire le fichier GPX depuis :\n{gpx_input}",
+           → return
+
+  ligne 2474 : self.editor.insert_text(f"\n{markdown_block}\n")
+           → exif_caption = None
+
+  ligne 2494 : f'<a href="{image_path}" target="_blank">'
+           → else:
+
+  ligne 2495 : f'<img src="{image_path}" width="{width}" alt="Image">'
+           → self.editor.insert_text(img_tag)
+
+  ligne 2496 : f"</a>"
+           → 
+
+  ligne 2514 : figure_html = f'\n<figure style="text-align: center;">\n    {img_tag}\n    {exif_caption}\n</figure>\n'
+           → local_path = Path(link_path)
+
+  ligne 2533 : markdown_link = f"[{link_text}]({link_path})"
+           → self.tr("Fichier hors du journal"),
+
+  ligne 2543 : f"Le fichier local '{link_path}' n'existe pas.",
+           → self.editor.insert_text(markdown_link)
+
+  ligne 2566 : markdown_link = f"[{link_text}]({final_absolute_path})"
+           → dest_path = dest_dir / local_path.name
+
+  ligne 2596 : f"Fichier copié dans {final_relative_path}", 4000
+           → self.tr("Erreur Météo"),
+
+  ligne 2607 : markdown_link = f"🔗 [[[{link_text}]]]({encoded_path})"
+           → has_selection = False
+
+  ligne 2682 : self.editor.insert_text(f"\n{html_fragment}\n")
+           → QMessageBox.critical(self, self.tr("Erreur de recherche"), error_message)
+
+  ligne 2699 : self.editor.insert_text(f"\n{markdown_fragment}\n")
+           → full_transcript_block = transcript_header + transcript
+
+  ligne 2717 : f"Une transcription en '{lang}' existe pour cette vidéo. Voulez-vous l'ajouter ?",
+           → def _start_book_search_flashing(self):
+
+  ligne 2724 : self.editor.insert_text(f"\n{full_transcript_block}\n")
+           → self.book_search_flash_timer.stop()
+
+  ligne 2861 : f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+           → self.stop_task()
+
+  ligne 2863 : print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
+           → 
+
+  ligne 2908 : f"La page a été convertie et sauvegardée dans :\n{output_file_path}",
+           → worker.signals.finished.connect(self.on_pdf_convert_finished)
+
+  ligne 2943 : f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+           → """Synchronise la vue de l'aperçu sur la position actuelle du curseur."""
+
+  ligne 2945 : print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
+           → block = cursor.block()
+
+  ligne 2963 : js_code = f"window.scrollTo(0, document.body.scrollHeight * {relative_pos});"
+           → 
+
+  ligne 3020 : tag_msg = f"{self.tag_index_count} tags"
+           → current_date_obj.day,
+
+  ligne 3021 : full_message = f"Index: {tag_msg}"
+           → )
+
+  ligne 3022 : print(f"✅ {full_message}")
+           → except ValueError:
+
+  ligne 3172 : f"Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
+           → 
+
+  ligne 3183 : style = f"color: {color};"
+           → def _toggle_pdf_status_visibility(self):
+
+  ligne 3195 : self.file_label.setStyleSheet(f"color: {color};")
+           → dialog = PreferencesDialog(self.settings_manager, self)
+
+  ligne 3580 : webbrowser.open(f"file:///{os.path.abspath(file_path)}")
+           → 
+
+outline.py → 1 f-string(s) convertie(s) :
+  ligne 130 : f"""
+           → self.tr("\n            QTreeWidget %1;\n                color: %2;\n                border: none;\n            }}\n            QTreeWidget::item:hover %3;\n            }}\n            QTreeWidget::item:selected %4;\n                color: %5;\n            }}\n            \n            /* Style pour la barre de défilement verticale */\n            QScrollBar:vertical %6}\n            QScrollBar::handle:vertical %7}\n            QScrollBar::handle:vertical:hover %8}\n\n        ").arg({
+
+navigation.py → 1 f-string(s) convertie(s) :
+  ligne 306 : self.tag_search_input.setText(f"@@{tag_name}")
+           → self.tag_search_input.setText(self.tr("@@%1").arg(tag_name))
+
+first_start.py → 3 f-string(s) convertie(s) :
+  ligne 183 : f"Le répertoire '{journal_path.name}' existe déjà et n'est pas vide.\n"
+           → self.tr("Le répertoire '%1' existe déjà et n'est pas vide.\n").arg(journal_path.name)
+
+  ligne 209 : f"Impossible de créer le répertoire de sauvegarde :\n{e}",
+           → self.tr("Impossible de créer le répertoire de sauvegarde :\n%1").arg(e),
+
+preferences_dialog.py → 34 f-string(s) convertie(s) :
+  ligne 142 : f"{self.current_app_font.family()}, {self.current_app_font.pointSize()}pt"
+           → self.tr("%1, %2pt").arg(self.current_app_font.family()).arg(self.current_app_font.pointSize())
+
+  ligne 191 : self.app_font_button.setText(f"{font.family()}, {font.pointSize()}pt")
+           → self.app_font_button.setText(self.tr("%1, %2pt").arg(font.family()).arg(font.pointSize()))
+
+  ligne 286 : self.font_button = QPushButton(f"{font_family}, {font_size}pt")
+           → self.font_button = QPushButton(self.tr("%1, %2pt").arg(font_family).arg(font_size))
+
+  ligne 299 : self.code_font_button = QPushButton(f"{code_font_family}")
+           → self.code_font_button = QPushButton(self.tr("%1").arg(code_font_family))
+
+  ligne 317 : f"{outline_font_family}, {outline_font_size}pt"
+           → self.tr("%1, %2pt").arg(outline_font_family).arg(outline_font_size)
+
+  ligne 449 : button.setStyleSheet(f"background-color: {color_hex};")
+           → button.setStyleSheet(self.tr("background-color: %1;").arg(color_hex))
+
+  ligne 463 : button.setStyleSheet(f"background-color: {color_hex};")
+           → button.setStyleSheet(self.tr("background-color: %1;").arg(color_hex))
+
+  ligne 496 : f"<b>Actuel :</b> {self.selected_html_theme}"
+           → self.tr("<b>Actuel :</b> %1").arg(self.selected_html_theme)
+
+  ligne 532 : f"Le répertoire des thèmes '{css_dir.name}' est introuvable.",
+           → self.tr("Le répertoire des thèmes '%1' est introuvable.").arg(css_dir.name),
+
+  ligne 567 : self.current_pdf_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+           → self.current_pdf_theme_label.setText(self.tr("<b>Actuel :</b> %1").arg(theme_name))
+
+  ligne 572 : self.current_html_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+           → self.current_html_theme_label.setText(self.tr("<b>Actuel :</b> %1").arg(theme_name))
+
+  ligne 595 : f"<b>Actuel :</b> {self.selected_pdf_theme}"
+           → self.tr("<b>Actuel :</b> %1").arg(self.selected_pdf_theme)
+
+  ligne 618 : print(f"Avertissement : le fichier CSS {css_file_path} est introuvable.")
+           → print(self.tr("Avertissement : le fichier CSS %1 est introuvable.").arg(css_file_path))
+
+  ligne 630 : print(f"Avertissement : le fichier CSS {css_file_path} est introuvable.")
+           → print(self.tr("Avertissement : le fichier CSS %1 est introuvable.").arg(css_file_path))
+
+  ligne 808 : self.font_button.setText(f"{font.family()}, {font.pointSize()}pt")
+           → self.font_button.setText(self.tr("%1, %2pt").arg(font.family()).arg(font.pointSize()))
+
+  ligne 822 : self.outline_font_button.setText(f"{font.family()}, {font.pointSize()}pt")
+           → self.outline_font_button.setText(self.tr("%1, %2pt").arg(font.family()).arg(font.pointSize()))
+
+  ligne 833 : button.setStyleSheet(f"background-color: {color.name()};")
+           → button.setStyleSheet(self.tr("background-color: %1;").arg(color.name()))
+
+  ligne 848 : self.astro_lat_edit.setText(f"{location.latitude:.6f}")
+           → self.astro_lat_edit.setText(self.tr("%1").arg(location.latitude))
+
+  ligne 849 : self.astro_lon_edit.setText(f"{location.longitude:.6f}")
+           → self.astro_lon_edit.setText(self.tr("%1").arg(location.longitude))
+
+  ligne 854 : f"Impossible de trouver les coordonnées pour '{city_name}'.",
+           → self.tr("Impossible de trouver les coordonnées pour '%1'.").arg(city_name),
+
+  ligne 885 : theme_file = themes_dir / f"{safe_name}.json"
+           → theme_file = themes_dir / self.tr("%1.json").arg(safe_name)
+
+  ligne 892 : f"Un thème nommé '{safe_name}' existe déjà. Voulez-vous le remplacer?",
+           → self.tr("Un thème nommé '%1' existe déjà. Voulez-vous le remplacer?").arg(safe_name),
+
+  ligne 940 : f"Le thème '{theme_name}' a été sauvegardé avec succès.",
+           → self.tr("Le thème '%1' a été sauvegardé avec succès.").arg(theme_name),
+
+  ligne 1018 : f"{self.current_font.family()}, {self.current_font.pointSize()}pt"
+           → self.tr("%1, %2pt").arg(self.current_font.family()).arg(self.current_font.pointSize())
+
+  ligne 1033 : f"{self.current_outline_font.family()}, {self.current_outline_font.pointSize()}pt"
+           → self.tr("%1, %2pt").arg(self.current_outline_font.family()).arg(self.current_outline_font.pointSize())
+
+  ligne 1094 : button.setStyleSheet(f"background-color: {color.name()};")
+           → button.setStyleSheet(self.tr("background-color: %1;").arg(color.name()))
+
+  ligne 1099 : f"Le thème '{theme_name}' a été appliqué.\nCliquez sur 'Valider' pour enregistrer les modifications.",
+           → self.tr("Le thème '%1' a été appliqué.\nCliquez sur 'Valider' pour enregistrer les modifications.").arg(theme_name),
+
+  ligne 1118 : f"{self.current_font.family()}, {self.current_font.pointSize()}pt"
+           → self.tr("%1, %2pt").arg(self.current_font.family()).arg(self.current_font.pointSize())
+
+  ligne 1131 : f"{self.current_outline_font.family()}, {self.current_outline_font.pointSize()}pt"
+           → self.tr("%1, %2pt").arg(self.current_outline_font.family()).arg(self.current_outline_font.pointSize())
+
+  ligne 1184 : button.setStyleSheet(f"background-color: {color.name()};")
+           → button.setStyleSheet(self.tr("background-color: %1;").arg(color.name()))
+
+  ligne 1191 : self.current_html_theme_label.setText(f"<b>Actuel :</b> {default_html_theme}")
+           → self.current_html_theme_label.setText(self.tr("<b>Actuel :</b> %1").arg(default_html_theme))
+
+notes_panel.py → 49 f-string(s) convertie(s) :
+  ligne 102 : #    f"Setting search text: '{search_text}', clearing expanded_dirs: {self.expanded_dirs}"
+           → #    self.tr("Setting search text: '%1', clearing expanded_dirs: %2").arg(search_text).arg(self.expanded_dirs)
+
+  ligne 117 : # print(f"Matching paths: {self.matching_paths}")
+           → # print(self.tr("Matching paths: %1").arg(self.matching_paths))
+
+  ligne 132 : # print(f"Filter checking: {file_path}, Search: {self.search_text}")
+           → # print(self.tr("Filter checking: %1, Search: %2").arg(file_path).arg(self.search_text))
+
+  ligne 136 : # print(f"Accepted: {file_path} (no search)")
+           → # print(self.tr("Accepted: %1 (no search)").arg(file_path))
+
+  ligne 141 : # print(f"Accepted: {file_path} (direct match)")
+           → # print(self.tr("Accepted: %1 (direct match)").arg(file_path))
+
+  ligne 148 : # print(f"Accepted: {file_path} (parent of match {path})")
+           → # print(self.tr("Accepted: %1 (parent of match %2)").arg(file_path).arg(path))
+
+  ligne 169 : #    f"Accepted: {file_path} (child of expanded matching {parent_path}, parent matches)"
+           → #    self.tr("Accepted: %1 (child of expanded matching %2, parent matches)").arg(file_path).arg(parent_path)
+
+  ligne 173 : #    f"Rejected: {file_path} (child of expanded matching {parent_path}, invalid extension)"
+           → #    self.tr("Rejected: %1 (child of expanded matching %2, invalid extension)").arg(file_path).arg(parent_path)
+
+  ligne 180 : #    f"Accepted: {file_path} (child of expanded {parent_path}, direct match)"
+           → #    self.tr("Accepted: %1 (child of expanded %2, direct match)").arg(file_path).arg(parent_path)
+
+  ligne 187 : #    f"Accepted: {file_path} (child of expanded {parent_path}, parent of match {path})"
+           → #    self.tr("Accepted: %1 (child of expanded %2, parent of match %3)").arg(file_path).arg(parent_path).arg(path)
+
+  ligne 191 : #    f"Rejected: {file_path} (child of expanded {parent_path}, no match)"
+           → #    self.tr("Rejected: %1 (child of expanded %2, no match)").arg(file_path).arg(parent_path)
+
+  ligne 196 : #    f"Rejected: {file_path} (child of expanded {parent_path}, parent not matching)"
+           → #    self.tr("Rejected: %1 (child of expanded %2, parent not matching)").arg(file_path).arg(parent_path)
+
+  ligne 200 : # print(f"Rejected: {file_path}")
+           → # print(self.tr("Rejected: %1").arg(file_path))
+
+  ligne 205 : # print(f"Adding expanded dir: {path}")
+           → # print(self.tr("Adding expanded dir: %1").arg(path))
+
+  ligne 211 : # print(f"Removing expanded dir: {path}")
+           → # print(self.tr("Removing expanded dir: %1").arg(path))
+
+  ligne 231 : # print(f"Has children: {file_path} (child {child_path} accepted)")
+           → # print(self.tr("Has children: %1 (child %2 accepted)").arg(file_path).arg(child_path))
+
+  ligne 234 : # print(f"Child rejected: {child_path} for parent {file_path}")
+           → # print(self.tr("Child rejected: %1 for parent %2").arg(child_path).arg(file_path))
+
+  ligne 237 : # print(f"No children: {file_path} (no filtered children)")
+           → # print(self.tr("No children: %1 (no filtered children)").arg(file_path))
+
+  ligne 333 : self.model.setNameFilters([f"*{ext}" for ext in self.VALID_EXTENSIONS])
+           → self.model.setNameFilters([self.tr("*%1").arg(ext) for ext in self.VALID_EXTENSIONS])
+
+  ligne 530 : # print(f"Expanded parent directory: {parent_path}")
+           → # print(self.tr("Expanded parent directory: %1").arg(parent_path))
+
+  ligne 532 : # print(f"Invalid proxy index for: {parent_path}")
+           → # print(self.tr("Invalid proxy index for: %1").arg(parent_path))
+
+  ligne 535 : # print(f"Invalid source index for: {parent_path}")
+           → # print(self.tr("Invalid source index for: %1").arg(parent_path))
+
+  ligne 547 : # print(f"Ensured visible (collapsed): {current_path}")
+           → # print(self.tr("Ensured visible (collapsed): %1").arg(current_path))
+
+  ligne 549 : # print(f"Ensured visible (file): {current_path}")
+           → # print(self.tr("Ensured visible (file): %1").arg(current_path))
+
+  ligne 552 : # print(f"Invalid proxy index for matching item: {current_path}")
+           → # print(self.tr("Invalid proxy index for matching item: %1").arg(current_path))
+
+  ligne 555 : # print(f"Invalid source index for matching item: {current_path}")
+           → # print(self.tr("Invalid source index for matching item: %1").arg(current_path))
+
+  ligne 570 : # print(f"Double-clicked: {file_path}, is_dir: {self.model.isDir(index)}")
+           → # print(self.tr("Double-clicked: %1, is_dir: %2").arg(file_path).arg(self.model.isDir(index)))
+
+  ligne 574 : # print(f"Collapsing directory: {file_path}")
+           → # print(self.tr("Collapsing directory: %1").arg(file_path))
+
+  ligne 578 : # print(f"Expanding directory: {file_path}")
+           → # print(self.tr("Expanding directory: %1").arg(file_path))
+
+  ligne 595 : # print(f"Directory expanded: {file_path}")
+           → # print(self.tr("Directory expanded: %1").arg(file_path))
+
+  ligne 608 : # print(f"Directory collapsed: {file_path}")
+           → # print(self.tr("Directory collapsed: %1").arg(file_path))
+
+  ligne 716 : file_path = Path(directory_path) / f"{note_name.strip()}.md"
+           → file_path = Path(directory_path) / self.tr("%1.md").arg(note_name.strip())
+
+  ligne 813 : f"Les types valides sont uniquement : {supported_types}",
+           → self.tr("Les types valides sont uniquement : %1").arg(supported_types),
+
+  ligne 826 : f"Le fichier '{filename}' existe déjà dans ce dossier. Voulez-vous le remplacer ?",
+           → self.tr("Le fichier '%1' existe déjà dans ce dossier. Voulez-vous le remplacer ?").arg(filename),
+
+  ligne 855 : # print(f"Prêt à copier : {path}")
+           → # print(self.tr("Prêt à copier : %1").arg(path))
+
+  ligne 861 : # print(f"Prêt à couper : {path}")
+           → # print(self.tr("Prêt à couper : %1").arg(path))
+
+  ligne 883 : f"Un élément nommé '{source_path.name}' existe déjà. Voulez-vous le remplacer ?",
+           → self.tr("Un élément nommé '%1' existe déjà. Voulez-vous le remplacer ?").arg(source_path.name),
+
+  ligne 973 : f"Le dossier '{item_name}' est vide. Voulez-vous le supprimer ?"
+           → self.tr("Le dossier '%1' est vide. Voulez-vous le supprimer ?").arg(item_name)
+
+  ligne 977 : f"Le dossier '{item_name}' n'est pas vide.\n"
+           → self.tr("Le dossier '%1' n'est pas vide.\n").arg(item_name)
+
+  ligne 978 : f"Il contient {sub_folders} sous-dossier(s) et {files} fichier(s).\n\n"
+           → self.tr("Il contient %1 sous-dossier(s) et %2 fichier(s).\n\n").arg(sub_folders).arg(files)
+
+  ligne 992 : f"Êtes-vous sûr de vouloir supprimer le fichier '{item_name}' ?",
+           → self.tr("Êtes-vous sûr de vouloir supprimer le fichier '%1' ?").arg(item_name),
+
+bookmark_handler.py → 5 f-string(s) convertie(s) :
+  ligne  47 : self.signals.error.emit(self.url, f"URL invalide ou inaccessible : {e}")
+           → self.signals.error.emit(self.url, self.tr("URL invalide ou inaccessible : %1").arg(e))
+
+  ligne  49 : self.signals.error.emit(self.url, f"Erreur inattendue : {e}")
+           → self.signals.error.emit(self.url, self.tr("Erreur inattendue : %1").arg(e))
+
+  ligne  73 : markdown_link = f"🔖 [Bookmark | {title} - {url}]({url})"
+           → markdown_link = self.tr("🔖 [Bookmark | %1 - %2](%3)").arg(title).arg(url).arg(url)
+
+  ligne  75 : markdown_link = f"🔖 [Bookmark | {url}]({url})"
+           → markdown_link = self.tr("🔖 [Bookmark | %1](%2)").arg(url).arg(url)
+
+  ligne  87 : f"Impossible de traiter l'URL '{url}':\n{error_message}",
+           → self.tr("Impossible de traiter l'URL '%1':\n%2").arg(url).arg(error_message),
+
+preview.py → 6 f-string(s) convertie(s) :
+  ligne 209 : print(f"⚠️ Erreur: Impossible de charger le fichier CSS '{filename}': {e}")
+           → print(self.tr("⚠️ Erreur: Impossible de charger le fichier CSS '%1': %2").arg(filename).arg(e))
+
+  ligne 210 : return f"/* CSS '{filename}' non trouvé */"
+           → return self.tr("/* CSS '%1' non trouvé */").arg(filename)
+
+  ligne 231 : f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
+           → self.tr("<div class="toc"><h2>📋 Table des matières</h2>%1</div>").arg(self.md.toc)
+
+  ligne 248 : return f"""
+           → return self.tr("\n        <!DOCTYPE html>\n        <html lang=\"fr\">\n        <head>\n            <meta charset=\"UTF-8\">\n            <title>BlueNotebook Preview</title>\n            <style>\n                %1\n            </style>\n        </head>\n        <body>\n            %2\n            %3\n        </body>\n        </html>\n        ").arg(final_css).arg(toc_html).arg(content)
+
+  ligne 341 : f"""
+           → 
+
+  ligne 360 : js_code = f"""
+           → 
+
+custom_widgets.py → 1 f-string(s) convertie(s) :
+  ligne  35 : super().setText(f" {text} ")
+           → super().setText(self.tr(" %1 ").arg(text))
+
+tag_cloud.py → 2 f-string(s) convertie(s) :
+  ligne 144 : link_style = f"text-decoration:none; color:{text_color};"
+           → link_style = self.tr("text-decoration:none; color:%1;").arg(text_color)
+
+  ligne 146 : f'<a href="{tag_name}" style="{link_style} font-size: {font_size}pt;">{tag_name}</a>'
+           → self.tr("<a href="%1" style="%2 font-size: %3pt;">%4</a>").arg(tag_name).arg(link_style).arg(font_size).arg(tag_name)
+
+backup_handler.py → 7 f-string(s) convertie(s) :
+  ligne  45 : backup_filename_default = f"BlueNotebook-Backup-{main_window.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
+           → backup_filename_default = self.tr("BlueNotebook-Backup-%1-%2.zip").arg(main_window.journal_directory.name).arg(datetime.now().strftime('%Y-%m-%d-%H-%M'))
+
+  ligne  83 : current_journal_backup_path = f"{main_window.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+           → current_journal_backup_path = self.tr("%1.bak-%2").arg(main_window.journal_directory).arg(datetime.now().strftime('%Y%m%d-%H%M%S'))
+
+  ligne  90 : f"<p>Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.</p>"
+           → self.tr("<p>Vous êtes sur le point de restaurer le journal depuis '%1'.</p>").arg(os.path.basename(zip_path))
+
+  ligne  91 : f"<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{current_journal_backup_path}</b></p>"
+           → self.tr("<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>%1</b></p>").arg(current_journal_backup_path)
+
+  ligne  92 : f"<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
+           → f"<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
+
+  ligne 116 : print(f"🔁 Restauration du journal terminée avec succès depuis : {zip_path}")
+           → print(self.tr("🔁 Restauration du journal terminée avec succès depuis : %1").arg(zip_path))
+
+editor.py → 33 f-string(s) convertie(s) :
+  ligne 1139 : quote_text = f"> {self.main_window.daily_quote}\n> \n> **{self.main_window.daily_author}**"
+           → quote_text = self.tr("> %1\n> \n> **%2**").arg(self.main_window.daily_quote).arg(self.main_window.daily_author)
+
+  ligne 1152 : self.insert_text(f"**{datetime.now().strftime('%H:%M')}**")
+           → self.insert_text(self.tr("**%1**").arg(datetime.now().strftime('%H))
+
+  ligne 1222 : new_text = f"{leading_whitespace}{new_core_text}{trailing_whitespace}"
+           → new_text = self.tr("%1%2%3").arg(leading_whitespace).arg(new_core_text).arg(trailing_whitespace)
+
+  ligne 1225 : new_core_text = f"{wrapper}{core_text}{wrapper}"
+           → new_core_text = self.tr("%1%2%3").arg(wrapper).arg(core_text).arg(wrapper)
+
+  ligne 1227 : new_text = f"{leading_whitespace}{new_core_text}{trailing_whitespace}"
+           → new_text = self.tr("%1%2%3").arg(leading_whitespace).arg(new_core_text).arg(trailing_whitespace)
+
+  ligne 1240 : new_text = f"```\n{selected_text}\n```"
+           → new_text = self.tr("```\n%1\n```").arg(selected_text)
+
+  ligne 1242 : new_text = f"```\n{selected_text}\n```"
+           → new_text = self.tr("```\n%1\n```").arg(selected_text)
+
+  ligne 1246 : new_text = f"<{selected_text.strip()}>"
+           → new_text = self.tr("<%1>").arg(selected_text.strip())
+
+  ligne 1250 : new_text = f"<!-- {selected_text} -->"
+           → new_text = self.tr("<!-- %1 -->").arg(selected_text)
+
+  ligne 1290 : cursor.insertText(f'<img src="{relative_path}" width="{width}">')
+           → cursor.insertText(self.tr("<img src="%1" width="%2">").arg(relative_path).arg(width))
+
+  ligne 1319 : markdown_link = f"📎 [Attachement | {new_filename}]({new_relative_path})"
+           → markdown_link = self.tr("📎 [Attachement | %1](%2)").arg(new_filename).arg(new_relative_path)
+
+  ligne 1326 : new_text = f"[{text}]({url})"
+           → new_text = self.tr("[%1](%2)").arg(text).arg(url)
+
+  ligne 1341 : return f"attachments/{Path(source_path).name}"
+           → return self.tr("attachments/%1").arg(Path(source_path).name)
+
+  ligne 1357 : new_filename = f"{date_str}_{original_filename}"
+           → new_filename = self.tr("%1_%2").arg(date_str).arg(original_filename)
+
+  ligne 1399 : f"Le type de fichier distant '{content_type}' n'est pas autorisé.\n\n"
+           → self.tr("Le type de fichier distant '%1' n'est pas autorisé.\n\n").arg(content_type)
+
+  ligne 1400 : f"Les types MIME autorisés sont :\n"
+           → f"Les types MIME autorisés sont :\n"
+
+  ligne 1401 : f"{allowed_types_str}",
+           → self.tr("%1").arg(allowed_types_str),
+
+  ligne 1439 : f"Le type de fichier local '{file_extension}' n'est pas autorisé.\n\n"
+           → self.tr("Le type de fichier local '%1' n'est pas autorisé.\n\n").arg(file_extension)
+
+  ligne 1440 : f"Les extensions autorisées sont : {allowed_ext_str}",
+           → self.tr("Les extensions autorisées sont : %1").arg(allowed_ext_str),
+
+  ligne 1444 : return f"attachments/{new_filename}"
+           → return self.tr("attachments/%1").arg(new_filename)
+
+  ligne 1503 : new_filename = f"{timestamp}_{original_filename}"
+           → new_filename = self.tr("%1_%2").arg(timestamp).arg(original_filename)
+
+  ligne 1512 : return f"images/{new_filename}"
+           → return self.tr("images/%1").arg(new_filename)
+
+  ligne 1514 : print(f"Erreur de téléchargement de l'image : {e}")
+           → print(self.tr("Erreur de téléchargement de l'image : %1").arg(e))
+
+  ligne 1529 : new_filename = f"{timestamp}_{source_file.name}"
+           → new_filename = self.tr("%1_%2").arg(timestamp).arg(source_file.name)
+
+  ligne 1535 : return f"images/{new_filename}"
+           → return self.tr("images/%1").arg(new_filename)
+
+  ligne 1537 : print(f"Erreur lors de la copie de l'image : {e}")
+           → print(self.tr("Erreur lors de la copie de l'image : %1").arg(e))
+
+  ligne 1563 : new_lines.append(f"> {line}")
+           → new_lines.append(self.tr("> %1").arg(line))
+
+  ligne 1567 : new_lines.append(f"- [ ] {cleaned_line}")
+           → new_lines.append(self.tr("- [ ] %1").arg(cleaned_line))
+
+  ligne 1570 : new_lines.append(f"- {line}")
+           → new_lines.append(self.tr("- %1").arg(line))
+
+  ligne 1573 : new_lines.append(f"{i + 1}. {line}")
+           → new_lines.append(self.tr("%1. %2").arg(i + 1).arg(line))
+
+  ligne 1599 : f"{key}: {value}" for key, value in properties.items()
+           → self.tr("%1: %2").arg(key).arg(value) for key, value in properties.items()
+
+  ligne 1602 : style_parts.append(f"{selector} {{ {props_str}; }}")
+           → style_parts.append(self.tr("%1 %2; }}").arg(selector).arg({ {props_str))
+
+epub_reader_panel.py → 20 f-string(s) convertie(s) :
+  ligne 197 : suggested_filename = f"{base_name}.jpg"
+           → suggested_filename = self.tr("%1.jpg").arg(base_name)
+
+  ligne 230 : f"Impossible de convertir ou sauvegarder l'image:\n{str(e)}",
+           → self.tr("Impossible de convertir ou sauvegarder l'image:\n%1").arg(str(e)),
+
+  ligne 439 : self.show_error(f"<h1>Erreur lors du chargement du PDF : {str(e)}</h1>")
+           → self.show_error(self.tr("<h1>Erreur lors du chargement du PDF : %1</h1>").arg(str(e)))
+
+  ligne 479 : self.toc_list.addItem(QListWidgetItem(f"{indent}{title}"))
+           → self.toc_list.addItem(QListWidgetItem(self.tr("%1%2").arg(indent).arg(title)))
+
+  ligne 480 : self.chapter_combo.addItem(f"{indent}{title}")
+           → self.chapter_combo.addItem(self.tr("%1%2").arg(indent).arg(title))
+
+  ligne 512 : self.show_error(f"<h1>Erreur lors du chargement de l'EPUB : {str(e)}</h1>")
+           → self.show_error(self.tr("<h1>Erreur lors du chargement de l'EPUB : %1</h1>").arg(str(e)))
+
+  ligne 596 : f"<{tag}[^>]*>(.*?)</{tag}>", content_str, re.IGNORECASE
+           → self.tr("<%1[^>]*>(.*?)</%2>").arg(tag).arg(tag), content_str, re.IGNORECASE
+
+  ligne 615 : lambda m: f'src="epub://epub/{m.group(1)}"',
+           → lambda m: self.tr("src="epub://epub/%1"").arg(m.group(1)),
+
+  ligne 621 : lambda m: f'href="epub://epub/{m.group(1)}"',
+           → lambda m: self.tr("href="epub://epub/%1"").arg(m.group(1)),
+
+  ligne 646 : scroll_script = f"""
+           → scroll_script = self.tr("\n                <script>\n                window.addEventListener('load', function() %1');\n                    if (!element) %2\"]');\n                    }}\n                    if (!element) %3\"]');\n                    }}\n                    if (element) %4});\n                            element.style.backgroundColor = '#ffff99';\n                            setTimeout(function() %5}, 2000);\n                        }}, 100);\n                    }}\n                }});\n                </script>\n                ").arg({
+
+  ligne 669 : styled_content = f"""
+           → self.pdf_viewer.go_to_page(self.current_chapter_index)
+
+  ligne 703 : f"<b>{self.book_title}</b> par <b>{self.book_author}</b> - Chapitre: {current} / {total}"
+           → """Charger un chapitre depuis le combo box."""
+
+  ligne 795 : f"{len(self.search_results)} occurrence(s) trouvée(s) dans l'ensemble du document.",
+           → 
+
+  ligne 828 : js_scroll = f"""
+           → content_length = len(
+
+  ligne 860 : js_scroll = f"""
+           → if entry[2] - 1 <= page_num:
+
+  ligne 930 : self.toc_list.addItem(QListWidgetItem(f"{indent}{entry_title}"))
+           → def has_document(self):
+
+  ligne 931 : self.chapter_combo.addItem(f"{indent}{entry_title}")
+           → """Retourne True si un document est chargé."""
+
+  ligne 934 : self.toc_list.addItem(QListWidgetItem(f"Page {i + 1}"))
+           → )
+
+  ligne 935 : self.chapter_combo.addItem(f"Page {i + 1}")
+           → 
+
+dumppdf.py → 4 f-string(s) convertie(s) :
+  ligne 195 : outfp.write(f'<outline level="{level!r}" title="{s}">\n')
+           → outfp.write(self.tr("<outline level="%1" title="%2">\n").arg(level!r).arg(s))
+
+  ligne 216 : filename = os.path.basename(obj.get("UF") or cast(bytes, obj.get("F")).decode())
+           → filename = os.path.basename(obj.get("UF") or cast(bytes, obj.get("F")).decode())
+
+  ligne 305 : version=f"pdfminer.six v{pdfminer.__version__}",
+           → version=self.tr("pdfminer.six v%1").arg(pdfminer.__version__),
+
+pdf2txt.py → 3 f-string(s) convertie(s) :
+  ligne  27 : raise argparse.ArgumentTypeError(f"invalid float value: {x}")
+           → raise argparse.ArgumentTypeError(self.tr("invalid float value: %1").arg(x))
+
+  ligne  83 : version=f"pdfminer.six v{pdfminer.__version__}",
+           → version=self.tr("pdfminer.six v%1").arg(pdfminer.__version__),
+
+================================================================================
+SUCCÈS → 412 f-string(s) converties avec self.tr().arg()
+================================================================================

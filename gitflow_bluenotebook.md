@@ -59,7 +59,7 @@ $ git push origin develop
 ```bash
 $ git checkout main
 Switched to branch 'main'
-$ git push
+$ git push / pull
 Everything up-to-date
 $ git merge --no-ff develop
 Updating ea1b82a..05e9557

@@ -24,7 +24,7 @@ import json
 import re
 import unicodedata
 from pathlib import Path
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot, QCoreApplication
 
 
 class IndexerSignals(QObject):
@@ -137,7 +137,12 @@ class TagIndexer(QRunnable):
             self.signals.finished.emit(len(unique_tags))
 
         except Exception as e:
-            print(f"❌ Erreur lors de l'indexation des tags : {e}")
+
+            def tr(text):
+                return QCoreApplication.translate("TagIndexer", text)
+
+            error_message = tr("❌ Erreur lors de l'indexation des tags : %s") % e
+            print(error_message)
             self.signals.finished.emit(-1)  # Émettre -1 en cas d'erreur
 
     def _write_text_index(self, all_tags_info):
@@ -215,7 +220,14 @@ class TagIndexer(QRunnable):
 def start_tag_indexing(journal_directory, pool, on_finished):
     """Fonction utilitaire pour démarrer l'indexation."""
     if journal_directory:
-        print(f"🚀 Lancement de l'indexation des tags pour : {journal_directory}")
+
+        def tr(text):
+            return QCoreApplication.translate("tag_indexer", text)
+
+        log_message = (
+            tr("🚀 Lancement de l'indexation des tags pour : %s") % journal_directory
+        )
+        print(log_message)
         indexer = TagIndexer(journal_directory)
         indexer.signals.finished.connect(on_finished)
         pool.start(indexer)

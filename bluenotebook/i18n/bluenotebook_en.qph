@@ -1,0 +1,119 @@
+<!DOCTYPE QPH>
+<QPH language="en">
+<phrase>
+    <source>Une erreur est survenue lors de la sauvegarde : %s</source>
+    <target>An error occurred during the save process: %s</target>
+</phrase>
+<phrase>
+    <source>&lt;p&gt;Erreur de conversion: %s&lt;/p&gt;</source>
+    <target>&lt;p&gt;Conversion error: %s&lt;/p&gt;</target>
+</phrase>
+<phrase>
+    <source>❌ Erreur lors de l&apos;indexation des tags : %s</source>
+    <target>❌ Tag indexing error : %s</target>
+</phrase>
+<phrase>
+    <source>🚀 Lancement de l&apos;indexation des tags pour : %s</source>
+    <target>🚀 Tag indexing is launched  : %s</target>
+</phrase>
+<phrase>
+    <source>Erreur de lecture du cache : %s</source>
+    <target>Cache read error: %s</target>
+</phrase>
+<phrase>
+    <source>Erreur lors de la récupération de la citation : %s</source>
+    <target>Error retrieving quote: %s</target>
+</phrase>
+<phrase>
+    <source>Sauvegarde en cours...</source>
+    <target>Saving in progress...</target>
+</phrase>
+<phrase>
+    <source>Conversion PDF en cours...</source>
+    <target>PDF conversion in progress...</target>
+</phrase>
+<phrase>
+    <source>Récupération de la transcription en cours...</source>
+    <target>Retrieving transcript...</target>
+</phrase>
+<phrase>
+    <source>Vérification de l&apos;URL...</source>
+    <target>URL verification...</target>
+</phrase>
+<phrase>
+    <source>Conversion URL en cours...</source>
+    <target>URL conversion in progress...</target>
+</phrase>
+<phrase>
+    <source>Veuillez patienter...</source>
+    <target>Please wait...</target>
+</phrase>
+<phrase>
+    <source>&lt;p&gt;Erreur de conversion: %s&lt;/p&gt;</source>
+    <target>&lt;p&gt;Conversion error: %s&lt;/p&gt;</target>
+</phrase>
+<phrase>
+    <source>Copier</source>
+    <target>Copy</target>
+</phrase>
+<phrase>
+    <source>Tout sélectionner</source>
+    <target>Select All</target>
+</phrase>
+<phrase>
+    <source>Recharger</source>
+    <target>Reload</target>
+</phrase>
+<phrase>
+    <source>Ouvrir dans le navigateur</source>
+    <target>Open in browser</target>
+</phrase>
+<phrase>
+    <source>Créer un nouveau document</source>
+    <target>Create a new document</target>
+</phrase>
+<phrase>
+    <source>Créer un fichier vierge</source>
+    <target>Create an empty document</target>
+</phrase>
+<phrase>
+    <source>Utiliser un modèle :</source>
+    <target>Use a template:</target>
+</phrase>
+<phrase>
+    <source>Valider</source>
+    <target>Ok</target>
+</phrase>
+<phrase>
+    <source>Annuler</source>
+    <target>Cancel</target>
+</phrase>
+<phrase>
+    <source>Auteur inconnu</source>
+    <target>Unknown author</target>
+</phrase>
+<phrase>
+    <source>Erreur de lecture du cache : %s</source>
+    <target>Cache read error: %s</target>
+</phrase>
+<phrase>
+    <source>Erreur lors de la récupération de la citation : %s</source>
+    <target>Error retrieving quote: %s</target>
+</phrase>
+<phrase>
+    <source>❌ Erreur lors de l&apos;indexation des tags : %1</source>
+    <target>❌ Tag indexing error : %1</target>
+</phrase>
+<phrase>
+    <source>❌ Erreur lors de l&apos;indexation des tags : %s</source>
+    <target>❌ Tag indexing error : %s</target>
+</phrase>
+<phrase>
+    <source>🚀 Lancement de l&apos;indexation des tags pour : %1</source>
+    <target>🚀 Tag indexing is launched  : %1</target>
+</phrase>
+<phrase>
+    <source>🚀 Lancement de l&apos;indexation des tags pour : %s</source>
+    <target>🚀 Tag indexing is launched  : %s</target>
+</phrase>
+</QPH>
