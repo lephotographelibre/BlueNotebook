@@ -1,3 +1,9 @@
+## V4.0.2-2 i18n Phase1 -  fix windows bat
+
+- bat files email
+- run blue .sh --> dir journal
+- erreur fichier doc
+
 ## V4.0.2 i18n Phase1 - Add bluenotebook_wrap folder
 
 The bluenotebook_wrap has been added from the unpublish V4.0.1 version.
