@@ -1,23 +1,6 @@
 #!/usr/bin/env python3
 """
-# Copyright (C) 2025 Jean-Marc DIGNE
-#
-# This program is free software: you can redistribute it and/or modify
-#
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 BlueNotebook - Éditeur de texte Markdown avec PyQt5
-
 Point d'entrée principal de l'application
 """
 
@@ -26,119 +9,158 @@ import os
 import locale as locale_module
 import argparse
 
-# Ajouter le répertoire racine au path pour les imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PyQt5.QtWidgets import QApplication, QDialog
-from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo, Qt
+from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo, QCoreApplication
+from PyQt5.QtGui import QFont
 from gui.main_window import MainWindow
 from core.settings import SettingsManager
 from gui.first_start import FirstStartWindow
 from pathlib import Path
 
 
+class MainContext:
+    """Classe pour traduire les messages console de main()."""
+    
+    @staticmethod
+    def tr(text):
+        """Traduction dans le contexte 'MainContext'."""
+        return QCoreApplication.translate("MainContext", text)
+
+
 def main():
     """Fonction principale"""
-    # --- Gestion du premier démarrage ---
-    # Cette vérification doit se faire avant la création de l'application
-    # pour que la fenêtre de premier démarrage soit modale correctement.
+
+    # --- ÉTAPE 1 : Charger les paramètres SILENCIEUSEMENT (avant QApplication) ---
     settings_manager = SettingsManager()
+
+    # --- ÉTAPE 2 : Déterminer la langue ---
+    forced_locale_str = os.getenv("BLUENOTEBOOK_LOCALE")
+    settings_language = settings_manager.get("app.language")
+
+    locale_to_set = "en_US"  # Fallback de sécurité
+
+    if settings_language:
+        locale_to_set = settings_language
+    elif forced_locale_str:
+        locale_to_set = forced_locale_str
+    else:
+        locale_to_set = "en_US"
+
+    # --- ÉTAPE 3 : Forcer LANG AVANT QApplication ---
+    os.environ["LANG"] = f"{locale_to_set}.UTF-8"
+
+    # --- ÉTAPE 4 : Créer QApplication ---
+    app = QApplication(sys.argv)
+
+    # --- ÉTAPE 5 : Appliquer la police globale AVANT les traductions ---
+    app_font_family = settings_manager.get("ui.app_font_family", app.font().family())
+    app_font_size = settings_manager.get("ui.app_font_size", app.font().pointSize())
+    if app_font_family and app_font_size:
+        global_font = QFont(app_font_family, app_font_size)
+        app.setFont(global_font)
+
+    # --- ÉTAPE 6 : Charger les traductions Qt standard ---
+    locale = QLocale(locale_to_set)
+    
+    qt_translator = QTranslator()
+    qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+    if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
+        app.installTranslator(qt_translator)
+    else:
+        # Essayer le chemin système en fallback
+        system_qt_path = "/usr/share/qt5/translations"
+        if qt_translator.load(locale, "qtbase", "_", system_qt_path):
+            app.installTranslator(qt_translator)
+
+    # --- ÉTAPE 7 : Charger les traductions de l'application BlueNotebook ---
+    app_translator = QTranslator()
+    i18n_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n")
+    
+    if app_translator.load(locale, "bluenotebook", "_", i18n_path):
+        app.installTranslator(app_translator)
+
+    # --- ÉTAPE 8 : MAINTENANT afficher les messages traduits ---
+    tr = MainContext.tr
+    
+    print(tr("🌍 Locale depuis settings.json : '{0}'").format(locale_to_set))
+    print(tr("🌍 Variable LANG forcée à : {0}").format(os.environ['LANG']))
+    print(tr("🌍 Locale Qt effective : {0}").format(locale.name()))
+
+    # --- ÉTAPE 9 : Gestion du premier démarrage ---
     if not settings_manager.settings_path.exists():
-        print("🚀 Premier démarrage de l'application. Lancement de la configuration.")
-        # On a besoin d'une instance d'application pour afficher une boîte de dialogue
-        temp_app = QApplication(sys.argv)
+        print(tr("🚀 Premier démarrage - configuration initiale"))
         first_start_window = FirstStartWindow(settings_manager)
         result = first_start_window.exec_()
 
         if result != QDialog.Accepted:
-            print("👋 Configuration annulée. Fermeture de l'application.")
+            print(tr("👋 Configuration annulée"))
             sys.exit(0)
-        # L'application temporaire n'est plus nécessaire
-        del temp_app
 
-    # Créer l'application Qt
-    app = QApplication(sys.argv)
-
-    # Recharger les paramètres après une éventuelle configuration initiale
-    if not settings_manager.settings:
         settings_manager.load_settings()
 
-    # --- Internationalisation (i18n) des composants standards Qt ---
-    # Cette section doit être après la création de l'app
-    qt_translator = QTranslator()
+        new_language = settings_manager.get("app.language")
+        if new_language and new_language != locale_to_set:
+            print(tr("⚠️ Langue changée en '{0}' - redémarrage recommandé").format(new_language))
 
-    # Priorité : variable d'environnement, sinon locale système
-    forced_locale_str = os.getenv("BLUENOTEBOOK_LOCALE")
-    if "app.language" in settings_manager.settings:
-        locale = QLocale(settings_manager.get("app.language"))
-    elif forced_locale_str:
-        locale = QLocale(forced_locale_str)
-        print(f"🌍 Locale forcée par l'environnement : {locale.name()}")
-    else:
-        locale = QLocale.system()
-        print(f"🌍 Locale système détectée : {locale.name()}")
-
-    # --- Configuration de la locale Python standard (pour time, etc.) ---
-    # Essayer de définir la locale pour tout le programme Python.
-    # Important pour que `locale.getlocale()` fonctionne comme attendu dans les autres modules.
+    # --- ÉTAPE 10 : Configuration locale Python ---
     try:
-        # Utiliser la locale de Qt pour configurer la locale Python
-        locale_str_for_python = locale.name()
-        # Pour Python, il faut souvent un encodage, ex: fr_FR.UTF-8
-        if "." not in locale_str_for_python:
-            locale_str_for_python += ".UTF-8"
-
-        locale_module.setlocale(locale_module.LC_TIME, locale_str_for_python)
-        print(
-            f"✅ Locale Python (LC_TIME) configurée sur : '{locale_module.getlocale(locale_module.LC_TIME)[0]}'"
-        )
+        locale_str_with_encoding = f"{locale.name()}.UTF-8"
+        locale_module.setlocale(locale_module.LC_TIME, locale_str_with_encoding)
+        print(tr("✅ Locale Python (LC_TIME) : '{0}'").format(locale_str_with_encoding))
     except locale_module.Error:
-        print(
-            f"⚠️ Impossible de configurer la locale Python pour '{locale_str_for_python}'. Utilisation de la locale système par défaut."
-        )  # Tenter avec une locale vide comme fallback
-        locale_module.setlocale(locale_module.LC_TIME, "")
+        try:
+            locale_module.setlocale(locale_module.LC_TIME, locale.name())
+            print(tr("✅ Locale Python (LC_TIME) : '{0}' (fallback)").format(locale.name()))
+        except locale_module.Error:
+            print(tr("⚠️ Impossible de configurer la locale Python pour '{0}'").format(locale.name()))
 
-    # Chemin vers les traductions Qt intégrées
-    qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
-    # Charger le fichier de traduction (ex: qtbase_fr.qm)
+    # Afficher messages de chargement des traductions
     if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
-        app.installTranslator(qt_translator)
-        print(f"✅ Traduction Qt standard '{locale.name()}' chargée.")
+        print(tr("✅ Traduction Qt '{0}' chargée depuis '{1}'").format(
+            locale.name(), qt_translation_path
+        ))
     else:
-        print(
-            f"⚠️ Traduction Qt standard pour '{locale.name()}' non trouvée. Les dialogues système resteront en anglais."
-        )
+        print(tr("⚠️ Traduction Qt '{0}' non trouvée").format(locale.name()))
 
-    # Test Grok
-    print(f"Chemin des traductions : {qt_translation_path}")
+    if app_translator.load(locale, "bluenotebook", "_", i18n_path):
+        print(tr("✅ Traduction app '{0}' chargée depuis '{1}'").format(
+            locale.name(), i18n_path
+        ))
+    else:
+        print(tr("⚠️ Traduction app '{0}' non trouvée dans '{1}'").format(
+            locale.name(), i18n_path
+        ))
 
+    # --- ÉTAPE 11 : Arguments en ligne de commande ---
     parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
     parser.add_argument(
-        "-j", "--journal", dest="journal_dir", help="Spécifie le répertoire du journal."
+        "-j", "--journal", dest="journal_dir", 
+        help=tr("Spécifie le répertoire du journal.")
     )
     args = parser.parse_args()
 
     try:
-        # Définir les informations de l'application
-        version = "3.5.2"
+        version = "4.0.2"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
 
-        print(f"🚀 Lancement de l'application BlueNotebook V{version}...")
+        print(tr("🚀 Lancement de BlueNotebook V{0}...").format(version))
 
-        # Créer et afficher la fenêtre principale
         window = MainWindow(journal_dir_arg=args.journal_dir, app_version=version)
         window.show()
 
-        # Lancer la boucle d'événements
         sys.exit(app.exec_())
 
     except KeyboardInterrupt:
-        print("\n👋 Fermeture de l'application...")
+        print(tr("👋 Fermeture de l'application..."))
         sys.exit(0)
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(tr("❌ Erreur: {0}").format(e))
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 
