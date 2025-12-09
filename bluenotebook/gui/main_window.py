@@ -137,6 +137,14 @@ scheme.setFlags(
 )
 QWebEngineUrlScheme.registerScheme(scheme)
 
+from PyQt5.QtCore import QCoreApplication
+
+
+class MainWindowContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("MainWindowContext", text)
+
 
 class BookWorker(QRunnable):
     """Worker pour la recherche de livre Amazon en arrière-plan."""
@@ -197,13 +205,13 @@ class NewFileDialog(QDialog):
         self, parent=None, use_template_by_default=False, default_template_name=None
     ):
         super().__init__(parent)
-        self.setWindowTitle("Créer un nouveau document")
+        self.setWindowTitle(self.tr("Créer un nouveau document"))
         self.setMinimumWidth(400)
 
         self.layout = QVBoxLayout(self)
 
-        self.blank_radio = QRadioButton("Créer un fichier vierge")
-        self.template_radio = QRadioButton("Utiliser un modèle :")
+        self.blank_radio = QRadioButton(self.tr("Créer un fichier vierge"))
+        self.template_radio = QRadioButton(self.tr("Utiliser un modèle :"))
         self.template_combo = QComboBox()
 
         self.layout.addWidget(self.blank_radio)
@@ -213,8 +221,8 @@ class NewFileDialog(QDialog):
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Valider"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.layout.addWidget(self.button_box)
 
         self.blank_radio.toggled.connect(self.template_combo.setDisabled)
@@ -720,17 +728,12 @@ class MainWindow(QMainWindow):
 
         self.settings_manager = SettingsManager()
 
-        # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
-        app = QApplication.instance()
-        if app:
-            app_font_family = self.settings_manager.get(
-                "ui.app_font_family", app.font().family()
-            )
-            app_font_size = self.settings_manager.get(
-                "ui.app_font_size", app.font().pointSize()
-            )
-            global_font = QFont(app_font_family, app_font_size)
-            app.setFont(global_font)
+        # APRÈS (ne rien mettre, ce sera géré dans main.py)
+        # Le bloc est complètement supprimé du __init__ de MainWindow
+
+        # ============================================================
+        # Dans la méthode apply_settings(), MODIFIEZ ce bloc :
+        # ============================================================
 
         # Initialiser le pool de threads pour les tâches de fond
         self.thread_pool = QThreadPool()
@@ -866,13 +869,25 @@ class MainWindow(QMainWindow):
                         from PyQt5.QtWidgets import QApplication
 
                         QApplication.instance().setWindowIcon(icon)
-                        print(f"✅ Icône chargée : {icon_path}")
+                        print(
+                            MainWindowContext.tr("✅ Icône chargée : {0}").format(
+                                icon_path
+                            )
+                        )
                         return
                 except Exception as e:
-                    print(f"⚠️ Erreur lors du chargement de {icon_path}: {e}")
+                    print(
+                        MainWindowContext.tr(
+                            "⚠️ Erreur lors du chargement de {0}: {1}"
+                        ).format(icon_path, e)
+                    )
                     continue
 
-        print("ℹ️ Aucune icône trouvée, utilisation de l'icône par défaut")
+        print(
+            MainWindowContext.tr(
+                "ℹ️ Aucune icône trouvée, utilisation de l'icône par défaut"
+            )
+        )
 
     def setup_menu(self):
         """Configuration du menu"""
@@ -1606,9 +1621,13 @@ class MainWindow(QMainWindow):
         self.journal_directory = journal_path
         self.update_journal_dir_label()
         if self.journal_directory:
-            print(f"📔 Répertoire du journal: {self.journal_directory}")
+            print(
+                MainWindowContext.tr("📔 Répertoire du journal: {0}").format(
+                    self.journal_directory
+                )
+            )
         else:
-            print("⚠️ Répertoire du journal non défini.")
+            print(MainWindowContext.tr("⚠️ Répertoire du journal non défini."))
 
     def setup_notes_panel(self):
         """Configure le panneau de notes avec le répertoire du journal."""
@@ -1721,11 +1740,6 @@ class MainWindow(QMainWindow):
 
         choice, template_name = dialog.get_selection()
         content = ""
-
-        try:
-            locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-        except locale.Error:
-            locale.setlocale(locale.LC_TIME, "")
 
         today_str = datetime.now().strftime("%A %d %B %Y").title()
         timestamp_str = datetime.now().strftime("%H:%M")
@@ -1937,11 +1951,6 @@ class MainWindow(QMainWindow):
                 content = f.read()
 
             # --- V3.3.3 - Remplacement des placeholders pour l'insertion de template ---
-            try:
-                locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-            except locale.Error:
-                locale.setlocale(locale.LC_TIME, "")
-
             today_str = datetime.now().strftime("%A %d %B %Y").title()
             timestamp_str = datetime.now().strftime("%H:%M")
 
@@ -2736,7 +2745,7 @@ class MainWindow(QMainWindow):
         """Callback quand aucune transcription n'est trouvée."""
         self._stop_transcript_flashing()
         # Pas de message à l'utilisateur, c'est un comportement normal
-        print("ℹ️ Aucune transcription trouvée pour cette vidéo.")
+        print(MainWindowContext.tr("ℹ️ Aucune transcription trouvée pour cette vidéo."))
 
     def _start_book_search_flashing(self):
         """Démarre le message clignotant pour la recherche de livre."""
@@ -2860,7 +2869,11 @@ class MainWindow(QMainWindow):
             "Sauvegarde terminée",
             f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
         )
-        print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
+        print(
+            MainWindowContext.tr(
+                "🔁 Sauvegarde du journal terminée avec succès dans : {0}"
+            ).format(backup_path)
+        )
 
     def _on_journal_backup_error(self, error_message: str):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
@@ -2942,7 +2955,11 @@ class MainWindow(QMainWindow):
             "Sauvegarde terminée",
             f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
         )
-        print(f"🔁 Sauvegarde du journal terminée avec succès dans : {backup_path}")
+        print(
+            MainWindowContext.tr(
+                "🔁 Sauvegarde du journal terminée avec succès dans : {0}"
+            ).format(backup_path)
+        )
 
     def _on_journal_backup_error(self, error_message: str):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
@@ -2988,7 +3005,11 @@ class MainWindow(QMainWindow):
     def refresh_tag_index(self, event):
         """Rafraîchit l'index des tags sur demande de l'utilisateur."""
         if event.button() == Qt.LeftButton:
-            print("🔄 Rafraîchissement manuel de l'index des tags demandé.")
+            print(
+                MainWindowContext.tr(
+                    "🔄 Rafraîchissement manuel de l'index des tags demandé."
+                )
+            )
             self.tag_index_status_label.setText("Indexation en cours...")
             # Force l'interface à se mettre à jour avant de lancer la tâche de fond
             self.tag_index_status_label.repaint()
@@ -2997,7 +3018,9 @@ class MainWindow(QMainWindow):
     def refresh_tag_index_from_nav(self):
         """Rafraîchit l'index des tags sur demande depuis le panneau de navigation."""
         print(
-            "🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation."
+            MainWindowContext.tr(
+                "🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation."
+            )
         )
         self.tag_index_status_label.setText("Indexation en cours...")
         self.tag_index_status_label.repaint()
@@ -3019,7 +3042,7 @@ class MainWindow(QMainWindow):
 
         tag_msg = f"{self.tag_index_count} tags"
         full_message = f"Index: {tag_msg}"
-        print(f"✅ {full_message}")
+        print(MainWindowContext.tr("✅ {0}").format(full_message))
         self.tag_index_status_label.setText(full_message)
 
         if not self.settings_manager.get("ui.show_indexing_stats", True):
@@ -3169,7 +3192,9 @@ class MainWindow(QMainWindow):
             self.navigation_panel.highlight_dates(dates_with_notes)
         except FileNotFoundError:
             print(
-                f"Répertoire du journal non trouvé pour la mise à jour du calendrier: {self.journal_directory}"
+                MainWindowContext.tr(
+                    "Répertoire du journal non trouvé pour la mise à jour du calendrier: {0}"
+                ).format(self.journal_directory)
             )
         self.update_tag_cloud()
 
@@ -3399,8 +3424,8 @@ class MainWindow(QMainWindow):
         self.preview_button.blockSignals(False)
         self.reader_button.blockSignals(False)
 
-        # Synchroniser également les actions du menu
-        # V3.3.8 - Appliquer la police globale de l'application depuis les préférences
+        # V3.3.8 - Police globale appliquée au démarrage dans main.py
+        # Ne pas réappliquer ici pour éviter de réinitialiser les traductions
         app = QApplication.instance()
         if app:
             app_font_family = self.settings_manager.get(
@@ -3410,8 +3435,9 @@ class MainWindow(QMainWindow):
                 "ui.app_font_size", app.font().pointSize()
             )
             global_font = QFont(app_font_family, app_font_size)
-            app.setFont(global_font)
-            self.setFont(global_font)  # Appliquer à la fenêtre principale aussi
+            # app.setFont(global_font)  # <-- COMMENTÉ : fait dans main.py
+            self.setFont(global_font)  # Appliquer seulement à la fenêtre principale
+            print(MainWindowContext.tr("ℹ️ Police modifiée --"))
 
         self.toggle_notes_action.setChecked(show_notes)
         self.toggle_navigation_action.setChecked(show_nav)
@@ -3617,7 +3643,11 @@ class MainWindow(QMainWindow):
                     tags_data = json.load(f)
                 tags_list = sorted(tags_data.keys())
             except (json.JSONDecodeError, IOError) as e:
-                print(f"Erreur de lecture de l'index des tags pour le menu: {e}")
+                print(
+                    MainWindowContext.tr(
+                        "Erreur de lecture de l'index des tags pour le menu: {0}"
+                    ).format(e)
+                )
 
         self.navigation_panel.set_available_tags(tags_list)
 

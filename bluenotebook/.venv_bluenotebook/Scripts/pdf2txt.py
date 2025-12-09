@@ -19,12 +19,12 @@ OUTPUT_TYPES = ((".htm", "html"), (".html", "html"), (".xml", "xml"), (".tag", "
 
 
 def float_or_disabled(x: str) -> Optional[float]:
-    if x.lower().strip() == "disabled":
+    if x.lower().strip() == self.tr("disabled"):
         return None
     try:
         return float(x)
     except ValueError:
-        raise argparse.ArgumentTypeError(f"invalid float value: {x}")
+        raise argparse.ArgumentTypeError(self.tr("invalid float value: %1").arg(x))
 
 
 def extract_text(
@@ -46,17 +46,17 @@ def extract_text(
     **kwargs: Any,
 ) -> AnyIO:
     if not files:
-        raise PDFValueError("Must provide files to work upon!")
+        raise PDFValueError(self.tr("Must provide files to work upon!"))
 
-    if output_type == "text" and outfile != "-":
+    if output_type == self.tr("text") and outfile != self.tr("-"):
         for override, alttype in OUTPUT_TYPES:
             if outfile.endswith(override):
                 output_type = alttype
 
-    if outfile == "-":
+    if outfile == self.tr("-"):
         outfp: AnyIO = sys.stdout
         if sys.stdout.encoding is not None:
-            codec = "utf-8"
+            codec = self.tr("utf-8")
     else:
         outfp = open(outfile, "wb")
 
@@ -69,213 +69,213 @@ def extract_text(
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, add_help=True)
     parser.add_argument(
-        "files",
+        self.tr("files"),
         type=str,
         default=None,
-        nargs="+",
-        help="One or more paths to PDF files.",
+        nargs=self.tr("+"),
+        help=self.tr("One or more paths to PDF files."),
     )
 
     parser.add_argument(
-        "--version",
-        "-v",
-        action="version",
-        version=f"pdfminer.six v{pdfminer.__version__}",
+        self.tr("--version"),
+        self.tr("-v"),
+        action=self.tr("version"),
+        version=self.tr("pdfminer.six v%1").arg(pdfminer.__version__),
     )
     parser.add_argument(
-        "--debug",
-        "-d",
+        self.tr("--debug"),
+        self.tr("-d"),
         default=False,
-        action="store_true",
-        help="Use debug logging level.",
+        action=self.tr("store_true"),
+        help=self.tr("Use debug logging level."),
     )
     parser.add_argument(
-        "--disable-caching",
-        "-C",
+        self.tr("--disable-caching"),
+        self.tr("-C"),
         default=False,
-        action="store_true",
-        help="If caching or resources, such as fonts, should be disabled.",
+        action=self.tr("store_true"),
+        help=self.tr("If caching or resources, such as fonts, should be disabled."),
     )
 
     parse_params = parser.add_argument_group(
-        "Parser",
-        description="Used during PDF parsing",
+        self.tr("Parser"),
+        description=self.tr("Used during PDF parsing"),
     )
     parse_params.add_argument(
-        "--page-numbers",
+        self.tr("--page-numbers"),
         type=int,
         default=None,
-        nargs="+",
-        help="A space-seperated list of page numbers to parse.",
+        nargs=self.tr("+"),
+        help=self.tr("A space-seperated list of page numbers to parse."),
     )
     parse_params.add_argument(
-        "--pagenos",
-        "-p",
+        self.tr("--pagenos"),
+        self.tr("-p"),
         type=str,
-        help="A comma-separated list of page numbers to parse. "
-        "Included for legacy applications, use --page-numbers "
-        "for more idiomatic argument entry.",
+        help=self.tr("A comma-separated list of page numbers to parse. ")
+        self.tr("Included for legacy applications, use --page-numbers ")
+        self.tr("for more idiomatic argument entry."),
     )
     parse_params.add_argument(
-        "--maxpages",
-        "-m",
+        self.tr("--maxpages"),
+        self.tr("-m"),
         type=int,
         default=0,
-        help="The maximum number of pages to parse.",
+        help=self.tr("The maximum number of pages to parse."),
     )
     parse_params.add_argument(
-        "--password",
-        "-P",
+        self.tr("--password"),
+        self.tr("-P"),
         type=str,
-        default="",
-        help="The password to use for decrypting PDF file.",
+        default=self.tr(""),
+        help=self.tr("The password to use for decrypting PDF file."),
     )
     parse_params.add_argument(
-        "--rotation",
-        "-R",
+        self.tr("--rotation"),
+        self.tr("-R"),
         default=0,
         type=int,
-        help="The number of degrees to rotate the PDF "
-        "before other types of processing.",
+        help=self.tr("The number of degrees to rotate the PDF ")
+        self.tr("before other types of processing."),
     )
 
     la_params = LAParams()  # will be used for defaults
     la_param_group = parser.add_argument_group(
-        "Layout analysis",
-        description="Used during layout analysis.",
+        self.tr("Layout analysis"),
+        description=self.tr("Used during layout analysis."),
     )
     la_param_group.add_argument(
-        "--no-laparams",
-        "-n",
+        self.tr("--no-laparams"),
+        self.tr("-n"),
         default=False,
-        action="store_true",
-        help="If layout analysis parameters should be ignored.",
+        action=self.tr("store_true"),
+        help=self.tr("If layout analysis parameters should be ignored."),
     )
     la_param_group.add_argument(
-        "--detect-vertical",
-        "-V",
+        self.tr("--detect-vertical"),
+        self.tr("-V"),
         default=la_params.detect_vertical,
-        action="store_true",
-        help="If vertical text should be considered during layout analysis",
+        action=self.tr("store_true"),
+        help=self.tr("If vertical text should be considered during layout analysis"),
     )
     la_param_group.add_argument(
-        "--line-overlap",
+        self.tr("--line-overlap"),
         type=float,
         default=la_params.line_overlap,
-        help="If two characters have more overlap than this they "
-        "are considered to be on the same line. The overlap is specified "
-        "relative to the minimum height of both characters.",
+        help=self.tr("If two characters have more overlap than this they ")
+        self.tr("are considered to be on the same line. The overlap is specified ")
+        self.tr("relative to the minimum height of both characters."),
     )
     la_param_group.add_argument(
-        "--char-margin",
-        "-M",
+        self.tr("--char-margin"),
+        self.tr("-M"),
         type=float,
         default=la_params.char_margin,
-        help="If two characters are closer together than this margin they "
-        "are considered to be part of the same line. The margin is "
-        "specified relative to the width of the character.",
+        help=self.tr("If two characters are closer together than this margin they ")
+        self.tr("are considered to be part of the same line. The margin is ")
+        self.tr("specified relative to the width of the character."),
     )
     la_param_group.add_argument(
-        "--word-margin",
-        "-W",
+        self.tr("--word-margin"),
+        self.tr("-W"),
         type=float,
         default=la_params.word_margin,
-        help="If two characters on the same line are further apart than this "
-        "margin then they are considered to be two separate words, and "
-        "an intermediate space will be added for readability. The margin "
-        "is specified relative to the width of the character.",
+        help=self.tr("If two characters on the same line are further apart than this ")
+        self.tr("margin then they are considered to be two separate words, and ")
+        self.tr("an intermediate space will be added for readability. The margin ")
+        self.tr("is specified relative to the width of the character."),
     )
     la_param_group.add_argument(
-        "--line-margin",
-        "-L",
+        self.tr("--line-margin"),
+        self.tr("-L"),
         type=float,
         default=la_params.line_margin,
-        help="If two lines are close together they are considered to "
-        "be part of the same paragraph. The margin is specified "
-        "relative to the height of a line.",
+        help=self.tr("If two lines are close together they are considered to ")
+        self.tr("be part of the same paragraph. The margin is specified ")
+        self.tr("relative to the height of a line."),
     )
     la_param_group.add_argument(
-        "--boxes-flow",
-        "-F",
+        self.tr("--boxes-flow"),
+        self.tr("-F"),
         type=float_or_disabled,
         default=la_params.boxes_flow,
-        help="Specifies how much a horizontal and vertical position of a "
-        "text matters when determining the order of lines. The value "
-        "should be within the range of -1.0 (only horizontal position "
-        "matters) to +1.0 (only vertical position matters). You can also "
-        "pass `disabled` to disable advanced layout analysis, and "
-        "instead return text based on the position of the bottom left "
-        "corner of the text box.",
+        help=self.tr("Specifies how much a horizontal and vertical position of a ")
+        self.tr("text matters when determining the order of lines. The value ")
+        self.tr("should be within the range of -1.0 (only horizontal position ")
+        self.tr("matters) to +1.0 (only vertical position matters). You can also ")
+        self.tr("pass `disabled` to disable advanced layout analysis, and ")
+        self.tr("instead return text based on the position of the bottom left ")
+        self.tr("corner of the text box."),
     )
     la_param_group.add_argument(
-        "--all-texts",
-        "-A",
+        self.tr("--all-texts"),
+        self.tr("-A"),
         default=la_params.all_texts,
-        action="store_true",
-        help="If layout analysis should be performed on text in figures.",
+        action=self.tr("store_true"),
+        help=self.tr("If layout analysis should be performed on text in figures."),
     )
 
     output_params = parser.add_argument_group(
-        "Output",
-        description="Used during output generation.",
+        self.tr("Output"),
+        description=self.tr("Used during output generation."),
     )
     output_params.add_argument(
-        "--outfile",
-        "-o",
+        self.tr("--outfile"),
+        self.tr("-o"),
         type=str,
-        default="-",
-        help="Path to file where output is written. "
-        'Or "-" (default) to write to stdout.',
+        default=self.tr("-"),
+        help=self.tr("Path to file where output is written. ")
+        self.tr('Or "-" (default) to write to stdout.'),
     )
     output_params.add_argument(
-        "--output_type",
-        "-t",
+        self.tr("--output_type"),
+        self.tr("-t"),
         type=str,
-        default="text",
-        help="Type of output to generate {text,html,xml,tag}.",
+        default=self.tr("text"),
+        help=self.tr("Type of output to generate {text,html,xml,tag}."),
     )
     output_params.add_argument(
-        "--codec",
-        "-c",
+        self.tr("--codec"),
+        self.tr("-c"),
         type=str,
-        default="utf-8",
-        help="Text encoding to use in output file.",
+        default=self.tr("utf-8"),
+        help=self.tr("Text encoding to use in output file."),
     )
     output_params.add_argument(
-        "--output-dir",
-        "-O",
+        self.tr("--output-dir"),
+        self.tr("-O"),
         default=None,
-        help="The output directory to put extracted images in. If not given, "
-        "images are not extracted.",
+        help=self.tr("The output directory to put extracted images in. If not given, ")
+        self.tr("images are not extracted."),
     )
     output_params.add_argument(
-        "--layoutmode",
-        "-Y",
-        default="normal",
+        self.tr("--layoutmode"),
+        self.tr("-Y"),
+        default=self.tr("normal"),
         type=str,
-        help="Type of layout to use when generating html "
-        "{normal,exact,loose}. If normal,each line is"
-        " positioned separately in the html. If exact"
-        ", each character is positioned separately in"
-        " the html. If loose, same result as normal "
-        "but with an additional newline after each "
-        "text line. Only used when output_type is html.",
+        help=self.tr("Type of layout to use when generating html ")
+        self.tr("{normal,exact,loose}. If normal,each line is")
+        self.tr(" positioned separately in the html. If exact")
+        self.tr(", each character is positioned separately in")
+        self.tr(" the html. If loose, same result as normal ")
+        self.tr("but with an additional newline after each ")
+        self.tr("text line. Only used when output_type is html."),
     )
     output_params.add_argument(
-        "--scale",
-        "-s",
+        self.tr("--scale"),
+        self.tr("-s"),
         type=float,
         default=1.0,
-        help="The amount of zoom to use when generating html file. "
-        "Only used when output_type is html.",
+        help=self.tr("The amount of zoom to use when generating html file. ")
+        self.tr("Only used when output_type is html."),
     )
     output_params.add_argument(
-        "--strip-control",
-        "-S",
+        self.tr("--strip-control"),
+        self.tr("-S"),
         default=False,
-        action="store_true",
-        help="Remove control statement from text. "
-        "Only used when output_type is xml.",
+        action=self.tr("store_true"),
+        help=self.tr("Remove control statement from text. ")
+        self.tr("Only used when output_type is xml."),
     )
 
     return parser
@@ -302,9 +302,9 @@ def parse_args(args: Optional[List[str]]) -> argparse.Namespace:
         parsed_args.page_numbers = {x - 1 for x in parsed_args.page_numbers}
 
     if parsed_args.pagenos:
-        parsed_args.page_numbers = {int(x) - 1 for x in parsed_args.pagenos.split(",")}
+        parsed_args.page_numbers = {int(x) - 1 for x in parsed_args.pagenos.split(self.tr(","))}
 
-    if parsed_args.output_type == "text" and parsed_args.outfile != "-":
+    if parsed_args.output_type == self.tr("text") and parsed_args.outfile != self.tr("-"):
         for override, alttype in OUTPUT_TYPES:
             if parsed_args.outfile.endswith(override):
                 parsed_args.output_type = alttype

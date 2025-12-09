@@ -30,72 +30,72 @@ ESC_PAT = re.compile(r'[\000-\037&<>()"\042\047\134\177-\377]')
 
 def escape(s: Union[str, bytes]) -> str:
     if isinstance(s, bytes):
-        us = str(s, "latin-1")
+        us = str(s, self.tr("latin-1"))
     else:
         us = s
-    return ESC_PAT.sub(lambda m: "&#%d;" % ord(m.group(0)), us)
+    return ESC_PAT.sub(lambda m: self.tr("&#%d;") % ord(m.group(0)), us)
 
 
 def dumpxml(out: TextIO, obj: object, codec: Optional[str] = None) -> None:
     if obj is None:
-        out.write("<null />")
+        out.write(self.tr("<null />"))
         return
 
     if isinstance(obj, dict):
-        out.write('<dict size="%d">\n' % len(obj))
+        out.write(self.tr('<dict size="%d">\n') % len(obj))
         for k, v in obj.items():
-            out.write("<key>%s</key>\n" % k)
-            out.write("<value>")
+            out.write(self.tr("<key>%s</key>\n") % k)
+            out.write(self.tr("<value>"))
             dumpxml(out, v)
-            out.write("</value>\n")
-        out.write("</dict>")
+            out.write(self.tr("</value>\n"))
+        out.write(self.tr("</dict>"))
         return
 
     if isinstance(obj, list):
-        out.write('<list size="%d">\n' % len(obj))
+        out.write(self.tr('<list size="%d">\n') % len(obj))
         for v in obj:
             dumpxml(out, v)
-            out.write("\n")
-        out.write("</list>")
+            out.write(self.tr("\n"))
+        out.write(self.tr("</list>"))
         return
 
     if isinstance(obj, (str, bytes)):
-        out.write('<string size="%d">%s</string>' % (len(obj), escape(obj)))
+        out.write(self.tr('<string size="%d">%s</string>') % (len(obj), escape(obj)))
         return
 
     if isinstance(obj, PDFStream):
-        if codec == "raw":
+        if codec == self.tr("raw"):
             # Bug: writing bytes to text I/O. This will raise TypeError.
             out.write(obj.get_rawdata())  # type: ignore [arg-type]
-        elif codec == "binary":
+        elif codec == self.tr("binary"):
             # Bug: writing bytes to text I/O. This will raise TypeError.
             out.write(obj.get_data())  # type: ignore [arg-type]
         else:
-            out.write("<stream>\n<props>\n")
+            out.write(self.tr("<stream>\n<props>\n"))
             dumpxml(out, obj.attrs)
-            out.write("\n</props>\n")
-            if codec == "text":
+            out.write(self.tr("\n</props>\n"))
+            if codec == self.tr("text"):
                 data = obj.get_data()
-                out.write('<data size="%d">%s</data>\n' % (len(data), escape(data)))
-            out.write("</stream>")
+                out.write(self.tr('<data size="%d">%s</data>\n') % (len(data), escape(data)))
+            out.write(self.tr("</stream>"))
         return
 
     if isinstance(obj, PDFObjRef):
-        out.write('<ref id="%d" />' % obj.objid)
+        out.write(self.tr('<ref id="%d" />') % obj.objid)
         return
 
     if isinstance(obj, PSKeyword):
         # Likely bug: obj.name is bytes, not str
-        out.write("<keyword>%s</keyword>" % obj.name)  # type: ignore [str-bytes-safe]
+        out.write(self.tr("<keyword>%s</keyword>") % obj.name)  # type: ignore [str-bytes-safe]
         return
 
     if isinstance(obj, PSLiteral):
         # Likely bug: obj.name may be bytes, not str
-        out.write("<literal>%s</literal>" % obj.name)  # type: ignore [str-bytes-safe]
+        out.write(self.tr("<literal>%s</literal>") % obj.name)  # type: ignore [str-bytes-safe]
         return
 
     if isnumber(obj):
-        out.write("<number>%s</number>" % obj)
+        out.write(self.tr("<number>%s</number>") % obj)
         return
 
     raise PDFTypeError(obj)
@@ -108,15 +108,15 @@ def dumptrailers(
 ) -> None:
     for xref in doc.xrefs:
         if not isinstance(xref, PDFXRefFallback) or show_fallback_xref:
-            out.write("<trailer>\n")
+            out.write(self.tr("<trailer>\n"))
             dumpxml(out, xref.get_trailer())
-            out.write("\n</trailer>\n\n")
+            out.write(self.tr("\n</trailer>\n\n"))
     no_xrefs = all(isinstance(xref, PDFXRefFallback) for xref in doc.xrefs)
     if no_xrefs and not show_fallback_xref:
         msg = (
-            "This PDF does not have an xref. Use --show-fallback-xref if "
-            "you want to display the content of a fallback xref that "
-            "contains all objects."
+            self.tr("This PDF does not have an xref. Use --show-fallback-xref if ")
+            self.tr("you want to display the content of a fallback xref that ")
+            self.tr("contains all objects.")
         )
         logger.warning(msg)
 
@@ -128,7 +128,7 @@ def dumpallobjs(
     show_fallback_xref: bool = False,
 ) -> None:
     visited = set()
-    out.write("<pdf>")
+    out.write(self.tr("<pdf>"))
     for xref in doc.xrefs:
         for objid in xref.get_objids():
             if objid in visited:
@@ -138,13 +138,13 @@ def dumpallobjs(
                 obj = doc.getobj(objid)
                 if obj is None:
                     continue
-                out.write('<object id="%d">\n' % objid)
+                out.write(self.tr('<object id="%d">\n') % objid)
                 dumpxml(out, obj, codec=codec)
-                out.write("\n</object>\n\n")
+                out.write(self.tr("\n</object>\n\n"))
             except PDFObjectNotFound as e:
-                print("not found: %r" % e)
+                print(self.tr("not found: %r") % e)
     dumptrailers(out, doc, show_fallback_xref)
-    out.write("</pdf>")
+    out.write(self.tr("</pdf>"))
 
 
 def dumpoutline(
@@ -171,14 +171,14 @@ def dumpoutline(
         elif isinstance(dest, PSLiteral):
             dest = resolve1(doc.get_dest(dest.name))
         if isinstance(dest, dict):
-            dest = dest["D"]
+            dest = dest[self.tr("D")]
         if isinstance(dest, PDFObjRef):
             dest = dest.resolve()
         return dest
 
     try:
         outlines = doc.get_outlines()
-        outfp.write("<outlines>\n")
+        outfp.write(self.tr("<outlines>\n"))
         for level, title, dest, a, se in outlines:
             pageno = None
             if dest:
@@ -187,20 +187,20 @@ def dumpoutline(
             elif a:
                 action = a
                 if isinstance(action, dict):
-                    subtype = action.get("S")
-                    if subtype and repr(subtype) == "/'GoTo'" and action.get("D"):
-                        dest = resolve_dest(action["D"])
+                    subtype = action.get(self.tr("S"))
+                    if subtype and repr(subtype) == self.tr("/'GoTo'") and action.get(self.tr("D")):
+                        dest = resolve_dest(action[self.tr("D")])
                         pageno = pages[dest[0].objid]
             s = escape(title)
-            outfp.write(f'<outline level="{level!r}" title="{s}">\n')
+            outfp.write(self.tr("<outline level="%1" title="%2">\n").arg(level!r).arg(s))
             if dest is not None:
-                outfp.write("<dest>")
+                outfp.write(self.tr("<dest>"))
                 dumpxml(outfp, dest)
-                outfp.write("</dest>\n")
+                outfp.write(self.tr("</dest>\n"))
             if pageno is not None:
-                outfp.write("<pageno>%r</pageno>\n" % pageno)
-            outfp.write("</outline>\n")
-        outfp.write("</outlines>\n")
+                outfp.write(self.tr("<pageno>%r</pageno>\n") % pageno)
+            outfp.write(self.tr("</outline>\n"))
+        outfp.write(self.tr("</outlines>\n"))
     except PDFNoOutlines:
         pass
     parser.close()
@@ -214,23 +214,23 @@ LITERAL_EMBEDDEDFILE = LIT("EmbeddedFile")
 def extractembedded(fname: str, password: str, extractdir: str) -> None:
     def extract1(objid: int, obj: Dict[str, Any]) -> None:
         filename = os.path.basename(obj.get("UF") or cast(bytes, obj.get("F")).decode())
-        fileref = obj["EF"].get("UF") or obj["EF"].get("F")
+        fileref = obj[self.tr("EF")].get(self.tr("UF")) or obj[self.tr("EF")].get(self.tr("F"))
         fileobj = doc.getobj(fileref.objid)
         if not isinstance(fileobj, PDFStream):
             error_msg = (
-                "unable to process PDF: reference for %r is not a "
-                "PDFStream" % filename
+                self.tr("unable to process PDF: reference for %r is not a ")
+                self.tr("PDFStream") % filename
             )
             raise PDFValueError(error_msg)
-        if fileobj.get("Type") is not LITERAL_EMBEDDEDFILE:
+        if fileobj.get(self.tr("Type")) is not LITERAL_EMBEDDEDFILE:
             raise PDFValueError(
-                "unable to process PDF: reference for %r "
-                "is not an EmbeddedFile" % (filename),
+                self.tr("unable to process PDF: reference for %r ")
+                self.tr("is not an EmbeddedFile") % (filename),
             )
         path = os.path.join(extractdir, "%.6d-%s" % (objid, filename))
         if os.path.exists(path):
-            raise PDFIOError("file exists: %r" % path)
-        print("extracting: %r" % path)
+            raise PDFIOError(self.tr("file exists: %r") % path)
+        print(self.tr("extracting: %r") % path)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         out = open(path, "wb")
         out.write(fileobj.get_data())
@@ -246,7 +246,7 @@ def extractembedded(fname: str, password: str, extractdir: str) -> None:
                 if (
                     objid not in extracted_objids
                     and isinstance(obj, dict)
-                    and obj.get("Type") is LITERAL_FILESPEC
+                    and obj.get(self.tr("Type")) is LITERAL_FILESPEC
                 ):
                     extracted_objids.add(objid)
                     extract1(objid, obj)
@@ -284,128 +284,128 @@ def dumppdf(
     if (not objids) and (not pagenos) and (not dumpall):
         dumptrailers(outfp, doc, show_fallback_xref)
     fp.close()
-    if codec not in ("raw", "binary"):
-        outfp.write("\n")
+    if codec not in (self.tr("raw"), self.tr("binary")):
+        outfp.write(self.tr("\n"))
 
 
 def create_parser() -> ArgumentParser:
     parser = ArgumentParser(description=__doc__, add_help=True)
     parser.add_argument(
-        "files",
+        self.tr("files"),
         type=str,
         default=None,
-        nargs="+",
-        help="One or more paths to PDF files.",
+        nargs=self.tr("+"),
+        help=self.tr("One or more paths to PDF files."),
     )
 
     parser.add_argument(
-        "--version",
-        "-v",
-        action="version",
-        version=f"pdfminer.six v{pdfminer.__version__}",
+        self.tr("--version"),
+        self.tr("-v"),
+        action=self.tr("version"),
+        version=self.tr("pdfminer.six v%1").arg(pdfminer.__version__),
     )
     parser.add_argument(
-        "--debug",
-        "-d",
+        self.tr("--debug"),
+        self.tr("-d"),
         default=False,
-        action="store_true",
-        help="Use debug logging level.",
+        action=self.tr("store_true"),
+        help=self.tr("Use debug logging level."),
     )
     procedure_parser = parser.add_mutually_exclusive_group()
     procedure_parser.add_argument(
-        "--extract-toc",
-        "-T",
+        self.tr("--extract-toc"),
+        self.tr("-T"),
         default=False,
-        action="store_true",
-        help="Extract structure of outline",
+        action=self.tr("store_true"),
+        help=self.tr("Extract structure of outline"),
     )
     procedure_parser.add_argument(
-        "--extract-embedded",
-        "-E",
+        self.tr("--extract-embedded"),
+        self.tr("-E"),
         type=str,
-        help="Extract embedded files",
+        help=self.tr("Extract embedded files"),
     )
 
     parse_params = parser.add_argument_group(
-        "Parser",
-        description="Used during PDF parsing",
+        self.tr("Parser"),
+        description=self.tr("Used during PDF parsing"),
     )
     parse_params.add_argument(
-        "--page-numbers",
+        self.tr("--page-numbers"),
         type=int,
         default=None,
-        nargs="+",
-        help="A space-seperated list of page numbers to parse.",
+        nargs=self.tr("+"),
+        help=self.tr("A space-seperated list of page numbers to parse."),
     )
     parse_params.add_argument(
-        "--pagenos",
-        "-p",
+        self.tr("--pagenos"),
+        self.tr("-p"),
         type=str,
-        help="A comma-separated list of page numbers to parse. Included for "
-        "legacy applications, use --page-numbers for more idiomatic "
-        "argument entry.",
+        help=self.tr("A comma-separated list of page numbers to parse. Included for ")
+        self.tr("legacy applications, use --page-numbers for more idiomatic ")
+        self.tr("argument entry."),
     )
     parse_params.add_argument(
-        "--objects",
-        "-i",
+        self.tr("--objects"),
+        self.tr("-i"),
         type=str,
-        help="Comma separated list of object numbers to extract",
+        help=self.tr("Comma separated list of object numbers to extract"),
     )
     parse_params.add_argument(
-        "--all",
-        "-a",
+        self.tr("--all"),
+        self.tr("-a"),
         default=False,
-        action="store_true",
-        help="If the structure of all objects should be extracted",
+        action=self.tr("store_true"),
+        help=self.tr("If the structure of all objects should be extracted"),
     )
     parse_params.add_argument(
-        "--show-fallback-xref",
-        action="store_true",
-        help="Additionally show the fallback xref. Use this if the PDF "
-        "has zero or only invalid xref's. This setting is ignored if "
-        "--extract-toc or --extract-embedded is used.",
+        self.tr("--show-fallback-xref"),
+        action=self.tr("store_true"),
+        help=self.tr("Additionally show the fallback xref. Use this if the PDF ")
+        self.tr("has zero or only invalid xref's. This setting is ignored if ")
+        self.tr("--extract-toc or --extract-embedded is used."),
     )
     parse_params.add_argument(
-        "--password",
-        "-P",
+        self.tr("--password"),
+        self.tr("-P"),
         type=str,
-        default="",
-        help="The password to use for decrypting PDF file.",
+        default=self.tr(""),
+        help=self.tr("The password to use for decrypting PDF file."),
     )
 
     output_params = parser.add_argument_group(
-        "Output",
-        description="Used during output generation.",
+        self.tr("Output"),
+        description=self.tr("Used during output generation."),
     )
     output_params.add_argument(
-        "--outfile",
-        "-o",
+        self.tr("--outfile"),
+        self.tr("-o"),
         type=str,
-        default="-",
-        help='Path to file where output is written. Or "-" (default) to '
-        "write to stdout.",
+        default=self.tr("-"),
+        help=self.tr('Path to file where output is written. Or "-" (default) to ')
+        self.tr("write to stdout."),
     )
     codec_parser = output_params.add_mutually_exclusive_group()
     codec_parser.add_argument(
-        "--raw-stream",
-        "-r",
+        self.tr("--raw-stream"),
+        self.tr("-r"),
         default=False,
-        action="store_true",
-        help="Write stream objects without encoding",
+        action=self.tr("store_true"),
+        help=self.tr("Write stream objects without encoding"),
     )
     codec_parser.add_argument(
-        "--binary-stream",
-        "-b",
+        self.tr("--binary-stream"),
+        self.tr("-b"),
         default=False,
-        action="store_true",
-        help="Write stream objects with binary encoding",
+        action=self.tr("store_true"),
+        help=self.tr("Write stream objects with binary encoding"),
     )
     codec_parser.add_argument(
-        "--text-stream",
-        "-t",
+        self.tr("--text-stream"),
+        self.tr("-t"),
         default=False,
-        action="store_true",
-        help="Write stream objects as plain text",
+        action=self.tr("store_true"),
+        help=self.tr("Write stream objects as plain text"),
     )
 
     return parser
@@ -418,31 +418,31 @@ def main(argv: Optional[List[str]] = None) -> None:
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    if args.outfile == "-":
+    if args.outfile == self.tr("-"):
         outfp = sys.stdout
     else:
         outfp = open(args.outfile, "w")
 
     if args.objects:
-        objids = [int(x) for x in args.objects.split(",")]
+        objids = [int(x) for x in args.objects.split(self.tr(","))]
     else:
         objids = []
 
     if args.page_numbers:
         pagenos = {x - 1 for x in args.page_numbers}
     elif args.pagenos:
-        pagenos = {int(x) - 1 for x in args.pagenos.split(",")}
+        pagenos = {int(x) - 1 for x in args.pagenos.split(self.tr(","))}
     else:
         pagenos = set()
 
     password = args.password
 
     if args.raw_stream:
-        codec: Optional[str] = "raw"
+        codec: Optional[str] = self.tr("raw")
     elif args.binary_stream:
-        codec = "binary"
+        codec = self.tr("binary")
     elif args.text_stream:
-        codec = "text"
+        codec = self.tr("text")
     else:
         codec = None
 

@@ -7,6 +7,7 @@ set -e # Arrête le script si une commande échoue
 # Se déplacer dans le répertoire du script pour que les chemins relatifs fonctionnent
 cd "$(dirname "$0")"
 
+QT_VERSION="5.15.11"
 PYTHON_VERSION="3.13.5"
 VENV_NAME=".venv_bluenotebook"
 VENV_PATH="$(pyenv root)/versions/${VENV_NAME}"
@@ -60,6 +61,7 @@ fi
 echo "🎨 Détection de l'environnement de bureau pour le thème Qt..."
 PLATFORM_THEME=""
 
+
 # La variable XDG_CURRENT_DESKTOP est la méthode la plus standard.
 # On la vérifie en premier, en ignorant la casse.
 case "${XDG_CURRENT_DESKTOP,,}" in
@@ -79,22 +81,21 @@ else
 fi
 
 
-
 echo "" # Ligne vide pour l'aération
 echo "📘 Lancement de l'application BlueNotebook..."
 
 # locale -c  
 # export BLUENOTEBOOK_LOCALE=de_DE
-export BLUENOTEBOOK_LOCALE="fr_FR.utf8"
 
-# Définir la locale pour l'application, avec 'fr_FR' comme valeur par défaut
-export BLUENOTEBOOK_LOCALE="${BLUENOTEBOOK_LOCALE:-fr_FR}"
+# Pour les tests de langue, décommentez et définissez la locale souhaitée (ex: "en_US", "fr_FR").
+# Cette variable d'environnement a une priorité plus basse que le paramètre dans settings.json.
+# La gestion de la locale est maintenant entièrement déléguée à main.py.
+# export BLUENOTEBOOK_LOCALE="en_US"
+export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
+# export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 
-echo "🌍 Locale forcée pour l'application : '${BLUENOTEBOOK_LOCALE}'"
-# export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
-export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
-# export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
-export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
+export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
+# export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
 
 "$PYTHON_EXEC" main.py "$@"
