@@ -91,11 +91,11 @@ echo "📘 Lancement de l'application BlueNotebook..."
 # Cette variable d'environnement a une priorité plus basse que le paramètre dans settings.json.
 # La gestion de la locale est maintenant entièrement déléguée à main.py.
 # export BLUENOTEBOOK_LOCALE="en_US"
-export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
-# export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
+# export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
+export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
-export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
-# export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
+# export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
+export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
 
 "$PYTHON_EXEC" main.py "$@"

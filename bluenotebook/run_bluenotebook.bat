@@ -83,11 +83,11 @@ if defined CAIRO_PATH (
 )
 
 REM --- Positionnement du repertoire du journal et locale---
-REM set "JOURNAL_DIRECTORY=E:\Dropbox\BlueNotebookJournal"
+set "JOURNAL_DIRECTORY=E:\Dropbox\BlueNotebookJournal"
 REM set "BLUENOTEBOOK_LOCALE=fr_FR"
 "%VENV_PYTHON%" -V
 "%VENV_PYTHON%" -m pip -V
-"%VENV_PYTHON%" -m pip install pyqt5-tools
+REM "%VENV_PYTHON%" -m pip install pyqt5-tools
 REM Transmet tous les arguments (%*) au script python
 call "%VENV_PYTHON%" main.py %*
 if %errorlevel% neq 0 ( echo "ERREUR: Le lancement de main.py a echoue." & pause & exit /b 1 )

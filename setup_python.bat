@@ -16,7 +16,7 @@ dir .venv_bluenotebook
 set "VENV_PYTHON=%CD%\%VENV_NAME%\Scripts\python.exe"
 "%VENV_PYTHON%" -m pip -V
 "%VENV_PYTHON%" -m pip install --upgrade pip
-"%VENV_PYTHON%" -m pip install -r "requirements.txt" 
+"%VENV_PYTHON%" -m pip install -r "..\requirements.txt" 
 "%VENV_PYTHON%" -m pip freeze  
 
 REM # A chaque fois
@@ -28,6 +28,7 @@ REM set VENV_NAME=.venv_bluenotebook
 REM set "PATH=%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;%PATH%"
 REM "%VENV_PYTHON%" -m pip install --upgrade pip
 REM "%VENV_PYTHON%" -m pip install -r "..\requirements.txt"
+REM "%VENV_PYTHON%" -m pip install  pyqt5-tools
 
 
 === activer l'environnement virtuel ====================  
