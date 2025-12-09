@@ -6,6 +6,12 @@ set VENV_NAME=.venv_bluenotebook
 
 echo "--- Lancement de BlueNotebook ---"
 
+
+echo "--- copy requirements.txt ---"
+COPY ..\requirements_windows3.11.9.txt ..\requirements.txt /A /V /Y
+REM COPY ..\freeze_352_requirements.txt ..\requirements.txt /A /V /Y
+
+
 REM --- Verification de l'environnement ---
 
 REM 1. Verifier si pyenv-win est installe
@@ -50,14 +56,14 @@ echo "Verification et installation des dependances depuis requirements.txt..."
 "%VENV_PYTHON%" -m pip install --upgrade pip
 if %errorlevel% neq 0 ( echo "ERREUR: La mise a jour de pip a echoue." & pause & exit /b 1 )
 
+
+
 REM Utilise le requirements.txt situe a la racine du dossier BlueNotebook
 "%VENV_PYTHON%" -m pip install -r "..\requirements.txt"
 if %errorlevel% neq 0 ( echo "ERREUR: L'installation des dependances a echoue." & pause & exit /b 1 )
 
 echo "Dependances a jour."
-
-REM JOURNAL --> E:\Dropbox\BlueNotebookJournalpython -V
-
+ 
 
 REM --- Lancement de l'application ---
 echo "Lancement de l'application BlueNotebook..."
@@ -77,9 +83,11 @@ if defined CAIRO_PATH (
 )
 
 REM --- Positionnement du repertoire du journal et locale---
-set "JOURNAL_DIRECTORY=E:\Dropbox\BlueNotebookJournal"
-set "BLUENOTEBOOK_LOCALE=fr_FR"
-
+REM set "JOURNAL_DIRECTORY=E:\Dropbox\BlueNotebookJournal"
+REM set "BLUENOTEBOOK_LOCALE=fr_FR"
+"%VENV_PYTHON%" -V
+"%VENV_PYTHON%" -m pip -V
+"%VENV_PYTHON%" -m pip install pyqt5-tools
 REM Transmet tous les arguments (%*) au script python
 call "%VENV_PYTHON%" main.py %*
 if %errorlevel% neq 0 ( echo "ERREUR: Le lancement de main.py a echoue." & pause & exit /b 1 )

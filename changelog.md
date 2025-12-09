@@ -1,3 +1,40 @@
+## V4.0.2 i18n Phase1 - Add bluenotebook_wrap folder
+
+The bluenotebook_wrap has been added from the unpublish V4.0.1 version.
+Python Files in this folder has been produced using scripts/wrap_fstrings.py and scripts/wrap_strings.py
+
+### ✅ Mettre en place les b onnes pratiques
+
+1. **Widgets Qt** : Toujours utiliser `self.tr("texte")` ---> scripts/wrap_strings.py
+2. **Variables dynamiques** : Utiliser `.format()` APRÈS `self.tr()`
+   ```python
+   self.tr("Message {0}").format(variable)
+   ```
+   ---> A revoir
+3. **Messages console** : Créer une classe avec méthode `tr()` statique ---> A completer
+4. **Placeholders** : Utiliser `{0}`, `{1}`, `{2}` (jamais de f-strings avant `tr()`)
+5. **Contextes** : Un contexte = une classe (SettingsManager, MainContext, MyWindow)
+6. **Ordre** : Charger traductions AVANT d'afficher messages
+
+## V4.0.2 i18n Phase1
+
+**Git branch develop**: i18n/V4.0.2_i18n_phase1
+**Commit:** V4.0.2 i18n Phase1
+ 
+**Mise ne place de l'infrastructure pour la traduction. Test à petite éckhelle avant de de généraliser.**
+
+- les outils pyupdate5, lrelease, liguist
+- les règles de traductions (strngs, F*strings, messgaes ligne de commandes
+- English only
+- Focus sur le GUI
+- scripts de trad (dans scripts et update_translations_pyqt5.sh)
+- dans tests testappQt5
+- MAJ de l'environnement Windows Python 3.11.9 testé avec projet tesappQt5
+
+**A voir pour la suite** 
+- la mise en place de la traduction itérative (fichier .ts ecrasé et AMJ update_translations_pyqt5.sh)
+
+
 ## V3.5.2 Fix issue [#61] Epub cover & QWebEngineView cache
 
 Fix issue [#61](https://github.com/lephotographelibre/BlueNotebook/issues/60) V3.1.2 Reader: Epub cover image is not found

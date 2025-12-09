@@ -55,4 +55,18 @@ git checkout -b nom-branche-local origin/nom-de-la-branche-distante
 
 
 # pour mémoire
+<<<<<<< HEAD
 # pip install --upgrade pymupdf --> solve  "import" fitz error
+=======
+# pip install --upgrade pymupdf --> solve  "import" fitz error
+=========== traduction Linux ===================
+
+cd bluenotebook
+pyenv activate .venv_bluenotebook
+pylupdate5 -verbose  main.py gui/main_window.py -ts i18n/bluenotebook_en.ts
+pylupdate5 -verbose  core/*.py -ts i18n/bluenotebook_en.ts
+kate i18n/bluenotebook_en.ts  (change @default --> MainContext)
+linguist i18n/bluenotebook_en.ts
+lrelease i18n/bluenotebook_en.ts i18n/bluenotebook_en.qm
+./run_bluenotebook.sh 
+>>>>>>> develop

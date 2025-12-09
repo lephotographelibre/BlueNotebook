@@ -1,0 +1,86 @@
+.
+
+├── core **
+│   ├── * file_handler.py
+│   ├── * __init__.py
+│   ├── * journal_backup_worker.py
+│   ├── * markdown_parser.py
+│   ├── __pycache__
+│   ├── * settings.py
+│   └── * tag_indexer.py
+├── gui
+│   ├── backup_handler.py
+│   ├── bookmark_handler.py
+│   ├── citation_fetcher.py
+│   ├── custom_widgets.py
+│   ├── date_range_dialog.py
+│   ├── editor.py
+│   ├── epub_reader_panel.py
+│   ├── first_start.py
+│   ├── import_file_dialog.py
+│   ├── __init__.py
+│   ├── main_window.py
+│   ├── navigation.py
+│   ├── new_file_dialog.py
+│   ├── new_note_dialog.py
+│   ├── notes_panel.py
+│   ├── outline.py
+│   ├── pdf_converter.py
+│   ├── pdf_viewer.py
+│   ├── preferences_dialog.py
+│   ├── preview.py
+│   ├── __pycache__
+│   │   ├── backup_handler.cpython-313.pyc
+│   │   ├── bookmark_handler.cpython-313.pyc
+│   │   ├── custom_widgets.cpython-311.pyc
+│   │   ├── custom_widgets.cpython-313.pyc
+│   │   ├── date_range_dialog.cpython-313.pyc
+│   │   ├── editor.cpython-311.pyc
+│   │   ├── editor.cpython-313.pyc
+│   │   ├── epub_reader_panel.cpython-313.pyc
+│   │   ├── first_start.cpython-313.pyc
+│   │   ├── import_file_dialog.cpython-313.pyc
+│   │   ├── __init__.cpython-311.pyc
+│   │   ├── __init__.cpython-313.pyc
+│   │   ├── main_window.cpython-311.pyc
+│   │   ├── main_window.cpython-313.pyc
+│   │   ├── navigation.cpython-313.pyc
+│   │   ├── new_file_dialog.cpython-313.pyc
+│   │   ├── new_note_dialog.cpython-313.pyc
+│   │   ├── notes_panel.cpython-313.pyc
+│   │   ├── outline.cpython-313.pyc
+│   │   ├── pdf_viewer.cpython-313.pyc
+│   │   ├── preferences_dialog.cpython-313.pyc
+│   │   ├── preview.cpython-313.pyc
+│   │   ├── search_results_panel.cpython-313.pyc
+│   │   ├── tag_cloud.cpython-313.pyc
+│   │   ├── url_to_markdown_dialog.cpython-313.pyc
+│   │   └── word_cloud.cpython-313.pyc
+│   ├── Pychar
+│   ├── search_results_panel.py
+│   ├── tag_cloud.py
+│   ├── test_editor.py
+│   └── url_to_markdown_dialog.py
+├── integrations
+│   ├── amazon_books.py
+│   ├── epub_exporter.py
+│   ├── gps_map_generator.py
+│   ├── gps_map_handler.py
+│   ├── gpx_trace_generator.py
+│   ├── image_exif.py
+│   ├── image_markdown_handler.py
+│   ├── __init__.py
+│   ├── pdf_converter.py
+│   ├── pdf_exporter.py
+│   ├── sun_moon.py
+│   ├── url_converter.py
+│   ├── url_to_markdown_handler.py
+│   ├── weather.py
+│   └── youtube_video.py
+├── main.py
+
+├── run_bluenotebook.bat
+├── run_bluenotebook.sh
+
+
+ 
