@@ -22,7 +22,7 @@ from pathlib import Path
 
 class MainContext:
     """Classe pour traduire les messages console de main()."""
-    
+
     @staticmethod
     def tr(text):
         """Traduction dans le contexte 'MainContext'."""
@@ -63,7 +63,7 @@ def main():
 
     # --- ÉTAPE 6 : Charger les traductions Qt standard ---
     locale = QLocale(locale_to_set)
-    
+
     qt_translator = QTranslator()
     qt_translation_path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
     if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
@@ -77,15 +77,15 @@ def main():
     # --- ÉTAPE 7 : Charger les traductions de l'application BlueNotebook ---
     app_translator = QTranslator()
     i18n_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "i18n")
-    
+
     if app_translator.load(locale, "bluenotebook", "_", i18n_path):
         app.installTranslator(app_translator)
 
     # --- ÉTAPE 8 : MAINTENANT afficher les messages traduits ---
     tr = MainContext.tr
-    
+
     print(tr("🌍 Locale depuis settings.json : '{0}'").format(locale_to_set))
-    print(tr("🌍 Variable LANG forcée à : {0}").format(os.environ['LANG']))
+    print(tr("🌍 Variable LANG forcée à : {0}").format(os.environ["LANG"]))
     print(tr("🌍 Locale Qt effective : {0}").format(locale.name()))
 
     # --- ÉTAPE 9 : Gestion du premier démarrage ---
@@ -102,7 +102,11 @@ def main():
 
         new_language = settings_manager.get("app.language")
         if new_language and new_language != locale_to_set:
-            print(tr("⚠️ Langue changée en '{0}' - redémarrage recommandé").format(new_language))
+            print(
+                tr("⚠️ Langue changée en '{0}' - redémarrage recommandé").format(
+                    new_language
+                )
+            )
 
     # --- ÉTAPE 10 : Configuration locale Python ---
     try:
@@ -112,37 +116,53 @@ def main():
     except locale_module.Error:
         try:
             locale_module.setlocale(locale_module.LC_TIME, locale.name())
-            print(tr("✅ Locale Python (LC_TIME) : '{0}' (fallback)").format(locale.name()))
+            print(
+                tr("✅ Locale Python (LC_TIME) : '{0}' (fallback)").format(
+                    locale.name()
+                )
+            )
         except locale_module.Error:
-            print(tr("⚠️ Impossible de configurer la locale Python pour '{0}'").format(locale.name()))
+            print(
+                tr("⚠️ Impossible de configurer la locale Python pour '{0}'").format(
+                    locale.name()
+                )
+            )
 
     # Afficher messages de chargement des traductions
     if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
-        print(tr("✅ Traduction Qt '{0}' chargée depuis '{1}'").format(
-            locale.name(), qt_translation_path
-        ))
+        print(
+            tr("✅ Traduction Qt '{0}' chargée depuis '{1}'").format(
+                locale.name(), qt_translation_path
+            )
+        )
     else:
         print(tr("⚠️ Traduction Qt '{0}' non trouvée").format(locale.name()))
 
     if app_translator.load(locale, "bluenotebook", "_", i18n_path):
-        print(tr("✅ Traduction app '{0}' chargée depuis '{1}'").format(
-            locale.name(), i18n_path
-        ))
+        print(
+            tr("✅ Traduction app '{0}' chargée depuis '{1}'").format(
+                locale.name(), i18n_path
+            )
+        )
     else:
-        print(tr("⚠️ Traduction app '{0}' non trouvée dans '{1}'").format(
-            locale.name(), i18n_path
-        ))
+        print(
+            tr("⚠️ Traduction app '{0}' non trouvée dans '{1}'").format(
+                locale.name(), i18n_path
+            )
+        )
 
     # --- ÉTAPE 11 : Arguments en ligne de commande ---
     parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
     parser.add_argument(
-        "-j", "--journal", dest="journal_dir", 
-        help=tr("Spécifie le répertoire du journal.")
+        "-j",
+        "--journal",
+        dest="journal_dir",
+        help=tr("Spécifie le répertoire du journal."),
     )
     args = parser.parse_args()
 
     try:
-        version = "4.0.2"
+        version = "4.0.3"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
@@ -160,6 +180,7 @@ def main():
     except Exception as e:
         print(tr("❌ Erreur: {0}").format(e))
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

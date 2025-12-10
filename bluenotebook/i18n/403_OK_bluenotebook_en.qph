@@ -1,0 +1,169 @@
+<!DOCTYPE QPH>
+<QPH language="en">
+<phrase>
+    <source>🌍 Locale depuis settings.json : &apos;{0}&apos;</source>
+    <target>🌍 Locale from settings.json: &apos;{0}&apos;</target>
+</phrase>
+<phrase>
+    <source>🌍 Variable LANG forcée à : {0}</source>
+    <target>🌍 Variable LANG forced to: {0}</target>
+</phrase>
+<phrase>
+    <source>🌍 Locale Qt effective : {0}</source>
+    <target>🌍 Effective Qt local: {0}</target>
+</phrase>
+<phrase>
+    <source>🚀 Premier démarrage - configuration initiale</source>
+    <target>🚀 First boot - initial setup</target>
+</phrase>
+<phrase>
+    <source>👋 Configuration annulée</source>
+    <target>👋 Configuration cancelled</target>
+</phrase>
+<phrase>
+    <source>⚠️ Langue changée en &apos;{0}&apos; - redémarrage recommandé</source>
+    <target>⚠️ Language changed to &apos;{0}&apos; - restart recommended</target>
+</phrase>
+<phrase>
+    <source>✅ Locale Python (LC_TIME) : &apos;{0}&apos;</source>
+    <target>✅ Python locale (LC_TIME): &apos;{0}&apos;</target>
+</phrase>
+<phrase>
+    <source>✅ Locale Python (LC_TIME) : &apos;{0}&apos; (fallback)</source>
+    <target>✅ Python locale (LC_TIME): &apos;{0}&apos; (fallback)</target>
+</phrase>
+<phrase>
+    <source>⚠️ Impossible de configurer la locale Python pour &apos;{0}&apos;</source>
+    <target>⚠️ Unable to configure the Python locale for &apos;{0}&apos;</target>
+</phrase>
+<phrase>
+    <source>✅ Traduction Qt &apos;{0}&apos; chargée depuis &apos;{1}&apos;</source>
+    <target>✅ Qt translation &apos;{0}&apos; loaded from &apos;{1}&apos;</target>
+</phrase>
+<phrase>
+    <source>⚠️ Traduction Qt &apos;{0}&apos; non trouvée</source>
+    <target>⚠️ Qt translation &apos;{0}&apos; not found</target>
+</phrase>
+<phrase>
+    <source>✅ Traduction app &apos;{0}&apos; chargée depuis &apos;{1}&apos;</source>
+    <target>✅ Translation app &apos;{0}&apos; loaded from &apos;{1}&apos;</target>
+</phrase>
+<phrase>
+    <source>⚠️ Traduction app &apos;{0}&apos; non trouvée dans &apos;{1}&apos;</source>
+    <target>⚠️ Translation app &apos;{0}&apos; not found in &apos;{1}&apos;</target>
+</phrase>
+<phrase>
+    <source>Spécifie le répertoire du journal.</source>
+    <target>Specifies the journal directory.</target>
+</phrase>
+<phrase>
+    <source>🚀 Lancement de BlueNotebook V{0}...</source>
+    <target>🚀 Launch of BlueNotebook V{0}...</target>
+</phrase>
+<phrase>
+    <source>
+👋 Fermeture de l&apos;application...</source>
+    <target>
+👋 Closing the application...</target>
+</phrase>
+<phrase>
+    <source>❌ Erreur: {0}</source>
+    <target>❌ Error: {0}</target>
+</phrase>
+<phrase>
+    <source>Sauvegarde en cours...</source>
+    <target>Backup in progress...</target>
+</phrase>
+<phrase>
+    <source>Conversion PDF en cours...</source>
+    <target>PDF conversion in progress...</target>
+</phrase>
+<phrase>
+    <source>Récupération de la transcription en cours...</source>
+    <target>Retrieving transcript...</target>
+</phrase>
+<phrase>
+    <source>Vérification de l&apos;URL...</source>
+    <target>URL verification...</target>
+</phrase>
+<phrase>
+    <source>Conversion URL en cours...</source>
+    <target>URL conversion in progress...</target>
+</phrase>
+<phrase>
+    <source>Veuillez patienter...</source>
+    <target>Please wait...</target>
+</phrase>
+<phrase>
+    <source>✅ Icône chargée : {0}</source>
+    <target>✅ Loaded icon: {0}</target>
+</phrase>
+<phrase>
+    <source>⚠️ Erreur lors du chargement de {0}: {1}</source>
+    <target>⚠️ Erreur lors du chargement de {0}: {1}</target>
+</phrase>
+<phrase>
+    <source>ℹ️ Aucune icône trouvée, utilisation de l&apos;icône par défaut</source>
+    <target>ℹ️ No icon found, using the default icon</target>
+</phrase>
+<phrase>
+    <source>📔 Répertoire du journal: {0}</source>
+    <target>📔 Journal directory: {0}</target>
+</phrase>
+<phrase>
+    <source>⚠️ Répertoire du journal non défini.</source>
+    <target>⚠️ Journal directory not defined.</target>
+</phrase>
+<phrase>
+    <source>ℹ️ Aucune transcription trouvée pour cette vidéo.</source>
+    <target>ℹ️ No transcript found for this video.</target>
+</phrase>
+<phrase>
+    <source>🔁 Sauvegarde du journal terminée avec succès dans : {0}</source>
+    <target>🔁 Journal backup successfully completed in: {0}</target>
+</phrase>
+<phrase>
+    <source>🔄 Rafraîchissement manuel de l&apos;index des tags demandé.</source>
+    <target>🔄 Manual refresh of tag index requested.</target>
+</phrase>
+<phrase>
+    <source>🔄 Rafraîchissement manuel de l&apos;index des tags demandé depuis la navigation.</source>
+    <target>🔄 Manual refresh of tag index requested.</target>
+</phrase>
+<phrase>
+    <source>✅ {0}</source>
+    <target>✅ {0}</target>
+</phrase>
+<phrase>
+    <source>Répertoire du journal non trouvé pour la mise à jour du calendrier: {0}</source>
+    <target>Journal directory not found for calendar update: {0}</target>
+</phrase>
+<phrase>
+    <source>ℹ️ Police modifiée --</source>
+    <target>ℹ️ Modified font --</target>
+</phrase>
+<phrase>
+    <source>Erreur de lecture de l&apos;index des tags pour le menu: {0}</source>
+    <target>Erreur de lecture de l&apos;index des tags pour le menu: {0}</target>
+</phrase>
+<phrase>
+    <source>Créer un nouveau document</source>
+    <target>Create a new document</target>
+</phrase>
+<phrase>
+    <source>Créer un fichier vierge</source>
+    <target>Create an empty document</target>
+</phrase>
+<phrase>
+    <source>Utiliser un modèle :</source>
+    <target>Use a template:</target>
+</phrase>
+<phrase>
+    <source>Valider</source>
+    <target>Ok</target>
+</phrase>
+<phrase>
+    <source>Annuler</source>
+    <target>Cancel</target>
+</phrase>
+</QPH>

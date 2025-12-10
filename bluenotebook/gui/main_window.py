@@ -1620,10 +1620,18 @@ class MainWindow(QMainWindow):
 
         self.journal_directory = journal_path
         self.update_journal_dir_label()
-        if self.journal_directory:
+        # V4.0.3 Fix Bug Windows
+        """ if self.journal_directory:  
             print(
                 MainWindowContext.tr("📔 Répertoire du journal: {0}").format(
                     self.journal_directory
+                )
+            )
+            print(f"📔 Répertoire du journal: {self.journal_directory}")"""
+        if self.journal_directory:
+            print(
+                MainWindowContext.tr("📔 Répertoire du journal: {0}").format(
+                    str(self.journal_directory)  # ← Conversion explicite
                 )
             )
         else:

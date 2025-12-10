@@ -1,3 +1,36 @@
+## V4.0.3 i18n Windows Etape 1
+
+`develop` branch `i18n/V4.0.3_i18n_Windows`
+
+- Mise a jour Projet (.venv,, .gitignore)
+- Fix Bug au demarrage 4.0.2 mauvaise traduction main_windows.py fstring)
+
+FileNotFoundError: [WinError 3] Le chemin d’accès spécifié est introuvable: 'C:\\Users\\jmdig\\BlueNotebookJournal\\notes'
+Release of profile requested but WebEnginePage still not deleted. Expect troubles !
+"ERREUR: Le lancement de main.py a echoue."
+
+```python
+MainWindowContext.tr("📔 Répertoire du journal: {0}").format(self.journal_directory)
+```
+
+Python doit convertir `self.journal_directory` (qui est `Path("C:\\Users\\...")`) en chaîne pour l'insérer dans le format. Cela fonctionne normalement, **MAIS** si quelque chose dans le processus de traduction ou de formatage déclenche une vérification de chemin prématurée, ça peut causer l'erreur `FileNotFoundError`.
+
+### Solution 2 : Utiliser des f-strings avec traduction séparée
+
+```python
+if self.journal_directory:
+    msg = MainWindowContext.tr("📔 Répertoire du journal: {0}")
+    print(msg.format(str(self.journal_directory)))
+```
+
+
+- Ajout scripts traduction four Windows et Linux
+- Suppression tradiction core/*.py
+
+
+Commit `V4.0.3_i18n_Windows`
+
+
 ## V4.0.2-2 i18n Phase1 -  fix windows bat
 
 - bat files email
