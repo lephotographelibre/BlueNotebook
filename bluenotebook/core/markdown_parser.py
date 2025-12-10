@@ -20,7 +20,6 @@ Gestionnaire de parsing et conversion Markdown
 
 import markdown
 from markdown.extensions import tables, fenced_code, toc
-from PyQt5.QtCore import QCoreApplication
 
 
 class MarkdownParser:
@@ -35,12 +34,7 @@ class MarkdownParser:
         try:
             return self.md.convert(markdown_text)
         except Exception as e:
-
-            def tr(text):
-                return QCoreApplication.translate("MarkdownParser", text)
-
-            error_message = tr("<p>Erreur de conversion: %s</p>") % e
-            return error_message
+            return f"<p>Erreur de conversion: {e}</p>"
 
     def reset(self):
         """Réinitialiser le parser"""
