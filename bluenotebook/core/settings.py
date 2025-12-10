@@ -19,7 +19,6 @@ Gestion des préférences de l'application BlueNotebook.
 
 import json
 from pathlib import Path
-from PyQt5.QtCore import QCoreApplication
 
 
 class SettingsManager:
@@ -132,12 +131,7 @@ class SettingsManager:
             with open(self.settings_path, "w", encoding="utf-8") as f:
                 json.dump(self.settings, f, indent=4)
         except IOError as e:
-
-            def tr(text):
-                return QCoreApplication.translate("SettingsManager", text)
-
-            error_message = tr("Erreur lors de la sauvegarde des paramètres : %s") % e
-            print(error_message)
+            print(f"Erreur lors de la sauvegarde des paramètres : {e}")
 
     def get(self, key, default=None):
         """Récupère une valeur de paramètre. Ex: 'editor.font_family'"""

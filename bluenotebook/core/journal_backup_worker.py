@@ -18,7 +18,7 @@
 import os
 import zipfile
 from pathlib import Path
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot, QCoreApplication
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
 
 
 class JournalBackupWorker(QRunnable):
@@ -60,10 +60,6 @@ class JournalBackupWorker(QRunnable):
             self.signals.finished.emit(str(self.backup_path))
 
         except Exception as e:
-            # Astuce pour que pylupdate5 détecte la chaîne :
-            # On simule un appel à tr() que l'outil adore.
-            def tr(text):
-                return QCoreApplication.translate("JournalBackupWorker", text)
-
-            error_message = tr("Une erreur est survenue lors de la sauvegarde : %s") % e
-            self.signals.error.emit(error_message)
+            self.signals.error.emit(
+                f"Une erreur est survenue lors de la sauvegarde : {e}"
+            )

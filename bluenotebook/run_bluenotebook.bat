@@ -9,7 +9,7 @@ echo "--- Lancement de BlueNotebook ---"
 
 echo "--- copy requirements.txt ---"
 COPY ..\requirements_windows3.11.9.txt ..\requirements.txt /A /V /Y
-REM COPY ..\freeze_352_requirements.txt ..\requirements.txt /A /V /Y
+
 
 
 REM --- Verification de l'environnement ---
