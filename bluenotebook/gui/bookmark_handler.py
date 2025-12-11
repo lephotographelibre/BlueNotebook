@@ -69,10 +69,17 @@ def handle_insert_bookmark(main_window):
 
     def on_bookmark_finished(url, title):
         main_window._stop_bookmark_flashing()
+
+        is_github = "github.com" in url.lower()
+        icon = "🐙" if is_github else "🔖"
+        prefix = "" if is_github else "Bookmark | "
+
         if title:
-            markdown_link = f"🔖 [Bookmark | {title} - {url}]({url})"
+            link_text = f"{prefix}{title} - {url}"
         else:
-            markdown_link = f"🔖 [Bookmark | {url}]({url})"
+            link_text = f"{prefix}{url}"
+        markdown_link = f"{icon} [{link_text}]({url})"
+
         cursor = main_window.editor.text_edit.textCursor()
         if cursor.hasSelection():
             cursor.removeSelectedText()

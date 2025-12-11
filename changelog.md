@@ -1,3 +1,22 @@
+## V4.0.3.1 Fix Issue [#97] Custom Github bookmarks #97
+
+
+Fix Issue [#97](https://github.com/lephotographelibre/BlueNotebook/issues/97)V4.0.3 Custom Github bookmarks #97
+
+`bluenotebook/gui/bookmark_handler.py`   C'est ici que se trouve toute la logique métier.
+
+🐙
+Je voudrais que lors de l'insertion d'un bookmark contenant une URL github.com on affiche une icone **Octocat**  : 🐙. Toutes les url contenant "github.com" sont concernées
+
+L’emoji qui représente le plus universellement un dépôt GitHub (et qui est très souvent utilisé par la communauté pour parler d’un repo ou du logo GitHub lui-même) est :
+**Octocat**  : 🐙
+
+exemple:
+Au lieu de d'inserer 
+🔖 [Bookmark | GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
+
+🐙 [GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
+
 ## V4.0.3 i18n Windows Etape 1
 
 `develop` branch `i18n/V4.0.3_i18n_Windows`

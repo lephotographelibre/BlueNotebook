@@ -162,7 +162,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        version = "4.0.3"
+        version = "4.0.3.1"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
