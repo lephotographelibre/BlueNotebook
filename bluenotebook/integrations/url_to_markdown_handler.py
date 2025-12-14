@@ -1,3 +1,20 @@
+# Copyright (C) 2025 Jean-Marc DIGNE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Conversion URL/HTML vers Markdown
+
 import os
 from PyQt5.QtWidgets import (
     QDialog,
@@ -11,10 +28,17 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
     QMessageBox,
 )
-from PyQt5.QtCore import QRunnable, pyqtSignal, QObject, pyqtSlot
+from PyQt5.QtCore import QRunnable, pyqtSignal, QObject, pyqtSlot, QCoreApplication
+
 from validators import url as valid_url
 
 from integrations.url_converter import UrlToMarkdown
+
+
+class UrlToMarkdownContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("UrlToMarkdownContext", text)
 
 
 class UrlToMarkdownDialog(QDialog):
@@ -22,31 +46,31 @@ class UrlToMarkdownDialog(QDialog):
 
     def __init__(self, initial_url="", parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Conversion URL/HTML vers Markdown")
+        self.setWindowTitle(UrlToMarkdownContext.tr("Conversion URL/HTML vers Markdown"))
         self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
 
         # Champ URL/Chemin
         url_layout = QHBoxLayout()
-        url_layout.addWidget(QLabel("Chemin ou URL:"))
+        url_layout.addWidget(QLabel(UrlToMarkdownContext.tr("Chemin ou URL:")))
         self.url_input = QLineEdit(initial_url)
         url_layout.addWidget(self.url_input)
-        browse_button = QPushButton("Parcourir...")
+        browse_button = QPushButton(UrlToMarkdownContext.tr("Parcourir..."))
         browse_button.clicked.connect(self.browse_file)
         url_layout.addWidget(browse_button)
         layout.addLayout(url_layout)
 
         # Options
-        self.title_checkbox = QCheckBox("Ajouter le titre en #")
+        self.title_checkbox = QCheckBox(UrlToMarkdownContext.tr("Ajouter le titre en #"))
         self.title_checkbox.setChecked(True)
         layout.addWidget(self.title_checkbox)
 
-        self.links_checkbox = QCheckBox("Conserver les liens Markdown")
+        self.links_checkbox = QCheckBox(UrlToMarkdownContext.tr("Conserver les liens Markdown"))
         self.links_checkbox.setChecked(True)
         layout.addWidget(self.links_checkbox)
 
-        self.clean_checkbox = QCheckBox("Utiliser Readability pour nettoyer")
+        self.clean_checkbox = QCheckBox(UrlToMarkdownContext.tr("Utiliser Readability pour nettoyer"))
         self.clean_checkbox.setChecked(True)
         layout.addWidget(self.clean_checkbox)
 
@@ -59,7 +83,10 @@ class UrlToMarkdownDialog(QDialog):
     def browse_file(self):
         """Ouvre un sélecteur de fichier pour les fichiers HTML."""
         path, _ = QFileDialog.getOpenFileName(
-            self, "Sélectionner un fichier HTML", "", "Fichiers HTML (*.html *.htm)"
+            self,
+            UrlToMarkdownContext.tr("Sélectionner un fichier HTML"),
+            "",
+            UrlToMarkdownContext.tr("Fichiers HTML (*.html *.htm)"),
         )
         if path:
             self.url_input.setText(path)
@@ -98,9 +125,10 @@ class UrlToMarkdownWorker(QRunnable):
         is_local_file = os.path.exists(url_or_path) and os.path.isfile(url_or_path)
 
         if not is_url and not is_local_file:
-            self.signals.error.emit(
-                f"Le chemin ou l'URL '{url_or_path}' n'est pas valide."
-            )
+            message = UrlToMarkdownContext.tr(
+                "Le chemin ou l'URL '{path}' n'est pas valide."
+            ).format(path=url_or_path)
+            self.signals.error.emit(message)
             return
 
         try:
@@ -128,7 +156,8 @@ class UrlToMarkdownWorker(QRunnable):
             self.signals.finished.emit(markdown_content, self.destination_path)
 
         except Exception as e:
-            self.signals.error.emit(f"Erreur lors de la conversion : {e}")
+            message = UrlToMarkdownContext.tr("Erreur lors de la conversion : {error}").format(error=e)
+            self.signals.error.emit(message)
 
 
 def run_url_to_markdown_conversion(main_window, initial_url=""):
@@ -143,9 +172,9 @@ def run_url_to_markdown_conversion(main_window, initial_url=""):
 
         destination_path, _ = QFileDialog.getSaveFileName(
             main_window,
-            "Sauvegarder le fichier Markdown",
+            UrlToMarkdownContext.tr("Sauvegarder le fichier Markdown"),
             default_dir,
-            "Fichiers Markdown (*.md)",
+            UrlToMarkdownContext.tr("Fichiers Markdown (*.md)"),
         )
 
         if not destination_path:
@@ -155,7 +184,7 @@ def run_url_to_markdown_conversion(main_window, initial_url=""):
         main_window.save_file()
 
         # Lancer le worker
-        main_window.start_task("Conversion en Markdown en cours...")
+        main_window.start_task(UrlToMarkdownContext.tr("Conversion en Markdown en cours..."))
         worker = UrlToMarkdownWorker(options, destination_path)
         worker.signals.finished.connect(main_window.on_url_to_markdown_finished)
         worker.signals.error.connect(main_window.on_task_error)

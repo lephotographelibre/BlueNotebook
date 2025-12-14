@@ -86,7 +86,7 @@ class NavigationPanel(QWidget):
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 5, 0, 0)  # Marge en haut pour l'esthétique
 
-        self.title_label = QLabel("Navigation Journal")
+        self.title_label = QLabel(self.tr("Navigation Journal"))
         self.title_label.setStyleSheet(
             """
             QLabel {
@@ -98,7 +98,7 @@ class NavigationPanel(QWidget):
         """
         )
         self.title_label.setCursor(Qt.PointingHandCursor)
-        self.title_label.setToolTip("Cliquez pour rafraîchir l'index des tags")
+        self.title_label.setToolTip(self.tr("Cliquez pour rafraîchir l'index des tags"))
         self.title_label.mousePressEvent = self.on_title_clicked
         header_layout.addWidget(self.title_label)
         header_layout.addStretch()
@@ -129,7 +129,7 @@ class NavigationPanel(QWidget):
         self.tag_search_input = QLineEdit()
         # V 1.6.9 Ajoute le bouton pour effacer le contenu du champ de recherche
         self.tag_search_input.setClearButtonEnabled(True)
-        self.tag_search_input.setPlaceholderText("@@tag")
+        self.tag_search_input.setPlaceholderText(self.tr("@@tag"))
 
         # L'icône de loupe est maintenant gérée par le thème ou peut être ajoutée
         # via QSS si nécessaire, mais l'action est déclenchée par returnPressed.
@@ -162,52 +162,7 @@ class NavigationPanel(QWidget):
             self.search_results_panel, 1
         )  # Stretch factor to take remaining space
 
-        # Ajouter un espace flexible pour pousser tous les widgets vers le haut
-        # Supprimé car search_results_panel prend maintenant l'espace restant
-        # layout.addStretch()
-
         self.setLayout(layout)
-
-    """ def _create_toolbar(self):
-        
-        toolbar = QToolBar()
-        toolbar.setMovable(False)
-
-        # Bouton Jour Précédent
-        self.prev_day_button = QToolButton()
-        self.prev_day_button.setText("Précédent")
-        self.prev_day_button.setIcon(QIcon.fromTheme("go-previous"))
-        self.prev_day_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
-        self.prev_day_button.setAutoRaise(True)
-        self.prev_day_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
-        # Bouton Aujourd'hui
-        self.today_button = QToolButton()
-        self.today_button.setText("Aujourd'hui")
-        self.today_button.setIcon(QIcon.fromTheme("go-home"))
-        self.today_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.today_button.clicked.connect(self.today_button_clicked.emit)
-        self.today_button.setAutoRaise(True)
-        self.today_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
-        # Bouton Jour Suivant
-        self.next_day_button = QToolButton()
-        self.next_day_button.setText("Suivant")
-        self.next_day_button.setIcon(QIcon.fromTheme("go-next"))
-        self.next_day_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
-        self.next_day_button.setLayoutDirection(Qt.RightToLeft)
-        self.next_day_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        self.next_day_button.setAutoRaise(True)
-
-        toolbar.addWidget(self.prev_day_button)
-        toolbar.addSeparator()
-        toolbar.addWidget(self.today_button)
-        toolbar.addSeparator()
-        toolbar.addWidget(self.next_day_button)
-        return toolbar
-    """
 
     def _create_toolbar(self):
         """Crée la barre d'outils de navigation."""
@@ -220,13 +175,13 @@ class NavigationPanel(QWidget):
         toolbar_layout.setContentsMargins(5, 2, 5, 2)
         toolbar_layout.setSpacing(5)
 
-        self.prev_day_button = QPushButton("◀️ Précédent")
+        self.prev_day_button = QPushButton(self.tr("◀️ Précédent"))
         self.prev_day_button.clicked.connect(self.prev_day_button_clicked.emit)
 
-        self.today_button = QPushButton("📅 Aujourd'hui")
+        self.today_button = QPushButton(self.tr("📅 Aujourd'hui"))
         self.today_button.clicked.connect(self.today_button_clicked.emit)
 
-        self.next_day_button = QPushButton("Suivant ▶️")
+        self.next_day_button = QPushButton(self.tr("Suivant ▶️"))
         self.next_day_button.clicked.connect(self.next_day_button_clicked.emit)
 
         toolbar_layout.addWidget(self.prev_day_button)
@@ -303,7 +258,9 @@ class NavigationPanel(QWidget):
 
     def on_tag_cloud_clicked(self, tag_name: str):
         """Met à jour le champ de recherche lorsqu'un tag est cliqué dans le nuage."""
-        self.tag_search_input.setText(f"@@{tag_name}")
+        message = self.tr("@@{tag}")
+        message = message.format(tag=tag_name)
+        self.tag_search_input.setText(message)
         self.on_search_triggered()
 
     def show_search_results(self, results: list, search_query: str):

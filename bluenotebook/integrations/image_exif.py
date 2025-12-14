@@ -23,6 +23,14 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from datetime import datetime
 
+from PyQt5.QtCore import QCoreApplication
+
+
+class ImageExifContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("ImageExifContext", text)
+
 
 def _get_exif_data(image_path):
     """Extrait les données EXIF brutes d'une image."""
@@ -72,7 +80,7 @@ def _get_gps_info(exif_data):
 def get_location_name_from_gps(lat, lon):
     """Trouve le nom du lieu à partir des coordonnées GPS."""
     if not lat or not lon:
-        return "Lieu inconnu"
+        return ImageExifContext.tr("Lieu inconnu")
     try:
         geolocator = Nominatim(user_agent="bluenotebook_app")
         location = geolocator.reverse((lat, lon), exactly_one=True, language="fr")
@@ -81,11 +89,11 @@ def get_location_name_from_gps(lat, lon):
             # Essayer de trouver la ville, le village, etc.
             city = address.get("city", address.get("town", address.get("village", "")))
             return city if city else location.address.split(",")[0]
-        return "Lieu inconnu"
+        return ImageExifContext.tr("Lieu inconnu")
     except (GeocoderTimedOut, GeocoderUnavailable):
-        return "Service de géolocalisation indisponible"
+        return ImageExifContext.tr("Service de géolocalisation indisponible")
     except Exception:
-        return "Erreur de géolocalisation"
+        return ImageExifContext.tr("Erreur de géolocalisation")
 
 
 def format_exif_as_markdown(image_path):
@@ -109,7 +117,7 @@ def format_exif_as_markdown(image_path):
     caption_parts = []
 
     if lat and lon:
-        location_name = get_location_name_from_gps(lat, lon) or "Lieu"
+        location_name = get_location_name_from_gps(lat, lon) or ImageExifContext.tr("Lieu")
         osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
         caption_parts.append(f'<a href="{osm_link}">{location_name}</a>')
 
@@ -128,6 +136,7 @@ def format_exif_as_markdown(image_path):
     if f_number := exif_data.get("FNumber"):
         caption_parts.append(f"ƒ/{f_number}")
 
+    speed_label = ImageExifContext.tr("Vitesse:")
     if exposure_time := exif_data.get("ExposureTime"):
         try:
             if exposure_time > 0:
@@ -136,13 +145,15 @@ def format_exif_as_markdown(image_path):
                 speed = f"{exposure_time}s"
         except (ZeroDivisionError, ValueError):
             speed = f"{exposure_time}"
-        caption_parts.append(f"Vitesse: {speed}")
+        caption_parts.append(f"{speed_label} {speed}")
 
+    focal_label = ImageExifContext.tr("Focale:")
     if focal_length := exif_data.get("FocalLength"):
-        caption_parts.append(f"Focale: {focal_length}mm")
+        caption_parts.append(f"{focal_label} {focal_length}mm")
 
+    iso_label = ImageExifContext.tr("ISO:")
     if iso := exif_data.get("ISOSpeedRatings"):
-        caption_parts.append(f"ISO: {iso}")
+        caption_parts.append(f"{iso_label} {iso}")
 
     caption_text = " : ".join(filter(None, caption_parts))
     return f'<figcaption style="font-weight: bold;">{caption_text}</figcaption>'
@@ -165,7 +176,7 @@ def format_exif_as_markdown_string(image_path: str) -> str | None:
 
     location_part = ""
     if lat and lon:
-        location_name = get_location_name_from_gps(lat, lon) or "Lieu"
+        location_name = get_location_name_from_gps(lat, lon) or ImageExifContext.tr("Lieu")
         osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
         location_part = f"[{location_name}]({osm_link}) : "
 
@@ -183,15 +194,21 @@ def format_exif_as_markdown_string(image_path: str) -> str | None:
         details_parts.append(model)
     if f_number := exif_data.get("FNumber"):
         details_parts.append(f"ƒ/{f_number}")
+
+    speed_label = ImageExifContext.tr("Vitesse:")
     if exposure_time := exif_data.get("ExposureTime"):
         speed = (
             f"1/{int(1/exposure_time)}s" if exposure_time > 0 else f"{exposure_time}s"
         )
-        details_parts.append(f"Vitesse: {speed}")
+        details_parts.append(f"{speed_label} {speed}")
+
+    focal_label = ImageExifContext.tr("Focale:")
     if focal_length := exif_data.get("FocalLength"):
-        details_parts.append(f"Focale: {focal_length}mm")
+        details_parts.append(f"{focal_label} {focal_length}mm")
+
+    iso_label = ImageExifContext.tr("ISO:")
     if iso := exif_data.get("ISOSpeedRatings"):
-        details_parts.append(f"ISO: {iso}")
+        details_parts.append(f"{iso_label} {iso}")
 
     details_text = " : ".join(filter(None, details_parts))
     return f"{location_part}**{details_text}**"

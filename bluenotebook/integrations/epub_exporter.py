@@ -26,7 +26,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from PyQt5.QtWidgets import QMessageBox, QDialog, QFileDialog
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, QCoreApplication
 from gui.date_range_dialog import DateRangeDialog
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
@@ -48,6 +48,12 @@ except ImportError:
     cairosvg = None
 
 
+class EpubExporterContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("EpubExporterContext", text)
+
+
 def create_cover_image(
     original_image_path: str, title: str, author: str, date_range: str, output_path: str
 ):
@@ -55,7 +61,7 @@ def create_cover_image(
     Crée une image de couverture composite.
     """
     if not all([Image, ImageDraw, ImageFont]):
-        raise ImportError("Pillow n'est pas installé.")
+        raise ImportError(EpubExporterContext.tr("❌ Pillow is not installed."))
 
     cover_width, cover_height = 600, 800
     bg_color = "white"
@@ -75,7 +81,7 @@ def create_cover_image(
             paste_y = ((cover_height // 2) - user_img.height) // 2
             cover_image.paste(user_img, (paste_x, paste_y))
         except Exception as e:
-            print(f"Erreur lors du chargement de l'image de couverture : {e}")
+            print(f"❌ Error loading cover image: {e}")
 
     # Partie inférieure : texte
     text_y_start = cover_height // 2 + 40
@@ -204,14 +210,14 @@ class EpubExportWorker(QRunnable):
                 if is_svg:
                     if not cairosvg:
                         print(
-                            f"Impossible de traiter l'image SVG {original_src}: la bibliothèque 'cairosvg' est requise."
+                            f"❌ Unable to process the SVG image {original_src}: the 'cairosvg' library is required."
                         )
                         continue
                     try:
                         image_data = cairosvg.svg2png(bytestring=image_data)
                     except Exception as svg_error:
                         print(
-                            f"Erreur de conversion SVG pour {original_src}: {svg_error}"
+                            f"❌ Erreur de conversion SVG pour {original_src}: {svg_error}"
                         )
                         continue
 
@@ -246,21 +252,23 @@ class EpubExportWorker(QRunnable):
                 image_counter += 1
 
             except Exception as e:
-                print(f"Impossible de traiter l'image {original_src}: {e}")
+                print(f"❌ Unable to process the image {original_src}: {e}")
 
         return str(soup), image_counter
 
     def run(self):
         if not all([ebooklib, epub]):
-            self.signals.error.emit(
+            error_msg = EpubExporterContext.tr(
                 "La bibliothèque 'EbookLib' est requise.\nInstallez-la avec : pip install EbookLib"
             )
+            self.signals.error.emit(error_msg)
             return
         if not all([Image, ImageDraw, ImageFont]):
-            self.signals.error.emit(
+            error_msg = EpubExporterContext.tr(
                 "Les bibliothèques 'EbookLib' et 'Pillow' sont requises.\n"
                 "Installez-les avec : pip install EbookLib Pillow"
             )
+            self.signals.error.emit(error_msg)
             return
 
         try:
@@ -292,7 +300,7 @@ class EpubExportWorker(QRunnable):
                     cover_data = cover_file.read()
                 book.set_cover("cover.jpg", cover_data, create_page=True)
             else:
-                print("Attention: la couverture n'a pas pu être créée")
+                print("❌ Warning: The cover could not be created")
 
             # Création des chapitres
             chapters = []
@@ -333,20 +341,15 @@ class EpubExportWorker(QRunnable):
                     header_tag["id"] = anchor_id
 
                     # Créer un lien pour la table des matières
-                    # S'assurer que tous les paramètres sont des chaînes non vides
                     link_href = f"{file_name}#{anchor_id}"
                     link_title = str(header_title)
                     link_uid = f"link_{i+1}_{j}"
-
-                    # print(
-                    #    f"DEBUG: Création lien - href: {link_href}, title: {link_title}, uid: #{link_uid}"
-                    # )
 
                     try:
                         link = epub.Link(link_href, link_title, link_uid)
                         sub_chapters.append(link)
                     except Exception as link_error:
-                        print(f"DEBUG: Erreur création lien: {link_error}")
+                        print(f"❌ DEBUG: Link creation error: {link_error}")
                         continue
 
                 processed_html = str(soup)
@@ -361,7 +364,7 @@ class EpubExportWorker(QRunnable):
             # Création de la page d'index des tags
             index_page = None
             if tag_locations:
-                index_title = "Index de Tags"
+                index_title = EpubExporterContext.tr("Index de Tags")
                 index_file_name = "index_tags.xhtml"
                 index_page = epub.EpubHtml(
                     title=index_title, file_name=index_file_name, lang="fr"
@@ -389,37 +392,24 @@ class EpubExportWorker(QRunnable):
             # Table des matières
             book.toc = []
 
-            # print(
-            #    f"DEBUG: Nombre de chapitres dans toc_structure: {len(toc_structure)}"
-            # )
-
             for idx, (main_chap, sub_links) in enumerate(toc_structure):
-                # print(
-                #    f"DEBUG: Chapitre {idx}: {main_chap.title}, sous-liens: {len(sub_links)}"
-                # )
                 if sub_links:
-                    # Vérifier que tous les liens sont valides
                     valid_links = []
                     for link in sub_links:
                         if link and hasattr(link, "href") and hasattr(link, "title"):
-                            # print(f"DEBUG: Lien valide: {link.title} -> {link.href}")
                             valid_links.append(link)
                         else:
-                            print(f"DEBUG: Lien invalide détecté: {link}")
+                            print(f"❌ DEBUG: Invalid link detected: {link}")
 
                     if valid_links:
-                        # Si des sous-chapitres existent, créer une entrée hiérarchique
                         book.toc.append((main_chap, valid_links))
                     else:
-                        # Pas de sous-liens valides, ajouter juste le chapitre
                         book.toc.append(main_chap)
                 else:
-                    # Sinon, ajouter simplement le chapitre
                     book.toc.append(main_chap)
 
             # Ajouter l'index des tags à la fin
             if index_page:
-                # print(f"DEBUG: Ajout de l'index des tags: {index_page.title}")
                 book.toc.append(
                     epub.Link(index_page.file_name, index_page.title, "index-link")
                 )
@@ -461,15 +451,10 @@ BODY {
                     {"href": "cover.xhtml", "title": "Couverture", "type": "cover"}
                 )
 
-            # Écriture du fichier EPUB
-            # print(f"DEBUG: Écriture de l'EPUB avec {len(book.toc)} entrées dans la TOC")
-            # print(f"DEBUG: Structure de book.toc: {book.toc}")
-
             try:
                 epub.write_epub(self.output_path, book, {})
-                print("📚 Livre EPUB écrit avec succès")
+                print("📚 Successfully written EPUB book")
             except Exception as write_error:
-                # print(f"DEBUG: Erreur lors de l'écriture: {write_error}")
                 import traceback
 
                 traceback.print_exc()
@@ -481,7 +466,7 @@ BODY {
                     os.remove(cover_image_path)
                 except Exception as cleanup_error:
                     print(
-                        f"Impossible de supprimer l'image temporaire : {cleanup_error}"
+                        f"❌ Unable to delete the temporary image: {cleanup_error}"
                     )
 
             self.signals.finished.emit(self.output_path)
@@ -532,20 +517,23 @@ def export_journal_to_epub(main_window):
         from ebooklib import epub
         from PIL import Image
     except ImportError:
-        QMessageBox.critical(
-            main_window,
-            "Modules manquants",
+        error_msg = EpubExporterContext.tr(
             "Les bibliothèques 'EbookLib' et 'Pillow' sont requises.\n\n"
             "Pour utiliser cette fonctionnalité, installez-les avec:\n"
-            "pip install EbookLib Pillow",
+            "pip install EbookLib Pillow"
+        )
+        QMessageBox.critical(
+            main_window,
+            EpubExporterContext.tr("Modules manquants"),
+            error_msg,
         )
         return
 
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            "Exportation impossible",
-            "Aucun répertoire de journal n'est actuellement défini.",
+            EpubExporterContext.tr("Exportation impossible"),
+            EpubExporterContext.tr("Aucun répertoire de journal n'est actuellement défini."),
         )
         return
 
@@ -559,7 +547,7 @@ def export_journal_to_epub(main_window):
 
     if not note_files:
         QMessageBox.information(
-            main_window, "Journal vide", "Aucune note à exporter dans le journal."
+            main_window, EpubExporterContext.tr("Journal vide"), EpubExporterContext.tr("Aucune note à exporter dans le journal.")
         )
         return
 
@@ -588,7 +576,7 @@ def export_journal_to_epub(main_window):
         default_author=last_author,
         parent=main_window,
     )
-    date_dialog.setWindowTitle("Options d'exportation du Journal EPUB")
+    date_dialog.setWindowTitle(EpubExporterContext.tr("Options d'exportation du Journal EPUB"))
 
     if date_dialog.exec_() != QDialog.Accepted:
         return
@@ -604,9 +592,9 @@ def export_journal_to_epub(main_window):
 
     epub_path, _ = QFileDialog.getSaveFileName(
         main_window,
-        "Exporter le journal en EPUB",
+        EpubExporterContext.tr("Exporter le journal en EPUB"),
         default_path,
-        "Fichiers EPUB (*.epub)",
+        EpubExporterContext.tr("Fichiers EPUB (*.epub)"),
     )
 
     if not epub_path:

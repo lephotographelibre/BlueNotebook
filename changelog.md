@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## V4.0.3.1 Fix Issue [#97] Custom Github bookmarks #97
 
 
@@ -16,6 +17,19 @@ Au lieu de d'inserer
 🔖 [Bookmark | GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
 
 🐙 [GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
+=======
+## V4.0.4 i18n Phase_2 FR EN
+
+Branche `i18n/V4.0.4_i18n_Phase_2`
+
+- Encapsulage des chaines a traduire suites les 5 regles
+- Passage de tous les messages console en anglais définitivement (print("message"))
+- Passage de la langue des scripts en anglais (run_bluenotebook.sh et .bat)
+- Traduction via Gemini CLI des fichiers FR fr.ts et EN en.ts
+- Traduction de l'aide en ligne --> online_help.html
+
+
+>>>>>>> develop
 
 ## V4.0.3 i18n Windows Etape 1
 

@@ -60,8 +60,7 @@ from PyQt5.QtWidgets import (
     QRadioButton,
     QComboBox,  # Keep these if they are used elsewhere in MainWindow
 )
-
-from PyQt5.QtCore import Qt, QTimer, QDate, QUrl
+from PyQt5.QtCore import Qt, QTimer, QDate, QUrl, QLocale
 from PyQt5.QtCore import (
     QThreadPool,
     QPropertyAnimation,
@@ -364,7 +363,7 @@ class GpsInputDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Coordonnées GPS")
+        self.setWindowTitle(self.tr("Coordonnées GPS"))
         self.setMinimumWidth(300)
 
         self.layout = QFormLayout(self)
@@ -372,14 +371,14 @@ class GpsInputDialog(QDialog):
         self.lat_edit = QLineEdit(self)
         self.lon_edit = QLineEdit(self)
 
-        self.layout.addRow("Latitude:", self.lat_edit)
-        self.layout.addRow("Longitude:", self.lon_edit)
+        self.layout.addRow(self.tr("Latitude:"), self.lat_edit)
+        self.layout.addRow(self.tr("Longitude:"), self.lon_edit)
 
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Valider"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.layout.addRow(self.button_box)
 
         self.button_box.accepted.connect(self.accept)
@@ -406,7 +405,7 @@ class GpxSourceDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Source du fichier GPX")
+        self.setWindowTitle(self.tr("Source du fichier GPX"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -417,15 +416,15 @@ class GpxSourceDialog(QDialog):
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit(self)
         self.path_edit.setPlaceholderText(
-            "https://example.com/trace.gpx ou /chemin/local/trace.gpx"
+            self.tr("https://example.com/trace.gpx ou /chemin/local/trace.gpx")
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_file)
         path_layout.addWidget(browse_button)
 
-        form_layout.addRow("Chemin ou URL:", path_layout)
+        form_layout.addRow(self.tr("Chemin ou URL:"), path_layout)
         self.layout.addLayout(form_layout)
 
         self.button_box = QDialogButtonBox(
@@ -440,7 +439,10 @@ class GpxSourceDialog(QDialog):
 
     def _browse_file(self):
         path, _ = QFileDialog.getOpenFileName(
-            self, "Sélectionner un fichier GPX", "", "Fichiers GPX (*.gpx)"
+            self,
+            self.tr("Sélectionner un fichier GPX"),
+            "",
+            self.tr("Fichiers GPX (*.gpx)"),
         )
         if path:
             self.path_edit.setText(path)
@@ -457,7 +459,7 @@ class PdfSourceDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Source du fichier PDF")
+        self.setWindowTitle(self.tr("Source du fichier PDF"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -467,15 +469,15 @@ class PdfSourceDialog(QDialog):
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit(self)
         self.path_edit.setPlaceholderText(
-            "https://example.com/document.pdf ou /chemin/local/document.pdf"
+            self.tr("https://example.com/document.pdf ou /chemin/local/document.pdf")
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_file)
         path_layout.addWidget(browse_button)
 
-        form_layout.addRow("Chemin ou URL:", path_layout)
+        form_layout.addRow(self.tr("Chemin ou URL:"), path_layout)
         self.layout.addLayout(form_layout)
 
         self.button_box = QDialogButtonBox(
@@ -490,7 +492,10 @@ class PdfSourceDialog(QDialog):
 
     def _browse_file(self):
         path, _ = QFileDialog.getOpenFileName(
-            self, "Sélectionner un fichier PDF", "", "Fichiers PDF (*.pdf)"
+            self,
+            self.tr("Sélectionner un fichier PDF"),
+            "",
+            self.tr("Fichiers PDF (*.pdf)"),
         )
         if path:
             self.path_edit.setText(path)
@@ -593,12 +598,12 @@ class InsertTemplateDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Insérer un modèle")
+        self.setWindowTitle(self.tr("Insérer un modèle"))
         self.setMinimumWidth(400)
 
         self.layout = QVBoxLayout(self)
 
-        self.label = QLabel("Choisir un modèle à insérer :")
+        self.label = QLabel(self.tr("Choisir un modèle à insérer :"))
         self.template_combo = QComboBox()
 
         self.layout.addWidget(self.label)
@@ -607,8 +612,8 @@ class InsertTemplateDialog(QDialog):
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Insérer")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Insérer"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.layout.addWidget(self.button_box)
 
         self.button_box.accepted.connect(self.accept)
@@ -631,7 +636,7 @@ class InsertLinkDialog(QDialog):
     def __init__(self, parent=None, journal_dir=None, selected_text=""):
         super().__init__(parent)
         self.journal_dir = journal_dir
-        self.setWindowTitle("Insérer un lien")
+        self.setWindowTitle(self.tr("Insérer un lien"))
         self.setMinimumWidth(500)
 
         self.layout = QFormLayout(self)
@@ -639,22 +644,24 @@ class InsertLinkDialog(QDialog):
         self.text_edit = QLineEdit(selected_text, self)
         self.url_layout = QHBoxLayout()
         self.url_edit = QLineEdit(self)
-        self.url_edit.setPlaceholderText("https://... ou chemin/local/fichier.ext")
+        self.url_edit.setPlaceholderText(
+            self.tr("https://... ou chemin/local/fichier.ext")
+        )
         self.url_layout.addWidget(self.url_edit)
 
         if self.journal_dir:
-            self.browse_button = QPushButton("Parcourir...", self)
+            self.browse_button = QPushButton(self.tr("Parcourir..."), self)
             self.browse_button.clicked.connect(self._browse_local_file)
             self.url_layout.addWidget(self.browse_button)
 
-        self.layout.addRow("Texte du lien:", self.text_edit)
-        self.layout.addRow("URL ou chemin:", self.url_layout)
+        self.layout.addRow(self.tr("Texte du lien:"), self.text_edit)
+        self.layout.addRow(self.tr("URL ou chemin:"), self.url_layout)
 
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Insérer")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Insérer"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.button_box.accepted.connect(self.validate_and_accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -671,7 +678,10 @@ class InsertLinkDialog(QDialog):
             else str(Path.home())
         )
         path, _ = QFileDialog.getOpenFileName(
-            self, "Sélectionner un fichier local", start_dir, "Tous les fichiers (*)"
+            self,
+            self.tr("Sélectionner un fichier local"),
+            start_dir,
+            self.tr("Tous les fichiers (*)"),
         )
         if path:
             # Si le journal_dir n'était pas défini, on le met à jour si possible
@@ -692,8 +702,10 @@ class InsertLinkDialog(QDialog):
         if not link_text or not url_text:
             QMessageBox.warning(
                 self,
-                "Champs requis",
-                "Le texte du lien et l'URL/chemin sont tous les deux obligatoires.",
+                self.tr("Champs requis"),
+                self.tr(
+                    "Le texte du lien et l'URL/chemin sont tous les deux obligatoires."
+                ),
             )
         else:
             self.accept()
@@ -770,7 +782,11 @@ class MainWindow(QMainWindow):
 
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
-        self.setWindowTitle(f"BlueNotebook V{self.app_version} - Éditeur Markdown")
+        self.setWindowTitle(
+            self.tr("BlueNotebook V{app_version} - Éditeur Markdown").format(
+                app_version=self.app_version
+            )
+        )
         self.setGeometry(100, 100, 1400, 900)
 
         self.set_application_icon()
@@ -869,25 +885,13 @@ class MainWindow(QMainWindow):
                         from PyQt5.QtWidgets import QApplication
 
                         QApplication.instance().setWindowIcon(icon)
-                        print(
-                            MainWindowContext.tr("✅ Icône chargée : {0}").format(
-                                icon_path
-                            )
-                        )
+                        print(f"✅ Loaded icon: : {icon_path}")
                         return
                 except Exception as e:
-                    print(
-                        MainWindowContext.tr(
-                            "⚠️ Erreur lors du chargement de {0}: {1}"
-                        ).format(icon_path, e)
-                    )
+                    print(f"⚠️ Error loading {icon_path}: {e}")
                     continue
 
-        print(
-            MainWindowContext.tr(
-                "ℹ️ Aucune icône trouvée, utilisation de l'icône par défaut"
-            )
-        )
+        print(f"ℹ️ No icon found, using the default icon")
 
     def setup_menu(self):
         """Configuration du menu"""
@@ -896,7 +900,7 @@ class MainWindow(QMainWindow):
         self._create_actions()
 
         # Menu Fichier
-        file_menu = menubar.addMenu("&Fichier")
+        file_menu = menubar.addMenu(self.tr("&Fichier"))
         file_menu.addAction(self.new_action)
         file_menu.addAction(self.open_any_file_action)
         file_menu.addSeparator()
@@ -918,7 +922,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction(self.quit_action)
 
         # Menu Edition
-        edit_menu = menubar.addMenu("&Edition")
+        edit_menu = menubar.addMenu(self.tr("&Edition"))
         edit_menu.addAction(self.insert_template_action)
         edit_menu.addSeparator()
         edit_menu.addAction(self.undo_action)
@@ -934,15 +938,15 @@ class MainWindow(QMainWindow):
         self.addAction(self.toggle_reader_action)
 
         # Menu Formatter
-        format_menu = menubar.addMenu("F&ormater")
+        format_menu = menubar.addMenu(self.tr("F&ormater"))
         self._setup_format_menu(format_menu)
 
         # Menu Insérer
-        insert_menu = menubar.addMenu("&Insérer")
+        insert_menu = menubar.addMenu(self.tr("&Insérer"))
         self._setup_insert_menu(insert_menu)
 
         # Menu Intégrations
-        integrations_menu = menubar.addMenu("&Intégrations")
+        integrations_menu = menubar.addMenu(self.tr("&Intégrations"))
         integrations_menu.addAction(self.insert_quote_day_action)
         integrations_menu.addAction(self.insert_gpx_trace_action)
         integrations_menu.addAction(self.insert_gps_map_action)
@@ -954,130 +958,136 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.convert_url_markdown_action)
 
         # Menu Aide
-        help_menu = menubar.addMenu("&Aide")
+        help_menu = menubar.addMenu(self.tr("&Aide"))
         help_menu.addAction(self.online_help_action)
         help_menu.addAction(self.about_action)
 
     def _create_actions(self):
         """Crée toutes les actions de l'application."""
         self.new_action = QAction(
-            "Nouveau",
+            self.tr("Nouveau"),
             self,
             shortcut=QKeySequence.New,
-            statusTip="Créer un nouveau fichier",
+            statusTip=self.tr("Créer un nouveau fichier"),
             triggered=self.new_file,
         )
         self.open_any_file_action = QAction(
-            "Ouvrir...",
+            self.tr("Ouvrir..."),
             self,
             shortcut=QKeySequence.Open,
-            statusTip="Ouvrir un fichier existant",
+            statusTip=self.tr("Ouvrir un fichier existant"),
             triggered=self.open_any_file,
         )
         self.open_journal_action = QAction(
-            "Ouvrir Journal",
+            self.tr("Ouvrir Journal"),
             self,
-            statusTip="Ouvrir un répertoire de journal",
+            statusTip=self.tr("Ouvrir un répertoire de journal"),
             triggered=self.open_journal,
         )
         self.open_document_action = QAction(
-            "Ouvrir Document...",
+            self.tr("Ouvrir Document..."),
             self,
-            statusTip="Ouvrir un document EPUB ou PDF dans le lecteur",
+            statusTip=self.tr("Ouvrir un document EPUB ou PDF dans le lecteur"),
             triggered=self.open_document_for_reader,
         )
         self.save_action = QAction(
-            "Sauvegarder dans Journal",
+            self.tr("Sauvegarder dans Journal"),
             self,
             shortcut=QKeySequence.Save,
-            statusTip="Sauvegarder le fichier dans le journal",
+            statusTip=self.tr("Sauvegarder le fichier dans le journal"),
             triggered=self.save_file,
         )
         self.save_as_action = QAction(
-            "Sauvegarder sous...",
+            self.tr("Sauvegarder sous..."),
             self,
             shortcut=QKeySequence.SaveAs,
-            statusTip="Sauvegarder sous un nouveau nom",
+            statusTip=self.tr("Sauvegarder sous un nouveau nom"),
             triggered=self.save_file_as,
         )
         self.save_as_template_action = QAction(
-            "Sauvegarder comme Modèle...",
+            self.tr("Sauvegarder comme Modèle..."),
             self,
-            statusTip="Sauvegarder le document actuel comme un nouveau modèle",
+            statusTip=self.tr("Sauvegarder le document actuel comme un nouveau modèle"),
             triggered=self.save_as_template,
         )
         self.backup_journal_action = QAction(
-            "Sauvegarde Journal...",
+            self.tr("Sauvegarde Journal..."),
             self,
-            statusTip="Sauvegarder le journal complet dans une archive ZIP",
+            statusTip=self.tr("Sauvegarder le journal complet dans une archive ZIP"),
             triggered=self.backup_journal,
         )
         self.restore_journal_action = QAction(
-            "Restauration Journal...",
+            self.tr("Restauration Journal..."),
             self,
-            statusTip="Restaurer le journal depuis une archive ZIP",
+            statusTip=self.tr("Restaurer le journal depuis une archive ZIP"),
             triggered=self.restore_journal,
         )
         self.export_action = QAction(
-            "Exporter HTML...",
+            self.tr("Exporter HTML..."),
             self,
-            statusTip="Exporter en HTML",
+            statusTip=self.tr("Exporter en HTML"),
             triggered=self.export_html,
         )
         self.export_pdf_action = QAction(
-            "Exporter en PDF...",
+            self.tr("Exporter en PDF..."),
             self,
-            statusTip="Exporter le fichier actuel en PDF",
+            statusTip=self.tr("Exporter le fichier actuel en PDF"),
             triggered=self.export_pdf,
         )
         self.export_journal_pdf_action = QAction(
-            "Exporter Journal PDF...",
+            self.tr("Exporter Journal PDF..."),
             self,
-            statusTip="Exporter le journal complet en PDF",
+            statusTip=self.tr("Exporter le journal complet en PDF"),
             triggered=self.export_journal_pdf,
         )
         self.export_journal_epub_action = QAction(
-            "Exporter Journal EPUB...",
+            self.tr("Exporter Journal EPUB..."),
             self,
-            statusTip="Exporter le journal complet en EPUB",
+            statusTip=self.tr("Exporter le journal complet en EPUB"),
             triggered=self.export_journal_epub,
         )
         self.preferences_action = QAction(
-            "Préférences...",
+            self.tr("Préférences..."),
             self,
-            statusTip="Ouvrir les préférences de l'application",
+            statusTip=self.tr("Ouvrir les préférences de l'application"),
             triggered=self.open_preferences,
         )
         self.quit_action = QAction(
-            "Quitter",
+            self.tr("Quitter"),
             self,
             shortcut=QKeySequence.Quit,
-            statusTip="Quitter l'application",
+            statusTip=self.tr("Quitter l'application"),
             triggered=self.close,
         )
 
         self.undo_action = QAction(
-            "Annuler", self, shortcut=QKeySequence.Undo, triggered=self.editor.undo
+            self.tr("Annuler"),
+            self,
+            shortcut=QKeySequence.Undo,
+            triggered=self.editor.undo,
         )
         self.redo_action = QAction(
-            "Rétablir", self, shortcut=QKeySequence.Redo, triggered=self.editor.redo
+            self.tr("Rétablir"),
+            self,
+            shortcut=QKeySequence.Redo,
+            triggered=self.editor.redo,
         )
         self.find_action = QAction(
-            "Rechercher",
+            self.tr("Rechercher"),
             self,
             # V3.2.1 - Add Notes Panel
             shortcut=QKeySequence.Find,
             triggered=self.editor.show_find_dialog,
         )
         self.toggle_navigation_action = QAction(
-            "Basculer Navigation Journal",
+            self.tr("Basculer Navigation Journal"),
             self,
             shortcut="F6",
             checkable=True,
             triggered=self.toggle_navigation,
         )
         self.toggle_notes_action = QAction(
-            "Basculer Explorateur de Notes",
+            self.tr("Basculer Explorateur de Notes"),
             self,
             shortcut="F9",
             checkable=True,
@@ -1085,122 +1095,128 @@ class MainWindow(QMainWindow):
         )
         # V3.2.2 - Action pour afficher/masquer les détails dans le panneau de notes
         self.toggle_notes_details_action = QAction(
-            "Afficher/Masquer les détails des notes",
+            self.tr("Afficher/Masquer les détails des notes"),
             self,
             shortcut="Ctrl+M",
             triggered=self.notes_panel.toggle_details_columns,
         )
         self.toggle_outline_action = QAction(
-            "Basculer Plan du document",
+            self.tr("Basculer Plan du document"),
             self,
             shortcut="F7",
             checkable=True,
             triggered=self.toggle_outline,
         )
         self.toggle_preview_action = QAction(
-            "Basculer Aperçu HTML",
+            self.tr("Basculer Aperçu HTML"),
             self,
             shortcut="F5",
             checkable=True,
             triggered=self.toggle_preview,
         )
         self.toggle_reader_action = QAction(
-            "Basculer Lecteur",
+            self.tr("Basculer Lecteur"),
             self,
             shortcut="F8",
             checkable=True,
             triggered=self.toggle_reader,
         )
         self.about_action = QAction(
-            "À propos",
+            self.tr("À propos"),
             self,
             triggered=self.show_about,
         )
 
         self.online_help_action = QAction(
-            "Documentation en ligne",
+            self.tr("Documentation en ligne"),
             self,
             triggered=self.show_online_help,
         )
 
         self.insert_quote_day_action = QAction(
-            "Citation du jour",
+            self.tr("Citation du jour"),
             self,
             triggered=self.insert_quote_of_the_day,
         )
 
         self.insert_youtube_video_action = QAction(
-            "Vidéo YouTube",
+            self.tr("Vidéo YouTube"),
             self,
             icon=QIcon("bluenotebook/resources/icons/youtube_32px.png"),
-            statusTip="Insérer une vidéo YouTube",
+            statusTip=self.tr("Insérer une vidéo YouTube"),
             triggered=self.insert_youtube_video,
         )
         self.insert_template_action = QAction(
-            "Insérer un modèle...",
+            self.tr("Insérer un modèle..."),
             self,
-            statusTip="Insérer le contenu d'un modèle à la position du curseur",
+            statusTip=self.tr(
+                "Insérer le contenu d'un modèle à la position du curseur"
+            ),
             triggered=self.insert_template,
         )
         self.insert_gps_map_action = QAction(
-            "Carte GPS",
+            self.tr("Carte GPS"),
             self,
-            statusTip="Insérer une carte statique à partir de coordonnées GPS",
+            statusTip=self.tr("Insérer une carte statique à partir de coordonnées GPS"),
             triggered=self.insert_gps_map,
         )
         self.insert_gpx_trace_action = QAction(
-            "Trace GPX",
+            self.tr("Trace GPX"),
             self,
-            statusTip="Insérer une carte à partir d'une trace GPX",
+            statusTip=self.tr("Insérer une carte à partir d'une trace GPX"),
             triggered=self.insert_gpx_trace,
         )
         self.insert_weather_action = QAction(
-            "Météo Weatherapi.com",
+            self.tr("Météo Weatherapi.com"),
             self,
-            statusTip="Insérer la météo actuelle",
+            statusTip=self.tr("Insérer la météo actuelle"),
             triggered=self.insert_weather,
         )
         self.insert_amazon_book_action = QAction(
-            "Amazon ISBN",
+            self.tr("Amazon ISBN"),
             self,
-            statusTip="Insérer les informations d'un livre depuis Amazon via son ISBN",
+            statusTip=self.tr(
+                "Insérer les informations d'un livre depuis Amazon via son ISBN"
+            ),
             triggered=self.insert_amazon_book,
         )
         self.insert_sun_moon_action = QAction(
-            "Astro du jour",
+            self.tr("Astro du jour"),
             self,
-            statusTip="Insérer les données astronomiques du jour",
+            statusTip=self.tr("Insérer les données astronomiques du jour"),
             triggered=self.insert_sun_moon_data,
         )
         self.convert_pdf_markdown_action = QAction(
-            "Conversion PDF-Markdown",
+            self.tr("Conversion PDF-Markdown"),
             self,
-            statusTip="Convertir un fichier PDF en Markdown avec 'markitdown'",
+            statusTip=self.tr("Convertir un fichier PDF en Markdown avec 'markitdown'"),
             triggered=self.convert_pdf_to_markdown,
         )
         self.convert_url_markdown_action = QAction(
-            "Conversion URL(HTML)-Markdown",
+            self.tr("Conversion URL(HTML)-Markdown"),
             self,
-            statusTip="Convertir une page Web (URL ou fichier local) en Markdown",
+            statusTip=self.tr(
+                "Convertir une page Web (URL ou fichier local) en Markdown"
+            ),
             triggered=self.convert_url_to_markdown,
         )
         self.insert_bookmark_action = QAction(
-            "🔖 Bookmark",
+            self.tr("🔖 Bookmark"),
             self,
-            statusTip="Insérer un signet à partir d'une URL",
+            statusTip=self.tr("Insérer un signet à partir d'une URL"),
             triggered=lambda: handle_insert_bookmark(self),
         )
 
     def _setup_format_menu(self, format_menu):
         """Configure le menu de formatage de manière dynamique."""
         # Sous-menu Titre
-        title_menu = QMenu("Titres", self)
+        title_menu = QMenu(self.tr("Titres"), self)
         title_actions_data = [
-            ("Niv 1 (#)", "h1"),
-            ("Niv 2 (##)", "h2"),
-            ("Niv 3 (###)", "h3"),
-            ("Niv 4 (####)", "h4"),
-            ("Niv 5 (#####)", "h5"),
+            (self.tr("Niv 1 (#)"), "h1"),
+            (self.tr("Niv 2 (##)"), "h2"),
+            (self.tr("Niv 3 (###)"), "h3"),
+            (self.tr("Niv 4 (####)"), "h4"),
+            (self.tr("Niv 5 (#####)"), "h5"),
         ]
         for name, data in title_actions_data:
             action = QAction(name, self)
@@ -1211,12 +1227,12 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(title_menu)
 
         # Sous-menu Style de texte
-        style_menu = QMenu("Style de texte", self)
+        style_menu = QMenu(self.tr("Style de texte"), self)
         style_actions_data = [
-            ("Gras (**texte**)", "bold", QKeySequence.Bold),
-            ("Italique (*texte*)", "italic"),
-            ("Barré (~~texte~~)", "strikethrough"),
-            ("Surligné (==texte==)", "highlight"),
+            (self.tr("Gras (**texte**)"), "bold", QKeySequence.Bold),
+            (self.tr("Italique (*texte*)"), "italic"),
+            (self.tr("Barré (~~texte~~)"), "strikethrough"),
+            (self.tr("Surligné (==texte==)"), "highlight"),
         ]
         for name, data, *shortcut in style_actions_data:
             action = QAction(name, self)
@@ -1229,10 +1245,10 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(style_menu)
 
         # Sous-menu Code
-        code_menu = QMenu("Code", self)
+        code_menu = QMenu(self.tr("Code"), self)
         code_actions_data = [
-            ("Monospace (inline)", "inline_code"),
-            ("Bloc de code", "code_block"),
+            (self.tr("Monospace (inline)"), "inline_code"),
+            (self.tr("Bloc de code"), "code_block"),
         ]
         for name, data in code_actions_data:
             action = QAction(name, self)
@@ -1243,11 +1259,11 @@ class MainWindow(QMainWindow):
         format_menu.addMenu(code_menu)
 
         # Sous-menu Listes
-        list_menu = QMenu("Listes", self)
+        list_menu = QMenu(self.tr("Listes"), self)
         list_actions_data = [
-            ("• Liste non ordonnée", "ul"),
-            ("1. Liste ordonnée", "ol"),
-            ("☑️ Liste de tâches", "task_list"),
+            (self.tr("• Liste non ordonnée"), "ul"),
+            (self.tr("1. Liste ordonnée"), "ol"),
+            (self.tr("☑️ Liste de tâches"), "task_list"),
         ]
         for name, data in list_actions_data:
             action = QAction(name, self)
@@ -1259,7 +1275,7 @@ class MainWindow(QMainWindow):
 
         format_menu.addSeparator()
 
-        clear_action = QAction("RaZ (Effacer le formatage)", self)
+        clear_action = QAction(self.tr("RaZ (Effacer le formatage)"), self)
         clear_action.triggered.connect(self.editor.clear_formatting)
         format_menu.addAction(clear_action)
 
@@ -1267,13 +1283,13 @@ class MainWindow(QMainWindow):
         """Configure le menu d'insertion de manière dynamique."""
         insert_actions_data = [
             (
-                "Image",
+                self.tr("Image"),
                 "markdown_image",
                 QKeySequence("Ctrl+Shift+I"),
             ),
-            ("🔗 Lien", "markdown_link"),
-            ("Lien URL/Email", "url_link"),
-            ("📎 Attachement", "attachment"),
+            (self.tr("🔗 Lien"), "markdown_link"),
+            (self.tr("Lien URL/Email"), "url_link"),
+            (self.tr("📎 Attachement"), "attachment"),
         ]
 
         for name, data, *shortcut in insert_actions_data:  # type: ignore
@@ -1294,17 +1310,17 @@ class MainWindow(QMainWindow):
 
         insert_menu.addSeparator()
 
-        insert_hr_action = QAction("Ligne Horizontale", self)
+        insert_hr_action = QAction(self.tr("Ligne Horizontale"), self)
         insert_hr_action.triggered.connect(lambda: self.editor.format_text("hr"))
 
-        insert_comment_action = QAction("Commentaire HTML", self)
+        insert_comment_action = QAction(self.tr("Commentaire HTML"), self)
         insert_comment_action.triggered.connect(
             lambda: self.editor.format_text("html_comment")
         )
 
-        insert_table_action = QAction("Tableau", self)
+        insert_table_action = QAction(self.tr("Tableau"), self)
         insert_table_action.triggered.connect(lambda: self.editor.format_text("table"))
-        insert_quote_action = QAction("Citation", self)
+        insert_quote_action = QAction(self.tr("Citation"), self)
         insert_quote_action.triggered.connect(lambda: self.editor.format_text("quote"))
 
         insert_menu.addAction(insert_hr_action)
@@ -1313,38 +1329,38 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(insert_quote_action)
         insert_menu.addSeparator()
 
-        insert_tag_action = QAction("Tag (@@)", self)
+        insert_tag_action = QAction(self.tr("Tag (@@)"), self)
         insert_tag_action.triggered.connect(lambda: self.editor.format_text("tag"))
         insert_menu.addAction(insert_tag_action)
 
-        insert_time_action = QAction("Horodatage", self)
+        insert_time_action = QAction(self.tr("Horodatage"), self)
         insert_time_action.triggered.connect(lambda: self.editor.format_text("time"))
         insert_menu.addAction(insert_time_action)
         insert_menu.addSeparator()
 
         # Sous-menu Emoji
-        emoji_menu = QMenu("Emoji", self)
+        emoji_menu = QMenu(self.tr("Emoji"), self)
         emoji_actions_data = [
-            ("📖 Livre", "📖"),
-            ("🎵 Musique", "🎵"),
-            ("📚 À Lire", "📚"),
-            ("🎬 À Regarder", "🎬"),
-            ("🎧 A Ecouter", "🎧"),
-            ("✈️ Voyage", "✈️"),
-            ("❤️ Santé", "❤️"),
-            ("☀️ Soleil", "☀️"),
-            ("☁️ Nuage", "☁️"),
-            ("🌧️ Pluie", "🌧️"),
-            ("🌬️ Vent", "🌬️"),
-            ("😊 Content", "😊"),
-            ("😠 Mécontent", "😠"),
-            ("😢 Triste", "😢"),
-            ("✅ Fait", "✅"),
-            ("❌ Annulé", "❌"),
-            ("⚠️ Attention", "⚠️"),
-            ("📝 Mémo", "📝"),
-            ("❓ Question", "❓"),
-            ("❗ Exclamation", "❗"),
+            (self.tr("📖 Livre"), "📖"),
+            (self.tr("🎵 Musique"), "🎵"),
+            (self.tr("📚 À Lire"), "📚"),
+            (self.tr("🎬 À Regarder"), "🎬"),
+            (self.tr("🎧 A Ecouter"), "🎧"),
+            (self.tr("✈️ Voyage"), "✈️"),
+            (self.tr("❤️ Santé"), "❤️"),
+            (self.tr("☀️ Soleil"), "☀️"),
+            (self.tr("☁️ Nuage"), "☁️"),
+            (self.tr("🌧️ Pluie"), "🌧️"),
+            (self.tr("🌬️ Vent"), "🌬️"),
+            (self.tr("😊 Content"), "😊"),
+            (self.tr("😠 Mécontent"), "😠"),
+            (self.tr("😢 Triste"), "😢"),
+            (self.tr("✅ Fait"), "✅"),
+            (self.tr("❌ Annulé"), "❌"),
+            (self.tr("⚠️ Attention"), "⚠️"),
+            (self.tr("📝 Mémo"), "📝"),
+            (self.tr("❓ Question"), "❓"),
+            (self.tr("❗ Exclamation"), "❗"),
         ]
         for name, emoji in emoji_actions_data:
             action = QAction(
@@ -1355,7 +1371,7 @@ class MainWindow(QMainWindow):
 
     def setup_panels_toolbar(self):
         """Configure la barre d'outils pour basculer les panneaux."""
-        self.panels_toolbar = QToolBar("Panneaux")
+        self.panels_toolbar = QToolBar(self.tr("Panneaux"))
         self.panels_toolbar.setMovable(False)
         self.addToolBar(Qt.TopToolBarArea, self.panels_toolbar)
 
@@ -1366,33 +1382,33 @@ class MainWindow(QMainWindow):
         self.panels_toolbar.setStyleSheet("QToolBar { border: none; }")
 
         # Bouton Notes
-        self.notes_button = SwitchButton(text="Notes")
+        self.notes_button = SwitchButton(text=self.tr("Notes"))
         self.notes_button.toggled.connect(self.notes_panel.setVisible)
         self.panels_toolbar.addWidget(self.notes_button)
 
         # Bouton Navigation
-        self.nav_button = SwitchButton(text="Navigation")
+        self.nav_button = SwitchButton(text=self.tr("Navigation"))
         self.nav_button.toggled.connect(self.navigation_panel.setVisible)
         self.panels_toolbar.addWidget(self.nav_button)
 
         # Bouton Plan
-        self.outline_button = SwitchButton(text="Plan")
+        self.outline_button = SwitchButton(text=self.tr("Plan"))
         self.outline_button.toggled.connect(self.outline_panel.setVisible)
         self.panels_toolbar.addWidget(self.outline_button)
 
         # Bouton Éditeur (toujours visible et désactivé)
-        self.editor_button = SwitchButton(text="Éditeur")
+        self.editor_button = SwitchButton(text=self.tr("Éditeur"))
         self.editor_button.setChecked(True)
         self.editor_button.setEnabled(False)
         self.panels_toolbar.addWidget(self.editor_button)
 
         # Bouton Aperçu
-        self.preview_button = SwitchButton(text="Aperçu")
+        self.preview_button = SwitchButton(text=self.tr("Aperçu"))
         self.preview_button.toggled.connect(self.preview.setVisible)
         self.panels_toolbar.addWidget(self.preview_button)
 
         # Bouton Lecteur
-        self.reader_button = SwitchButton(text="Lecteur")
+        self.reader_button = SwitchButton(text=self.tr("Lecteur"))
         self.reader_button.toggled.connect(self.toggle_reader_from_button)
         self.panels_toolbar.addWidget(self.reader_button)
 
@@ -1434,7 +1450,7 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusbar)
 
-        self.file_label = QLabel("Nouveau fichier")
+        self.file_label = QLabel(self.tr("Nouveau fichier"))
         self._set_file_label_color("gray")
         self.statusbar.addWidget(self.file_label)
 
@@ -1457,7 +1473,7 @@ class MainWindow(QMainWindow):
         )
         self.tag_index_status_label.setCursor(Qt.PointingHandCursor)
         self.tag_index_status_label.setToolTip(
-            "Cliquez pour rafraîchir l'index des tags"
+            self.tr("Cliquez pour rafraîchir l'index des tags")
         )
         self.tag_index_status_label.mousePressEvent = self.refresh_tag_index
         self.statusbar.addPermanentWidget(self.tag_index_status_label)
@@ -1530,14 +1546,29 @@ class MainWindow(QMainWindow):
         self.book_search_flash_timer.timeout.connect(
             self._toggle_book_search_status_visibility
         )
-        self.book_search_status_label = CenteredStatusBarLabel("Recherche du livre...")
+        self.book_search_status_label = CenteredStatusBarLabel(
+            self.tr("Recherche du livre...")
+        )
         self.book_search_status_label.setStyleSheet("color: red; font-weight: bold;")
         self.book_search_status_label.setVisible(False)
         self.statusbar.addWidget(self.book_search_status_label, 1)
 
+        # ──────────────────────────────────────────────────────────────
+        # Timer pour faire clignoter le message de sauvegarde du journal
+        # ──────────────────────────────────────────────────────────────
         self.backup_flash_timer = QTimer(self)
-        self.backup_flash_timer.setInterval(500)
-        self.backup_flash_timer.timeout.connect(self._toggle_backup_status_visibility)
+        self.backup_flash_timer.setInterval(600)
+
+        # On réutilise la même fonction que pour l’export PDF → ça marche parfaitement
+        self.backup_flash_timer.timeout.connect(self._toggle_pdf_status_visibility)
+
+        # Label qui clignote pendant la sauvegarde (réutilisé aussi pour le backup)
+        self.backup_status_label = QLabel(self.tr("Sauvegarde en cours…"))
+        self.backup_status_label.setStyleSheet("color: #d35400; font-weight: bold;")
+        self.backup_status_label.setAlignment(Qt.AlignCenter)
+        self.backup_status_label.setVisible(False)
+
+        self.statusbar.addPermanentWidget(self.backup_status_label)
 
         self.pdf_convert_flash_timer = QTimer(self)
         self.pdf_convert_flash_timer.setInterval(500)
@@ -1613,29 +1644,21 @@ class MainWindow(QMainWindow):
                 except OSError as e:
                     QMessageBox.warning(
                         self,
-                        "Erreur de Journal",
-                        f"Impossible de créer le répertoire de journal par défaut:\n{e}",
+                        self.tr("Erreur de Journal"),
+                        self.tr(
+                            "Impossible de créer le répertoire de journal par défaut:\n{e}"
+                        ).format(e=e),
                     )
                     journal_path = None
 
         self.journal_directory = journal_path
         self.update_journal_dir_label()
         # V4.0.3 Fix Bug Windows
-        """ if self.journal_directory:  
-            print(
-                MainWindowContext.tr("📔 Répertoire du journal: {0}").format(
-                    self.journal_directory
-                )
-            )
-            print(f"📔 Répertoire du journal: {self.journal_directory}")"""
+
         if self.journal_directory:
-            print(
-                MainWindowContext.tr("📔 Répertoire du journal: {0}").format(
-                    str(self.journal_directory)  # ← Conversion explicite
-                )
-            )
+            print(f"📔 Journal directory: {self.journal_directory}")
         else:
-            print(MainWindowContext.tr("⚠️ Répertoire du journal non défini."))
+            print(f"⚠️ Journal directory not defined.")
 
     def setup_notes_panel(self):
         """Configure le panneau de notes avec le répertoire du journal."""
@@ -1647,9 +1670,11 @@ class MainWindow(QMainWindow):
     def update_journal_dir_label(self):
         """Met à jour le label du répertoire de journal dans la barre de statut."""
         if self.journal_directory:
-            self.journal_dir_label.setText(f"Journal: {self.journal_directory}")
+            self.journal_dir_label.setText(
+                self.tr("Journal: {0}").format(self.journal_directory)
+            )
         else:
-            self.journal_dir_label.setText("Journal: Non défini")
+            self.journal_dir_label.setText(self.tr("Journal: Non défini"))
 
     def load_initial_file(self):
         """Charge le fichier journal du jour s'il existe, sinon un nouveau fichier."""
@@ -1693,15 +1718,23 @@ class MainWindow(QMainWindow):
             filename = os.path.basename(self.current_file)
             self.file_label.setText(filename)
         else:
-            filename = "Nouveau fichier"
+            filename = self.tr("Nouveau fichier")
             self.file_label.setText(filename)
 
         if self.is_modified:
             self._set_file_label_color("red")
-            self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename} *")
+            self.setWindowTitle(
+                self.tr("BlueNotebook V{app_version} - {filename} *").format(
+                    app_version=self.app_version, filename=filename
+                )
+            )
             self.modified_label.setText("●")
         else:
-            self.setWindowTitle(f"BlueNotebook V{self.app_version} - {filename}")
+            self.setWindowTitle(
+                self.tr("BlueNotebook V{app_version} - {filename}").format(
+                    app_version=self.app_version, filename=filename
+                )
+            )
             self.modified_label.setText("")
 
     def update_stats(self):
@@ -1711,7 +1744,11 @@ class MainWindow(QMainWindow):
         words = len(content.split())
         chars = len(content)
 
-        self.stats_label.setText(f"{lines} lignes | {words} mots | {chars} caractères")
+        self.stats_label.setText(
+            self.tr("{lines} lignes | {words} mots | {chars} caractères").format(
+                lines=lines, words=words, chars=chars
+            )
+        )
 
     def new_file(self):
         """Créer un nouveau fichier"""
@@ -1761,7 +1798,9 @@ class MainWindow(QMainWindow):
 
                 if not template_path.exists():
                     raise FileNotFoundError(
-                        f"Le fichier template '{template_name}' est introuvable."
+                        self.tr(
+                            "Le fichier template '{template_name}' est introuvable."
+                        ).format(template_name=template_name)
                     )
 
                 with open(template_path, "r", encoding="utf-8") as f:
@@ -1776,7 +1815,7 @@ class MainWindow(QMainWindow):
                     content = content.replace("{{horodatage}}", timestamp_str)
 
             except FileNotFoundError as e:
-                QMessageBox.warning(self, "Template manquant", str(e))
+                QMessageBox.warning(self, self.tr("Template manquant"), str(e))
                 content = f"# {today_str}\n\n"
 
         self.editor.set_text(content)
@@ -1791,7 +1830,7 @@ class MainWindow(QMainWindow):
     def open_journal(self):
         """Ouvre un dialogue pour sélectionner un nouveau répertoire de journal."""
         dir_name = QFileDialog.getExistingDirectory(
-            self, "Sélectionner le répertoire du Journal"
+            self, self.tr("Sélectionner le répertoire du Journal")
         )
         if dir_name:
             new_journal_path = Path(dir_name).resolve()
@@ -1800,8 +1839,10 @@ class MainWindow(QMainWindow):
                 self.update_journal_dir_label()
                 QMessageBox.information(
                     self,
-                    "Journal",
-                    f"Le répertoire du journal est maintenant :\n{self.journal_directory}",
+                    self.tr("Journal"),
+                    self.tr("Le répertoire du journal est maintenant :\n{0}").format(
+                        self.journal_directory
+                    ),
                 )
                 self.start_initial_indexing()
                 self.update_calendar_highlights()
@@ -1829,7 +1870,9 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             QMessageBox.critical(
-                self, "Erreur", f"Impossible d'ouvrir le fichier :\n{str(e)}"
+                self,
+                self.tr("Erreur"),
+                self.tr("Impossible d'ouvrir le fichier :\n{0}").format(str(e)),
             )
 
     def save_file(self):
@@ -1853,20 +1896,26 @@ class MainWindow(QMainWindow):
 
         if journal_file_path.exists():
             dialog = QDialog(self)
-            dialog.setWindowTitle("Fichier Journal déjà existant")
+            dialog.setWindowTitle(self.tr("Fichier Journal déjà existant"))
             layout = QVBoxLayout()
             layout.addWidget(
-                QLabel(f"Le fichier journal '{journal_file_path.name}' existe déjà.")
+                QLabel(
+                    self.tr("Le fichier journal '{0}' existe déjà.").format(
+                        journal_file_path.name
+                    )
+                )
             )
 
             buttons = QDialogButtonBox()
             replace_button = buttons.addButton(
-                "Remplacer", QDialogButtonBox.DestructiveRole
+                self.tr("Remplacer"), QDialogButtonBox.DestructiveRole
             )
             append_button = buttons.addButton(
-                "Ajouter à la fin", QDialogButtonBox.AcceptRole
+                self.tr("Ajouter à la fin"), QDialogButtonBox.AcceptRole
             )
-            cancel_button = buttons.addButton("Annuler", QDialogButtonBox.RejectRole)
+            cancel_button = buttons.addButton(
+                self.tr("Annuler"), QDialogButtonBox.RejectRole
+            )
             layout.addWidget(buttons)
             dialog.setLayout(layout)
 
@@ -1892,9 +1941,11 @@ class MainWindow(QMainWindow):
         """Sauvegarder sous"""
         filename, _ = QFileDialog.getSaveFileName(
             self,
-            "Sauvegarder le fichier",
+            self.tr("Sauvegarder le fichier"),
             "",
-            "Fichiers Markdown (*.md);;Fichiers texte (*.txt);;Tous les fichiers (*)",
+            self.tr(
+                "Fichiers Markdown (*.md);;Fichiers texte (*.txt);;Tous les fichiers (*)"
+            ),
         )
 
         if filename:
@@ -1913,9 +1964,9 @@ class MainWindow(QMainWindow):
 
         filename, _ = QFileDialog.getSaveFileName(
             self,
-            "Sauvegarder comme modèle",
+            self.tr("Sauvegarder comme modèle"),
             str(templates_dir),
-            "Fichiers Markdown (*.md)",
+            self.tr("Fichiers Markdown (*.md)"),
         )
 
         if not filename:
@@ -1929,11 +1980,13 @@ class MainWindow(QMainWindow):
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(content)
             self.statusbar.showMessage(
-                f"Modèle sauvegardé : {Path(filename).name}", 3000
+                self.tr("Modèle sauvegardé : {0}").format(Path(filename).name), 3000
             )
         except Exception as e:
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de sauvegarder le modèle :\n{str(e)}"
+                self,
+                self.tr("Erreur"),
+                self.tr("Impossible de sauvegarder le modèle :\n{0}").format(str(e)),
             )
 
     def insert_template(self):
@@ -1952,7 +2005,9 @@ class MainWindow(QMainWindow):
 
             if not template_path.exists():
                 raise FileNotFoundError(
-                    f"Le fichier modèle '{template_name}' est introuvable."
+                    self.tr("Le fichier modèle '{0}' est introuvable.").format(
+                        template_name
+                    )
                 )
 
             with open(template_path, "r", encoding="utf-8") as f:
@@ -1971,7 +2026,7 @@ class MainWindow(QMainWindow):
             self.editor.insert_text(content)
 
         except FileNotFoundError as e:
-            QMessageBox.warning(self, "Modèle manquant", str(e))
+            QMessageBox.warning(self, self.tr("Modèle manquant"), str(e))
 
     def _save_to_file(self, filename):
         """Sauvegarder dans un fichier spécifique"""
@@ -1983,13 +2038,17 @@ class MainWindow(QMainWindow):
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self._show_transient_save_status(f"Fichier sauvegardé : {filename}")
+            self._show_transient_save_status(
+                self.tr("Fichier sauvegardé : {0}").format(filename)
+            )
             # Mettre à jour le calendrier pour refléter la nouvelle note
             self.update_calendar_highlights()
 
         except Exception as e:
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de sauvegarder le fichier :\n{str(e)}"
+                self,
+                self.tr("Erreur"),
+                self.tr("Impossible de sauvegarder le fichier :\n{0}").format(str(e)),
             )
 
     def _append_to_file(self, filename):
@@ -2002,12 +2061,16 @@ class MainWindow(QMainWindow):
             self.is_modified = False
             self.update_title()
             self._set_file_label_color("green")
-            self._show_transient_save_status(f"Contenu ajouté à : {filename}")
+            self._show_transient_save_status(
+                self.tr("Contenu ajouté à : {0}").format(filename)
+            )
             # Mettre à jour le calendrier pour refléter la nouvelle note
             self.update_calendar_highlights()
         except Exception as e:
             QMessageBox.critical(
-                self, "Erreur", f"Impossible d'ajouter au fichier :\n{str(e)}"
+                self,
+                self.tr("Erreur"),
+                self.tr("Impossible d'ajouter au fichier :\n{0}").format(str(e)),
             )
 
     def export_html(self):
@@ -2032,9 +2095,9 @@ class MainWindow(QMainWindow):
 
         filename, _ = QFileDialog.getSaveFileName(
             self,
-            "Exporter en HTML",
+            self.tr("Exporter en HTML"),
             default_path,
-            "Fichiers HTML (*.html);;Tous les fichiers (*)",
+            self.tr("Fichiers HTML (*.html);;Tous les fichiers (*)"),
         )
 
         if filename:
@@ -2046,7 +2109,9 @@ class MainWindow(QMainWindow):
                 with open(filename, "w", encoding="utf-8") as f:
                     f.write(html_content)
 
-                self.statusbar.showMessage(f"Exporté en HTML : {filename}", 3000)
+                self.statusbar.showMessage(
+                    self.tr("Exporté en HTML : {0}").format(filename), 3000
+                )
 
                 # Mémoriser le répertoire de destination pour la prochaine fois
                 new_html_dir = str(Path(filename).parent)
@@ -2055,7 +2120,9 @@ class MainWindow(QMainWindow):
 
             except Exception as e:
                 QMessageBox.critical(
-                    self, "Erreur", f"Impossible d'exporter en HTML :\n{str(e)}"
+                    self,
+                    self.tr("Erreur"),
+                    self.tr("Impossible d'exporter en HTML :\n{0}").format(str(e)),
                 )
 
     def export_pdf(self):
@@ -2072,8 +2139,10 @@ class MainWindow(QMainWindow):
         file_type = Path(file_path).suffix.upper()[1:]
         QMessageBox.information(
             self,
-            "Exportation terminée",
-            f"Le journal a été exporté avec succès au format {file_type} dans :\n{file_path}",
+            self.tr("Exportation terminée"),
+            self.tr(
+                "Le journal a été exporté avec succès au format {0} dans :\n{1}"
+            ).format(file_type, file_path),
         )
 
     def _on_export_error(self, error_message):
@@ -2081,8 +2150,10 @@ class MainWindow(QMainWindow):
         self._stop_export_flashing()
         QMessageBox.critical(
             self,
-            "Erreur d'exportation",
-            f"Une erreur est survenue lors de la création du fichier :\n{error_message}",
+            self.tr("Erreur d'exportation"),
+            self.tr(
+                "Une erreur est survenue lors de la création du fichier :\n{0}"
+            ).format(error_message),
         )
 
     def export_journal_epub(self):
@@ -2146,54 +2217,77 @@ class MainWindow(QMainWindow):
 
     def show_online_help(self):
         """Affiche la page d'aide HTML dans le navigateur par défaut."""
+        # Déterminer le fichier d'aide en fonction de la langue de l'application
+        app_locale = QLocale()
+        if app_locale.language() == QLocale.English:
+            help_filename = "online_help.html"
+        else:
+            help_filename = "aide_en_ligne.html"  # Par défaut en français
+
         base_path = os.path.dirname(os.path.abspath(__file__))
         help_file_path = os.path.join(
-            base_path, "..", "resources", "html", "aide_en_ligne.html"
+            base_path, "..", "resources", "html", help_filename
         )
 
         if os.path.exists(help_file_path):
             url = f"file:///{os.path.abspath(help_file_path)}"
             webbrowser.open(url)
         else:
-            QMessageBox.warning(
-                self,
-                "Aide non trouvée",
-                f"Le fichier d'aide n'a pas été trouvé:\n{help_file_path}",
+            # Si le fichier spécifique à la langue n'est pas trouvé, essayer l'autre en fallback
+            fallback_filename = (
+                "aide_en_ligne.html"
+                if help_filename == "online_help.html"
+                else "online_help.html"
             )
+            fallback_path = os.path.join(
+                base_path, "..", "resources", "html", fallback_filename
+            )
+            if os.path.exists(fallback_path):
+                url = f"file:///{os.path.abspath(fallback_path)}"
+                webbrowser.open(url)
+            else:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Aide non trouvée"),
+                    self.tr("Le fichier d'aide n'a pas été trouvé:\n{0}").format(
+                        help_file_path
+                    ),
+                )
 
     def show_about(self):
         """Afficher la boîte À propos"""
         about_box = QMessageBox(self)
-        about_box.setWindowTitle("À propos de BlueNotebook")
+        about_box.setWindowTitle(self.tr("À propos de BlueNotebook"))
         about_box.setIcon(QMessageBox.Information)
         about_box.setTextFormat(Qt.RichText)
-        about_box.setText(
-            f"""<h2> BlueNotebook V{self.app_version}</h2>
-                <h2>_____________________________________________________________</h2>
-        <p><b>Éditeur de journal personnel </b></p>      
-        <p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,
-        développé avec PyQt5 et QWebEngine.</p>
-        <p>A partir d'une idée initiale de Jendrik Seipp <a href="https://github.com/jendrikseipp/rednotebook">RedNotebook</a> </p>
-        <h2>_____________________________________________________________</h2>
-        <p><b>Fonctionnalités :</b></p>
-        <ul>
-        <li>Gestion d'un journal Personnel</li>
-        <li>Navigation simple dans les notes du journal</li>
-        <li>Sauvegarde/Restauration Journal</li>
-        <li>Édition avec coloration syntaxique </li>
-        <li>Aperçu HTML en temps réel</li>
-        <li>Export HTML/PDF du journal complet ou partiel</li>
-        <li>Gestion de Templates personnalisables</li>
-        <li>Gestion de tags / Recherche par tags</li>
-        <li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>
-        <li>Lecteur EPUB/PDF intégré avec recherche</li>
-        <li>Gestion de tâches / TODO Listes</li>
-        </ul>
-        <h2>_____________________________________________________________</h2>
-        <p>Dépôt GitHub : <a href="https://github.com/lephotographelibre/BlueNotebook">BlueNotebook</a></p>
-        <p>Licence : <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a></p>
-        <p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"""
-        )
+        about_text = self.tr(
+            "<h2> BlueNotebook V{app_version}</h2>"
+            "<h2>_____________________________________________________________</h2>"
+            "<p><b>Éditeur de journal personnel </b></p>"
+            "<p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,"
+            "développé avec PyQt5 et QWebEngine.</p>"
+            "<p>A partir d'une idée initiale de Jendrik Seipp <a href='https://github.com/jendrikseipp/rednotebook'>RedNotebook</a> </p>"
+            "<h2>_____________________________________________________________</h2>"
+            "<p><b>Fonctionnalités :</b></p>"
+            "<ul>"
+            "<li>Gestion d'un journal Personnel</li>"
+            "<li>Navigation simple dans les notes du journal</li>"
+            "<li>Sauvegarde/Restauration Journal</li>"
+            "<li>Édition avec coloration syntaxique </li>"
+            "<li>Aperçu HTML en temps réel</li>"
+            "<li>Export HTML/PDF du journal complet ou partiel</li>"
+            "<li>Gestion de Templates personnalisables</li>"
+            "<li>Gestion de tags / Recherche par tags</li>"
+            "<li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>"
+            "<li>Lecteur EPUB/PDF intégré avec recherche</li>"
+            "<li>Gestion de tâches / TODO Listes</li>"
+            "</ul>"
+            "<h2>_____________________________________________________________</h2>"
+            "<p>Dépôt GitHub : <a href='https://github.com/lephotographelibre/BlueNotebook'>BlueNotebook</a></p>"
+            "<p>Licence : <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GNU GPLv3</a></p>"
+            "<p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"
+        ).format(app_version=self.app_version)
+        about_box.setText(about_text)
         about_box.setStandardButtons(QMessageBox.Ok)
         about_box.resize(800, about_box.height())
         about_box.exec_()
@@ -2202,9 +2296,11 @@ class MainWindow(QMainWindow):
         """Ouvre un document EPUB ou PDF dans le panneau lecteur."""
         filename, _ = QFileDialog.getOpenFileName(
             self,
-            "Ouvrir un document",
+            self.tr("Ouvrir un document"),
             self.settings_manager.get("reader.last_directory", str(Path.home())),
-            "Documents (*.epub *.pdf);;Fichiers EPUB (*.epub);;Fichiers PDF (*.pdf)",
+            self.tr(
+                "Documents (*.epub *.pdf);;Fichiers EPUB (*.epub);;Fichiers PDF (*.pdf)"
+            ),
         )
 
         if filename:
@@ -2224,8 +2320,8 @@ class MainWindow(QMainWindow):
             else:
                 QMessageBox.warning(
                     self,
-                    "Format non supporté",
-                    "Ce format de fichier n'est pas supporté.",
+                    self.tr("Format non supporté"),
+                    self.tr("Ce format de fichier n'est pas supporté."),
                 )
 
     def check_save_changes(self):
@@ -2233,16 +2329,18 @@ class MainWindow(QMainWindow):
         if self.is_modified:
             msg_box = QMessageBox(self)
             msg_box.setIcon(QMessageBox.Question)
-            msg_box.setWindowTitle("Modifications non sauvegardées")
+            msg_box.setWindowTitle(self.tr("Modifications non sauvegardées"))
             msg_box.setText(
-                "Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?"
+                self.tr(
+                    "Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?"
+                )
             )
             msg_box.setStandardButtons(
                 QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
             )
-            msg_box.button(QMessageBox.Save).setText("Sauvegarder")
-            msg_box.button(QMessageBox.Discard).setText("Ne pas sauvegarder")
-            msg_box.button(QMessageBox.Cancel).setText("Annuler")
+            msg_box.button(QMessageBox.Save).setText(self.tr("Sauvegarder"))
+            msg_box.button(QMessageBox.Discard).setText(self.tr("Ne pas sauvegarder"))
+            msg_box.button(QMessageBox.Cancel).setText(self.tr("Annuler"))
             msg_box.setDefaultButton(QMessageBox.Save)
 
             reply = msg_box.exec_()
@@ -2274,13 +2372,15 @@ class MainWindow(QMainWindow):
 
         filename, _ = QFileDialog.getOpenFileName(
             self,
-            "Ouvrir un document",
+            self.tr("Ouvrir un document"),
             self.settings_manager.get("reader.last_directory", str(Path.home())),
-            "Tous les documents supportés (*.md *.markdown *.txt *.epub *.pdf);;"
-            "Fichiers Markdown (*.md *.markdown *.txt);;"
-            "Documents EPUB (*.epub);;"
-            "Documents PDF (*.pdf);;"
-            "Tous les fichiers (*)",
+            self.tr(
+                "Tous les documents supportés (*.md *.markdown *.txt *.epub *.pdf);;"
+                "Fichiers Markdown (*.md *.markdown *.txt);;"
+                "Documents EPUB (*.epub);;"
+                "Documents PDF (*.pdf);;"
+                "Tous les fichiers (*)"
+            ),
         )
 
         if not filename:
@@ -2311,9 +2411,11 @@ class MainWindow(QMainWindow):
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
             if self.daily_quote and self.daily_author:
                 msg_box = QMessageBox(self)
-                msg_box.setWindowTitle("Citation du Jour")
+                msg_box.setWindowTitle(self.tr("Citation du Jour"))
                 msg_box.setText(
-                    f"<blockquote><i>« {self.daily_quote} »</i></blockquote>"
+                    self.tr("<blockquote><i>« {0} »</i></blockquote>").format(
+                        self.daily_quote
+                    )
                 )
                 msg_box.setInformativeText(f"<b>{self.daily_author}</b>")
                 msg_box.setIcon(QMessageBox.Information)
@@ -2329,7 +2431,9 @@ class MainWindow(QMainWindow):
             self.editor.format_text("quote_of_the_day")
         else:
             QMessageBox.warning(
-                self, "Erreur", "Impossible de récupérer la citation du jour."
+                self,
+                self.tr("Erreur"),
+                self.tr("Impossible de récupérer la citation du jour."),
             )
 
     def insert_youtube_video(self):
@@ -2342,8 +2446,10 @@ class MainWindow(QMainWindow):
             video_url = selected_text
         else:
             dialog = QInputDialog(self)
-            dialog.setWindowTitle("Vidéo ou Playlist YouTube")
-            dialog.setLabelText("Entrez l'URL de la vidéo ou playlist Youtube:")
+            dialog.setWindowTitle(self.tr("Vidéo ou Playlist YouTube"))
+            dialog.setLabelText(
+                self.tr("Entrez l'URL de la vidéo ou playlist Youtube:")
+            )
             dialog.setTextEchoMode(QLineEdit.Normal)
             # Augmenter la largeur pour les longues URL
             dialog.setMinimumWidth(600)
@@ -2363,7 +2469,7 @@ class MainWindow(QMainWindow):
         if isinstance(result, str):  # C'est une chaîne d'erreur
             QMessageBox.warning(
                 self,
-                "Erreur d'intégration YouTube",
+                self.tr("Erreur d'intégration YouTube"),
                 result,
             )
         else:  # C'est un dictionnaire de détails
@@ -2388,8 +2494,10 @@ class MainWindow(QMainWindow):
         if not self.journal_directory:
             QMessageBox.warning(
                 self,
-                "Journal non défini",
-                "Veuillez définir un répertoire de journal avant d'insérer une carte.",
+                self.tr("Journal non défini"),
+                self.tr(
+                    "Veuillez définir un répertoire de journal avant d'insérer une carte."
+                ),
             )
             return
 
@@ -2417,8 +2525,8 @@ class MainWindow(QMainWindow):
 
         width, ok = QInputDialog.getInt(
             self,
-            "Taille de la carte",
-            "Largeur de l'image (en pixels):",
+            self.tr("Taille de la carte"),
+            self.tr("Largeur de l'image (en pixels):"),
             800,
             200,
             2000,
@@ -2435,15 +2543,17 @@ class MainWindow(QMainWindow):
             self.editor.insert_text(f"\n{markdown_block}\n")
             self.statusbar.showMessage(message, 5000)
         else:
-            QMessageBox.critical(self, "Erreur de création de carte", message)
+            QMessageBox.critical(self, self.tr("Erreur de création de carte"), message)
 
     def insert_gpx_trace(self):
         """Gère la logique d'insertion d'une carte à partir d'une trace GPX."""
         if not self.journal_directory:
             QMessageBox.warning(
                 self,
-                "Journal non défini",
-                "Veuillez définir un répertoire de journal avant d'insérer une trace GPX.",
+                self.tr("Journal non défini"),
+                self.tr(
+                    "Veuillez définir un répertoire de journal avant d'insérer une trace GPX."
+                ),
             )
             return
 
@@ -2458,8 +2568,8 @@ class MainWindow(QMainWindow):
 
         width, ok = QInputDialog.getInt(
             self,
-            "Taille de la carte",
-            "Largeur de l'image (en pixels):",
+            self.tr("Taille de la carte"),
+            self.tr("Largeur de l'image (en pixels):"),
             800,
             200,
             2000,
@@ -2473,8 +2583,10 @@ class MainWindow(QMainWindow):
         if not gpx_content:
             QMessageBox.warning(
                 self,
-                "Fichier GPX introuvable",
-                f"Impossible de lire le fichier GPX depuis :\n{gpx_input}",
+                self.tr("Fichier GPX introuvable"),
+                self.tr("Impossible de lire le fichier GPX depuis :\n{0}").format(
+                    gpx_input
+                ),
             )
             return
 
@@ -2492,7 +2604,9 @@ class MainWindow(QMainWindow):
             self.statusbar.showMessage(message, 5000)
         else:
             # 'message' contient l'erreur dans ce cas
-            QMessageBox.critical(self, "Erreur de création de la trace", message)
+            QMessageBox.critical(
+                self, self.tr("Erreur de création de la trace"), message
+            )
 
     def insert_html_image(self):
         """Gère la logique d'insertion d'une image HTML avec gestion EXIF."""
@@ -2501,7 +2615,13 @@ class MainWindow(QMainWindow):
             return
 
         width, ok = QInputDialog.getInt(
-            self, "Taille de l'image", "Largeur maximale en pixels:", 400, 100, 2000, 50
+            self,
+            self.tr("Taille de l'image"),
+            self.tr("Largeur maximale en pixels:"),
+            400,
+            100,
+            2000,
+            50,
         )
         if not ok:
             return
@@ -2521,9 +2641,11 @@ class MainWindow(QMainWindow):
         if exif_caption:
             reply = QMessageBox.question(
                 self,
-                "Données EXIF trouvées",
-                "Des données EXIF ont été trouvées dans l'image. "
-                "Voulez-vous les insérer sous l'image ?",
+                self.tr("Données EXIF trouvées"),
+                self.tr(
+                    "Des données EXIF ont été trouvées dans l'image. "
+                    "Voulez-vous les insérer sous l'image ?"
+                ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.Yes,
             )
@@ -2556,8 +2678,8 @@ class MainWindow(QMainWindow):
         if not local_path.exists():
             QMessageBox.warning(
                 self,
-                "Fichier non trouvé",
-                f"Le fichier local '{link_path}' n'existe pas.",
+                self.tr("Fichier non trouvé"),
+                self.tr("Le fichier local '{0}' n'existe pas.").format(link_path),
             )
             return
 
@@ -2571,9 +2693,11 @@ class MainWindow(QMainWindow):
         else:
             reply = QMessageBox.question(
                 self,
-                "Fichier hors du journal",
-                "Le fichier que vous avez sélectionné est en dehors du répertoire du journal.\n\n"
-                "Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes ?",
+                self.tr("Fichier hors du journal"),
+                self.tr(
+                    "Le fichier que vous avez sélectionné est en dehors du répertoire du journal.\n\n"
+                    "Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes ?"
+                ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.Yes,
             )
@@ -2598,7 +2722,9 @@ class MainWindow(QMainWindow):
             )
 
             dest_dir_str = QFileDialog.getExistingDirectory(
-                self, "Choisir un dossier de destination dans le journal", default_dir
+                self,
+                self.tr("Choisir un dossier de destination dans le journal"),
+                default_dir,
             )
             if not dest_dir_str:
                 return  # Annulé par l'utilisateur
@@ -2610,11 +2736,13 @@ class MainWindow(QMainWindow):
                 shutil.copy2(local_path, dest_path)
                 final_relative_path = dest_path.relative_to(self.journal_directory)
                 self.statusbar.showMessage(
-                    f"Fichier copié dans {final_relative_path}", 4000
+                    self.tr("Fichier copié dans {0}").format(final_relative_path), 4000
                 )
             except Exception as e:
                 QMessageBox.critical(
-                    self, "Erreur de copie", f"Impossible de copier le fichier :\n{e}"
+                    self,
+                    self.tr("Erreur de copie"),
+                    self.tr("Impossible de copier le fichier :\n{0}").format(e),
                 )
                 return
 
@@ -2634,14 +2762,14 @@ class MainWindow(QMainWindow):
         if error_message:
             QMessageBox.warning(
                 self,
-                "Erreur Météo",
+                self.tr("Erreur Météo"),
                 error_message,
             )
             return
 
         if markdown_fragment:
             self.editor.insert_text(markdown_fragment)
-            self.statusbar.showMessage("Météo insérée avec succès.", 3000)
+            self.statusbar.showMessage(self.tr("Météo insérée avec succès."), 3000)
 
     def insert_amazon_book(self):
         """Récupère et insère les informations d'un livre depuis Amazon via ISBN."""
@@ -2655,7 +2783,9 @@ class MainWindow(QMainWindow):
         else:
             has_selection = True
             text, ok = QInputDialog.getText(
-                self, "Recherche de livre par ISBN", "Entrez le code ISBN du livre:"
+                self,
+                self.tr("Recherche de livre par ISBN"),
+                self.tr("Entrez le code ISBN du livre:"),
             )
             if ok and text:
                 isbn = text.strip()
@@ -2679,14 +2809,18 @@ class MainWindow(QMainWindow):
         if not all([city, latitude, longitude]):
             QMessageBox.warning(
                 self,
-                "Configuration requise",
-                "Veuillez configurer votre ville dans 'Préférences > Intégrations' "
-                "pour utiliser cette fonctionnalité.",
+                self.tr("Configuration requise"),
+                self.tr(
+                    "Veuillez configurer votre ville dans 'Préférences > Intégrations' "
+                    "pour utiliser cette fonctionnalité."
+                ),
             )
             return
 
         # Afficher un message d'attente
-        self.statusbar.showMessage("Récupération des données astronomiques...", 0)
+        self.statusbar.showMessage(
+            self.tr("Récupération des données astronomiques..."), 0
+        )
 
         worker = SunMoonWorker(city, latitude, longitude)
         worker.signals.finished.connect(self.on_sun_moon_finished)
@@ -2697,12 +2831,12 @@ class MainWindow(QMainWindow):
         """Insère le fragment Markdown des données astro."""
         self.statusbar.clearMessage()
         self.editor.insert_text(f"\n{html_fragment}\n")
-        self.statusbar.showMessage("Données astronomiques insérées.", 3000)
+        self.statusbar.showMessage(self.tr("Données astronomiques insérées."), 3000)
 
     def on_sun_moon_error(self, error_message):
         """Affiche une erreur si la recherche astro a échoué."""
         self.statusbar.clearMessage()
-        QMessageBox.critical(self, "Erreur Astro", error_message)
+        QMessageBox.critical(self, self.tr("Erreur Astro"), error_message)
 
     def _create_book_worker(self, isbn, has_selection):
         """Crée et retourne un worker pour la recherche de livre."""
@@ -2714,13 +2848,15 @@ class MainWindow(QMainWindow):
         if has_selection:
             self.editor.text_edit.textCursor().removeSelectedText()
         self.editor.insert_text(f"\n{markdown_fragment}\n")
-        self.statusbar.showMessage("Informations du livre insérées avec succès.", 5000)
+        self.statusbar.showMessage(
+            self.tr("Informations du livre insérées avec succès."), 5000
+        )
 
     def on_book_search_error(self, error_message):
         """Affiche une erreur si la recherche de livre a échoué."""
         self._stop_book_search_flashing()
         self.statusbar.clearMessage()
-        QMessageBox.critical(self, "Erreur de recherche", error_message)
+        QMessageBox.critical(self, self.tr("Erreur de recherche"), error_message)
 
     def on_transcript_finished(self, transcript, lang):
         """Callback quand une transcription est trouvée."""
@@ -2730,13 +2866,15 @@ class MainWindow(QMainWindow):
 
         reply = QMessageBox.question(
             self,
-            "Transcription trouvée",
-            f"Une transcription en '{lang}' existe pour cette vidéo. Voulez-vous l'ajouter ?",
+            self.tr("Transcription trouvée"),
+            self.tr(
+                "Une transcription en '{0}' existe pour cette vidéo. Voulez-vous l'ajouter ?"
+            ).format(lang),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
         if reply == QMessageBox.Yes:
-            transcript_header = "\n\n**Transcription de la video Youtube**\n\n"
+            transcript_header = self.tr("\n\n**Transcription de la video Youtube**\n\n")
             full_transcript_block = transcript_header + transcript
             self.editor.insert_text(f"\n{full_transcript_block}\n")
 
@@ -2745,7 +2883,7 @@ class MainWindow(QMainWindow):
         self._stop_transcript_flashing()
         QMessageBox.warning(
             self,
-            "Erreur de Transcription",
+            self.tr("Erreur de Transcription"),
             error_message,
         )
 
@@ -2753,7 +2891,7 @@ class MainWindow(QMainWindow):
         """Callback quand aucune transcription n'est trouvée."""
         self._stop_transcript_flashing()
         # Pas de message à l'utilisateur, c'est un comportement normal
-        print(MainWindowContext.tr("ℹ️ Aucune transcription trouvée pour cette vidéo."))
+        print(f"ℹ️ No transcript found for this video.")
 
     def _start_book_search_flashing(self):
         """Démarre le message clignotant pour la recherche de livre."""
@@ -2772,12 +2910,12 @@ class MainWindow(QMainWindow):
         )
 
     def _start_backup_flashing(self):
-        """Démarre le message clignotant pour la sauvegarde."""
+        """Démarre le clignotement pendant une sauvegarde de journal"""
         self.backup_status_label.setVisible(True)
         self.backup_flash_timer.start()
 
     def _stop_backup_flashing(self):
-        """Arrête le message clignotant de sauvegarde."""
+        """Arrête le clignotement à la fin de la sauvegarde"""
         self.backup_flash_timer.stop()
         self.backup_status_label.setVisible(False)
 
@@ -2857,36 +2995,32 @@ class MainWindow(QMainWindow):
         self.update_preview()
         self.expand_outline()
         QMessageBox.information(
-            self, "Conversion terminée", "Le fichier PDF a été converti avec succès."
+            self,
+            self.tr("Conversion terminée"),
+            self.tr("Le fichier PDF a été converti avec succès."),
         )
 
     def on_pdf_convert_error(self, error_message):
         """Callback en cas d'erreur de conversion PDF."""
         self._stop_pdf_convert_flashing()
-        QMessageBox.critical(self, "Erreur de conversion", error_message)
-
-    def _toggle_backup_status_visibility(self):
-        """Bascule la visibilité du label de statut de sauvegarde."""
-        self.backup_status_label.setVisible(not self.backup_status_label.isVisible())
+        QMessageBox.critical(self, self.tr("Erreur de conversion"), error_message)
 
     def _on_journal_backup_finished(self, backup_path: str):
         """Slot appelé lorsque la sauvegarde du journal est terminée avec succès."""
         self._stop_backup_flashing()
         QMessageBox.information(
             self,
-            "Sauvegarde terminée",
-            f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
+            self.tr("Sauvegarde terminée"),
+            self.tr("Le journal a été sauvegardé avec succès dans :\n{0}").format(
+                backup_path
+            ),
         )
-        print(
-            MainWindowContext.tr(
-                "🔁 Sauvegarde du journal terminée avec succès dans : {0}"
-            ).format(backup_path)
-        )
+        print(f"🔁 Log backup successfully completed in: {backup_path}")
 
     def _on_journal_backup_error(self, error_message: str):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
         self._stop_backup_flashing()
-        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
+        QMessageBox.critical(self, self.tr("Erreur de sauvegarde"), error_message)
 
     def start_task(self, message):
         """Démarre un message de tâche de fond clignotant."""
@@ -2904,7 +3038,7 @@ class MainWindow(QMainWindow):
 
     def on_task_error(self, error_message):
         self.stop_task()
-        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
+        QMessageBox.critical(self, self.tr("Erreur de tâche"), error_message)
 
     def convert_url_to_markdown(self):
         """Gère la conversion d'une URL/HTML en Markdown."""
@@ -2925,8 +3059,10 @@ class MainWindow(QMainWindow):
 
             QMessageBox.information(
                 self,
-                "Conversion terminée",
-                f"La page a été convertie et sauvegardée dans :\n{output_file_path}",
+                self.tr("Conversion terminée"),
+                self.tr("La page a été convertie et sauvegardée dans :\n{0}").format(
+                    output_file_path
+                ),
             )
             self.open_specific_file(output_file_path)
         except Exception as e:
@@ -2963,11 +3099,7 @@ class MainWindow(QMainWindow):
             "Sauvegarde terminée",
             f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
         )
-        print(
-            MainWindowContext.tr(
-                "🔁 Sauvegarde du journal terminée avec succès dans : {0}"
-            ).format(backup_path)
-        )
+        print(f"🔁 Log backup successfully completed in: {backup_path}")
 
     def _on_journal_backup_error(self, error_message: str):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
@@ -3013,24 +3145,17 @@ class MainWindow(QMainWindow):
     def refresh_tag_index(self, event):
         """Rafraîchit l'index des tags sur demande de l'utilisateur."""
         if event.button() == Qt.LeftButton:
-            print(
-                MainWindowContext.tr(
-                    "🔄 Rafraîchissement manuel de l'index des tags demandé."
-                )
-            )
-            self.tag_index_status_label.setText("Indexation en cours...")
+            print(f"🔄 Manual refresh of tag index requested.")
+            self.tag_index_status_label.setText(self.tr("Indexation en cours..."))
             # Force l'interface à se mettre à jour avant de lancer la tâche de fond
             self.tag_index_status_label.repaint()
             self.start_initial_indexing()
 
     def refresh_tag_index_from_nav(self):
         """Rafraîchit l'index des tags sur demande depuis le panneau de navigation."""
-        print(
-            MainWindowContext.tr(
-                "🔄 Rafraîchissement manuel de l'index des tags demandé depuis la navigation."
-            )
-        )
-        self.tag_index_status_label.setText("Indexation en cours...")
+        print(f"🔄 Manually refresh the tag index requested from the navigation.")
+
+        self.tag_index_status_label.setText(self.tr("Indexation en cours..."))
         self.tag_index_status_label.repaint()
         self.start_initial_indexing()
 
@@ -3048,9 +3173,9 @@ class MainWindow(QMainWindow):
         if self.tag_index_count == -1:
             return
 
-        tag_msg = f"{self.tag_index_count} tags"
-        full_message = f"Index: {tag_msg}"
-        print(MainWindowContext.tr("✅ {0}").format(full_message))
+        tag_msg = self.tr("{0} tags").format(self.tag_index_count)
+        full_message = self.tr("Index: {0}").format(tag_msg)
+        print(f"✅ {full_message}")
         self.tag_index_status_label.setText(full_message)
 
         if not self.settings_manager.get("ui.show_indexing_stats", True):
@@ -3090,7 +3215,7 @@ class MainWindow(QMainWindow):
             current_check_date = current_check_date.addDays(-1)
 
         self.statusbar.showMessage(
-            "Aucune note précédente trouvée dans le journal.", 3000
+            self.tr("Aucune note précédente trouvée dans le journal."), 3000
         )
 
     def on_next_day_button_clicked(self):
@@ -3124,7 +3249,7 @@ class MainWindow(QMainWindow):
             current_check_date = current_check_date.addDays(1)
 
         self.statusbar.showMessage(
-            "Aucune note suivante trouvée dans le journal.", 3000
+            self.tr("Aucune note suivante trouvée dans le journal."), 3000
         )
 
     def on_today_button_clicked(self):
@@ -3146,7 +3271,8 @@ class MainWindow(QMainWindow):
                 self.open_specific_file(str(file_path))
         else:
             self.statusbar.showMessage(
-                f"Aucune note pour le {date.toString('dd/MM/yyyy')}", 3000
+                self.tr("Aucune note pour le {0}").format(date.toString("dd/MM/yyyy")),
+                3000,
             )
 
     def on_outline_item_clicked(self, position):
@@ -3200,9 +3326,7 @@ class MainWindow(QMainWindow):
             self.navigation_panel.highlight_dates(dates_with_notes)
         except FileNotFoundError:
             print(
-                MainWindowContext.tr(
-                    "Répertoire du journal non trouvé pour la mise à jour du calendrier: {0}"
-                ).format(self.journal_directory)
+                f"❌ Journal directory not found for calendar update: {self.journal_directory}"
             )
         self.update_tag_cloud()
 
@@ -3373,8 +3497,10 @@ class MainWindow(QMainWindow):
             )
             QMessageBox.information(
                 self,
-                "Redémarrage requis",
-                "Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.",
+                self.tr("Redémarrage requis"),
+                self.tr(
+                    "Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués."
+                ),
             )
 
             self.settings_manager.save_settings()
@@ -3445,7 +3571,7 @@ class MainWindow(QMainWindow):
             global_font = QFont(app_font_family, app_font_size)
             # app.setFont(global_font)  # <-- COMMENTÉ : fait dans main.py
             self.setFont(global_font)  # Appliquer seulement à la fenêtre principale
-            print(MainWindowContext.tr("ℹ️ Police modifiée --"))
+            print(f"ℹ️ Modified font --")
 
         self.toggle_notes_action.setChecked(show_notes)
         self.toggle_navigation_action.setChecked(show_nav)
@@ -3595,7 +3721,9 @@ class MainWindow(QMainWindow):
                 self.go_to_line(line_number)
         else:
             QMessageBox.warning(
-                self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
+                self,
+                self.tr("Fichier non trouvé"),
+                self.tr("Le fichier '{0}' n'existe plus.").format(filename),
             )
 
     def open_file_from_notes(self, file_path: str, open_with: str):
@@ -3614,7 +3742,9 @@ class MainWindow(QMainWindow):
             webbrowser.open(f"file:///{os.path.abspath(file_path)}")
         else:
             QMessageBox.warning(
-                self, "Fichier non trouvé", f"Le fichier '{filename}' n'existe plus."
+                self,
+                self.tr("Fichier non trouvé"),
+                self.tr("Le fichier '{0}' n'existe plus.").format(filename),
             )
 
     def go_to_line(self, line_number: int):
@@ -3651,11 +3781,7 @@ class MainWindow(QMainWindow):
                     tags_data = json.load(f)
                 tags_list = sorted(tags_data.keys())
             except (json.JSONDecodeError, IOError) as e:
-                print(
-                    MainWindowContext.tr(
-                        "Erreur de lecture de l'index des tags pour le menu: {0}"
-                    ).format(e)
-                )
+                print(f"❌ Error reading the tag index for the menu: {e}")
 
         self.navigation_panel.set_available_tags(tags_list)
 

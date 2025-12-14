@@ -146,27 +146,27 @@ class CustomWebEngineView(QWebEngineView):
 
         # Si c'est une image
         if context_data.mediaType() == QWebEngineContextMenuData.MediaTypeImage:
-            save_image_action = QAction("Sauvegarder l'image", self)
+            save_image_action = QAction(self.tr("Sauvegarder l'image"), self)
             save_image_action.triggered.connect(lambda: self.save_image(context_data))
             menu.addAction(save_image_action)
 
-            copy_image_action = QAction("Copier l'image", self)
+            copy_image_action = QAction(self.tr("Copier l'image"), self)
             copy_image_action.triggered.connect(lambda: self.copy_image(context_data))
             menu.addAction(copy_image_action)
 
-            copy_url_action = QAction("Copier l'adresse de l'image", self)
+            copy_url_action = QAction(self.tr("Copier l'adresse de l'image"), self)
             copy_url_action.triggered.connect(lambda: self.copy_image_url(context_data))
             menu.addAction(copy_url_action)
         else:
             # Actions personnalisées pour le texte avec libellés en français
-            copy_text_action = QAction("Copier le texte sélectionné", self)
+            copy_text_action = QAction(self.tr("Copier le texte sélectionné"), self)
             copy_text_action.setEnabled(self.page().selectedText().strip() != "")
             copy_text_action.triggered.connect(
                 lambda: self.page().triggerAction(QWebEnginePage.Copy)
             )
             menu.addAction(copy_text_action)
 
-            select_all_text_action = QAction("Tout sélectionner", self)
+            select_all_text_action = QAction(self.tr("Tout sélectionner"), self)
             select_all_text_action.triggered.connect(
                 lambda: self.page().triggerAction(QWebEnginePage.SelectAll)
             )
@@ -182,7 +182,7 @@ class CustomWebEngineView(QWebEngineView):
 
         if not image_url:
             QMessageBox.warning(
-                self, "Erreur", "Impossible de récupérer l'URL de l'image"
+                self, self.tr("Erreur"), self.tr("Impossible de récupérer l'URL de l'image")
             )
             return
 
@@ -201,12 +201,12 @@ class CustomWebEngineView(QWebEngineView):
                 )
                 default_path = os.path.join(last_save_dir, suggested_filename)
 
-                file_filter = "Image JPEG (*.jpg)"
+                message = self.tr("Image JPEG (*.jpg)")
                 save_path, _ = QFileDialog.getSaveFileName(
                     self,
-                    "Sauvegarder l'image",
+                    self.tr("Sauvegarder l'image"),
                     default_path,
-                    file_filter,
+                    message,
                 )
 
                 if save_path:
@@ -220,18 +220,26 @@ class CustomWebEngineView(QWebEngineView):
                             "reader.last_image_save_directory", new_save_dir
                         )
                         self.epub_reader_panel.settings_manager.save_settings()
+
+                        message = self.tr("Image sauvegardée dans:\n{save_path}")
+                        message = message.format(save_path=save_path)
+
                         QMessageBox.information(
-                            self, "Succès", f"Image sauvegardée dans:\n{save_path}"
+                            self, self.tr("Succès"), message
                         )
                     except Exception as e:
+                        message = self.tr(
+                            "Impossible de convertir ou sauvegarder l'image:\n{error}"
+                        )
+                        message = message.format(error=str(e))
                         QMessageBox.critical(
                             self,
-                            "Erreur",
-                            f"Impossible de convertir ou sauvegarder l'image:\n{str(e)}",
+                            self.tr("Erreur"),
+                            message,
                         )
             else:
                 QMessageBox.warning(
-                    self, "Erreur", "Image introuvable dans les ressources EPUB"
+                    self, self.tr("Erreur"), self.tr("Image introuvable dans les ressources EPUB")
                 )
 
     def copy_image(self, context_data):
@@ -253,7 +261,7 @@ class CustomWebEngineView(QWebEngineView):
                 clipboard = QApplication.clipboard()
                 clipboard.setPixmap(pixmap)
                 self.epub_reader_panel.position_label.setText(
-                    "Image copiée dans le presse-papiers"
+                    self.tr("Image copiée dans le presse-papiers")
                 )
                 QTimer.singleShot(
                     2000, lambda: self.epub_reader_panel.update_position_label()
@@ -327,7 +335,7 @@ class EpubReaderPanel(QWidget):
 
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
-        label = QLabel("Lecteur")
+        label = QLabel(self.tr("Lecteur"))
         label.setStyleSheet(
             """
             QLabel {
@@ -345,7 +353,7 @@ class EpubReaderPanel(QWidget):
 
         self.toc_widget = QWidget()
         toc_layout = QVBoxLayout(self.toc_widget)
-        toc_layout.addWidget(QLabel("Table des matières"))
+        toc_layout.addWidget(QLabel(self.tr("Table des matières")))
         self.toc_list = QListWidget()
         self.toc_list.itemClicked.connect(self.load_chapter_from_list)
         toc_layout.addWidget(self.toc_list)
@@ -370,19 +378,20 @@ class EpubReaderPanel(QWidget):
         self.toggle_toc_btn.setFixedWidth(30)
         self.toggle_toc_btn.clicked.connect(self.toggle_toc_visibility)
         search_layout.addWidget(self.toggle_toc_btn)
-        self.search_input = QLineEdit(placeholderText="Rechercher...")
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText(self.tr("Rechercher..."))
         self.search_input.returnPressed.connect(self.search_in_text)
         search_layout.addWidget(self.search_input)
-        self.search_btn = QPushButton("Rechercher")
+        self.search_btn = QPushButton(self.tr("Rechercher"))
         self.search_btn.clicked.connect(self.search_in_text)
         search_layout.addWidget(self.search_btn)
-        self.search_next_btn = QPushButton("Suivant")
+        self.search_next_btn = QPushButton(self.tr("Suivant"))
         self.search_next_btn.clicked.connect(self.find_next)
         search_layout.addWidget(self.search_next_btn)
-        self.search_prev_btn = QPushButton("Précédent")
+        self.search_prev_btn = QPushButton(self.tr("Précédent"))
         self.search_prev_btn.clicked.connect(self.find_previous)
         search_layout.addWidget(self.search_prev_btn)
-        self.clear_search_btn = QPushButton("Effacer")
+        self.clear_search_btn = QPushButton(self.tr("Effacer"))
         self.clear_search_btn.clicked.connect(self.clear_search)
         search_layout.addWidget(self.clear_search_btn)
         reader_layout.addLayout(search_layout)
@@ -390,24 +399,24 @@ class EpubReaderPanel(QWidget):
         reader_layout.addWidget(self.stacked_viewer, 1)
 
         nav_layout = QHBoxLayout()
-        self.first_chapter_btn = QPushButton("◀◀ Début")
+        self.first_chapter_btn = QPushButton(self.tr("◀◀ Début"))
         self.first_chapter_btn.clicked.connect(self.first_chapter)
         nav_layout.addWidget(self.first_chapter_btn)
-        self.prev_chapter_btn = QPushButton("◀")
+        self.prev_chapter_btn = QPushButton(self.tr("◀"))
         self.prev_chapter_btn.clicked.connect(self.previous_chapter)
         nav_layout.addWidget(self.prev_chapter_btn)
         self.chapter_combo = QComboBox()
         self.chapter_combo.currentIndexChanged.connect(self.load_chapter_from_combo)
         nav_layout.addWidget(self.chapter_combo, 1)
-        self.next_chapter_btn = QPushButton("▶")
+        self.next_chapter_btn = QPushButton(self.tr("▶"))
         self.next_chapter_btn.clicked.connect(self.next_chapter)
         nav_layout.addWidget(self.next_chapter_btn)
-        self.last_chapter_btn = QPushButton("Fin ▶▶")
+        self.last_chapter_btn = QPushButton(self.tr("Fin ▶▶"))
         self.last_chapter_btn.clicked.connect(self.last_chapter)
         nav_layout.addWidget(self.last_chapter_btn)
         reader_layout.addLayout(nav_layout)
 
-        self.position_label = QLabel("Chapitre: - / -")
+        self.position_label = QLabel(self.tr("Chapitre: - / -"))
         reader_layout.addWidget(self.position_label, 0, Qt.AlignCenter)
 
         splitter.addWidget(reader_content_widget)
@@ -419,7 +428,8 @@ class EpubReaderPanel(QWidget):
     def load_document(self, filepath):
         """Charge un document EPUB ou PDF."""
         if not filepath or not os.path.exists(filepath):
-            self.show_error("<h1>Fichier non trouvé</h1>")
+            message = self.tr("<h1>Fichier non trouvé</h1>")
+            self.show_error(message)
             return
 
         # V3.5.1.1 - Correction du problème de cache de couverture EPUB.
@@ -436,7 +446,11 @@ class EpubReaderPanel(QWidget):
                 self.pdf_viewer.load_document(filepath)
                 self.current_chapter_index = 0
             except Exception as e:
-                self.show_error(f"<h1>Erreur lors du chargement du PDF : {str(e)}</h1>")
+                message = self.tr(
+                    "<h1>Erreur lors du chargement du PDF : {error}</h1>"
+                )
+                message = message.format(error=str(e))
+                self.show_error(message)
             return
 
         try:
@@ -509,7 +523,11 @@ class EpubReaderPanel(QWidget):
                 self.load_current_chapter()
 
         except Exception as e:
-            self.show_error(f"<h1>Erreur lors du chargement de l'EPUB : {str(e)}</h1>")
+            message = self.tr(
+                "<h1>Erreur lors du chargement de l'EPUB : {error}</h1>"
+            )
+            message = message.format(error=str(e))
+            self.show_error(message)
 
     def _parse_toc(self, toc, level=0):
         """Parser récursivement la table des matières avec matching exact."""
@@ -699,9 +717,16 @@ class EpubReaderPanel(QWidget):
         if self.chapters:
             total = len(self.chapters)
             current = self.current_chapter_index + 1
-            self.position_label.setText(
-                f"<b>{self.book_title}</b> par <b>{self.book_author}</b> - Chapitre: {current} / {total}"
+            message = self.tr(
+                "<b>{title}</b> par <b>{author}</b> - Chapitre: {current} / {total}"
             )
+            message = message.format(
+                title=self.book_title,
+                author=self.book_author,
+                current=current,
+                total=total,
+            )
+            self.position_label.setText(message)
 
     def load_chapter_from_list(self, item):
         """Charger un chapitre depuis la liste de la table des matières."""
@@ -789,15 +814,19 @@ class EpubReaderPanel(QWidget):
                     )
 
             if self.search_results:
+                message = self.tr(
+                    "{count} occurrence(s) trouvée(s) dans l'ensemble du document."
+                )
+                message = message.format(count=len(self.search_results))
                 QMessageBox.information(
                     self,
-                    "Recherche",
-                    f"{len(self.search_results)} occurrence(s) trouvée(s) dans l'ensemble du document.",
+                    self.tr("Recherche"),
+                    message,
                 )
                 self.find_next()
             else:
                 QMessageBox.warning(
-                    self, "Recherche", "Aucune occurrence trouvée dans le document."
+                    self, self.tr("Recherche"), self.tr("Aucune occurrence trouvée dans le document.")
                 )
         elif self.current_doc_type == "pdf":
             self.pdf_viewer.find_text(search_text, new_search=True)
@@ -931,13 +960,16 @@ class EpubReaderPanel(QWidget):
                     self.chapter_combo.addItem(f"{indent}{entry_title}")
             else:
                 for i in range(page_count):
-                    self.toc_list.addItem(QListWidgetItem(f"Page {i + 1}"))
-                    self.chapter_combo.addItem(f"Page {i + 1}")
+                    message = self.tr("Page {num}")
+                    message = message.format(num=i + 1)
+                    self.toc_list.addItem(QListWidgetItem(message))
+                    self.chapter_combo.addItem(message)
 
             self.enable_navigation(True)
             self.load_current_chapter()
         else:
-            self.show_error("<h1>Échec du chargement du PDF</h1>")
+            message = self.tr("<h1>Échec du chargement du PDF</h1>")
+            self.show_error(message)
 
     def enable_navigation(self, enabled):
         """Active ou désactive les contrôles de navigation."""
@@ -966,10 +998,10 @@ class EpubReaderPanel(QWidget):
         """Affiche ou masque le panneau de la table des matières."""
         if self.toc_widget.isVisible():
             self.toc_widget.hide()
-            self.toggle_toc_btn.setText("▶")
+            self.toggle_toc_btn.setText(self.tr("▶"))
         else:
             self.toc_widget.show()
-            self.toggle_toc_btn.setText("◀")
+            self.toggle_toc_btn.setText(self.tr("◀"))
 
     def sync_toc_from_scroll(self, scroll_y):
         """Synchronise la TOC en fonction de la position de défilement de l'EPUB."""

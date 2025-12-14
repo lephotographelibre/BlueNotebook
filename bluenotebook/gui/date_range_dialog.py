@@ -47,7 +47,7 @@ class DateRangeDialog(QDialog):
         parent=None,
     ):
         super().__init__(parent)
-        self.setWindowTitle("Options d'exportation du journal PDF")
+        self.setWindowTitle(self.tr("Options d'exportation du journal PDF"))
         self.setMinimumWidth(450)
 
         layout = QVBoxLayout(self)
@@ -73,11 +73,11 @@ class DateRangeDialog(QDialog):
 
         # V2.9.2 - Sélection du tag
         self.tag_combo = QComboBox(self)
-        self.tag_combo.addItem("(Aucun tag)")
+        self.tag_combo.addItem(self.tr("(Aucun tag)"))
         if available_tags:
             self.tag_combo.addItems(available_tags)
         self.tag_combo.setToolTip(
-            "Filtrer les notes pour n'inclure que celles contenant ce tag."
+            self.tr("Filtrer les notes pour n'inclure que celles contenant ce tag.")
         )
 
         # Champ pour l'image de couverture
@@ -85,18 +85,18 @@ class DateRangeDialog(QDialog):
         self.cover_image_edit = QLineEdit(self)
         self.cover_image_edit.setText(self.cover_image_path)
         self.cover_image_edit.setReadOnly(True)
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_for_image)
         image_layout = QHBoxLayout()
         image_layout.addWidget(self.cover_image_edit)
         image_layout.addWidget(browse_button)
 
-        form_layout.addRow(QLabel("Première note à inclure :"), self.start_date_edit)
-        form_layout.addRow(QLabel("Dernière note à inclure :"), self.end_date_edit)
-        form_layout.addRow(QLabel("Filtrer par tag (optionnel) :"), self.tag_combo)
-        form_layout.addRow(QLabel("Titre du journal :"), self.title_edit)
-        form_layout.addRow(QLabel("Nom de l'auteur (optionnel) :"), self.author_edit)
-        form_layout.addRow(QLabel("Image de couverture :"), image_layout)
+        form_layout.addRow(QLabel(self.tr("Première note à inclure :")), self.start_date_edit)
+        form_layout.addRow(QLabel(self.tr("Dernière note à inclure :")), self.end_date_edit)
+        form_layout.addRow(QLabel(self.tr("Filtrer par tag (optionnel) :")), self.tag_combo)
+        form_layout.addRow(QLabel(self.tr("Titre du journal :")), self.title_edit)
+        form_layout.addRow(QLabel(self.tr("Nom de l'auteur (optionnel) :")), self.author_edit)
+        form_layout.addRow(QLabel(self.tr("Image de couverture :")), image_layout)
 
         layout.addLayout(form_layout)
 
@@ -110,9 +110,9 @@ class DateRangeDialog(QDialog):
         """Ouvre une boîte de dialogue pour sélectionner un fichier image."""
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Sélectionner une image de couverture",
+            self.tr("Sélectionner une image de couverture"),
             "",
-            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
+            self.tr("Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)"),
         )
         if file_path:
             self.cover_image_path = file_path
@@ -128,5 +128,5 @@ class DateRangeDialog(QDialog):
             "title": self.title_edit.text(),
             "author": self.author_edit.text(),
             "cover_image": self.cover_image_path,
-            "selected_tag": selected_tag if selected_tag != "(Aucun tag)" else None,
+            "selected_tag": selected_tag if selected_tag != self.tr("(Aucun tag)") else None,
         }

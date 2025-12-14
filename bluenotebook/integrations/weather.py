@@ -19,6 +19,15 @@ Intégration pour récupérer les données météo depuis WeatherAPI.com.
 
 import requests
 
+from PyQt5.QtCore import QCoreApplication
+
+
+class WeatherContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("WeatherContext", text)
+
+
 # Table de correspondance entre les codes de condition de WeatherAPI et les emojis
 WEATHER_CODE_TO_EMOJI = {
     1000: "☀️",  # Sunny
@@ -32,7 +41,7 @@ WEATHER_CODE_TO_EMOJI = {
     1072: "🌨️",  # Patchy freezing drizzle possible
     1087: "⛈️",  # Thundery outbreaks possible
     1114: "🌬️",  # Blowing snow
-    1117: " Blizzard",  # Blizzard
+    1117: "🌨️",  # Blizzard
     1135: "🌫️",  # Fog
     1147: "🌫️",  # Freezing fog
     1150: "🌦️",  # Patchy light drizzle
@@ -84,12 +93,11 @@ def get_weather_markdown(city: str, api_key: str) -> tuple[str | None, str | Non
     if not city or not api_key:
         return (
             None,
-            "La ville et la clé API doivent être renseignées dans les Préférences.",
+            WeatherContext.tr("La ville et la clé API doivent être renseignées dans les Préférences."),
         )
 
-    print(f"☀️ Récupération des données météo pour {city} ")
+    print(f"☀️ Retrieving weather data for {city} ")
 
-    # url = "http://api.weatherapi.com/v1/current.json"
     params = {"key": api_key, "q": city, "aqi": "no", "lang": "fr"}
     url = (
         "http://api.weatherapi.com/v1/current.json"
@@ -99,52 +107,55 @@ def get_weather_markdown(city: str, api_key: str) -> tuple[str | None, str | Non
         + city
         + "&aqi=no&lang=fr"
     )
-    # print(f"Météo URL  : {url}")
 
     try:
         response = requests.get(url, timeout=10)
-        # response = requests.get(
-        #    "http://api.weatherapi.com/v1/current.json?key=9d0c712506214035838132544251410&#q=Poitiers&aqi=no&lang=fr")
-        response.raise_for_status()  # Lève une exception pour les codes d'erreur HTTP
+        response.raise_for_status()
 
         data = response.json()
 
-        # Extraction des données
         location = data.get("location", {})
         current = data.get("current", {})
         condition = current.get("condition", {})
 
         city_name = location.get("name", city)
         localtime_str = location.get("localtime", "")
-        temp_c = current.get("temp_c", "N/A")
-        condition_text = condition.get("text", "N/A")
+        temp_c = current.get("temp_c", WeatherContext.tr("N/A"))
+        condition_text = condition.get("text", WeatherContext.tr("N/A"))
         condition_code = condition.get("code")
-        wind_kph = current.get("wind_kph", "N/A")
-        humidity = current.get("humidity", "N/A")
+        wind_kph = current.get("wind_kph", WeatherContext.tr("N/A"))
+        humidity = current.get("humidity", WeatherContext.tr("N/A"))
 
-        # Extraction de l'heure au format HH:MM
         time_str = ""
         if localtime_str:
             try:
                 time_str = localtime_str.split(" ")[1]
             except IndexError:
-                pass  # L'heure ne sera pas affichée si le format est inattendu
+                pass
 
-        # Obtenir l'emoji correspondant au code météo
         weather_emoji = WEATHER_CODE_TO_EMOJI.get(condition_code, "❔")
 
-        # Construction du fragment Markdown
-        markdown_fragment = f"**{weather_emoji} Météo pour {city_name} :** {condition_text}, **{temp_c}°C** à {time_str}  Vent : {wind_kph} km/h, Humidité : {humidity}%"
+        markdown_fragment = WeatherContext.tr(
+            "**{emoji} Météo pour {city} :** {condition}, **{temp}°C** à {time}  Vent : {wind} km/h, Humidité : {humidity}%"
+        ).format(
+            emoji=weather_emoji,
+            city=city_name,
+            condition=condition_text,
+            temp=temp_c,
+            time=time_str,
+            wind=wind_kph,
+            humidity=humidity
+        )
         return markdown_fragment, None
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 401:
-            return None, "Erreur d'authentification. Vérifiez votre clé API."
+            return None, WeatherContext.tr("Erreur d'authentification. Vérifiez votre clé API.")
         elif e.response.status_code == 400:
-            return None, f"Ville non trouvée : '{city}'. Vérifiez le nom de la ville."
+            return None, WeatherContext.tr("Ville non trouvée : '{city}'. Vérifiez le nom de la ville.").format(city=city)
         else:
-            return None, f"Erreur HTTP : {e}"
+            return None, WeatherContext.tr("Erreur HTTP : {error}").format(error=e)
     except requests.exceptions.RequestException as e:
-        return None, f"Erreur de connexion : {e}"
+        return None, WeatherContext.tr("Erreur de connexion : {error}").format(error=e)
     except Exception as e:
-        return None, f"Une erreur inattendue est survenue : {e}"
+        return None, WeatherContext.tr("Une erreur inattendue est survenue : {error}").format(error=e)

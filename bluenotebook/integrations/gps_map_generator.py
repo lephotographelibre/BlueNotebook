@@ -20,6 +20,13 @@ Module pour la génération de cartes statiques à partir de coordonnées GPS.
 import staticmaps
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+from PyQt5.QtCore import QCoreApplication
+
+
+class GpsMapGeneratorContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("GpsMapGeneratorContext", text)
 
 
 def get_location_name(lat, lon):
@@ -37,14 +44,14 @@ def get_location_name(lat, lon):
                 address.get("city")
                 or address.get("town")
                 or address.get("village")
-                or address.get("hamlet", "Lieu inconnu")
+                or address.get("hamlet", GpsMapGeneratorContext.tr("Lieu inconnu"))
             )
             return city
-        return "Lieu inconnu"
+        return GpsMapGeneratorContext.tr("Lieu inconnu")
     except (GeocoderTimedOut, GeocoderUnavailable):
-        return "Service de géolocalisation indisponible"
+        return GpsMapGeneratorContext.tr("Service de géolocalisation indisponible")
     except Exception:
-        return "Lieu inconnu"
+        return GpsMapGeneratorContext.tr("Lieu inconnu")
 
 
 def create_gps_map(lat, lon, width, height, output_path):
@@ -59,7 +66,7 @@ def create_gps_map(lat, lon, width, height, output_path):
     :return: True si la création a réussi, False sinon.
     """
     if not staticmaps.cairo_is_supported():
-        print("⚠️ Cairo n'est pas supporté. Impossible de générer la carte.")
+        print("⚠️ Cairo is not supported. Map cannot be generated.")
         return False
 
     try:
@@ -74,5 +81,5 @@ def create_gps_map(lat, lon, width, height, output_path):
         cairo_image.write_to_png(output_path)
         return True
     except Exception as e:
-        print(f"Erreur lors de la création de la carte : {e}")
+        print(f"❌ Error creating the map: {e}")
         return False

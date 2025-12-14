@@ -21,7 +21,15 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from PyQt5.QtCore import QCoreApplication
+
 from .gps_map_generator import get_location_name, create_gps_map
+
+
+class GpsMapHandlerContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("GpsMapHandlerContext", text)
 
 
 def generate_gps_map_markdown(
@@ -39,10 +47,11 @@ def generate_gps_map_markdown(
     """
     # Valider les coordonnées
     if not (-90 <= lat <= 90 and -180 <= lon <= 180):
-        return (
-            None,
-            "Coordonnées invalides. La latitude doit être entre -90 et 90, et la longitude entre -180 et 180.",
+        error_msg = GpsMapHandlerContext.tr(
+            "Coordonnées invalides. La latitude doit être entre -90 et 90, "
+            "et la longitude entre -180 et 180."
         )
+        return None, error_msg
 
     # Calculer la hauteur (ratio 16:10)
     height = int(width * (10 / 16))
@@ -65,9 +74,8 @@ def generate_gps_map_markdown(
     success = create_gps_map(lat, lon, width, height, str(image_path))
 
     if not success:
-        return (
-            None,
-            "Impossible de générer l'image de la carte. Vérifiez que Cairo est installé.",
+        return None, GpsMapHandlerContext.tr(
+            "Impossible de générer l'image de la carte. Vérifiez que Cairo est installé."
         )
 
     # Construire le bloc Markdown
@@ -75,12 +83,20 @@ def generate_gps_map_markdown(
     osm_link = (
         f"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=16/{lat}/{lon}"
     )
-    alt_text = f"Carte de {location_name}, coordonnées {lat}, {lon}"
+    alt_text = GpsMapHandlerContext.tr(
+        "Carte de {location}, coordonnées {lat}, {lon}"
+    ).format(location=location_name, lat=lat, lon=lon)
+
+    gps_label = GpsMapHandlerContext.tr("GPS :")
+    location_link_text = location_name  # Le nom du lieu est déjà dynamique, pas besoin de tr ici
 
     markdown_block = (
         f"[![{alt_text}]({relative_image_path})]({osm_link})\n\n"
-        f"**GPS :** [{lat}, {lon}] - [{location_name}]({osm_link})"
+        f"**{gps_label}** [{lat}, {lon}] - [{location_name}]({osm_link})"
     )
 
-    status_message = f"Carte pour '{location_name}' insérée avec succès."
+    status_message = GpsMapHandlerContext.tr(
+        "Carte pour '{location}' insérée avec succès."
+    ).format(location=location_name)
+
     return markdown_block, status_message

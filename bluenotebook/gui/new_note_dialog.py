@@ -38,13 +38,13 @@ class NewFileDialog(QDialog):
         self, parent=None, use_template_by_default=False, default_template_name=None
     ):
         super().__init__(parent)
-        self.setWindowTitle("Créer un nouveau document")
+        self.setWindowTitle(self.tr("Créer un nouveau document"))
         self.setMinimumWidth(400)
 
         self.layout = QVBoxLayout(self)
 
-        self.blank_radio = QRadioButton("Créer un fichier vierge")
-        self.template_radio = QRadioButton("Utiliser un modèle :")
+        self.blank_radio = QRadioButton(self.tr("Créer un fichier vierge"))
+        self.template_radio = QRadioButton(self.tr("Utiliser un modèle :"))
         self.template_combo = QComboBox()
 
         self.layout.addWidget(self.blank_radio)
@@ -54,8 +54,8 @@ class NewFileDialog(QDialog):
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Valider"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.layout.addWidget(self.button_box)
 
         self.blank_radio.toggled.connect(self.template_combo.setDisabled)

@@ -51,7 +51,7 @@ class QuoteFetcher:
                 if data.get("date") == today_str:
                     return data.get("quote"), data.get("author")
             except (json.JSONDecodeError, IOError) as e:
-                print(f"Erreur de lecture du cache : {e}")
+                print(f"❌ Cache read error: {e}")
 
         return None, None
 
@@ -96,6 +96,6 @@ class QuoteFetcher:
                 return quote, author
 
         except requests.RequestException as e:
-            print(f"Erreur lors de la récupération de la citation : {e}")
+            print(f"❌ Error retrieving quote: {e}")
 
         return None, None

@@ -12,20 +12,20 @@ PYTHON_VERSION="3.13.5"
 VENV_NAME=".venv_bluenotebook"
 VENV_PATH="$(pyenv root)/versions/${VENV_NAME}"
 
-echo "🚀 Lancement de BlueNotebook..."
+echo "🚀 BlueNotebook launch..."
 
 # --- Vérification de l'environnement ---
 
 # 1. Vérifier si pyenv est installé
 if ! command -v pyenv &> /dev/null; then
-    echo "❌ Erreur : pyenv n'est pas installé."
-    echo "Veuillez l'installer pour gérer les versions de Python : https://github.com/pyenv/pyenv#installation"
+    echo "❌ Error: pyenv is not installed."
+    echo "Please install it to manage Python versions: https://github.com/pyenv/pyenv#installation"
     exit 1
 fi
 
 # --- Vérification de l'environnement (uniquement si nécessaire) ---
 if [ ! -d "$VENV_PATH" ]; then
-    echo "🛠️ Environnement virtuel '${VENV_NAME}' non trouvé. Lancement de l'installation unique..."
+    echo "🛠️ Virtual environment '${VENV_NAME}' not found. Launching single installation..."
     
     # Initialiser pyenv pour l'installation
     eval "$(pyenv init --path)"
@@ -33,12 +33,12 @@ if [ ! -d "$VENV_PATH" ]; then
     
     # Vérifier si la version de Python requise est disponible
     if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}$"; then
-        echo "🐍 La version ${PYTHON_VERSION} de Python n'est pas installée. Tentative d'installation..."
+        echo "🐍 The ${PYTHON_VERSION} version of Python is not installed. Attempting to install..."
         pyenv install "${PYTHON_VERSION}"
     fi
     
     # Créer l'environnement virtuel
-    echo "� Création de l'environnement virtuel..."
+    echo "📦 Creating the virtual environment..."
     pyenv virtualenv "${PYTHON_VERSION}" "${VENV_NAME}"
     
     # Forcer la réinstallation des dépendances après la création
@@ -51,14 +51,14 @@ PIP_EXEC="${VENV_PATH}/bin/pip"
 
 # Vérifier et installer les dépendances seulement si requirements.txt est plus récent
 if [ "requirements.txt" -nt "${VENV_PATH}/.dependencies_installed" ]; then
-    echo "📦 Mise à jour des dépendances..."
+    echo "📦 Dependency update..."
     "$PIP_EXEC" install -q -r requirements.txt
     touch "${VENV_PATH}/.dependencies_installed"
-    echo "✅ Dépendances à jour."
+    echo "✅ Up-to-date dependencies."
 fi
 
 # --- Lancement de l'application ---
-echo "🎨 Détection de l'environnement de bureau pour le thème Qt..."
+echo "🎨 Desktop environment detection for the Qt theme..."
 PLATFORM_THEME=""
 
 
@@ -75,14 +75,14 @@ esac
 
 if [ -n "$PLATFORM_THEME" ]; then
     export QT_QPA_PLATFORMTHEME=$PLATFORM_THEME
-    echo "✅ Thème Qt forcé à '$PLATFORM_THEME' pour une meilleure intégration."
+    echo "✅ Qt theme forced to '$PLATFORM_THEME' for better integration."
 else
-    echo "ℹ️ Environnement de bureau non détecté ou non supporté pour un thème spécifique. Qt choisira par défaut."
+    echo "❗ Desktop environment not detected or not supported for a specific theme. Qt will choose the default."
 fi
 
 
 echo "" # Ligne vide pour l'aération
-echo "📘 Lancement de l'application BlueNotebook..."
+echo "📘 Launch of the BlueNotebook application..."
 
 # locale -c  
 # export BLUENOTEBOOK_LOCALE=de_DE

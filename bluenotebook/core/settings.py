@@ -127,11 +127,12 @@ class SettingsManager:
 
     def save_settings(self):
         """Sauvegarde les paramètres actuels dans le fichier JSON."""
+        # PAS d'ENCAPSULATION  anglais   conservé, 
         try:
             with open(self.settings_path, "w", encoding="utf-8") as f:
                 json.dump(self.settings, f, indent=4)
         except IOError as e:
-            print(f"Erreur lors de la sauvegarde des paramètres : {e}")
+            print(f"❌ Error saving settings: {e}")
 
     def get(self, key, default=None):
         """Récupère une valeur de paramètre. Ex: 'editor.font_family'"""

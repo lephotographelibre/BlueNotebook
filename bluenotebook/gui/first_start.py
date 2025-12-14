@@ -47,7 +47,7 @@ class FirstStartWindow(QDialog):
         super().__init__(parent)
         self.settings_manager = settings_manager
 
-        self.setWindowTitle("BlueNotebook - Premier Démarrage")
+        self.setWindowTitle(self.tr("BlueNotebook - Premier Démarrage"))
         self.setFixedSize(800, 600)
         self.setModal(True)
 
@@ -74,7 +74,7 @@ class FirstStartWindow(QDialog):
             )
             header_layout.addWidget(logo_label)
 
-        title_label = QLabel("Bienvenue dans BlueNotebook", self)
+        title_label = QLabel(self.tr("Bienvenue dans BlueNotebook"), self)
         font = QFont()
         # font.setPointSize(24)
         font.setBold(True)
@@ -85,7 +85,7 @@ class FirstStartWindow(QDialog):
 
         # --- Texte d'introduction ---
         intro_label = QLabel(
-            "Pour ce premier démarrage, nous allons définir quelques paramètres essentiels :",
+            self.tr("Pour ce premier démarrage, nous allons définir quelques paramètres essentiels :"),
             self,
         )
         main_layout.addWidget(intro_label)
@@ -98,20 +98,20 @@ class FirstStartWindow(QDialog):
 
         # --- Langue ---
         lang_layout = QHBoxLayout()
-        lang_label = QLabel("Langue de l'application :", self)
+        lang_label = QLabel(self.tr("Langue de l'application :"), self)
         self.lang_combo = QComboBox(self)
-        self.lang_combo.addItems(["Français", "English"])
+        self.lang_combo.addItems([self.tr("Français"), self.tr("English")])
         lang_layout.addWidget(lang_label)
         lang_layout.addWidget(self.lang_combo)
         main_layout.addLayout(lang_layout)
 
         # --- Répertoire du Journal ---
         journal_layout = QHBoxLayout()
-        journal_label = QLabel("Répertoire du Journal :", self)
+        journal_label = QLabel(self.tr("Répertoire du Journal :"), self)
         self.journal_path_edit = QLineEdit(self)
         self.journal_path_edit.setReadOnly(True)
         self.journal_path_edit.setText(str(Path.home() / "BlueNotebookJournal"))
-        journal_button = QPushButton("Choisir...", self)
+        journal_button = QPushButton(self.tr("Choisir..."), self)
         journal_layout.addWidget(journal_label)
         journal_layout.addWidget(self.journal_path_edit)
         journal_layout.addWidget(journal_button)
@@ -120,11 +120,11 @@ class FirstStartWindow(QDialog):
 
         # --- Répertoire de Sauvegarde ---
         backup_layout = QHBoxLayout()
-        backup_label = QLabel("Répertoire de Sauvegarde :", self)
+        backup_label = QLabel(self.tr("Répertoire de Sauvegarde :"), self)
         self.backup_path_edit = QLineEdit(self)
         self.backup_path_edit.setReadOnly(True)
         self.backup_path_edit.setText(str(Path.home() / "BlueNotebookBackup"))
-        backup_button = QPushButton("Choisir...", self)
+        backup_button = QPushButton(self.tr("Choisir..."), self)
         backup_layout.addWidget(backup_label)
         backup_layout.addWidget(self.backup_path_edit)
         backup_layout.addWidget(backup_button)
@@ -140,7 +140,7 @@ class FirstStartWindow(QDialog):
         button_layout.addSpacerItem(
             QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         )
-        self.finish_button = QPushButton("Terminé", self)
+        self.finish_button = QPushButton(self.tr("Terminé"), self)
         self.finish_button.setMinimumSize(120, 40)
         button_layout.addWidget(self.finish_button)
         main_layout.addLayout(button_layout)
@@ -154,7 +154,7 @@ class FirstStartWindow(QDialog):
     def _select_journal_directory(self):
         """Ouvre une boîte de dialogue pour choisir le répertoire parent du journal."""
         parent_dir = QFileDialog.getExistingDirectory(
-            self, "Choisir l'emplacement du journal", str(Path.home())
+            self, self.tr("Choisir l'emplacement du journal"), str(Path.home())
         )
         if parent_dir:
             self.journal_path_edit.setText(
@@ -164,7 +164,7 @@ class FirstStartWindow(QDialog):
     def _select_backup_directory(self):
         """Ouvre une boîte de dialogue pour choisir le répertoire parent de la sauvegarde."""
         parent_dir = QFileDialog.getExistingDirectory(
-            self, "Choisir l'emplacement des sauvegardes", str(Path.home())
+            self, self.tr("Choisir l'emplacement des sauvegardes"), str(Path.home())
         )
         if parent_dir:
             self.backup_path_edit.setText(str(Path(parent_dir) / "BlueNotebookBackup"))
@@ -177,11 +177,15 @@ class FirstStartWindow(QDialog):
         # --- Création du répertoire du journal ---
         try:
             if journal_path.exists() and any(journal_path.iterdir()):
+                message = self.tr(
+                    "Le répertoire « {dirname} » existe déjà et n'est pas vide.\n"
+                    "Voulez-vous quand même l'utiliser comme journal ?"
+                )
+                message = message.format(dirname=journal_path.name)
                 reply = QMessageBox.question(
                     self,
-                    "Répertoire existant",
-                    f"Le répertoire '{journal_path.name}' existe déjà et n'est pas vide.\n"
-                    "Voulez-vous quand même l'utiliser comme journal ?",
+                    self.tr("Répertoire existant"),
+                    message,
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No,
                 )
@@ -194,8 +198,10 @@ class FirstStartWindow(QDialog):
                 (journal_path / sub_dir).mkdir(exist_ok=True)
 
         except Exception as e:
+            message = self.tr("Impossible de créer le répertoire du journal :\n{e}")
+            message = message.format(e=e)
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de créer le répertoire du journal :\n{e}"
+                self, self.tr("Erreur"), message
             )
             return
 
@@ -203,10 +209,12 @@ class FirstStartWindow(QDialog):
         try:
             backup_path.mkdir(parents=True, exist_ok=True)
         except Exception as e:
+            message = self.tr("Impossible de créer le répertoire de sauvegarde :\n{e}")
+            message = message.format(e=e)
             QMessageBox.critical(
                 self,
-                "Erreur",
-                f"Impossible de créer le répertoire de sauvegarde :\n{e}",
+                self.tr("Erreur"),
+                message,
             )
             return
 
@@ -220,6 +228,6 @@ class FirstStartWindow(QDialog):
         self.settings_manager.save_settings()
 
         QMessageBox.information(
-            self, "Configuration terminée", "BlueNotebook est prêt. Bon journal !"
+            self, self.tr("Configuration terminée"), self.tr("BlueNotebook est prêt. Bon journal !")
         )
         self.accept()

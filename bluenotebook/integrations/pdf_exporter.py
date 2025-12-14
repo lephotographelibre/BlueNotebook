@@ -21,7 +21,7 @@ import os
 import re
 from datetime import datetime
 
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, QDate
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, QDate, QCoreApplication
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog
 from pathlib import Path
 
@@ -31,6 +31,11 @@ from gui.date_range_dialog import DateRangeDialog
 
 # This will create a circular import if MainWindow is imported directly.
 # We will pass MainWindow as an argument to the functions.
+
+class PdfExporterContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("PdfExporterContext", text)
 
 
 def get_pdf_theme_css(settings_manager) -> str:
@@ -52,7 +57,7 @@ def get_pdf_theme_css(settings_manager) -> str:
             with open(css_path_to_load, "r", encoding="utf-8") as f:
                 content_css_string = f.read()
         except IOError as e:
-            print(f"⚠️ Erreur de lecture du fichier CSS '{css_path_to_load}': {e}")
+            print(f"⚠️ Error reading CSS file: '{css_path_to_load}': {e}")
 
     return content_css_string
 
@@ -94,23 +99,28 @@ class PdfExportWorker(QRunnable):
 
         pdf_author = options.get("author", "")
         author_html = (
-            f'<p class="cover-author">Auteur : {pdf_author}</p>' if pdf_author else ""
+            f'<p class="cover-author">{PdfExporterContext.tr("Auteur : {author}").format(author=pdf_author)}</p>' if pdf_author else ""
         )
 
         # V2.9.2 - Ajouter le tag de filtre sur la page de garde s'il existe
         selected_tag = options.get("selected_tag")
         tag_html = (
-            f'<p class="cover-tag">Filtré par tag : <strong>{selected_tag}</strong></p>'
+            f'<p class="cover-tag">{PdfExporterContext.tr("Filtré par tag : <strong>{tag}</strong>").format(tag=selected_tag)}</p>'
             if selected_tag
             else ""
+        )
+
+        period_text = PdfExporterContext.tr("Période du {start} au {end}").format(
+            start=options['start_date'].toString('d MMMM yyyy'),
+            end=options['end_date'].toString('d MMMM yyyy')
         )
 
         cover_page_html = f"""
         <div class="cover-page">
             {image_html}
-            <h1>{options.get('title', 'Journal')}</h1>
+            <h1>{options.get('title', PdfExporterContext.tr("Journal"))}</h1>
             {author_html}
-            <p class="cover-date">Période du {options['start_date'].toString('d MMMM yyyy')} au {options['end_date'].toString('d MMMM yyyy')}</p>
+            <p class="cover-date">{period_text}</p>
             {tag_html}
         </div>
         """
@@ -135,7 +145,7 @@ class PdfExportWorker(QRunnable):
             with open(base_css_path, "r", encoding="utf-8") as f:
                 base_weasyprint_css = f.read()
         except FileNotFoundError:
-            print(f"⚠️ Fichier CSS par défaut non trouvé : {base_css_path}")
+            print(f"⚠️ Default CSS file not found : {base_css_path}")
             base_weasyprint_css = ""
 
         # Gérer le titre dynamique qui ne peut pas être dans le fichier CSS statique
@@ -159,7 +169,7 @@ class PdfExportWorker(QRunnable):
         full_html = f"""
         <!DOCTYPE html>
         <html lang="fr">
-        <head><meta charset="UTF-8"><title>{options.get('title', 'Journal')}</title></head>
+        <head><meta charset="UTF-8"><title>{options.get('title', PdfExporterContext.tr("Journal"))}</title></head>
         <body>{all_html_content}</body>
         </html>
         """
@@ -180,10 +190,11 @@ class PdfExportWorker(QRunnable):
             self.signals.finished.emit(self.output_path)
 
         except ImportError:
-            self.signals.error.emit(
-                "La bibliothèque 'WeasyPrint' est requise.\n"
-                "Installez-la avec : pip install WeasyPrint"
-            )
+            message = PdfExporterContext.tr(
+"La bibliothèque 'WeasyPrint' est requise.\n"
+"Installez-la avec : pip install WeasyPrint"
+)
+            self.signals.error.emit(message)
         except Exception as e:
             self.signals.error.emit(str(e))
 
@@ -208,10 +219,12 @@ def export_single_pdf(main_window):
     except ImportError:
         QMessageBox.critical(
             main_window,
-            "Module manquant",
-            "WeasyPrint n'est pas installé.\n\n"
-            "Pour utiliser cette fonctionnalité, installez-le avec:\n"
-            "pip install weasyprint",
+            PdfExporterContext.tr("Module manquant"),
+            PdfExporterContext.tr(
+"WeasyPrint n'est pas installé.\n\n"
+"Pour utiliser cette fonctionnalité, installez-le avec:\n"
+"pip install weasyprint"
+),
         )
         return
 
@@ -231,9 +244,9 @@ def export_single_pdf(main_window):
 
     filename, _ = QFileDialog.getSaveFileName(
         main_window,
-        "Exporter en PDF",
+        PdfExporterContext.tr("Exporter en PDF"),
         default_path,
-        "Fichiers PDF (*.pdf)",
+        PdfExporterContext.tr("Fichiers PDF (*.pdf)"),
     )
 
     if not filename:
@@ -280,14 +293,14 @@ def export_single_pdf(main_window):
         html = HTML(string=html_content, base_url=base_url)
         html.write_pdf(filename, stylesheets=[CSS(string=content_css_string)])
 
-        main_window.statusbar.showMessage(f"Exporté en PDF : {filename}", 3000)
+        main_window.statusbar.showMessage(PdfExporterContext.tr("Exporté en PDF : {filename}").format(filename=filename), 3000)
         main_window.settings_manager.set(
             "pdf.last_directory", str(Path(filename).parent)
         )
         main_window.settings_manager.save_settings()
     except Exception as e:
         QMessageBox.critical(
-            main_window, "Erreur", f"Impossible d'exporter en PDF :\n{str(e)}"
+            main_window, PdfExporterContext.tr("Erreur"), PdfExporterContext.tr("Impossible d'exporter en PDF :\n{error}").format(error=str(e))
         )
 
 
@@ -298,18 +311,20 @@ def export_journal_to_pdf(main_window):
     except ImportError:
         QMessageBox.critical(
             main_window,
-            "Module manquant",
-            "WeasyPrint n'est pas installé.\n\n"
-            "Pour utiliser cette fonctionnalité, installez-le avec:\n"
-            "pip install weasyprint",
+            PdfExporterContext.tr("Module manquant"),
+            PdfExporterContext.tr(
+"WeasyPrint n'est pas installé.\n\n"
+"Pour utiliser cette fonctionnalité, installez-le avec:\n"
+"pip install weasyprint"
+),
         )
         return
 
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            "Exportation impossible",
-            "Aucun répertoire de journal n'est actuellement défini.",
+            PdfExporterContext.tr("Exportation impossible"),
+            PdfExporterContext.tr("Aucun répertoire de journal n'est actuellement défini."),
         )
         return
 
@@ -321,7 +336,7 @@ def export_journal_to_pdf(main_window):
                 tags_data = json.load(f)
                 available_tags = sorted(tags_data.keys())
         except (json.JSONDecodeError, IOError) as e:
-            print(f"⚠️ Erreur de lecture de l'index des tags : {e}")
+            print(f"⚠️ Error reading tag index : {e}")
 
     note_files = sorted(
         [
@@ -333,7 +348,7 @@ def export_journal_to_pdf(main_window):
 
     if not note_files:
         QMessageBox.information(
-            main_window, "Journal vide", "Aucune note à exporter dans le journal."
+            main_window, PdfExporterContext.tr("Journal vide"), PdfExporterContext.tr("Aucune note à exporter dans le journal.")
         )
         return
 
@@ -394,14 +409,14 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
             files_with_tag = {d["filename"] for d in tags_data[selected_tag]["details"]}
             filtered_notes = [note for note in filtered_notes if note in files_with_tag]
         except (KeyError, FileNotFoundError) as e:
-            print(f"⚠️ Erreur lors du filtrage par tag : {e}")
+            print(f"⚠️ Error filtering by tag: {e}")
             filtered_notes = []
 
     if not filtered_notes:
         QMessageBox.information(
             main_window,
-            "Aucune note",
-            "Aucune note trouvée pour les critères sélectionnés.",
+            PdfExporterContext.tr("Aucune note"),
+            PdfExporterContext.tr("Aucune note trouvée pour les critères sélectionnés."),
         )
         return
 
@@ -414,9 +429,9 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
 
     pdf_path, _ = QFileDialog.getSaveFileName(
         main_window,
-        "Exporter le journal en PDF",
+        PdfExporterContext.tr("Exporter le journal en PDF"),
         default_path,
-        "Fichiers PDF (*.pdf)",
+        PdfExporterContext.tr("Fichiers PDF (*.pdf)"),
     )
 
     if not pdf_path:
@@ -434,7 +449,7 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
             date_obj = datetime.strptime(os.path.splitext(note_file)[0], "%Y%m%d")
             notes_data.append((date_obj, html_note))
         except Exception as e:
-            print(f"Erreur de lecture du fichier {note_file}: {e}")
+            print(f"❌ File read error :  {note_file}: {e}")
             continue
 
     try:
@@ -465,6 +480,6 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
         main_window._stop_export_flashing()
         QMessageBox.critical(
             main_window,
-            "Erreur d'exportation",
-            f"Une erreur est survenue lors de la création du PDF :\n{str(e)}",
+            PdfExporterContext.tr("Erreur d'exportation"),
+            PdfExporterContext.tr("Une erreur est survenue lors de la création du PDF :\n{error}").format(error=str(e)),
         )
