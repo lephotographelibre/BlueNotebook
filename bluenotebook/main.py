@@ -19,15 +19,7 @@ from core.settings import SettingsManager
 from gui.first_start import FirstStartWindow
 from pathlib import Path
 
-
-class MainContext:
-    """Classe pour traduire les messages console de main()."""
-
-    @staticmethod
-    def tr(text):
-        """Traduction dans le contexte 'MainContext'."""
-        return QCoreApplication.translate("MainContext", text)
-
+ 
 
 def main():
     """Fonction principale"""
@@ -82,74 +74,52 @@ def main():
         app.installTranslator(app_translator)
 
     # --- ÉTAPE 8 : MAINTENANT afficher les messages traduits ---
-    tr = MainContext.tr
 
-    print(tr("🌍 Locale depuis settings.json : '{0}'").format(locale_to_set))
-    print(tr("🌍 Variable LANG forcée à : {0}").format(os.environ["LANG"]))
-    print(tr("🌍 Locale Qt effective : {0}").format(locale.name()))
+
+    print(f"🌍 Locale from settings.json: '{locale_to_set}'")
+    print(f"🌍 Variable LANG forced to: {os.environ["LANG"]}") 
+    print(f"🌍 Effective Qt local: {locale.name()}") 
 
     # --- ÉTAPE 9 : Gestion du premier démarrage ---
     if not settings_manager.settings_path.exists():
-        print(tr("🚀 Premier démarrage - configuration initiale"))
+        print("🚀 First boot - initial setup")
         first_start_window = FirstStartWindow(settings_manager)
         result = first_start_window.exec_()
 
         if result != QDialog.Accepted:
-            print(tr("👋 Configuration annulée"))
+            print("👋 Configuration cancelled")
             sys.exit(0)
 
         settings_manager.load_settings()
 
         new_language = settings_manager.get("app.language")
         if new_language and new_language != locale_to_set:
-            print(
-                tr("⚠️ Langue changée en '{0}' - redémarrage recommandé").format(
-                    new_language
-                )
-            )
+            print(f"⚠️ Language changed to'{new_language}' - restart recommended")
 
     # --- ÉTAPE 10 : Configuration locale Python ---
     try:
         locale_str_with_encoding = f"{locale.name()}.UTF-8"
         locale_module.setlocale(locale_module.LC_TIME, locale_str_with_encoding)
-        print(tr("✅ Locale Python (LC_TIME) : '{0}'").format(locale_str_with_encoding))
+        print(f"✅ Python locale (LC_TIME) : '{locale_str_with_encoding}'")
     except locale_module.Error:
         try:
             locale_module.setlocale(locale_module.LC_TIME, locale.name())
-            print(
-                tr("✅ Locale Python (LC_TIME) : '{0}' (fallback)").format(
-                    locale.name()
-                )
-            )
+            print(f"✅ Python locale(LC_TIME) : '{locale.name()}' (fallback)")
+ 
         except locale_module.Error:
-            print(
-                tr("⚠️ Impossible de configurer la locale Python pour '{0}'").format(
-                    locale.name()
-                )
-            )
+            print(f"⚠️ Unable to configure the Python locale for'{locale.name()}'")
 
     # Afficher messages de chargement des traductions
     if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
-        print(
-            tr("✅ Traduction Qt '{0}' chargée depuis '{1}'").format(
-                locale.name(), qt_translation_path
-            )
-        )
+        print(f"✅ Translation app '{locale.name()}' loaded from'{qt_translation_path}'")
     else:
-        print(tr("⚠️ Traduction Qt '{0}' non trouvée").format(locale.name()))
+        print(f"⚠️ Qt translation '{locale.name()}' not found") 
 
     if app_translator.load(locale, "bluenotebook", "_", i18n_path):
-        print(
-            tr("✅ Traduction app '{0}' chargée depuis '{1}'").format(
-                locale.name(), i18n_path
-            )
-        )
+        print(f"✅ Translation app  '{locale.name()}' loaded from '{i18n_path}'")
+
     else:
-        print(
-            tr("⚠️ Traduction app '{0}' non trouvée dans '{1}'").format(
-                locale.name(), i18n_path
-            )
-        )
+        print(f"⚠️ Traduction app '{locale.name()}' not found in '{i18n_path}'")
 
     # --- ÉTAPE 11 : Arguments en ligne de commande ---
     parser = argparse.ArgumentParser(description="BlueNotebook - Journal Markdown")
@@ -157,28 +127,27 @@ def main():
         "-j",
         "--journal",
         dest="journal_dir",
-        help=tr("Spécifie le répertoire du journal."),
+        help="Journal directory.",
     )
     args = parser.parse_args()
 
     try:
-        version = "4.0.3"
+        version = "4.0.4"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
 
-        print(tr("🚀 Lancement de BlueNotebook V{0}...").format(version))
-
+        print(f"🚀 Launching BlueNotebook App V{version}...")
         window = MainWindow(journal_dir_arg=args.journal_dir, app_version=version)
         window.show()
 
         sys.exit(app.exec_())
 
     except KeyboardInterrupt:
-        print(tr("👋 Fermeture de l'application..."))
+        print(f"👋 Closing the application...")
         sys.exit(0)
     except Exception as e:
-        print(tr("❌ Erreur: {0}").format(e))
+        print("❌ Error: {e}") 
         import traceback
 
         traceback.print_exc()

@@ -54,7 +54,7 @@ class OutlinePanel(QWidget):
         header_layout.setContentsMargins(0, 0, 0, 0)
 
         # En-tête de panneau (style onglet)
-        self.label = QLabel("Plan du document")
+        self.label = QLabel(self.tr("Plan du document"))
         self.label.setStyleSheet(
             """
             QLabel {

@@ -1,5 +1,21 @@
+# Copyright (C) 2025 Jean-Marc DIGNE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 # urltomarkdown.py (version améliorée pour tables larges)
 # pip install requests beautifulsoup4 readability-lxml markdownify validators
+ 
 
 import re
 import html
@@ -12,6 +28,14 @@ from bs4 import BeautifulSoup
 from readability import Document
 from markdownify import markdownify
 from validators import url as valid_url
+
+from PyQt5.QtCore import QCoreApplication
+
+
+class UrlToMarkdownContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("UrlToMarkdownContext", text)
 
 
 class UrlToMarkdown:
@@ -63,7 +87,7 @@ class UrlToMarkdown:
             Markdown propre
         """
         if not url and not html_content:
-            raise ValueError("url ou html_content requis")
+            raise ValueError(UrlToMarkdownContext.tr("❌ Url ou html_content requis"))
 
         base_url = url or "http://example.com"
         ignore_links = not links
@@ -158,9 +182,11 @@ class UrlToMarkdown:
                 elif t == "codeVoice":
                     text += f"`{it.get('code', '')}`"
                 elif t == "link" and not ignore_links:
-                    text += f"{it.get('title', 'Lien')})"
+                    link_title = it.get('title', UrlToMarkdownContext.tr("Lien"))
+                    text += link_title
                 elif t == "reference" and it.get("identifier") in refs:
-                    text += refs[it["identifier"]].get("title", "Référence")
+                    ref_title = refs[it["identifier"]].get("title", UrlToMarkdownContext.tr("Référence"))
+                    text += ref_title
             return text
 
         def section(sec):
@@ -220,23 +246,23 @@ class UrlToMarkdown:
             max(len(r[i]) for r in rows) if any(r[i] for r in rows) else 3
             for i in range(n_cols)
         ]  # Min 3 si vide
-        total = sum(col_widths) + 3 * (n_cols - 1) + n_cols + 1  # | sep |
 
         md = "\n" + caption_md
 
-        # Amélioration : seuil plus haut pour forcer table plus souvent (mieux pour viewers MD)
-        MAX_TABLE_WIDTH = 300  # Au lieu de 96 – testé pour Wikipedia larges
+        # Mode table ou liste
+        total = sum(col_widths) + 3 * (n_cols - 1) + n_cols + 1  # | sep |
 
-        # Option : si >80% cellules courtes (<10 chars), force table
+        MAX_TABLE_WIDTH = 300
+
         all_cells = [cell for row in rows for cell in row if cell]
         short_ratio = (
             sum(len(c) < 10 for c in all_cells) / len(all_cells) if all_cells else 0
         )
         if short_ratio > 0.8:
-            total = 95  # Force table si majoritairement court (comme Yes/No)
+            total = 95  # Force table si majoritairement court
 
         if total <= MAX_TABLE_WIDTH:
-            # Mode table (amélioré : alignement left par défaut)
+            # Mode table Markdown classique
             header = rows[0]
             md += (
                 "| "
@@ -251,13 +277,16 @@ class UrlToMarkdown:
                     + " |\n"
                 )
         else:
-            # Mode liste (amélioré : skip si clé vide, et wrap long text si besoin – mais MD gère)
+            # Mode liste à puces
             headers = rows[0]
             for row in rows[1:]:
-                md += f"* {row[0]}\n" if row[0] else ""  # Bibliothèque en bold bullet
+                if row[0]:
+                    md += f"* {row[0]}\n"
                 for i in range(1, n_cols):
                     if headers[i] and row[i]:
-                        md += f"  * **{headers[i]}**: {row[i]}\n"  # Bold clé pour meilleure lisibilité
+                        header_text = headers[i]
+                        value_text = row[i]
+                        md += f"  * **{header_text}**: {value_text}\n"
                 md += "\n"
         return md + "\n"
 
@@ -266,7 +295,7 @@ class UrlToMarkdown:
     ) -> str:
         soup = BeautifulSoup(html_content, "html.parser")
         page_title = (
-            soup.find("h1").get_text(strip=True) if soup.find("h1") else "Question"
+            soup.find("h1").get_text(strip=True) if soup.find("h1") else UrlToMarkdownContext.tr("Question")
         )
 
         q = soup.find("div", id="question")
@@ -274,7 +303,8 @@ class UrlToMarkdown:
 
         md = markdownify(str(q), heading_style="ATX") if q else ""
         if a and not str(a).strip().endswith("Your Answer"):
-            md += "\n\n## Réponses\n\n" + markdownify(str(a), heading_style="ATX")
+            answers_title = UrlToMarkdownContext.tr("Réponses")
+            md += f"\n\n## {answers_title}\n\n" + markdownify(str(a), heading_style="ATX")
 
         md = self._postprocess(md, base_url, ignore_links)
         if title:

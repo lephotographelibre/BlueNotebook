@@ -24,7 +24,13 @@ try:
 except ImportError:
     MarkItDown = None
 
-from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot, QCoreApplication
+
+
+class PdfConverterContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("PdfConverterContext", text)
 
 
 class PdfToMarkdownWorker(QRunnable):
@@ -45,10 +51,11 @@ class PdfToMarkdownWorker(QRunnable):
     def run(self):
         """Executes the conversion process."""
         if MarkItDown is None:
-            self.signals.error.emit(
-                "❌ Conversion PDF:La bibliothèque 'markitdown' est introuvable.\n\n"
+            error_msg = PdfConverterContext.tr(
+                "❌ Conversion PDF: La bibliothèque 'markitdown' est introuvable.\n\n"
                 "Veuillez l'installer avec : pip install markitdown[pdf]"
             )
+            self.signals.error.emit(error_msg)
             return
 
         # We still use a temporary directory for downloaded files
@@ -74,6 +81,8 @@ class PdfToMarkdownWorker(QRunnable):
                 self.signals.finished.emit(result.text_content)
 
             except Exception as e:
-                self.signals.error.emit(
-                    f"❌ Conversion PDF: Une erreur est survenue lors de la conversion : {e}\n\nAssurez-vous d'avoir installé 'markitdown[pdf]'."
-                )
+                error_msg = PdfConverterContext.tr(
+                    "❌ Conversion PDF: Une erreur est survenue lors de la conversion : {error}\n\n"
+                    "Assurez-vous d'avoir installé 'markitdown[pdf]'."
+                ).format(error=str(e))
+                self.signals.error.emit(error_msg)

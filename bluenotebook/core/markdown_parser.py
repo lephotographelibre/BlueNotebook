@@ -20,10 +20,13 @@ Gestionnaire de parsing et conversion Markdown
 
 import markdown
 from markdown.extensions import tables, fenced_code, toc
+from PyQt5.QtCore import QObject
 
 
-class MarkdownParser:
+class MarkdownParser(QObject):
+    # Héritage de QObject uniquement pour avoir accès à self.tr()
     def __init__(self):
+        super().__init__()
         self.md = markdown.Markdown(
             extensions=["tables", "fenced_code", "toc", "codehilite"],
             extension_configs={"codehilite": {"css_class": "highlight"}},
@@ -34,7 +37,11 @@ class MarkdownParser:
         try:
             return self.md.convert(markdown_text)
         except Exception as e:
-            return f"<p>Erreur de conversion: {e}</p>"
+            # → ENCAPSULATION UNIQUEMENT (français conservé)
+            error_msg = self.tr(
+                "Erreur de conversion: {error}"
+            ).format(error=str(e))
+            return f"<p>{error_msg}</p>"
 
     def reset(self):
         """Réinitialiser le parser"""

@@ -34,17 +34,16 @@ class JournalBackupWorker(QRunnable):
         super().__init__()
         self.journal_directory = journal_directory
         self.backup_path = backup_path
-        self.signals = (
-            self.Signals()
-        )  # Correctement instancie la classe Signals imbriquée
+        self.signals = self.Signals()
 
     @pyqtSlot()
     def run(self):
         """Exécute la sauvegarde dans un thread séparé."""
+        # Note : cette docstring est déjà marquée pour traduction par pylupdate5 grâce au .pro
         try:
             with zipfile.ZipFile(
                 self.backup_path, "w", zipfile.ZIP_DEFLATED
-            ) as zipf:  # Assure que zipfile et os sont importés
+            ) as zipf:
                 # Parcourir tous les fichiers et dossiers du journal
                 for root, dirs, files in os.walk(self.journal_directory):
                     # Exclure les répertoires de cache Python
@@ -57,9 +56,13 @@ class JournalBackupWorker(QRunnable):
                         arcname = file_path.relative_to(self.journal_directory)
                         zipf.write(file_path, arcname)
 
+            # → Chaîne traduisible émise vers l'interface
             self.signals.finished.emit(str(self.backup_path))
 
         except Exception as e:
-            self.signals.error.emit(
-                f"Une erreur est survenue lors de la sauvegarde : {e}"
-            )
+            # → NOUVELLE CHAÎNE À TRADUIRE (règle 2 : chaîne avec argument)
+            error_msg = self.tr(
+                "Une erreur est survenue lors de la sauvegarde : {error}"
+            ).format(error=str(e))
+
+            self.signals.error.emit(error_msg)

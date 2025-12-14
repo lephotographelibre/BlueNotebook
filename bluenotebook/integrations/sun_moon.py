@@ -23,16 +23,25 @@ import json
 from datetime import date
 from typing import List, Dict, Any, Optional
 
+from PyQt5.QtCore import QCoreApplication
+
+
+class SunMoonContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("SunMoonContext", text)
+
+
 # Dictionnaire de traduction pour les phases de la lune
 MOON_PHASES_TRANSLATION = {
-    "New Moon": ("Nouvelle Lune", "🌑"),
-    "Waxing Crescent": ("Croissant Ascendant", "🌒"),
-    "First Quarter": ("Premier Quartier", "🌓"),
-    "Waxing Gibbous": ("Gibbeuse Ascendante", "🌔"),
-    "Full Moon": ("Pleine Lune", "🌕"),
-    "Waning Gibbous": ("Gibbeuse Descendante", "🌖"),
-    "Last Quarter": ("Dernier Quartier", "🌗"),
-    "Waning Crescent": ("Croissant Descendant", "🌘"),
+    "New Moon": (SunMoonContext.tr("Nouvelle Lune"), "🌑"),
+    "Waxing Crescent": (SunMoonContext.tr("Croissant Ascendant"), "🌒"),
+    "First Quarter": (SunMoonContext.tr("Premier Quartier"), "🌓"),
+    "Waxing Gibbous": (SunMoonContext.tr("Gibbeuse Ascendante"), "🌔"),
+    "Full Moon": (SunMoonContext.tr("Pleine Lune"), "🌕"),
+    "Waning Gibbous": (SunMoonContext.tr("Gibbeuse Descendante"), "🌖"),
+    "Last Quarter": (SunMoonContext.tr("Dernier Quartier"), "🌗"),
+    "Waning Crescent": (SunMoonContext.tr("Croissant Descendant"), "🌘"),
 }
 
 
@@ -56,13 +65,17 @@ def generate_sun_moon_markdown(
     illumination: str,
 ) -> str:
     """Génère un fragment Markdown à partir des données du soleil et de la lune."""
-    sun_rise_str = sun_rise or "N/A"
-    sun_set_str = sun_set or "N/A"
+    sun_rise_str = sun_rise or SunMoonContext.tr("N/A")
+    sun_set_str = sun_set or SunMoonContext.tr("N/A")
 
     markdown = (
-        f"**Données Astronomiques du jour pour {city}**\n\n"
-        f"🌅 Lever: **{sun_rise_str}** - 🌇 Coucher: **{sun_set_str}**\n"
-        f"{moon_emoji} Phase lune: {moon_phase} ({illumination} illuminée)"
+        SunMoonContext.tr("**Données Astronomiques du jour pour {city}**\n\n").format(city=city)
+        + SunMoonContext.tr("🌅 Lever: **{rise}** - 🌇 Coucher: **{set}**\n").format(
+            rise=sun_rise_str, set=sun_set_str
+        )
+        + SunMoonContext.tr("{emoji} Phase lune: {phase} ({illum} illuminée)").format(
+            emoji=moon_emoji, phase=moon_phase, illum=illumination
+        )
     )
     return markdown
 
@@ -84,14 +97,14 @@ def get_sun_moon_markdown(
         data = response.json()
 
         if data.get("error"):
-            return None, data.get("message", "Erreur inconnue de l'API.")
+            return None, data.get("message", SunMoonContext.tr("Erreur inconnue de l'API."))
         if "properties" not in data or "data" not in data["properties"]:
-            return None, "Structure de la réponse JSON inattendue."
+            return None, SunMoonContext.tr("Structure de la réponse JSON inattendue.")
 
         api_data = data["properties"]["data"]
         sun_rise_time = find_phenomenon_time(api_data.get("sundata", []), "Rise")
         sun_set_time = find_phenomenon_time(api_data.get("sundata", []), "Set")
-        moon_phase_en = api_data.get("curphase", "Inconnue")
+        moon_phase_en = api_data.get("curphase", SunMoonContext.tr("Inconnue"))
         frac_illum = api_data.get("fracillum", "N/A")
 
         moon_phase_fr, moon_emoji = MOON_PHASES_TRANSLATION.get(
@@ -104,6 +117,6 @@ def get_sun_moon_markdown(
         return markdown_fragment, None
 
     except requests.exceptions.RequestException as e:
-        return None, f"Erreur de requête HTTP : {e}"
+        return None, SunMoonContext.tr("Erreur de requête HTTP : {error}").format(error=e)
     except Exception as e:
-        return None, f"Une erreur inattendue est survenue : {e}"
+        return None, SunMoonContext.tr("Une erreur inattendue est survenue : {error}").format(error=e)

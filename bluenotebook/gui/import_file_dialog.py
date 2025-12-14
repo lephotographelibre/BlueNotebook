@@ -37,7 +37,7 @@ class ImportFileDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Importer un fichier")
+        self.setWindowTitle(self.tr("Importer un fichier"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -47,14 +47,14 @@ class ImportFileDialog(QDialog):
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit(self)
         self.path_edit.setPlaceholderText(
-            "https://example.com/file.pdf ou /chemin/local/file.pdf"
+            self.tr("https://example.com/file.pdf ou /chemin/local/file.pdf")
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(
             lambda: self.path_edit.setText(
-                QFileDialog.getOpenFileName(self, "Sélectionner un fichier")[0]
+                QFileDialog.getOpenFileName(self, self.tr("Sélectionner un fichier"))[0]
             )
         )
         path_layout.addWidget(browse_button)

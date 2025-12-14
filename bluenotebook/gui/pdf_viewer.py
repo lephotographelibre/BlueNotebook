@@ -28,11 +28,14 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QApplication,
     QMenu,
+    QFileDialog,
 )
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QColor
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF, QPoint
 from PyQt5.QtGui import QGuiApplication
 from pathlib import Path
+from PIL import Image
+import io
 
 
 class PdfViewer(QWidget):
@@ -81,12 +84,12 @@ class PdfViewer(QWidget):
             self.doc = fitz.open(filepath)
             toc = self.doc.get_toc()
             page_count = self.doc.page_count
-            title = self.doc.metadata.get("title", "Titre inconnu")
-            author = self.doc.metadata.get("author", "Auteur inconnu")
+            title = self.doc.metadata.get("title", self.tr("Titre inconnu"))
+            author = self.doc.metadata.get("author", self.tr("Auteur inconnu"))
             self.document_loaded.emit(True, title, author, toc, page_count)
             self.go_to_page(0)
         except Exception as e:
-            QMessageBox.critical(self, "Erreur de chargement PDF", str(e))
+            QMessageBox.critical(self, self.tr("Erreur de chargement PDF"), str(e))
             self.document_loaded.emit(False, "", "", [], 0)
 
     def render_page(self, page_num):
@@ -149,14 +152,18 @@ class PdfViewer(QWidget):
             self.current_search_index = -1
             # Ajout de la boîte de message pour afficher le nombre d'occurrences
             if self.all_found_instances:
+                msg = self.tr(
+                    "{} occurrence(s) trouvée(s) dans l'ensemble du document."
+                )
                 QMessageBox.information(
                     self,
-                    "Recherche",
-                    f"{len(self.all_found_instances)} occurrence(s) trouvée(s) dans l'ensemble du document.",
+                    self.tr("Recherche"),
+                    msg.format(len(self.all_found_instances)),
                 )
             else:
+                msg = self.tr("Le texte '{}' n'a pas été trouvé.")
                 QMessageBox.information(
-                    self, "Recherche", f"Le texte '{text}' n'a pas été trouvé."
+                    self, self.tr("Recherche"), msg.format(text)
                 )
                 self.clear_search()
                 return
@@ -169,7 +176,7 @@ class PdfViewer(QWidget):
         new_index = self.current_search_index + direction
         if not (0 <= new_index < len(self.all_found_instances)):
             QMessageBox.information(
-                self, "Recherche", "Aucune autre occurrence trouvée."
+                self, self.tr("Recherche"), self.tr("Aucune autre occurrence trouvée.")
             )
             return
         self.current_search_index = new_index
@@ -238,20 +245,20 @@ class PdfViewer(QWidget):
             return
 
         menu = QMenu(self)
-        copy_selection_action = menu.addAction("Copier la sélection (Ctrl+C)")
+        copy_selection_action = menu.addAction(self.tr("Copier la sélection (Ctrl+C)"))
         copy_selection_action.setEnabled(bool(self.selected_text))
-        select_all_action = menu.addAction("Sélectionner toute la page (Ctrl+A)")
+        select_all_action = menu.addAction(self.tr("Sélectionner toute la page (Ctrl+A)"))
         menu.addSeparator()
-        copy_page_action = menu.addAction("Copier le texte de la page")
+        copy_page_action = menu.addAction(self.tr("Copier le texte de la page"))
 
         pdf_point = self._get_pdf_point(event.pos())
         xref, img_rect = self._get_image_at_point(pdf_point)
-        save_image_action = menu.addAction("Sauvegarder cette image")
+        save_image_action = menu.addAction(self.tr("Sauvegarder cette image"))
         save_image_action.setEnabled(xref is not None)
 
         if self.selected_text:
             menu.addSeparator()
-            clear_action = menu.addAction("Effacer la sélection (ESC)")
+            clear_action = menu.addAction(self.tr("Effacer la sélection (ESC)"))
         else:
             clear_action = None
 
@@ -270,10 +277,6 @@ class PdfViewer(QWidget):
 
     def save_image(self, xref):
         """Sauvegarde l'image spécifiée par xref dans un fichier .jpg choisi par l'utilisateur."""
-        from PyQt5.QtWidgets import QFileDialog
-        from PIL import Image
-        import io
-
         last_dir = self.settings_manager.get(
             "pdf.last_image_save_directory", str(Path.home())
         )
@@ -289,17 +292,19 @@ class PdfViewer(QWidget):
 
             file_path, _ = QFileDialog.getSaveFileName(
                 self,
-                "Sauvegarder l'image",
+                self.tr("Sauvegarder l'image"),
                 str(Path(last_dir) / f"image_{xref}.jpg"),
-                "Images JPEG (*.jpg);;Tous les fichiers (*)",
+                self.tr("Images JPEG (*.jpg);;Tous les fichiers (*)"),
             )
 
             if file_path:
                 if not file_path.lower().endswith(".jpg"):
                     file_path += ".jpg"
                 img.save(file_path, "JPEG")
+
+                msg = self.tr("Image sauvegardée sous {}")
                 QMessageBox.information(
-                    self, "Succès", f"Image sauvegardée sous {file_path}"
+                    self, self.tr("Succès"), msg.format(file_path)
                 )
 
                 self.settings_manager.set(
@@ -307,8 +312,9 @@ class PdfViewer(QWidget):
                 )
                 self.settings_manager.save_settings()
         except Exception as e:
+            msg = self.tr("Impossible de sauvegarder l'image : {}")
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de sauvegarder l'image : {str(e)}"
+                self, self.tr("Erreur"), msg.format(str(e))
             )
 
     def _get_image_at_point(self, pdf_point: fitz.Point) -> tuple:
@@ -329,7 +335,9 @@ class PdfViewer(QWidget):
             text = self.get_page_text(self.current_page_num)
             QGuiApplication.clipboard().setText(text)
             QMessageBox.information(
-                self, "Copié", "Le texte de la page a été copié dans le presse-papiers."
+                self,
+                self.tr("Copié"),
+                self.tr("Le texte de la page a été copié dans le presse-papiers."),
             )
 
     def copy_selected_text(self):
@@ -337,9 +345,9 @@ class PdfViewer(QWidget):
             return
         if self.selected_text:
             QGuiApplication.clipboard().setText(self.selected_text)
-            QMessageBox.information(self, "Copié", "Le texte sélectionné a été copié.")
+            QMessageBox.information(self, self.tr("Copié"), self.tr("Le texte sélectionné a été copié."))
         else:
-            QMessageBox.warning(self, "Sélection vide", "Aucun texte sélectionné.")
+            QMessageBox.warning(self, self.tr("Sélection vide"), self.tr("Aucun texte sélectionné."))
 
     def clear_selection(self):
         self.selected_word_rects = []

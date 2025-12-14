@@ -23,18 +23,19 @@ from pathlib import Path
 import zipfile
 
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
-
-from core.journal_backup_worker import JournalBackupWorker
 from PyQt5.QtCore import Qt
 
+from core.journal_backup_worker import JournalBackupWorker
+
+# Pour la traduction j’ai utilisé main_window.tr(...) et pas self.tr(...) Parce que dans ce fichier backup_handler.py, il n’y a pas de self !
 
 def backup_journal(main_window):
     """Sauvegarde le répertoire du journal dans une archive ZIP."""
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            "Sauvegarde impossible",
-            "Aucun répertoire de journal n'est actuellement défini.",
+            main_window.tr("Sauvegarde impossible"),
+            main_window.tr("Aucun répertoire de journal n'est actuellement défini."),
         )
         return
 
@@ -46,7 +47,10 @@ def backup_journal(main_window):
     default_path = os.path.join(initial_dir, backup_filename_default)
 
     backup_path, _ = QFileDialog.getSaveFileName(
-        main_window, "Sauvegarder le journal", default_path, "Archives ZIP (*.zip)"
+        main_window,
+        main_window.tr("Sauvegarder le journal"),
+        default_path,
+        main_window.tr("Archives ZIP (*.zip)")
     )
 
     if backup_path:
@@ -60,7 +64,7 @@ def backup_journal(main_window):
             "backup.last_directory", os.path.dirname(backup_path)
         )
         main_window.settings_manager.save_settings()
-        main_window.statusbar.showMessage("Lancement de la sauvegarde...", 3000)
+        main_window.statusbar.showMessage(main_window.tr("Lancement de la sauvegarde..."), 3000)
 
 
 def restore_journal(main_window):
@@ -68,13 +72,16 @@ def restore_journal(main_window):
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            "Restauration impossible",
-            "Aucun répertoire de journal de destination n'est défini.",
+            main_window.tr("Restauration impossible"),
+            main_window.tr("Aucun répertoire de journal de destination n'est défini."),
         )
         return
 
     zip_path, _ = QFileDialog.getOpenFileName(
-        main_window, "Restaurer le journal", "", "Archives ZIP (*.zip)"
+        main_window,
+        main_window.tr("Restaurer le journal"),
+        "",
+        main_window.tr("Archives ZIP (*.zip)")
     )
 
     if not zip_path:
@@ -84,16 +91,23 @@ def restore_journal(main_window):
 
     msg_box = QMessageBox(main_window)
     msg_box.setIcon(QMessageBox.Question)
-    msg_box.setWindowTitle("Confirmation de la restauration")
+    msg_box.setWindowTitle(main_window.tr("Confirmation de la restauration"))
     msg_box.setTextFormat(Qt.RichText)
-    msg_box.setText(
-        f"<p>Vous êtes sur le point de restaurer le journal depuis '{os.path.basename(zip_path)}'.</p>"
-        f"<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{current_journal_backup_path}</b></p>"
-        f"<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
+
+    # → Règle 4 : chaîne multi-lignes avec arguments
+    message = main_window.tr(
+        "<p>Vous êtes sur le point de restaurer le journal depuis '{filename}'.</p>"
+        "<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{backup_path}</b></p>"
+        "<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
+    ).format(
+        filename=os.path.basename(zip_path),
+        backup_path=current_journal_backup_path
     )
+    msg_box.setText(message)
+
     msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-    msg_box.button(QMessageBox.Yes).setText("Valider")
-    msg_box.button(QMessageBox.No).setText("Annuler")
+    msg_box.button(QMessageBox.Yes).setText(main_window.tr("Valider"))
+    msg_box.button(QMessageBox.No).setText(main_window.tr("Annuler"))
     msg_box.setDefaultButton(QMessageBox.No)
     reply = msg_box.exec_()
 
@@ -107,16 +121,27 @@ def restore_journal(main_window):
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(main_window.journal_directory)
 
+        # → Règle 3 : multi-lignes sans argument
         QMessageBox.information(
             main_window,
-            "Restauration terminée",
-            "La restauration est terminée. L'application va maintenant se fermer.\n"
-            "Veuillez la relancer pour utiliser le journal restauré.",
+            main_window.tr("Restauration terminée"),
+            main_window.tr(
+                "La restauration est terminée. L'application va maintenant se fermer.\n"
+                "Veuillez la relancer pour utiliser le journal restauré."
+            ),
         )
-        print(f"🔁 Restauration du journal terminée avec succès depuis : {zip_path}")
+        # Message console → non encapsulé (selon consigne et reste en anglais)
+        print(f"🔁 Restoration of the journal has been successfully completed since: {zip_path}")
         main_window.close()
 
     except Exception as e:
+        # → Règle 2 : une ligne avec argument
+        error_msg = main_window.tr(
+            "La restauration a échoué : {error}"
+        ).format(error=str(e))
+
         QMessageBox.critical(
-            main_window, "Erreur de restauration", f"La restauration a échoué : {e}"
+            main_window,
+            main_window.tr("Erreur de restauration"),
+            error_msg
         )

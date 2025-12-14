@@ -56,7 +56,7 @@ class TagCloudPanel(QWidget):
         layout.setContentsMargins(0, 5, 0, 0)
         layout.setSpacing(5)
 
-        self.label = QLabel("☁️ Nuage de Tags")
+        self.label = QLabel(self.tr("☁️ Nuage de Tags"))
         font = self.label.font()
         font.setBold(True)
         self.label.setFont(font)
@@ -86,18 +86,18 @@ class TagCloudPanel(QWidget):
 
         index_file = journal_directory / "index_tags.json"
         if not index_file.exists():
-            self.text_browser.setHtml("<p><i>Index des tags non trouvé.</i></p>")
+            self.text_browser.setHtml(f"<p><i>{self.tr('Index des tags non trouvé.')}</i></p>")
             return
 
         try:
             with open(index_file, "r", encoding="utf-8") as f:
                 tags_data = json.load(f)
         except (json.JSONDecodeError, IOError):
-            self.text_browser.setHtml("<p><i>Erreur de lecture de l'index.</i></p>")
+            self.text_browser.setHtml(f"<p><i>{self.tr('Erreur de lecture de l\'index.')}</i></p>")
             return
 
         if not tags_data:
-            self.text_browser.setHtml("<p><i>Aucun tag à afficher.</i></p>")
+            self.text_browser.setHtml(f"<p><i>{self.tr('Aucun tag à afficher.')}</i></p>")
             return
 
         # Filtrer les tags exclus par l'utilisateur

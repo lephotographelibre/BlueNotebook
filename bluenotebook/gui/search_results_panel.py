@@ -45,12 +45,12 @@ class SearchResultsPanel(QWidget):
         layout.setContentsMargins(0, 5, 0, 0)
         layout.setSpacing(5)
 
-        self.label = QLabel("🔍 Résultats de la Recherche")
+        self.label = QLabel(self.tr("🔍 Résultats de la Recherche"))
         font = self.label.font()
         font.setBold(True)
         self.label.setFont(font)
         self.label.setCursor(Qt.PointingHandCursor)
-        self.label.setToolTip("Cliquez pour rafraîchir l'index des tags")
+        self.label.setToolTip(self.tr("Cliquez pour rafraîchir l'index des tags"))
         self.label.mousePressEvent = self.on_title_clicked
 
         self.label.setMaximumHeight(35)
@@ -58,7 +58,7 @@ class SearchResultsPanel(QWidget):
 
         self.results_tree = QTreeWidget()
         self.results_tree.setColumnCount(2)
-        self.results_tree.setHeaderLabels(["Date", "Texte"])
+        self.results_tree.setHeaderLabels([self.tr("Date"), self.tr("Texte")])
         self.results_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.results_tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.results_tree.setSortingEnabled(True)
@@ -71,9 +71,9 @@ class SearchResultsPanel(QWidget):
         """Met à jour la liste des résultats."""
         self.results_tree.clear()
         if search_query.lower() == "@@todo":
-            self.label.setText("✔ Liste des Tâches @@TODO 🗘")
+            self.label.setText(self.tr("✔ Liste des Tâches @@TODO 🗘"))
         else:
-            self.label.setText("🔍 Résultats de la Recherche")
+            self.label.setText(self.tr("🔍 Résultats de la Recherche"))
 
         for date, context, filename, line in results:
             item = QTreeWidgetItem([date, context])
