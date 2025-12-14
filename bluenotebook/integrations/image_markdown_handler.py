@@ -39,6 +39,13 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QVBoxLayout,
 )
+from PyQt5.QtCore import QCoreApplication
+
+
+class ImageMarkdownHandlerContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("ImageMarkdownHandlerContext", text)
 
 
 class ImageSourceDialog(QDialog):
@@ -49,7 +56,7 @@ class ImageSourceDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Source de l'image")
+        self.setWindowTitle(self.tr("Source de l'image"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -59,15 +66,15 @@ class ImageSourceDialog(QDialog):
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit(self)
         self.path_edit.setPlaceholderText(
-            "http://example.com/image.png ou /chemin/local"
+            self.tr("http://example.com/image.png ou /chemin/local")
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_file)
         path_layout.addWidget(browse_button)
 
-        form_layout.addRow("Chemin ou URL:", path_layout)
+        form_layout.addRow(self.tr("Chemin ou URL:"), path_layout)
         self.layout.addLayout(form_layout)
 
         self.button_box = QDialogButtonBox(
@@ -80,9 +87,9 @@ class ImageSourceDialog(QDialog):
     def _browse_file(self):
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "Sélectionner une image",
+            self.tr("Sélectionner une image"),
             "",
-            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
+            self.tr("Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)"),
         )
         if path:
             self.path_edit.setText(path)
@@ -131,7 +138,7 @@ def _get_gps_info(exif_data):
 
 def get_location_name_from_gps(lat, lon):
     if not lat or not lon:
-        return "Lieu inconnu"
+        return ImageMarkdownHandlerContext.tr("Lieu inconnu")
     try:
         geolocator = Nominatim(user_agent="bluenotebook_app")
         location = geolocator.reverse((lat, lon), exactly_one=True, language="fr")
@@ -139,11 +146,11 @@ def get_location_name_from_gps(lat, lon):
             address = location.raw.get("address", {})
             city = address.get("city", address.get("town", address.get("village", "")))
             return city if city else location.address.split(",")[0]
-        return "Lieu inconnu"
+        return ImageMarkdownHandlerContext.tr("Lieu inconnu")
     except (GeocoderTimedOut, GeocoderUnavailable):
-        return "Service de géolocalisation indisponible"
+        return ImageMarkdownHandlerContext.tr("Service de géolocalisation indisponible")
     except Exception:
-        return "Erreur de géolocalisation"
+        return ImageMarkdownHandlerContext.tr("Erreur de géolocalisation")
 
 
 def format_exif_as_markdown_string(image_path: str) -> str | None:
@@ -155,9 +162,10 @@ def format_exif_as_markdown_string(image_path: str) -> str | None:
         return None
     location_part = ""
     if lat and lon:
-        location_name = get_location_name_from_gps(lat, lon) or "Lieu"
+        location_name = get_location_name_from_gps(lat, lon) or ImageMarkdownHandlerContext.tr("Lieu")
         osm_link = f"https://www.openstreetmap.org/?mlat={lat:.6f}&mlon={lon:.6f}#map=16/{lat:.6f}/{lon:.6f}"
         location_part = f"[{location_name}]({osm_link}) : "
+
     details_parts = []
     if dt_original := exif_data.get("DateTimeOriginal"):
         try:
@@ -171,15 +179,22 @@ def format_exif_as_markdown_string(image_path: str) -> str | None:
         details_parts.append(model)
     if f_number := exif_data.get("FNumber"):
         details_parts.append(f"ƒ/{f_number}")
+
+    speed_label = ImageMarkdownHandlerContext.tr("Vitesse:")
     if exposure_time := exif_data.get("ExposureTime"):
         speed = (
             f"1/{int(1/exposure_time)}s" if exposure_time > 0 else f"{exposure_time}s"
         )
-        details_parts.append(f"Vitesse: {speed}")
+        details_parts.append(f"{speed_label} {speed}")
+
+    focal_label = ImageMarkdownHandlerContext.tr("Focale:")
     if focal_length := exif_data.get("FocalLength"):
-        details_parts.append(f"Focale: {focal_length}mm")
+        details_parts.append(f"{focal_label} {focal_length}mm")
+
+    iso_label = ImageMarkdownHandlerContext.tr("ISO:")
     if iso := exif_data.get("ISOSpeedRatings"):
-        details_parts.append(f"ISO: {iso}")
+        details_parts.append(f"{iso_label} {iso}")
+
     details_text = " : ".join(filter(None, details_parts))
     return f"{location_part}**{details_text}**"
 
@@ -190,8 +205,8 @@ def handle_markdown_image_insertion(editor):
     if not main_window or not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            "Journal non défini",
-            "Veuillez définir un répertoire de journal avant d'insérer une image.",
+            main_window.tr("Journal non défini"),
+            main_window.tr("Veuillez définir un répertoire de journal avant d'insérer une image."),
         )
         return
 
@@ -220,14 +235,18 @@ def handle_markdown_image_insertion(editor):
                     f.write(chunk)
         except requests.RequestException as e:
             QMessageBox.critical(
-                main_window, "Erreur", f"Erreur de téléchargement: {e}"
+                main_window,
+                ImageMarkdownHandlerContext.tr("Erreur"),
+                ImageMarkdownHandlerContext.tr("Erreur de téléchargement: {error}").format(error=str(e))
             )
             return
     else:
         source_file = Path(source_path)
         if not source_file.is_file():
             QMessageBox.critical(
-                main_window, "Erreur", "Le fichier local n'existe pas."
+                main_window,
+                ImageMarkdownHandlerContext.tr("Erreur"),
+                ImageMarkdownHandlerContext.tr("Le fichier local n'existe pas.")
             )
             return
         new_filename = f"{timestamp}_{source_file.name}"
@@ -235,7 +254,11 @@ def handle_markdown_image_insertion(editor):
         try:
             shutil.copy2(source_file, destination_file)
         except Exception as e:
-            QMessageBox.critical(main_window, "Erreur", f"Erreur de copie: {e}")
+            QMessageBox.critical(
+                main_window,
+                ImageMarkdownHandlerContext.tr("Erreur"),
+                ImageMarkdownHandlerContext.tr("Erreur de copie: {error}").format(error=str(e))
+            )
             return
 
     relative_path = f"images/{new_filename}"
@@ -247,8 +270,8 @@ def handle_markdown_image_insertion(editor):
     if exif_caption:
         reply = QMessageBox.question(
             main_window,
-            "Données EXIF trouvées",
-            "Des données EXIF ont été trouvées. Voulez-vous les insérer ?",
+            ImageMarkdownHandlerContext.tr("Données EXIF trouvées"),
+            ImageMarkdownHandlerContext.tr("Des données EXIF ont été trouvées. Voulez-vous les insérer ?"),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )

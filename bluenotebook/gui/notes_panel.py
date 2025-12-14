@@ -301,7 +301,7 @@ class NotesPanel(QWidget):
 
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
-        label = QLabel("Notes")
+        label = QLabel(self.tr("Notes"))
         label.setStyleSheet(
             """
             QLabel {
@@ -318,11 +318,11 @@ class NotesPanel(QWidget):
         search_layout = QHBoxLayout()
         search_layout.setContentsMargins(5, 5, 5, 5)
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Rechercher nom de fichier")
+        self.search_input.setPlaceholderText(self.tr("Rechercher nom de fichier"))
         self.search_input.setClearButtonEnabled(True)
         search_layout.addWidget(self.search_input)
 
-        search_button = QPushButton("Rechercher")
+        search_button = QPushButton(self.tr("Rechercher"))
         search_layout.addWidget(search_button)
         self.layout.addLayout(search_layout)
 
@@ -623,8 +623,8 @@ class NotesPanel(QWidget):
         index = self.tree_view.indexAt(position)
         if not index.isValid():
             menu = QMenu()
-            menu.addAction("Créer un dossier...", self.create_root_folder)
-            paste_action = menu.addAction("Coller")
+            menu.addAction(self.tr("Créer un dossier..."), self.create_root_folder)
+            paste_action = menu.addAction(self.tr("Coller"))
             paste_action.setEnabled(self.source_path_for_paste is not None)
             paste_action.triggered.connect(
                 lambda: self.paste_item(self.model.rootPath())
@@ -639,25 +639,25 @@ class NotesPanel(QWidget):
         menu = QMenu()
 
         if is_dir:
-            menu.addAction("Nouvelle note...", lambda: self.create_new_note(file_path))
+            menu.addAction(self.tr("Nouvelle note..."), lambda: self.create_new_note(file_path))
             menu.addAction(
-                "Créer un sous-dossier...", lambda: self.create_sub_folder(file_path)
+                self.tr("Créer un sous-dossier..."), lambda: self.create_sub_folder(file_path)
             )
             menu.addAction(
-                "Importer un fichier...", lambda: self.import_file_to_folder(file_path)
+                self.tr("Importer un fichier..."), lambda: self.import_file_to_folder(file_path)
             )
             menu.addSeparator()
             menu.addAction(
-                "Déplier tout", lambda: self.expand_all_from_index(source_index)
+                self.tr("Déplier tout"), lambda: self.expand_all_from_index(source_index)
             )
             menu.addAction(
-                "Réplier tout", lambda: self.collapse_all_from_index(source_index)
+                self.tr("Réplier tout"), lambda: self.collapse_all_from_index(source_index)
             )
             menu.addSeparator()
 
-            color_menu = menu.addMenu("🎨 Couleur du dossier")
+            color_menu = menu.addMenu(self.tr("🎨 Couleur du dossier"))
             for color_hex, color_name in self.FOLDER_COLOR_PALETTE:
-                action = color_menu.addAction(color_name)
+                action = color_menu.addAction(self.tr(color_name))
                 action.triggered.connect(
                     lambda checked=False, p=file_path, c=color_hex: self.set_folder_color(
                         p, c
@@ -665,25 +665,25 @@ class NotesPanel(QWidget):
                 )
             color_menu.addSeparator()
             menu.addAction(
-                "Aucune couleur", lambda: self.set_folder_color(file_path, None)
+                self.tr("Aucune couleur"), lambda: self.set_folder_color(file_path, None)
             )
             menu.addSeparator()
 
-        open_action = menu.addAction("Ouvrir")
+        open_action = menu.addAction(self.tr("Ouvrir"))
         open_action.triggered.connect(lambda: self.open_selected_item(source_index))
 
         menu.addSeparator()
-        menu.addAction("Copier", lambda: self.copy_item(file_path))
-        menu.addAction("Couper", lambda: self.cut_item(file_path))
+        menu.addAction(self.tr("Copier"), lambda: self.copy_item(file_path))
+        menu.addAction(self.tr("Couper"), lambda: self.cut_item(file_path))
 
         if is_dir:
-            paste_action = menu.addAction("Coller")
+            paste_action = menu.addAction(self.tr("Coller"))
             paste_action.setEnabled(self.source_path_for_paste is not None)
             paste_action.triggered.connect(lambda: self.paste_item(file_path))
 
         menu.addSeparator()
-        menu.addAction("Renommer...", lambda: self.rename_item(source_index))
-        menu.addAction("Supprimer...", lambda: self.delete_item(source_index))
+        menu.addAction(self.tr("Renommer..."), lambda: self.rename_item(source_index))
+        menu.addAction(self.tr("Supprimer..."), lambda: self.delete_item(source_index))
 
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 
@@ -708,7 +708,7 @@ class NotesPanel(QWidget):
             return
 
         note_name, ok = QInputDialog.getText(
-            self, "Nouvelle Note", "Nom de la note (sans extension) :"
+            self, self.tr("Nouvelle Note"), self.tr("Nom de la note (sans extension) :")
         )
         if not ok or not note_name.strip():
             return
@@ -717,7 +717,7 @@ class NotesPanel(QWidget):
 
         if file_path.exists():
             QMessageBox.warning(
-                self, "Fichier existant", "Une note avec ce nom existe déjà."
+                self, self.tr("Fichier existant"), self.tr("Une note avec ce nom existe déjà.")
             )
             return
 
@@ -732,7 +732,6 @@ class NotesPanel(QWidget):
                         content = f.read()
 
                     # --- V3.3.3 - Ajout de la substitution des placeholders ---
-                    # Cette logique manquait pour la création de notes depuis le panneau.
                     try:
                         import locale
                         from datetime import datetime
@@ -754,12 +753,13 @@ class NotesPanel(QWidget):
             self.file_open_request.emit(str(file_path), "editor")
 
         except Exception as e:
-            QMessageBox.critical(self, "Erreur", f"Impossible de créer la note :\n{e}")
+            msg = self.tr("Impossible de créer la note :\n{}")
+            QMessageBox.critical(self, self.tr("Erreur"), msg.format(e))
 
     def create_sub_folder(self, parent_directory_path):
         """Crée un nouveau sous-dossier dans le dossier parent spécifié."""
         folder_name, ok = QInputDialog.getText(
-            self, "Nouveau Sous-Dossier", "Nom du nouveau sous-dossier :"
+            self, self.tr("Nouveau Sous-Dossier"), self.tr("Nom du nouveau sous-dossier :")
         )
 
         if ok and folder_name.strip():
@@ -767,16 +767,15 @@ class NotesPanel(QWidget):
 
             if new_folder_path.exists():
                 QMessageBox.warning(
-                    self, "Dossier existant", "Un dossier avec ce nom existe déjà."
+                    self, self.tr("Dossier existant"), self.tr("Un dossier avec ce nom existe déjà.")
                 )
                 return
 
             try:
                 os.mkdir(new_folder_path)
             except OSError as e:
-                QMessageBox.critical(
-                    self, "Erreur", f"Impossible de créer le sous-dossier :\n{e}"
-                )
+                msg = self.tr("Impossible de créer le sous-dossier :\n{}")
+                QMessageBox.critical(self, self.tr("Erreur"), msg.format(e))
 
     def set_folder_color(self, folder_path, color_hex):
         """Définit la couleur pour un dossier et sauvegarde dans les settings."""
@@ -806,11 +805,14 @@ class NotesPanel(QWidget):
         file_extension = Path(source_path).suffix.lower()
         if file_extension not in self.VALID_EXTENSIONS:
             supported_types = ", ".join(self.VALID_EXTENSIONS)
+            message = self.tr(
+                "Le fichier que vous voulez importer n'est pas supporté dans les notes.\n"
+                "Les types valides sont uniquement : {}"
+            )
             QMessageBox.warning(
                 self,
-                "Type de fichier non supporté",
-                "Le fichier que vous voulez importer n'est pas supporté dans les notes.",
-                f"Les types valides sont uniquement : {supported_types}",
+                self.tr("Type de fichier non supporté"),
+                message.format(supported_types),
             )
             return
 
@@ -820,10 +822,11 @@ class NotesPanel(QWidget):
             destination_path = Path(destination_folder) / filename
 
             if destination_path.exists():
+                msg = self.tr("Le fichier '{}' existe déjà dans ce dossier. Voulez-vous le remplacer ?")
                 reply = QMessageBox.question(
                     self,
-                    "Fichier existant",
-                    f"Le fichier '{filename}' existe déjà dans ce dossier. Voulez-vous le remplacer ?",
+                    self.tr("Fichier existant"),
+                    msg.format(filename),
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No,
                 )
@@ -844,8 +847,9 @@ class NotesPanel(QWidget):
                 shutil.copy2(source_path, destination_path)
 
         except Exception as e:
+            msg = self.tr("Impossible d'importer le fichier :\n{}")
             QMessageBox.critical(
-                self, "Erreur d'importation", f"Impossible d'importer le fichier :\n{e}"
+                self, self.tr("Erreur d'importation"), msg.format(e)
             )
 
     def copy_item(self, path):
@@ -871,16 +875,17 @@ class NotesPanel(QWidget):
         if str(dest_path).startswith(str(source_path)):
             QMessageBox.warning(
                 self,
-                "Opération impossible",
-                "Vous ne pouvez pas coller un dossier dans lui-même.",
+                self.tr("Opération impossible"),
+                self.tr("Vous ne pouvez pas coller un dossier dans lui-même."),
             )
             return
 
         if dest_path.exists():
+            msg = self.tr("Un élément nommé '{}' existe déjà. Voulez-vous le remplacer ?")
             reply = QMessageBox.question(
                 self,
-                "Conflit",
-                f"Un élément nommé '{source_path.name}' existe déjà. Voulez-vous le remplacer ?",
+                self.tr("Conflit"),
+                msg.format(source_path.name),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
@@ -892,8 +897,9 @@ class NotesPanel(QWidget):
                 else:
                     dest_path.unlink()
             except OSError as e:
+                msg_err = self.tr("Impossible de remplacer l'élément existant :\n{}")
                 QMessageBox.critical(
-                    self, "Erreur", f"Impossible de remplacer l'élément existant :\n{e}"
+                    self, self.tr("Erreur"), msg_err.format(e)
                 )
                 return
 
@@ -906,8 +912,9 @@ class NotesPanel(QWidget):
             elif self.paste_operation == "cut":
                 shutil.move(str(source_path), str(dest_path))
         except Exception as e:
+            msg = self.tr("L'opération a échoué :\n{}")
             QMessageBox.critical(
-                self, "Erreur de collage", f"L'opération a échoué :\n{e}"
+                self, self.tr("Erreur de collage"), msg.format(e)
             )
         finally:
             self.source_path_for_paste = None
@@ -917,12 +924,12 @@ class NotesPanel(QWidget):
         """Crée un nouveau dossier à la racine du répertoire des notes."""
         if not self.journal_directory:
             QMessageBox.warning(
-                self, "Action impossible", "Le répertoire du journal n'est pas défini."
+                self, self.tr("Action impossible"), self.tr("Le répertoire du journal n'est pas défini.")
             )
             return
 
         folder_name, ok = QInputDialog.getText(
-            self, "Nouveau Dossier", "Nom du nouveau dossier :"
+            self, self.tr("Nouveau Dossier"), self.tr("Nom du nouveau dossier :")
         )
 
         if ok and folder_name.strip():
@@ -931,15 +938,16 @@ class NotesPanel(QWidget):
 
             if new_folder_path.exists():
                 QMessageBox.warning(
-                    self, "Dossier existant", "Un dossier avec ce nom existe déjà."
+                    self, self.tr("Dossier existant"), self.tr("Un dossier avec ce nom existe déjà.")
                 )
                 return
 
             try:
                 os.mkdir(new_folder_path)
             except OSError as e:
+                msg = self.tr("Impossible de créer le dossier :\n{}")
                 QMessageBox.critical(
-                    self, "Erreur", f"Impossible de créer le dossier :\n{e}"
+                    self, self.tr("Erreur"), msg.format(e)
                 )
 
     def rename_item(self, index):
@@ -948,7 +956,7 @@ class NotesPanel(QWidget):
         old_name = self.model.fileName(index)
 
         new_name, ok = QInputDialog.getText(
-            self, "Renommer", "Nouveau nom :", text=old_name
+            self, self.tr("Renommer"), self.tr("Nouveau nom :"), text=old_name
         )
         if not ok or not new_name.strip() or new_name == old_name:
             return
@@ -958,7 +966,8 @@ class NotesPanel(QWidget):
         try:
             os.rename(old_path, new_path)
         except OSError as e:
-            QMessageBox.critical(self, "Erreur", f"Impossible de renommer :\n{e}")
+            msg = self.tr("Impossible de renommer :\n{}")
+            QMessageBox.critical(self, self.tr("Erreur"), msg.format(e))
 
     def delete_item(self, index):
         """Supprime un fichier ou un dossier."""
@@ -969,27 +978,26 @@ class NotesPanel(QWidget):
         if is_dir:
             sub_folders, files = self._count_folder_contents(file_path)
             if sub_folders == 0 and files == 0:
-                question = (
-                    f"Le dossier '{item_name}' est vide. Voulez-vous le supprimer ?"
-                )
+                question = self.tr("Le dossier '{}' est vide. Voulez-vous le supprimer ?")
             else:
-                question = (
-                    f"Le dossier '{item_name}' n'est pas vide.\n"
-                    f"Il contient {sub_folders} sous-dossier(s) et {files} fichier(s).\n\n"
+                question = self.tr(
+                    "Le dossier '{}' n'est pas vide.\n"
+                    "Il contient {} sous-dossier(s) et {} fichier(s).\n\n"
                     "Voulez-vous tout supprimer ?"
-                )
+                ).format(item_name, sub_folders, files)
             reply = QMessageBox.question(
                 self,
-                "Confirmation de suppression",
-                question,
+                self.tr("Confirmation de suppression"),
+                question.format(item_name) if sub_folders == 0 and files == 0 else question,
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
         else:
+            question = self.tr("Êtes-vous sûr de vouloir supprimer le fichier '{}' ?")
             reply = QMessageBox.question(
                 self,
-                "Confirmation de suppression",
-                f"Êtes-vous sûr de vouloir supprimer le fichier '{item_name}' ?",
+                self.tr("Confirmation de suppression"),
+                question.format(item_name),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
@@ -1001,7 +1009,8 @@ class NotesPanel(QWidget):
                 else:
                     self.model.remove(index)
             except Exception as e:
-                QMessageBox.critical(self, "Erreur", f"Impossible de supprimer :\n{e}")
+                msg = self.tr("Impossible de supprimer :\n{}")
+                QMessageBox.critical(self, self.tr("Erreur"), msg.format(e))
 
     def _count_folder_contents(self, folder_path):
         """Compte le nombre de sous-dossiers et de fichiers dans un dossier."""

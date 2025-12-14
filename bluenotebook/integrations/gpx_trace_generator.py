@@ -26,7 +26,15 @@ import gpxpy
 import requests
 import staticmaps
 
+from PyQt5.QtCore import QCoreApplication
+
 from .gps_map_generator import get_location_name
+
+
+class GpxTraceGeneratorContext:
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("GpxTraceGeneratorContext", text)
 
 
 def get_gpx_data(gpx_input: str) -> bytes | None:
@@ -39,14 +47,14 @@ def get_gpx_data(gpx_input: str) -> bytes | None:
             response.raise_for_status()
             return response.content
         except requests.RequestException as e:
-            print(f"Erreur de téléchargement du fichier GPX : {e}")
+            print(f"❌ GPX file download error: {e}")
             return None
     else:
         gpx_path = Path(gpx_input)
         if gpx_path.exists():
             return gpx_path.read_bytes()
         else:
-            print(f"Fichier GPX local non trouvé : {gpx_input}")
+            print(f"❌ Local GPX file not found: {gpx_input}")
             return None
 
 
@@ -60,19 +68,27 @@ def create_gpx_trace_map(
     Analyse un GPX, génère une carte, la sauvegarde et retourne le fragment Markdown correspondant.
     """
     if not staticmaps.cairo_is_supported():
-        return "❌ Carte GPX: La bibliothèque Cairo n'est pas installée ou supportée. Impossible de générer la carte."
+        return None, GpxTraceGeneratorContext.tr(
+            "Carte GPX: La bibliothèque Cairo n'est pas installée ou supportée. "
+            "Impossible de générer la carte."
+        )
 
     try:
         gpx = gpxpy.parse(gpx_content)
     except gpxpy.gpx.GPXException as e:
-        return f"❌ Carte GPX:Erreur lors de l'analyse du fichier GPX : {e}"
+        error_msg = GpxTraceGeneratorContext.tr(
+            "Carte GPX: Erreur lors de l'analyse du fichier GPX : {error}"
+        ).format(error=str(e))
+        return None, error_msg
 
     # Extraire les informations du GPX
     start_time, end_time = gpx.get_time_bounds()
     start_point = next(gpx.walk(only_points=True), None)
 
     if not start_point:
-        return "❌ Carte GPX:Le fichier GPX ne contient aucun point de trace."
+        return None, GpxTraceGeneratorContext.tr(
+            "Carte GPX: Le fichier GPX ne contient aucun point de trace."
+        )
 
     if not start_time:
         start_time = datetime.datetime.now()
@@ -124,24 +140,29 @@ def create_gpx_trace_map(
         image = context.render_cairo(width, height)
         image.write_to_png(str(image_path))
     except Exception as e:
-        return f"❌ Carte GPX:Erreur lors de la génération de l'image de la carte : {e}"
+        error_msg = GpxTraceGeneratorContext.tr(
+            "Carte GPX: Erreur lors de la génération de l'image de la carte : {error}"
+        ).format(error=str(e))
+        return None, error_msg
 
     # Préparer les informations pour le bloc Markdown
     location_osm_link = f"https://www.openstreetmap.org/?mlat={start_point.latitude}&mlon={start_point.longitude}#map=16/{start_point.latitude}/{start_point.longitude}"
-    alt_text = f"Trace GPX - {location_name}"
+    alt_text = GpxTraceGeneratorContext.tr("Trace GPX - {location}").format(location=location_name)
     relative_image_path = f"images/{image_filename}"
 
     # Formatage de la légende
     start_str = start_time.strftime("%d/%m/%Y à %H:%M")
+    trace_label = GpxTraceGeneratorContext.tr("Trace GPX :")
     caption_parts = [
-        f"**Trace GPX :** [{location_name}]({location_osm_link})",
+        f"**{trace_label}** [{location_name}]({location_osm_link})",
         start_str,
     ]
 
     if end_time:
         duration = end_time - start_time
         duration_str = str(datetime.timedelta(seconds=int(duration.total_seconds())))
-        caption_parts.append(f"Durée: {duration_str}")
+        duration_label = GpxTraceGeneratorContext.tr("Durée:")
+        caption_parts.append(f"{duration_label} {duration_str}")
 
     caption_markdown = " - ".join(caption_parts)
 
@@ -150,5 +171,8 @@ def create_gpx_trace_map(
         f"{caption_markdown}"
     )
 
-    status_message = f"Trace GPX '{alt_text}' insérée avec succès."
+    status_message = GpxTraceGeneratorContext.tr(
+        "Trace GPX '{trace}' insérée avec succès."
+    ).format(trace=alt_text)
+
     return markdown_block, status_message

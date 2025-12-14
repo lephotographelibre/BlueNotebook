@@ -79,7 +79,7 @@ class PreferencesDialog(QDialog):
     def __init__(self, settings_manager, parent=None):
         super().__init__(parent)
         self.settings_manager = settings_manager
-        self.setWindowTitle("Préférences")
+        self.setWindowTitle(self.tr("Préférences"))
         self.setMinimumWidth(1050)  # Largeur augmentée pour un affichage optimal
         self.setMinimumHeight(850)  # Hauteur minimale augmentée
 
@@ -93,17 +93,17 @@ class PreferencesDialog(QDialog):
 
         # Créer les onglets
         self.tabs = QTabWidget()
-        self.tabs.addTab(self._create_general_tab(), "Général")
-        self.tabs.addTab(self._create_display_tab(), "Affichage")
-        self.tabs.addTab(self._create_panels_tab(), "Panneaux")
-        self.tabs.addTab(self._create_integrations_tab(), "Intégrations")
+        self.tabs.addTab(self._create_general_tab(), self.tr("Général"))
+        self.tabs.addTab(self._create_display_tab(), self.tr("Affichage"))
+        self.tabs.addTab(self._create_panels_tab(), self.tr("Panneaux"))
+        self.tabs.addTab(self._create_integrations_tab(), self.tr("Intégrations"))
 
         # Boutons Valider/Annuler
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )
-        self.button_box.button(QDialogButtonBox.Ok).setText("Valider")
-        self.button_box.button(QDialogButtonBox.Cancel).setText("Annuler")
+        self.button_box.button(QDialogButtonBox.Ok).setText(self.tr("Valider"))
+        self.button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -122,16 +122,16 @@ class PreferencesDialog(QDialog):
 
         # --- Langue de l'application ---
         self.lang_combo = QComboBox()
-        self.lang_combo.addItems(["Français", "English"])
+        self.lang_combo.addItems([self.tr("Français"), self.tr("English")])
         current_lang = self.settings_manager.get("app.language", "fr_FR")
         if current_lang == "en_US":
             self.lang_combo.setCurrentIndex(1)
         else:
             self.lang_combo.setCurrentIndex(0)
         self.lang_combo.setToolTip(
-            "Définit la langue de l'interface. Un redémarrage est nécessaire."
+            self.tr("Définit la langue de l'interface. Un redémarrage est nécessaire.")
         )
-        layout.addWidget(QLabel("Langue de l'application:"), 0, 0)
+        layout.addWidget(QLabel(self.tr("Langue de l'application:")), 0, 0)
         layout.addWidget(self.lang_combo, 0, 1)
 
         # --- Police de l'application ---
@@ -142,10 +142,10 @@ class PreferencesDialog(QDialog):
             f"{self.current_app_font.family()}, {self.current_app_font.pointSize()}pt"
         )
         self.app_font_button.setToolTip(
-            "Définit la police et la taille de base pour l'ensemble de l'application."
+            self.tr("Définit la police et la taille de base pour l'ensemble de l'application.")
         )
         self.app_font_button.clicked.connect(self._select_app_font)
-        layout.addWidget(QLabel("Police de l'application:"), 1, 0)
+        layout.addWidget(QLabel(self.tr("Police de l'application:")), 1, 0)
         layout.addWidget(self.app_font_button, 1, 1)
 
         # --- Ligne de séparation ---
@@ -155,7 +155,7 @@ class PreferencesDialog(QDialog):
 
         # --- Options d'affichage ---
         self.show_indexing_stats_checkbox = QCheckBox(
-            "Afficher les statistiques d'indexation (mots et tags) dans la barre d'état"
+            self.tr("Afficher les statistiques d'indexation (mots et tags) dans la barre d'état")
         )
         show_indexing_stats = self.settings_manager.get("ui.show_indexing_stats", True)
         self.show_indexing_stats_checkbox.setChecked(
@@ -175,9 +175,9 @@ class PreferencesDialog(QDialog):
         self.excluded_tags_edit = QTextEdit()
         self.excluded_tags_edit.setPlainText(", ".join(sorted(excluded_tags_list)))
         self.excluded_tags_edit.setToolTip(
-            "Liste de tags (sans @@, séparés par des virgules) à ne pas afficher dans le nuage de tags."
+            self.tr("Liste de tags (sans @@, séparés par des virgules) à ne pas afficher dans le nuage de tags.")
         )
-        layout.addWidget(QLabel("Tags à exclure du nuage:"), 5, 0, Qt.AlignTop)
+        layout.addWidget(QLabel(self.tr("Tags à exclure du nuage:")), 5, 0, Qt.AlignTop)
         layout.addWidget(self.excluded_tags_edit, 5, 1)
 
         layout.setRowStretch(6, 1)  # Pousse les éléments vers le haut
@@ -198,17 +198,17 @@ class PreferencesDialog(QDialog):
 
         # Créer le QTabWidget pour les sous-onglets
         sub_tabs = QTabWidget()
-        sub_tabs.addTab(self._create_markdown_editor_sub_tab(), "Editeur Markdown")
-        sub_tabs.addTab(self._create_html_preview_sub_tab(), "Aperçu HTML")
-        sub_tabs.addTab(self._create_pdf_export_sub_tab(), "Export PDF")
+        sub_tabs.addTab(self._create_markdown_editor_sub_tab(), self.tr("Editeur Markdown"))
+        sub_tabs.addTab(self._create_html_preview_sub_tab(), self.tr("Aperçu HTML"))
+        sub_tabs.addTab(self._create_pdf_export_sub_tab(), self.tr("Export PDF"))
 
         # "Editeur Markdown" est l'onglet par défaut
         sub_tabs.setCurrentIndex(0)
 
         # Bouton de réinitialisation, maintenant visible pour tous les sous-onglets
-        reset_button = QPushButton("Valeurs d'affichage par défaut")
+        reset_button = QPushButton(self.tr("Valeurs d'affichage par défaut"))
         reset_button.setToolTip(
-            "Réinitialise les préférences de l'interface à leurs valeurs par défaut."
+            self.tr("Réinitialise les préférences de l'interface à leurs valeurs par défaut.")
         )
         reset_button.clicked.connect(self._reset_settings)
 
@@ -242,15 +242,15 @@ class PreferencesDialog(QDialog):
         # Boutons pour sauvegarder et charger des thèmes
         theme_layout = QHBoxLayout()
 
-        save_theme_button = QPushButton("Sauvegarder comme thème")
+        save_theme_button = QPushButton(self.tr("Sauvegarder comme thème"))
         save_theme_button.setToolTip(
-            "Sauvegarder les paramètres actuels comme un nouveau thème"
+            self.tr("Sauvegarder les paramètres actuels comme un nouveau thème")
         )
         save_theme_button.clicked.connect(self._save_as_theme)
         theme_layout.addWidget(save_theme_button)
 
-        load_theme_button = QPushButton("Sélectionner un thème")
-        load_theme_button.setToolTip("Charger un thème existant")
+        load_theme_button = QPushButton(self.tr("Sélectionner un thème"))
+        load_theme_button.setToolTip(self.tr("Charger un thème existant"))
         load_theme_button.clicked.connect(self._load_theme)
         theme_layout.addWidget(load_theme_button)
 
@@ -264,7 +264,7 @@ class PreferencesDialog(QDialog):
         row += 1
 
         # === SECTION AFFICHAGE LIGNES ===
-        self.show_line_numbers_checkbox = QCheckBox("Affichage des numéros de lignes ?")
+        self.show_line_numbers_checkbox = QCheckBox(self.tr("Affichage des numéros de lignes ?"))
         show_line_numbers_setting = self.settings_manager.get(
             "editor.show_line_numbers", False
         )
@@ -286,7 +286,7 @@ class PreferencesDialog(QDialog):
         self.font_button = QPushButton(f"{font_family}, {font_size}pt")
         self.font_button.setMinimumWidth(250)  # Largeur minimale pour lisibilité
         self.font_button.clicked.connect(self._select_font)
-        layout.addWidget(QLabel("Police de l'éditeur:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Police de l'éditeur:")), row, 0)
         layout.addWidget(self.font_button, row, 1)
         row += 1
 
@@ -299,10 +299,10 @@ class PreferencesDialog(QDialog):
         self.code_font_button = QPushButton(f"{code_font_family}")
         self.code_font_button.setMinimumWidth(250)
         self.code_font_button.setToolTip(
-            "Choisir la police pour le code inline et les blocs de code."
+            self.tr("Choisir la police pour le code inline et les blocs de code.")
         )
         self.code_font_button.clicked.connect(self._select_code_font)
-        layout.addWidget(QLabel("Police des extraits de code:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Police des extraits de code:")), row, 0)
         layout.addWidget(self.code_font_button, row, 1)
         row += 1
 
@@ -318,10 +318,10 @@ class PreferencesDialog(QDialog):
         )
         self.outline_font_button.setMinimumWidth(250)
         self.outline_font_button.setToolTip(
-            "Choisir la police pour le plan du document."
+            self.tr("Choisir la police pour le plan du document.")
         )
         self.outline_font_button.clicked.connect(self._select_outline_font)
-        layout.addWidget(QLabel("Police du Plan du Document:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Police du Plan du Document:")), row, 0)
         layout.addWidget(self.outline_font_button, row, 1)
         row += 1
 
@@ -337,99 +337,99 @@ class PreferencesDialog(QDialog):
         colors_config = [
             # Colonne 1
             (
-                "Fond éditeur:",
+                self.tr("Fond éditeur:"),
                 "editor.background_color",
                 "current_color",
                 "color_button",
             ),
             (
-                "Police éditeur:",
+                self.tr("Police éditeur:"),
                 "editor.text_color",
                 "current_text_color",
                 "text_color_button",
             ),
             (
-                "Titres Markdown:",
+                self.tr("Titres Markdown:"),
                 "editor.heading_color",
                 "current_heading_color",
                 "heading_color_button",
             ),
             (
-                "Listes Markdown:",
+                self.tr("Listes Markdown:"),
                 "editor.list_color",
                 "current_list_color",
                 "list_color_button",
             ),
             (
-                "Texte sélectionné:",
+                self.tr("Texte sélectionné:"),
                 "editor.selection_text_color",
                 "current_selection_text_color",
                 "selection_text_color_button",
             ),
             (
-                "Texte code inline:",
+                self.tr("Texte code inline:"),
                 "editor.inline_code_text_color",
                 "current_inline_code_text_color",
                 "inline_code_text_color_button",
             ),
             (
-                "Fond code inline:",
+                self.tr("Fond code inline:"),
                 "editor.inline_code_background_color",
                 "current_inline_code_bg_color",
                 "inline_code_bg_color_button",
             ),
             (
-                "Fond bloc code:",
+                self.tr("Fond bloc code:"),
                 "editor.code_block_background_color",
                 "current_code_block_bg_color",
                 "code_block_bg_color_button",
             ),
             # Colonne 2
             (
-                "Texte gras:",
+                self.tr("Texte gras:"),
                 "editor.bold_color",
                 "current_bold_color",
                 "bold_color_button",
             ),
             (
-                "Texte italique:",
+                self.tr("Texte italique:"),
                 "editor.italic_color",
                 "current_italic_color",
                 "italic_color_button",
             ),
             (
-                "Texte barré:",
+                self.tr("Texte barré:"),
                 "editor.strikethrough_color",
                 "current_strikethrough_color",
                 "strikethrough_color_button",
             ),
             (
-                "Fond surlignage:",
+                self.tr("Fond surlignage:"),
                 "editor.highlight_color",
                 "current_highlight_color",
                 "highlight_color_button",
             ),
             (
-                "Citations:",
+                self.tr("Citations:"),
                 "editor.quote_color",
                 "current_quote_color",
                 "quote_color_button",
             ),
-            ("Liens:", "editor.link_color", "current_link_color", "link_color_button"),
+            (self.tr("Liens:"), "editor.link_color", "current_link_color", "link_color_button"),
             (
-                "Commentaires HTML:",
+                self.tr("Commentaires HTML:"),
                 "editor.html_comment_color",
                 "current_html_comment_color",
                 "html_comment_color_button",
             ),
             (
-                "Tags (@@tag):",
+                self.tr("Tags (@@tag):"),
                 "editor.tag_color",
                 "current_tag_color",
                 "tag_color_button",
             ),
             (
-                "Horodatage (HH:MM):",
+                self.tr("Horodatage (HH:MM):"),
                 "editor.timestamp_color",
                 "current_timestamp_color",
                 "timestamp_color_button",
@@ -486,14 +486,15 @@ class PreferencesDialog(QDialog):
         # === SECTION GESTION DES THÈMES CSS ===
         theme_layout = QHBoxLayout()
 
-        self.html_theme_button = QPushButton("Sélectionner un thème CSS")
-        self.html_theme_button.setToolTip("Sélectionner un thème CSS pour l'aperçu")
+        self.html_theme_button = QPushButton(self.tr("Sélectionner un thème CSS"))
+        self.html_theme_button.setToolTip(self.tr("Sélectionner un thème CSS pour l'aperçu"))
         self.html_theme_button.clicked.connect(self._select_css_theme)
         theme_layout.addWidget(self.html_theme_button)
 
         # Label pour afficher le thème actuellement sélectionné
+        label_text = self.tr("<b>Actuel :</b> {}")
         self.current_html_theme_label = QLabel(
-            f"<b>Actuel :</b> {self.selected_html_theme}"
+            label_text.format(self.selected_html_theme)
         )
         self.current_html_theme_label.setStyleSheet("margin-left: 10px;")
         theme_layout.addWidget(self.current_html_theme_label)
@@ -520,16 +521,17 @@ class PreferencesDialog(QDialog):
 
         if pdf:
             css_dir = base_path / "resources" / "css_pdf"
-            dialog_title = "Choisir un thème pour l'export PDF"
+            dialog_title = self.tr("Choisir un thème pour l'export PDF")
         else:
             css_dir = base_path / "resources" / "css_preview"
-            dialog_title = "Choisir un thème pour l'aperçu HTML"
+            dialog_title = self.tr("Choisir un thème pour l'aperçu HTML")
 
         if not css_dir.exists():
+            msg = self.tr("Le répertoire des thèmes '{}' est introuvable.")
             QMessageBox.warning(
                 self,
-                "Erreur",
-                f"Le répertoire des thèmes '{css_dir.name}' est introuvable.",
+                self.tr("Erreur"),
+                msg.format(css_dir.name),
             )
             return
 
@@ -540,7 +542,7 @@ class PreferencesDialog(QDialog):
 
         if not theme_files:
             QMessageBox.information(
-                self, "Aucun thème", "Aucun thème CSS trouvé dans le répertoire."
+                self, self.tr("Aucun thème"), self.tr("Aucun thème CSS trouvé dans le répertoire.")
             )
             return
 
@@ -553,7 +555,7 @@ class PreferencesDialog(QDialog):
 
         theme_name, ok = QInputDialog.getItem(
             self,
-            "Sélection de thème",
+            self.tr("Sélection de thème"),
             dialog_title,
             theme_files,
             current_theme_index,
@@ -564,12 +566,14 @@ class PreferencesDialog(QDialog):
             css_file_path = css_dir / theme_name
             if pdf:
                 self.selected_pdf_theme = theme_name
-                self.current_pdf_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+                label_text = self.tr("<b>Actuel :</b> {}")
+                self.current_pdf_theme_label.setText(label_text.format(theme_name))
                 # Mettre à jour le mini-aperçu PDF
                 self._update_pdf_preview_style(css_file_path)
             else:
                 self.selected_html_theme = theme_name
-                self.current_html_theme_label.setText(f"<b>Actuel :</b> {theme_name}")
+                label_text = self.tr("<b>Actuel :</b> {}")
+                self.current_html_theme_label.setText(label_text.format(theme_name))
                 self._update_html_preview_style(css_file_path)
 
     def _create_pdf_export_sub_tab(self):
@@ -583,16 +587,17 @@ class PreferencesDialog(QDialog):
         # === SECTION GESTION DES THÈMES CSS POUR PDF ===
         theme_layout = QHBoxLayout()
 
-        self.pdf_theme_button = QPushButton("Sélectionner un thème CSS pour le PDF")
+        self.pdf_theme_button = QPushButton(self.tr("Sélectionner un thème CSS pour le PDF"))
         self.pdf_theme_button.setToolTip(
-            "Sélectionner un thème CSS pour les exports PDF"
+            self.tr("Sélectionner un thème CSS pour les exports PDF")
         )
         self.pdf_theme_button.clicked.connect(lambda: self._select_css_theme(pdf=True))
         theme_layout.addWidget(self.pdf_theme_button)
 
         # Label pour afficher le thème PDF actuellement sélectionné
+        label_text = self.tr("<b>Actuel :</b> {}")
         self.current_pdf_theme_label = QLabel(
-            f"<b>Actuel :</b> {self.selected_pdf_theme}"
+            label_text.format(self.selected_pdf_theme)
         )
         self.current_pdf_theme_label.setStyleSheet("margin-left: 10px;")
         theme_layout.addWidget(self.current_pdf_theme_label)
@@ -615,7 +620,7 @@ class PreferencesDialog(QDialog):
         """Met à jour le mini-aperçu HTML avec le style du fichier CSS donné."""
         css_content = ""
         if not css_file_path.exists():
-            print(f"Avertissement : le fichier CSS {css_file_path} est introuvable.")
+            print(f"❌ Warning: The CSS file {css_file_path} could not be found.")
         else:
             with open(css_file_path, "r", encoding="utf-8") as f:
                 css_content = f.read()
@@ -627,7 +632,7 @@ class PreferencesDialog(QDialog):
         """Met à jour le mini-aperçu PDF avec le style du fichier CSS donné."""
         css_content = ""
         if not css_file_path.exists():
-            print(f"Avertissement : le fichier CSS {css_file_path} est introuvable.")
+            print(f"❌ Warning: The CSS file {css_file_path} could not be found.")
         else:
             with open(css_file_path, "r", encoding="utf-8") as f:
                 css_content = f.read()
@@ -652,37 +657,37 @@ class PreferencesDialog(QDialog):
         layout.setSpacing(10)
 
         # Case pour le panneau de Notes
-        self.show_notes_checkbox = QCheckBox("Afficher le panneau 'Notes'")
+        self.show_notes_checkbox = QCheckBox(self.tr("Afficher le panneau 'Notes'"))
         show_notes = self.settings_manager.get("ui.show_notes_panel", True)
         self.show_notes_checkbox.setChecked(str(show_notes).lower() == "true")
         layout.addWidget(self.show_notes_checkbox)
 
         # Case pour le panneau de Navigation
-        self.show_nav_checkbox = QCheckBox("Afficher le panneau de Navigation")
+        self.show_nav_checkbox = QCheckBox(self.tr("Afficher le panneau de Navigation"))
         show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
         self.show_nav_checkbox.setChecked(str(show_nav).lower() == "true")
         layout.addWidget(self.show_nav_checkbox)
 
         # Case pour le panneau Plan du document
-        self.show_outline_checkbox = QCheckBox("Afficher le panneau 'Plan du document'")
+        self.show_outline_checkbox = QCheckBox(self.tr("Afficher le panneau 'Plan du document'"))
         show_outline = self.settings_manager.get("ui.show_outline_panel", True)
         self.show_outline_checkbox.setChecked(str(show_outline).lower() == "true")
         layout.addWidget(self.show_outline_checkbox)
 
         # Case pour le panneau Éditeur (toujours visible et désactivé)
-        self.show_editor_checkbox = QCheckBox("Afficher le panneau Éditeur")
+        self.show_editor_checkbox = QCheckBox(self.tr("Afficher le panneau Éditeur"))
         self.show_editor_checkbox.setChecked(True)
         self.show_editor_checkbox.setEnabled(False)
         layout.addWidget(self.show_editor_checkbox)
 
         # Case pour le panneau Aperçu HTML
-        self.show_preview_checkbox = QCheckBox("Afficher le panneau 'Aperçu HTML'")
+        self.show_preview_checkbox = QCheckBox(self.tr("Afficher le panneau 'Aperçu HTML'"))
         show_preview = self.settings_manager.get("ui.show_preview_panel", False)
         self.show_preview_checkbox.setChecked(str(show_preview).lower() == "true")
         layout.addWidget(self.show_preview_checkbox)
 
         # Case pour le panneau Lecteur
-        self.show_reader_checkbox = QCheckBox("Afficher le panneau 'Lecteur'")
+        self.show_reader_checkbox = QCheckBox(self.tr("Afficher le panneau 'Lecteur'"))
         show_reader = self.settings_manager.get("ui.show_reader_panel", False)
         self.show_reader_checkbox.setChecked(str(show_reader).lower() == "true")
         layout.addWidget(self.show_reader_checkbox)
@@ -696,7 +701,7 @@ class PreferencesDialog(QDialog):
         layout = QVBoxLayout(widget)
 
         self.show_quote_checkbox = QCheckBox(
-            "Afficher la citation du jour au démarrage"
+            self.tr("Afficher la citation du jour au démarrage")
         )
         show_quote = self.settings_manager.get(
             "integrations.show_quote_of_the_day", False
@@ -705,7 +710,7 @@ class PreferencesDialog(QDialog):
         layout.addWidget(self.show_quote_checkbox)
 
         self.youtube_integration_checkbox = QCheckBox(
-            "Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown"
+            self.tr("Autoriser l'intégration de vidéo Youtube dans l'editeur Markdown")
         )
         is_youtube_enabled = self.settings_manager.get(
             "integrations.youtube_enabled", True
@@ -716,7 +721,7 @@ class PreferencesDialog(QDialog):
         layout.addWidget(self.youtube_integration_checkbox)
 
         self.youtube_transcript_checkbox = QCheckBox(
-            "Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"
+            self.tr("Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown")
         )
         is_transcript_enabled = self.settings_manager.get(
             "integrations.youtube_transcript_enabled", True
@@ -736,9 +741,9 @@ class PreferencesDialog(QDialog):
 
         # Météo Weatherapi.com
         weather_layout = QHBoxLayout()
-        weather_layout.addWidget(QLabel("Météo Weatherapi.com"))
+        weather_layout.addWidget(QLabel(self.tr("Météo Weatherapi.com")))
 
-        weather_layout.addWidget(QLabel("Ville :"))
+        weather_layout.addWidget(QLabel(self.tr("Ville :")))
         self.weather_city_edit = QLineEdit()
         self.weather_city_edit.setMaxLength(20)
         self.weather_city_edit.setText(
@@ -746,7 +751,7 @@ class PreferencesDialog(QDialog):
         )
         weather_layout.addWidget(self.weather_city_edit)
 
-        weather_layout.addWidget(QLabel("Clé API :"))
+        weather_layout.addWidget(QLabel(self.tr("Clé API :")))
         self.weather_api_key_edit = QLineEdit()
         self.weather_api_key_edit.setMaxLength(32)
         self.weather_api_key_edit.setEchoMode(QLineEdit.Password)
@@ -765,18 +770,18 @@ class PreferencesDialog(QDialog):
 
         # Astro Soleil et Lune
         astro_layout = QHBoxLayout()
-        astro_layout.addWidget(QLabel("Astro Soleil et Lune Ville :"))
+        astro_layout.addWidget(QLabel(self.tr("Astro Soleil et Lune Ville :")))
         self.astro_city_edit = QLineEdit()
         self.astro_city_edit.setText(
             self.settings_manager.get("integrations.sun_moon.city", "")
         )
         astro_layout.addWidget(self.astro_city_edit)
 
-        self.astro_search_button = QPushButton("Rechercher")
+        self.astro_search_button = QPushButton(self.tr("Rechercher"))
         self.astro_search_button.clicked.connect(self._search_city_coords)
         astro_layout.addWidget(self.astro_search_button)
 
-        astro_layout.addWidget(QLabel("Latitude:"))
+        astro_layout.addWidget(QLabel(self.tr("Latitude:")))
         self.astro_lat_edit = QLineEdit()
         self.astro_lat_edit.setReadOnly(True)
         self.astro_lat_edit.setText(
@@ -784,7 +789,7 @@ class PreferencesDialog(QDialog):
         )
         astro_layout.addWidget(self.astro_lat_edit)
 
-        astro_layout.addWidget(QLabel("Longitude:"))
+        astro_layout.addWidget(QLabel(self.tr("Longitude:")))
         self.astro_lon_edit = QLineEdit()
         self.astro_lon_edit.setReadOnly(True)
         self.astro_lon_edit.setText(
@@ -838,7 +843,7 @@ class PreferencesDialog(QDialog):
         """Recherche les coordonnées GPS d'une ville."""
         city_name = self.astro_city_edit.text().strip()
         if not city_name:
-            QMessageBox.warning(self, "Recherche", "Veuillez saisir un nom de ville.")
+            QMessageBox.warning(self, self.tr("Recherche"), self.tr("Veuillez saisir un nom de ville."))
             return
 
         try:
@@ -848,20 +853,22 @@ class PreferencesDialog(QDialog):
                 self.astro_lat_edit.setText(f"{location.latitude:.6f}")
                 self.astro_lon_edit.setText(f"{location.longitude:.6f}")
             else:
+                msg = self.tr("Impossible de trouver les coordonnées pour '{}'.")
                 QMessageBox.warning(
                     self,
-                    "Recherche",
-                    f"Impossible de trouver les coordonnées pour '{city_name}'.",
+                    self.tr("Recherche"),
+                    msg.format(city_name),
                 )
         except Exception as e:
+            msg = self.tr("Une erreur est survenue : {}")
             QMessageBox.critical(
-                self, "Erreur de géolocalisation", f"Une erreur est survenue : {e}"
+                self, self.tr("Erreur de géolocalisation"), msg.format(e)
             )
 
     def _save_as_theme(self):
         """Sauvegarde les paramètres actuels comme un nouveau thème."""
         theme_name, ok = QInputDialog.getText(
-            self, "Sauvegarder le thème", "Nom du thème:", text="Mon Thème"
+            self, self.tr("Sauvegarder le thème"), self.tr("Nom du thème:"), text="Mon Thème"
         )
 
         if not ok or not theme_name:
@@ -874,7 +881,7 @@ class PreferencesDialog(QDialog):
         safe_name = safe_name.replace(" ", "_")
 
         if not safe_name:
-            QMessageBox.warning(self, "Erreur", "Le nom du thème n'est pas valide.")
+            QMessageBox.warning(self, self.tr("Erreur"), self.tr("Le nom du thème n'est pas valide."))
             return
 
         # Construire le chemin du fichier thème
@@ -886,10 +893,11 @@ class PreferencesDialog(QDialog):
 
         # Vérifier si le fichier existe déjà
         if theme_file.exists():
+            msg = self.tr("Un thème nommé '{}' existe déjà. Voulez-vous le remplacer?")
             reply = QMessageBox.question(
                 self,
-                "Fichier existant",
-                f"Un thème nommé '{safe_name}' existe déjà. Voulez-vous le remplacer?",
+                self.tr("Fichier existant"),
+                msg.format(safe_name),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
@@ -934,14 +942,16 @@ class PreferencesDialog(QDialog):
             with open(theme_file, "w", encoding="utf-8") as f:
                 json.dump(theme_data, f, indent=4)
 
+            msg = self.tr("Le thème '{}' a été sauvegardé avec succès.")
             QMessageBox.information(
                 self,
-                "Thème sauvegardé",
-                f"Le thème '{theme_name}' a été sauvegardé avec succès.",
+                self.tr("Thème sauvegardé"),
+                msg.format(theme_name),
             )
         except Exception as e:
+            msg = self.tr("Impossible de sauvegarder le thème:\n{}")
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de sauvegarder le thème:\n{e}"
+                self, self.tr("Erreur"), msg.format(e)
             )
 
     def _load_theme(self):
@@ -952,8 +962,8 @@ class PreferencesDialog(QDialog):
         if not themes_dir.exists():
             QMessageBox.information(
                 self,
-                "Aucun thème",
-                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'.",
+                self.tr("Aucun thème"),
+                self.tr("Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'."),
             )
             return
 
@@ -963,8 +973,8 @@ class PreferencesDialog(QDialog):
         if not theme_files:
             QMessageBox.information(
                 self,
-                "Aucun thème",
-                "Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'.",
+                self.tr("Aucun thème"),
+                self.tr("Aucun thème n'est disponible. Créez-en un avec 'Sauvegarder comme thème'."),
             )
             return
 
@@ -983,13 +993,13 @@ class PreferencesDialog(QDialog):
                 continue
 
         if not theme_names:
-            QMessageBox.warning(self, "Erreur", "Aucun thème valide trouvé.")
+            QMessageBox.warning(self, self.tr("Erreur"), self.tr("Aucun thème valide trouvé."))
             return
 
         # Demander à l'utilisateur de choisir un thème
         dialog = QInputDialog(self)
-        dialog.setWindowTitle("Thème")
-        dialog.setLabelText("Choisissez un thème:")
+        dialog.setWindowTitle(self.tr("Thème"))
+        dialog.setLabelText(self.tr("Choisissez un thème:"))
         dialog.setComboBoxItems(theme_names)
         dialog.setOption(QInputDialog.UseListViewForComboBoxItems, True)
 
@@ -1093,15 +1103,20 @@ class PreferencesDialog(QDialog):
                     button = getattr(self, button_name)
                     button.setStyleSheet(f"background-color: {color.name()};")
 
+            msg = self.tr(
+                "Le thème '{}' a été appliqué.\n"
+                "Cliquez sur 'Valider' pour enregistrer les modifications."
+            )
             QMessageBox.information(
                 self,
-                "Thème chargé",
-                f"Le thème '{theme_name}' a été appliqué.\nCliquez sur 'Valider' pour enregistrer les modifications.",
+                self.tr("Thème chargé"),
+                msg.format(theme_name),
             )
 
         except Exception as e:
+            msg = self.tr("Impossible de charger le thème:\n{}")
             QMessageBox.critical(
-                self, "Erreur", f"Impossible de charger le thème:\n{e}"
+                self, self.tr("Erreur"), msg.format(e)
             )
 
     def _load_defaults_in_ui(self):
@@ -1188,7 +1203,8 @@ class PreferencesDialog(QDialog):
             "css_theme", "default_preview.css"
         )
         self.selected_html_theme = default_html_theme
-        self.current_html_theme_label.setText(f"<b>Actuel :</b> {default_html_theme}")
+        label_text = self.tr("<b>Actuel :</b> {}")
+        self.current_html_theme_label.setText(label_text.format(default_html_theme))
 
     def _reset_settings(self):
         """Affiche une confirmation et réinitialise les paramètres."""
@@ -1197,17 +1213,17 @@ class PreferencesDialog(QDialog):
 
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Question)
-        msg_box.setWindowTitle("Confirmation")
+        msg_box.setWindowTitle(self.tr("Confirmation"))
         msg_box.setTextFormat(Qt.RichText)
         msg_box.setText(
-            """<p>Êtes-vous sûr de vouloir réinitialiser les préférences d'affichage ?</p>
-
-            <p>Les changements seront appliqués après avoir cliqué sur "Valider".</p>
-        """
+            self.tr(
+                "<p>Êtes-vous sûr de vouloir réinitialiser les préférences d'affichage ?</p>\n\n"
+                "<p>Les changements seront appliqués après avoir cliqué sur \"Valider\".</p>"
+            )
         )
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg_box.button(QMessageBox.Yes).setText("Valider")
-        msg_box.button(QMessageBox.No).setText("Annuler")
+        msg_box.button(QMessageBox.Yes).setText(self.tr("Valider"))
+        msg_box.button(QMessageBox.No).setText(self.tr("Annuler"))
         msg_box.setDefaultButton(QMessageBox.No)
         reply = msg_box.exec_()
 
@@ -1216,15 +1232,15 @@ class PreferencesDialog(QDialog):
             # La sauvegarde se fera si l'utilisateur clique sur "Valider".
             QMessageBox.information(
                 self,
-                "Préférences réinitialisées",
-                "Les valeurs par défaut ont été chargées. Cliquez sur 'Valider' pour les sauvegarder.",
+                self.tr("Préférences réinitialisées"),
+                self.tr("Les valeurs par défaut ont été chargées. Cliquez sur 'Valider' pour les sauvegarder."),
             )
 
     def accept(self):
         """Sauvegarde les paramètres lorsque l'utilisateur clique sur 'Valider'."""
         # --- Onglet Général ---
         # Sauvegarde de la langue
-        lang_map = {"Français": "fr_FR", "English": "en_US"}
+        lang_map = {self.tr("Français"): "fr_FR", self.tr("English"): "en_US"}
         selected_lang = self.lang_combo.currentText()
         self.settings_manager.set("app.language", lang_map.get(selected_lang, "fr_FR"))
 

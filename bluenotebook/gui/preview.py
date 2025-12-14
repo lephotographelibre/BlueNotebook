@@ -94,7 +94,7 @@ class MarkdownPreview(QWidget):
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
 
-        label = QLabel("Aperçu HTML")
+        label = QLabel(self.tr("Aperçu HTML"))
         label.setStyleSheet(
             """
             QLabel {
@@ -227,9 +227,7 @@ class MarkdownPreview(QWidget):
         """Créer le template HTML complet"""
         toc_html = ""
         if hasattr(self.md, "toc") and self.md.toc:
-            toc_html = (
-                f'<div class="toc"><h2>📋 Table des matières</h2>{self.md.toc}</div>'
-            )
+            toc_html = f'<div class="toc"><h2>{self.tr("📋 Table des matières")}</h2>{self.md.toc}</div>'
 
         # V2.7.7 - Ajout d'un style pour limiter la taille des images Markdown
         # Cette règle s'applique aux images qui ne sont pas dans une <figure>
@@ -264,37 +262,58 @@ class MarkdownPreview(QWidget):
 
     def show_welcome_content(self):
         """Afficher le contenu de bienvenue"""
-        welcome_content = """
+        # Extraction des chaînes pour faciliter la détection par lupdate (i18n)
+        title = self.tr("🔵 Bienvenue dans BlueNotebook")
+        subtitle = self.tr(
+            "Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici."
+        )
+        syntax_header = self.tr("📝 Syntaxe Markdown supportée :")
+        titles_header = self.tr("Titres")
+        formatting_header = self.tr("Mise en forme")
+        bold_label = self.tr("Gras")
+        italic_label = self.tr("Italique")
+        inline_code_label = self.tr("Code inline")
+        lists_header = self.tr("Listes")
+        bullet_list_label = self.tr("Liste à puces :")
+        numbered_list_label = self.tr("Liste numérotée :")
+        others_header = self.tr("Autres")
+        quotes_label = self.tr("Citations :")
+        links_label = self.tr("Liens :")
+        images_label = self.tr("Images :")
+        tables_label = self.tr("Tables :")
+        code_label = self.tr("Code :")
+
+        welcome_content = f"""
         <div style="text-align: center; padding: 40px;">
-            <h1>🔵 Bienvenue dans BlueNotebook</h1>
-            <p><em>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</em></p>
+            <h1>{title}</h1>
+            <p><em>{subtitle}</em></p>
             
             <div style="text-align: left; max-width: 600px; margin: 40px auto;">
-                <h2>📝 Syntaxe Markdown supportée :</h2>
+                <h2>{syntax_header}</h2>
                 
-                <h3>Titres</h3>
+                <h3>{titles_header}</h3>
                 <pre><code># Titre 1
 ## Titre 2
 ### Titre 3</code></pre>
                 
-                <h3>Mise en forme</h3>
-                <p><strong>Gras</strong> : <code>**texte**</code> ou <code>__texte__</code></p>
-                <p><em>Italique</em> : <code>*texte*</code> ou <code>_texte_</code></p>
-                <p><code>Code inline</code> : <code>`code`</code></p>
+                <h3>{formatting_header}</h3>
+                <p><strong>{bold_label}</strong> : <code>**texte**</code> ou <code>__texte__</code></p>
+                <p><em>{italic_label}</em> : <code>*texte*</code> ou <code>_texte_</code></p>
+                <p><code>{inline_code_label}</code> : <code>`code`</code></p>
                 
-                <h3>Listes</h3>
+                <h3>{lists_header}</h3>
                 <ul>
-                    <li>Liste à puces : <code>- item</code></li>
-                    <li>Liste numérotée : <code>1. item</code></li>
+                    <li>{bullet_list_label} <code>- item</code></li>
+                    <li>{numbered_list_label} <code>1. item</code></li>
                 </ul>
                 
-                <h3>Autres</h3>
+                <h3>{others_header}</h3>
                 <ul>
-                    <li>Citations : <code>&gt; texte</code></li>
-                    <li>Liens : <code>[texte](url)</code></li>
-                    <li>Images : <code>![alt](url)</code></li>
-                    <li>Tables : <code>| col1 | col2 |</code></li>
-                    <li>Code : <code>```python</code></li>
+                    <li>{quotes_label} <code>&gt; texte</code></li>
+                    <li>{links_label} <code>[texte](url)</code></li>
+                    <li>{images_label} <code>![alt](url)</code></li>
+                    <li>{tables_label} <code>| col1 | col2 |</code></li>
+                    <li>{code_label} <code>```python</code></li>
                 </ul>
             </div>
         </div>
@@ -340,9 +359,9 @@ class MarkdownPreview(QWidget):
             error_html = self.create_html_template(
                 f"""
                 <div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 16px; border-radius: 4px;">
-                    <h3>❌ Erreur de rendu</h3>
-                    <p><strong>Erreur :</strong> {str(e)}</p>
-                    <p><em>Vérifiez la syntaxe Markdown dans l'éditeur.</em></p>
+                    <h3>{self.tr("❌ Erreur de rendu")}</h3>
+                    <p><strong>{self.tr("Erreur :")}</strong> {str(e)}</p>
+                    <p><em>{self.tr("Vérifiez la syntaxe Markdown dans l'éditeur.")}</em></p>
                 </div>
             """
             )
@@ -422,8 +441,9 @@ class MarkdownPreview(QWidget):
     # === POUR LA TRADUCTION : mise à jour dynamique ===
     def retranslate_ui(self):
         """À appeler quand on change de langue"""
-        # Rien à faire ici pour l'instant, mais utile si vous ajoutez d'autres widgets
-        pass
+        # Si le contenu markdown est vide, on réaffiche le message de bienvenue traduit
+        if not self.current_markdown or not self.current_markdown.strip():
+            self.show_welcome_content()
 
     # === Surcharge pour capter le changement de langue ===
     def changeEvent(self, event):

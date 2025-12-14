@@ -501,7 +501,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
             )
 
         # Listes à puces et numérotées (-, *, +, 1.)
-        list_pattern = r"^\s*([-*+]|\d+\.|\-\s\[[ x]\])\s"
+        list_pattern = r"^\s*([-*+]| \d+\.|-\s\[[ x]\])\s"
         for match in re.finditer(list_pattern, text):
             # Appliquer le format uniquement au marqueur de la liste
             self.setFormat(match.start(), match.end() - match.start(), self.list_format)
@@ -559,7 +559,7 @@ class FindDialog(QDialog):
 
     def setup_ui(self):
         """Configuration de l'interface de recherche"""
-        self.setWindowTitle("Rechercher")
+        self.setWindowTitle(self.tr("Rechercher"))
         self.setModal(True)
         self.resize(400, 150)
 
@@ -567,7 +567,7 @@ class FindDialog(QDialog):
 
         # Champ de recherche
         search_layout = QHBoxLayout()
-        search_layout.addWidget(QLabel("Rechercher :"))
+        search_layout.addWidget(QLabel(self.tr("Rechercher :")))
 
         self.search_edit = QLineEdit()
         self.search_edit.returnPressed.connect(self.find_next)
@@ -577,7 +577,7 @@ class FindDialog(QDialog):
 
         # Champ de remplacement
         replace_layout = QHBoxLayout()
-        replace_layout.addWidget(QLabel("Remplacer par :"))
+        replace_layout.addWidget(QLabel(self.tr("Remplacer par :")))
 
         self.replace_edit = QLineEdit()
         replace_layout.addWidget(self.replace_edit)
@@ -587,16 +587,16 @@ class FindDialog(QDialog):
         # Boutons
         button_layout = QHBoxLayout()
 
-        self.find_button = QPushButton("Suivant")
+        self.find_button = QPushButton(self.tr("Suivant"))
         self.find_button.clicked.connect(self.find_next)
         self.find_button.setDefault(True)
         button_layout.addWidget(self.find_button)
 
-        self.replace_button = QPushButton("Remplacer")
+        self.replace_button = QPushButton(self.tr("Remplacer"))
         self.replace_button.clicked.connect(self.replace_current)
         button_layout.addWidget(self.replace_button)
 
-        close_button = QPushButton("Fermer")
+        close_button = QPushButton(self.tr("Fermer"))
         close_button.clicked.connect(self.close)
         button_layout.addWidget(close_button)
 
@@ -623,17 +623,17 @@ class LinkDialog(QDialog):
     # [Previous LinkDialog code remains unchanged]
     def __init__(self, parent=None, selected_text=""):
         super().__init__(parent)
-        self.setWindowTitle("Insérer un lien Markdown")
+        self.setWindowTitle(self.tr("Insérer un lien Markdown"))
 
         self.layout = QFormLayout(self)
 
         self.text_edit = QLineEdit(self)
         self.text_edit.setText(selected_text)
-        self.layout.addRow("Texte du lien:", self.text_edit)
+        self.layout.addRow(self.tr("Texte du lien:"), self.text_edit)
 
         self.url_edit = QLineEdit(self)
         self.url_edit.setPlaceholderText("https://example.com")
-        self.layout.addRow("URL:", self.url_edit)
+        self.layout.addRow(self.tr("URL:"), self.url_edit)
 
         self.button_box = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
@@ -652,8 +652,8 @@ class LinkDialog(QDialog):
         if not link_text or not url_text:
             QMessageBox.warning(
                 self,
-                "Champs requis",
-                "Le texte du lien et l'URL sont tous les deux obligatoires.",
+                self.tr("Champs requis"),
+                self.tr("Le texte du lien et l'URL sont tous les deux obligatoires."),
             )
         else:
             self.accept()
@@ -686,7 +686,7 @@ class ImageSourceDialog(QDialog):
 
     def __init__(self, parent=None, initial_path=""):
         super().__init__(parent)
-        self.setWindowTitle("Source de l'image")
+        self.setWindowTitle(self.tr("Source de l'image"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -701,11 +701,11 @@ class ImageSourceDialog(QDialog):
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_file)
         path_layout.addWidget(browse_button)
 
-        form_layout.addRow("Chemin ou URL:", path_layout)
+        form_layout.addRow(self.tr("Chemin ou URL:"), path_layout)
         self.layout.addLayout(form_layout)
 
         self.button_box = QDialogButtonBox(
@@ -716,14 +716,14 @@ class ImageSourceDialog(QDialog):
         self.layout.addWidget(self.button_box)
 
     def _browse_file(self):
-        path, _ = QFileDialog.getOpenFileName(
+        file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Sélectionner une image",
+            self.tr("Sélectionner une image"),
             "",
-            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)",
+            self.tr("Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg)"),
         )
-        if path:
-            self.path_edit.setText(path)
+        if file_path:
+            self.path_edit.setText(file_path)
 
     def get_path(self):
         return self.path_edit.text().strip()
@@ -737,7 +737,7 @@ class AttachmentSourceDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Source de la pièce jointe")
+        self.setWindowTitle(self.tr("Source de la pièce jointe"))
         self.setModal(True)
         self.resize(500, 120)
 
@@ -751,11 +751,11 @@ class AttachmentSourceDialog(QDialog):
         )
         path_layout.addWidget(self.path_edit)
 
-        browse_button = QPushButton("Parcourir...", self)
+        browse_button = QPushButton(self.tr("Parcourir..."), self)
         browse_button.clicked.connect(self._browse_file)
         path_layout.addWidget(browse_button)
 
-        form_layout.addRow("Chemin ou URL:", path_layout)
+        form_layout.addRow(self.tr("Chemin ou URL:"), path_layout)
         self.layout.addLayout(form_layout)
 
         self.button_box = QDialogButtonBox(
@@ -768,15 +768,17 @@ class AttachmentSourceDialog(QDialog):
     def _browse_file(self):
         # V3.3.6 - Ajout d'un filtre pour les types de fichiers courants
         file_filter = (
-            "Tous les fichiers (*);;"
-            "Documents (PDF, DOCX, TXT, ODT, KML) (*.pdf *.docx *.txt *.odt *.kml);;"
-            "Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg);;"
-            "Archives (*.zip *.rar *.7z);;"
-            "Audio (MP3, WAV) (*.mp3 *.wav);;"
-            "Vidéo (MP4, AVI) (*.mp4 *.avi)"
+            self.tr("Tous les fichiers (*);;")
+            + self.tr(
+                "Documents (PDF, DOCX, TXT, ODT, KML) (*.pdf *.docx *.txt *.odt *.kml);;"
+            )
+            + self.tr("Images (*.png *.jpg *.jpeg *.gif *.bmp *.svg);;")
+            + self.tr("Archives (*.zip *.rar *.7z);;")
+            + self.tr("Audio (MP3, WAV) (*.mp3 *.wav);;")
+            + self.tr("Vidéo (MP4, AVI) (*.mp4 *.avi)")
         )
         path, _ = QFileDialog.getOpenFileName(
-            self, "Sélectionner un fichier", "", file_filter
+            self, self.tr("Sélectionner un fichier"), "", file_filter
         )
         if path:
             self.path_edit.setText(path)
@@ -812,7 +814,7 @@ class MarkdownEditor(QWidget):
         header_layout.setContentsMargins(0, 0, 0, 0)
 
         # En-tête de panneau (style onglet)
-        label = QLabel("Éditeur Markdown")
+        label = QLabel(self.tr("Éditeur Markdown"))
         label.setStyleSheet(
             """
             QLabel {
@@ -935,14 +937,14 @@ class MarkdownEditor(QWidget):
             menu.addSeparator()
 
             # --- Création des menus personnalisés ---
-            title_menu = QMenu("Titres", self)
+            title_menu = QMenu(self.tr("Titres"), self)
             title_menu.setStyleSheet(self.menu_stylesheet)
             title_actions = [
-                ("Niv 1 (#)", "h1"),
-                ("Niv 2 (##)", "h2"),
-                ("Niv 3 (###)", "h3"),
-                ("Niv 4 (####)", "h4"),
-                ("Niv 5 (#####)", "h5"),
+                (self.tr("Niv 1 (#)"), "h1"),
+                (self.tr("Niv 2 (##)"), "h2"),
+                (self.tr("Niv 3 (###)"), "h3"),
+                (self.tr("Niv 4 (####)"), "h4"),
+                (self.tr("Niv 5 (#####)"), "h5"),
             ]
             for name, data in title_actions:
                 action = title_menu.addAction(name)
@@ -952,12 +954,12 @@ class MarkdownEditor(QWidget):
             menu.addMenu(title_menu)
 
             # --- Listes ---
-            list_menu = QMenu("Listes", self)
+            list_menu = QMenu(self.tr("Listes"), self)
             list_menu.setStyleSheet(self.menu_stylesheet)
             list_actions = [
-                ("• Liste non ordonnée", "ul"),
-                ("1. Liste ordonnée", "ol"),
-                ("☑️ Liste de tâches", "task_list"),
+                (self.tr("• Liste non ordonnée"), "ul"),
+                (self.tr("1. Liste ordonnée"), "ol"),
+                (self.tr("☑️ Liste de tâches"), "task_list"),
             ]
             for name, data in list_actions:
                 action = list_menu.addAction(name)
@@ -967,45 +969,45 @@ class MarkdownEditor(QWidget):
             menu.addMenu(list_menu)
 
             # --- Style de texte ---
-            style_menu = QMenu("Style de texte", self)
+            style_menu = QMenu(self.tr("Style de texte"), self)
             style_menu.setStyleSheet(self.menu_stylesheet)
-            bold_action = style_menu.addAction("Gras")
+            bold_action = style_menu.addAction(self.tr("Gras"))
             bold_action.triggered.connect(lambda: self.format_text("bold"))
-            italic_action = style_menu.addAction("Italique")
+            italic_action = style_menu.addAction(self.tr("Italique"))
             italic_action.triggered.connect(lambda: self.format_text("italic"))
-            strikethrough_action = style_menu.addAction("Barré")
+            strikethrough_action = style_menu.addAction(self.tr("Barré"))
             strikethrough_action.triggered.connect(
                 lambda: self.format_text("strikethrough")
             )
-            highlight_action = style_menu.addAction("Surligné")
+            highlight_action = style_menu.addAction(self.tr("Surligné"))
             highlight_action.triggered.connect(lambda: self.format_text("highlight"))
             menu.addMenu(style_menu)
 
             # --- Code ---
-            code_menu = QMenu("Code", self)
+            code_menu = QMenu(self.tr("Code"), self)
             code_menu.setStyleSheet(self.menu_stylesheet)
-            inline_code_action = code_menu.addAction("Monospace (inline)")
+            inline_code_action = code_menu.addAction(self.tr("Monospace (inline)"))
             inline_code_action.triggered.connect(
                 lambda: self.format_text("inline_code")
             )
-            code_block_action = code_menu.addAction("Bloc de code")
+            code_block_action = code_menu.addAction(self.tr("Bloc de code"))
             code_block_action.triggered.connect(lambda: self.format_text("code_block"))
             menu.addMenu(code_menu)
 
             # --- Liens ---
-            link_menu = QMenu("Liens", self)
-            link_menu.setToolTip("Insérer un lien (local ou distant)")
+            link_menu = QMenu(self.tr("Liens"), self)
+            link_menu.setToolTip(self.tr("Insérer un lien (local ou distant)"))
             link_menu.setStyleSheet(self.menu_stylesheet)
             # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
-            markdown_link_action = link_menu.addAction("🔗 Lien")
+            markdown_link_action = link_menu.addAction(self.tr("🔗 Lien"))
             markdown_link_action.triggered.connect(
                 self.main_window._handle_markdown_link
             )
-            url_link_action = link_menu.addAction("Lien URL/Email")
+            url_link_action = link_menu.addAction(self.tr("Lien URL/Email"))
             url_link_action.triggered.connect(lambda: self.format_text("url_link"))
 
             # Ajouter l'action pour le bookmark
-            bookmark_action = link_menu.addAction("🔖 Bookmark")
+            bookmark_action = link_menu.addAction(self.tr("🔖 Bookmark"))
             bookmark_action.triggered.connect(
                 self.main_window.insert_bookmark_action.trigger
             )
@@ -1013,15 +1015,15 @@ class MarkdownEditor(QWidget):
             menu.addMenu(link_menu)
 
             # V2.9.3 - Menu pour nettoyer le formatage de paragraphe
-            format_menu = QMenu("Mise en forme", self)
+            format_menu = QMenu(self.tr("Mise en forme"), self)
             format_menu.setStyleSheet(self.menu_stylesheet)
 
-            cleanup_action = format_menu.addAction("Nettoyer le paragraphe")
+            cleanup_action = format_menu.addAction(self.tr("Nettoyer le paragraphe"))
             cleanup_action.triggered.connect(self.cleanup_paragraph)
 
             # V3.2.5 - Ajouter l'action pour supprimer les espaces en début de ligne
             remove_indent_action = format_menu.addAction(
-                "Supprime les blancs en début de ligne"
+                self.tr("Supprime les blancs en début de ligne")
             )
             remove_indent_action.triggered.connect(self.remove_leading_whitespace)
 
@@ -1173,7 +1175,7 @@ class MarkdownEditor(QWidget):
             cursor.movePosition(QTextCursor.EndOfLine, QTextCursor.KeepAnchor)
 
             line_text = cursor.selectedText()
-            line_text = re.sub(r"^\s*#+\s*", "", line_text)
+            line_text = re.sub(r"^\s*#+ \s*", "", line_text)
 
             new_text = prefix + line_text
             cursor.insertText(new_text)
@@ -1279,8 +1281,8 @@ class MarkdownEditor(QWidget):
 
             width, ok = QInputDialog.getInt(
                 self,
-                "Largeur de l'image",
-                "Largeur maximale en pixels :",
+                self.tr("Largeur de l'image"),
+                self.tr("Largeur maximale en pixels :"),
                 400,
                 1,
                 10000,
@@ -1299,8 +1301,8 @@ class MarkdownEditor(QWidget):
         if not self.main_window or not self.main_window.journal_directory:
             QMessageBox.warning(
                 self,
-                "Journal non défini",
-                "Veuillez définir un répertoire de journal avant d'insérer une pièce jointe.",
+                self.tr("Journal non défini"),
+                self.tr("Veuillez définir un répertoire de journal avant d'insérer une pièce jointe."),
             )
             return
 
@@ -1395,10 +1397,10 @@ class MarkdownEditor(QWidget):
                     allowed_types_str = "\n".join(sorted(list(allowed_mime_types)))
                     QMessageBox.warning(
                         self,
-                        "Type de fichier non autorisé",
-                        f"Le type de fichier distant '{content_type}' n'est pas autorisé.\n\n"
-                        f"Les types MIME autorisés sont :\n"
-                        f"{allowed_types_str}",
+                        self.tr("Type de fichier non autorisé"),
+                        self.tr("Le type de fichier distant '{content_type}' n'est pas autorisé.\n\nLes types MIME autorisés sont :\n{allowed_types}").format(
+                            content_type=content_type, allowed_types=allowed_types_str
+                        ),
                     )
                     return None
 
@@ -1435,16 +1437,17 @@ class MarkdownEditor(QWidget):
                     allowed_ext_str = ", ".join(sorted(list(allowed_extensions)))
                     QMessageBox.warning(
                         self,
-                        "Type de fichier non autorisé",
-                        f"Le type de fichier local '{file_extension}' n'est pas autorisé.\n\n"
-                        f"Les extensions autorisées sont : {allowed_ext_str}",
+                        self.tr("Type de fichier non autorisé"),
+                        self.tr("Le type de fichier local '{file_extension}' n'est pas autorisé.\n\nLes extensions autorisées sont : {allowed_ext}").format(
+                            file_extension=file_extension, allowed_ext=allowed_ext_str
+                        ),
                     )
                     return None
                 shutil.copy2(source_path, destination_file)
             return f"attachments/{new_filename}"
         except Exception as e:
             QMessageBox.critical(
-                self, "Erreur de copie", f"Impossible de copier le fichier : {e}"
+                self, self.tr("Erreur de copie"), self.tr("Impossible de copier le fichier : {error}").format(error=str(e))
             )
             return None
 
@@ -1511,7 +1514,8 @@ class MarkdownEditor(QWidget):
                         f.write(chunk)
                 return f"images/{new_filename}"
             except requests.RequestException as e:
-                print(f"Erreur de téléchargement de l'image : {e}")
+                # Message console → non encapsulé
+                print(f"Image upload error: {e}")
                 return source_path  # En cas d'erreur, on retourne l'URL originale
 
         # Cas d'un fichier local
@@ -1534,7 +1538,8 @@ class MarkdownEditor(QWidget):
             # Retourne le chemin relatif pour l'insertion dans le Markdown
             return f"images/{new_filename}"
         except Exception as e:
-            print(f"Erreur lors de la copie de l'image : {e}")
+            # Message console → non encapsulé
+            print(f"Error copying image: {e}")
             return source_path  # En cas d'erreur, on retourne le chemin original
 
     def clear_formatting(self):
@@ -1544,7 +1549,7 @@ class MarkdownEditor(QWidget):
             return
 
         selected_text = cursor.selectedText()
-        markdown_chars = r"([#*_~`\[\]\(\)!<>])"
+        markdown_chars = r"([#*_~`\\[\\]\\(\\)!<>])"
 
         cleaned_text = re.sub(
             r"^\s*([#>\-]+\s*|\d+\.\s*)", "", selected_text, flags=re.MULTILINE
