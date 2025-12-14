@@ -84,11 +84,11 @@ def handle_insert_bookmark(main_window):
         prefix = "" if is_github else "Bookmark | "
 
         if title:
-            markdown_link = f"Bookmark | {title} - {url}"
+            markdown_link = f"{icon} {prefix} | {title} - {url}"
         else:
-            markdown_link = f"Bookmark | {url}"
+            markdown_link = f"{icon} {prefix} | {url}"
         cursor = main_window.editor.text_edit.textCursor()
-        
+
         if cursor.hasSelection():
             cursor.removeSelectedText()
         main_window.editor.insert_text(markdown_link)
