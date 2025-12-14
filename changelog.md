@@ -27,6 +27,7 @@ Au lieu de d'inserer
 🔖 [Bookmark | GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
 
 🐙 [GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
+ 
 
 ## V4.0.3 i18n Windows Etape 1
 
