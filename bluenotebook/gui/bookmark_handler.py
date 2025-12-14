@@ -88,6 +88,7 @@ def handle_insert_bookmark(main_window):
         else:
             markdown_link = f"Bookmark | {url}"
         cursor = main_window.editor.text_edit.textCursor()
+        
         if cursor.hasSelection():
             cursor.removeSelectedText()
         main_window.editor.insert_text(markdown_link)
