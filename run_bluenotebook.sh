@@ -1,5 +1,4 @@
 #!/bin/bash
-cd bluenotebook
 # Script de lancement optimisé pour BlueNotebook sur Linux
 
 set -e # Arrête le script si une commande échoue
@@ -98,4 +97,4 @@ export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
 export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
 
-"$PYTHON_EXEC" main.py "$@"
+cd bluenotebook && "$PYTHON_EXEC" main.py "$@"

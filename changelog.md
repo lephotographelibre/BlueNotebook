@@ -1,3 +1,8 @@
+## V4.0.6 Launcher Fix
+
+Fix directory issues with the Linux Launcher install.sh, run_bluenotebook.sh and run_bluenotebook.bat
+
+
 ## V4.0.5 Fix Issue [#107]
 Fix Issue [#107](https://github.com/lephotographelibre/BlueNotebook/issues/107) V4.0.4 Window test issues to be fixed
 
