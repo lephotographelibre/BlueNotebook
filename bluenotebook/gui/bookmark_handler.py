@@ -81,7 +81,7 @@ def handle_insert_bookmark(main_window):
 
         is_github = "github.com" in url.lower()
         icon = "🐙" if is_github else "🔖"
-        prefix = "" if is_github else "Bookmark | "
+        prefix = "" if is_github else "Bookmark"
 
         if title:
             markdown_link = f"{icon} [{prefix} | {title} - {url}]({url})"
