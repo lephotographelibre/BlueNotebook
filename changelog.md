@@ -1,3 +1,45 @@
+## V4.0.5 Fix Issue [#107]
+Fix Issue [#107](https://github.com/lephotographelibre/BlueNotebook/issues/107) V4.0.4 Window test issues to be fixed
+
+main.py ---------------------
+ 
+En Python 3.11 et versions antérieures, vous ne pouvez pas réutiliser le même type de guillemets à l'intérieur de l'expression d'une f-string que celui utilisé pour la définir.
+
+Remplacer
+ print(f"🌍 Variable LANG forced to: {os.environ["LANG"]}") 
+ par --> 
+ print(f"🌍 Variable LANG forced to: {os.environ['LANG']}") 
+
+tag_cloud.py ------------------
+
+L'erreur SyntaxError: f-string expression part cannot include a backslash survient parce que vous utilisez Python 3.11.9, et avant la version 3.12, il n'était pas permis d'utiliser un antislash (\) à l'intérieur de l'expression d'une f-string (la partie entre accolades {}).
+
+- Remplacer
+            self.text_browser.setHtml(f"<p><i>{self.tr('Erreur de lecture de l\'index.')}</i></p>")
+par:
+            error_msg = self.tr("Erreur de lecture de l'index.")
+            self.text_browser.setHtml(f"<p><i>{error_msg}</i></p>")
+
+
+--- bookmark_handler.py
+
+Test Bookmark:
+
+🐙 [ | GitHub - lephotographelibre/BlueNotebook: A Personal Journal and Knowledge Notes database using Markdown as internal file format (inspired by RedNotebook) - https://github.com/lephotographelibre/BlueNotebook](https://github.com/lephotographelibre/BlueNotebook)
+
+erreur dans le formatage du bookmark github [ | GitHub --> [  GitHub
+
+```python
+        is_github = "github.com" in url.lower()
+        icon = "🐙" if is_github else "🔖"
+        prefix = "" if is_github else "Bookmark | "     ======> supprimer |
+ 
+```
+---> créer deux fichier à la racine
+bluenotenook.sh
+bluenotebook.bat
+
+
 ## V4.0.4 i18n Phase_2 FR EN
 
 Branche `i18n/V4.0.4_i18n_Phase_2`
