@@ -19,7 +19,6 @@ from core.settings import SettingsManager
 from gui.first_start import FirstStartWindow
 from pathlib import Path
 
- 
 
 def main():
     """Fonction principale"""
@@ -75,10 +74,9 @@ def main():
 
     # --- ÉTAPE 8 : MAINTENANT afficher les messages traduits ---
 
-
     print(f"🌍 Locale from settings.json: '{locale_to_set}'")
-    print(f"🌍 Variable LANG forced to: {os.environ["LANG"]}") 
-    print(f"🌍 Effective Qt local: {locale.name()}") 
+    print(f"🌍 Variable LANG forced to: {os.environ['LANG']}")
+    print(f"🌍 Effective Qt local: {locale.name()}")
 
     # --- ÉTAPE 9 : Gestion du premier démarrage ---
     if not settings_manager.settings_path.exists():
@@ -105,15 +103,17 @@ def main():
         try:
             locale_module.setlocale(locale_module.LC_TIME, locale.name())
             print(f"✅ Python locale(LC_TIME) : '{locale.name()}' (fallback)")
- 
+
         except locale_module.Error:
             print(f"⚠️ Unable to configure the Python locale for'{locale.name()}'")
 
     # Afficher messages de chargement des traductions
     if qt_translator.load(locale, "qtbase", "_", qt_translation_path):
-        print(f"✅ Translation app '{locale.name()}' loaded from'{qt_translation_path}'")
+        print(
+            f"✅ Translation app '{locale.name()}' loaded from'{qt_translation_path}'"
+        )
     else:
-        print(f"⚠️ Qt translation '{locale.name()}' not found") 
+        print(f"⚠️ Qt translation '{locale.name()}' not found")
 
     if app_translator.load(locale, "bluenotebook", "_", i18n_path):
         print(f"✅ Translation app  '{locale.name()}' loaded from '{i18n_path}'")
@@ -132,7 +132,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        version = "4.0.4"
+        version = "4.0.5"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
@@ -147,7 +147,7 @@ def main():
         print(f"👋 Closing the application...")
         sys.exit(0)
     except Exception as e:
-        print("❌ Error: {e}") 
+        print("❌ Error: {e}")
         import traceback
 
         traceback.print_exc()

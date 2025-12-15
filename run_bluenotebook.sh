@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd bluenotebook
 # Script de lancement optimisé pour BlueNotebook sur Linux
 
 set -e # Arrête le script si une commande échoue

@@ -3859,6 +3859,11 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
         <source>☁️ Nuage de Tags</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../gui/tag_cloud.py" line="98"/>
+        <source>Erreur de lecture de l&apos;index.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UrlToMarkdownContext</name>
@@ -4072,18 +4077,18 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="89"/>
+        <location filename="../gui/bookmark_handler.py" line="95"/>
         <source>Bookmark inséré avec succès.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="96"/>
+        <location filename="../gui/bookmark_handler.py" line="102"/>
         <source>Impossible de traiter l&apos;URL &apos;{url}&apos; :
 {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="100"/>
+        <location filename="../gui/bookmark_handler.py" line="106"/>
         <source>Erreur de Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
