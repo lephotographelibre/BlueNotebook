@@ -90,6 +90,9 @@ $ git merge --no-ff  develop
 $ git push -u origin main
 $ git pull
 Déjà à jour.
+$ git tag -a v1.0.0 -m "Version stable initiale"
+$ git show v1.0.0 
+$ git git push origin v1.0.0   -- verify on github and create new release if appropriate
 ```
 ## Creating the hotfix branch
 

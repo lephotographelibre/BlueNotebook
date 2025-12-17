@@ -48,6 +48,9 @@ fi
 PYTHON_EXEC="${VENV_PATH}/bin/python"
 PIP_EXEC="${VENV_PATH}/bin/pip"
 
+# set requirements file
+cp -p requirements_linux_3.13.5.txt requirements.txt
+
 # Vérifier et installer les dépendances seulement si requirements.txt est plus récent
 if [ "requirements.txt" -nt "${VENV_PATH}/.dependencies_installed" ]; then
     echo "📦 Dependency update..."
