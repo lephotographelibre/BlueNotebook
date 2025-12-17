@@ -1,10 +1,21 @@
 
-## V4.0.7 Fix Issue [#111]
+## V4.0.7 Fix Issue [#111] [#110]
 
-Fix Issue [#111](https://github.com/lephotographelibre/BlueNotebook/issues/111) V4.0.6 Add OS version to the "About" WIndows #111
+- Fix Issue [#111](https://github.com/lephotographelibre/BlueNotebook/issues/111) V4.0.6 Add OS version to the "About" WIndows #111
 
-Fix Issue README.md Image Missing `docs/bluenotebook_bandeau.jpg`
+- Fix Issue README.md Image Missing `docs/bluenotebook_bandeau.jpg`
+ 
 
+- Fix Issue [#110](https://github.com/lephotographelibre/BlueNotebook/issues/110) V4.0.6 Toolbx install Ubuntu 24.04 P1
+#110
+-
+```bash
+cp requirements_linux_3.13.5.txt requirements.txt
+pip install -r requirements.txt
+
+```
+
+- Fix prerequis.md 
 
 ## V4.0.6 Launcher Fix
 
