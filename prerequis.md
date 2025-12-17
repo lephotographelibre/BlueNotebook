@@ -4,6 +4,31 @@ Ce document liste toutes les dépendances système (pour Ubuntu/Debian) et les p
 
 ## 1. Prérequis Système (Ubuntu/Debian)
 
+### pyenv install 
+
+Install pyenv using <https://github.com/pyenv/pyenv-installer>
+
+```bash
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+```
+
+add these lines to .bash_profile
+
+```bash
+# User specific environment and startup programs
+#
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+```
+
+add tothis line to .bashrc
+
+```bash
+eval "$(pyenv virtualenv-init -)"
+```
+ 
+
 Ces paquets fournissent les bibliothèques de base nécessaires à certaines fonctionnalités graphiques et d'export.
 
 ### Dépendances Essentielles
@@ -13,6 +38,10 @@ Ces paquets sont requis pour la génération des cartes (GPS, GPX) et l'export P
 ```bash
 sudo apt-get update
 sudo apt-get install python3-pip python3-venv libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
+# When running into a VM/Container You may have to install sound packages for QWebEngineView
+sudo apt-get install libasound2t64
+# if emojis not installed
+sudo apt install fonts-noto-color-emoji
 ```
 
 *   `python3-pip` : Pour installer les paquets Python.
@@ -43,7 +72,10 @@ python3 -m venv .venv_bluenotebook
 source .venv_bluenotebook/bin/activate
 
 # 3. Installez tous les paquets requis
-pip install -r requirements.txt
+# Linux 
+pip install -r requirements_linux_3.13.5.txt
+# Windows
+pip install -r requirements_windows3.11.9.txt
 ```
 
 ### Liste des Paquets Python (`requirements.txt`)
@@ -62,3 +94,46 @@ Voici la liste des dépendances Python utilisées par le projet :
     *   `gpxpy`, `py-staticmaps[cairo]`, `geopy` : Pour l'intégration des cartes GPS et GPX.
     *   `Pillow`, `EbookLib`, `cairosvg` : Pour l'export au format EPUB.
     *   `WeasyPrint` : Pour l'export au format PDF.
+
+
+## 3. Prérequis Système (Windows)
+
+### pyenv
+
+++++ Powershell Admin system: Windows-X Terminal (Administrateur)
+https://github.com/pyenv-win/pyenv-win
+
+PS C:\Users\jmdig> Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+Reopen PowerShell
+PS C:\Users\jmdig> pyenv --version
+pyenv 3.1.1
+
+Add the following to you PATH variable
+Instructions for those who are unsure about how to add PATH, search in Windows for Advanced system settings 
+"search System".--> "Afficher les paramètres sytème avancés" 
+Click Environment Variables. In the section System Variables, add a new PATH environment variable 
+"Variables d'environnement". --> PATH Modifier
+
+C:\Users\jmdig\.pyenv\pyenv-win\bin
+C:\Users\jmdig\.pyenv\pyenv-win\shims
+
+C:\Users\jmdig>pyenv local 3.11.9
+
+C:\Users\jmdig>python -V
+Python 3.11.9
+
+Sur Windows, la gestion des environnements virtuels n'est pas une fonctionnalité de base de pyenv-win. 
+Elle est fournie par un plugin séparé qui s'appelle pyenv-virtualenv. L
+
+C:\Users\jmdig>git clone https://github.com/pyenv/pyenv-virtualenv.git "$(pyenv root)\plugins\pyenv-virtualenv"
+
+
+### Cairo
+
+comment installer libcairo-2.dll sur windows11
+
+https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2022-01-04/gtk3-runtime-3.24.31-2022-01-04-ts-win64.exe
+
+Add PATH --> C:\Program Files\GTK3-Runtime Win64\bin
+
+where libcairo-2.dll
