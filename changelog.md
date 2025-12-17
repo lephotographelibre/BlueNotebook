@@ -1,3 +1,11 @@
+
+## V4.0.7 Fix Issue [#111]
+
+Fix Issue [#111](https://github.com/lephotographelibre/BlueNotebook/issues/111) V4.0.6 Add OS version to the "About" WIndows #111
+
+Fix Issue README.md Image Missing `docs/bluenotebook_bandeau.jpg`
+
+
 ## V4.0.6 Launcher Fix
 
 Fix directory issues with the Linux Launcher install.sh, run_bluenotebook.sh and run_bluenotebook.bat

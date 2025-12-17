@@ -636,27 +636,27 @@ Voulez-vous quand même l'utiliser comme journal ?</translation>
 <context>
     <name>GpsInputDialog</name>
     <message>
-        <location filename="../gui/main_window.py" line="366"/>
+        <location filename="../gui/main_window.py" line="367"/>
         <source>Coordonnées GPS</source>
         <translation>Coordonnées GPS</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="374"/>
+        <location filename="../gui/main_window.py" line="375"/>
         <source>Latitude:</source>
         <translation>Latitude:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="375"/>
+        <location filename="../gui/main_window.py" line="376"/>
         <source>Longitude:</source>
         <translation>Longitude:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="380"/>
+        <location filename="../gui/main_window.py" line="381"/>
         <source>Valider</source>
         <translation>Valider</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="381"/>
+        <location filename="../gui/main_window.py" line="382"/>
         <source>Annuler</source>
         <translation>Annuler</translation>
     </message>
@@ -705,32 +705,32 @@ Voulez-vous quand même l'utiliser comme journal ?</translation>
 <context>
     <name>GpxSourceDialog</name>
     <message>
-        <location filename="../gui/main_window.py" line="408"/>
+        <location filename="../gui/main_window.py" line="409"/>
         <source>Source du fichier GPX</source>
         <translation>Source du fichier GPX</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="418"/>
+        <location filename="../gui/main_window.py" line="419"/>
         <source>https://example.com/trace.gpx ou /chemin/local/trace.gpx</source>
         <translation>https://example.com/trace.gpx ou /chemin/local/trace.gpx</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="423"/>
+        <location filename="../gui/main_window.py" line="424"/>
         <source>Parcourir...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="427"/>
+        <location filename="../gui/main_window.py" line="428"/>
         <source>Chemin ou URL:</source>
         <translation>Chemin ou URL:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="441"/>
+        <location filename="../gui/main_window.py" line="442"/>
         <source>Sélectionner un fichier GPX</source>
         <translation>Sélectionner un fichier GPX</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="441"/>
+        <location filename="../gui/main_window.py" line="442"/>
         <source>Fichiers GPX (*.gpx)</source>
         <translation>Fichiers GPX (*.gpx)</translation>
     </message>
@@ -943,57 +943,57 @@ Voulez-vous quand même l'utiliser comme journal ?</translation>
 <context>
     <name>InsertLinkDialog</name>
     <message>
-        <location filename="../gui/main_window.py" line="639"/>
+        <location filename="../gui/main_window.py" line="640"/>
         <source>Insérer un lien</source>
         <translation>Insérer un lien</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="647"/>
+        <location filename="../gui/main_window.py" line="648"/>
         <source>https://... ou chemin/local/fichier.ext</source>
         <translation>https://... ou chemin/local/fichier.ext</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="653"/>
+        <location filename="../gui/main_window.py" line="654"/>
         <source>Parcourir...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="657"/>
+        <location filename="../gui/main_window.py" line="658"/>
         <source>Texte du lien:</source>
         <translation>Texte du lien:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="658"/>
+        <location filename="../gui/main_window.py" line="659"/>
         <source>URL ou chemin:</source>
         <translation>URL ou chemin:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="663"/>
+        <location filename="../gui/main_window.py" line="664"/>
         <source>Insérer</source>
         <translation>Insérer</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="664"/>
+        <location filename="../gui/main_window.py" line="665"/>
         <source>Annuler</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="680"/>
+        <location filename="../gui/main_window.py" line="681"/>
         <source>Sélectionner un fichier local</source>
         <translation>Sélectionner un fichier local</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="680"/>
+        <location filename="../gui/main_window.py" line="681"/>
         <source>Tous les fichiers (*)</source>
         <translation>Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="703"/>
+        <location filename="../gui/main_window.py" line="704"/>
         <source>Champs requis</source>
         <translation>Champs requis</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="703"/>
+        <location filename="../gui/main_window.py" line="704"/>
         <source>Le texte du lien et l&apos;URL/chemin sont tous les deux obligatoires.</source>
         <translation>Le texte du lien et l'URL/chemin sont tous les deux obligatoires.</translation>
     </message>
@@ -1001,22 +1001,22 @@ Voulez-vous quand même l'utiliser comme journal ?</translation>
 <context>
     <name>InsertTemplateDialog</name>
     <message>
-        <location filename="../gui/main_window.py" line="601"/>
+        <location filename="../gui/main_window.py" line="602"/>
         <source>Insérer un modèle</source>
         <translation>Insérer un modèle</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="606"/>
+        <location filename="../gui/main_window.py" line="607"/>
         <source>Choisir un modèle à insérer :</source>
         <translation>Choisir un modèle à insérer :</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="615"/>
+        <location filename="../gui/main_window.py" line="616"/>
         <source>Insérer</source>
         <translation>Insérer</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="616"/>
+        <location filename="../gui/main_window.py" line="617"/>
         <source>Annuler</source>
         <translation>Annuler</translation>
     </message>
@@ -1052,1069 +1052,1069 @@ Voulez-vous quand même l'utiliser comme journal ?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/main_window.py" line="785"/>
+        <location filename="../gui/main_window.py" line="786"/>
         <source>BlueNotebook V{app_version} - Éditeur Markdown</source>
         <translation>BlueNotebook V{app_version} - Éditeur Markdown</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="903"/>
+        <location filename="../gui/main_window.py" line="904"/>
         <source>&amp;Fichier</source>
         <translation>&amp;Fichier</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="925"/>
+        <location filename="../gui/main_window.py" line="926"/>
         <source>&amp;Edition</source>
         <translation>&amp;Edition</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="941"/>
+        <location filename="../gui/main_window.py" line="942"/>
         <source>F&amp;ormater</source>
         <translation>F&amp;ormater</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="945"/>
+        <location filename="../gui/main_window.py" line="946"/>
         <source>&amp;Insérer</source>
         <translation>&amp;Insérer</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="949"/>
+        <location filename="../gui/main_window.py" line="950"/>
         <source>&amp;Intégrations</source>
         <translation>&amp;Intégrations</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="961"/>
+        <location filename="../gui/main_window.py" line="962"/>
         <source>&amp;Aide</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="967"/>
+        <location filename="../gui/main_window.py" line="968"/>
         <source>Nouveau</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="967"/>
+        <location filename="../gui/main_window.py" line="968"/>
         <source>Créer un nouveau fichier</source>
         <translation>Créer un nouveau fichier</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="974"/>
+        <location filename="../gui/main_window.py" line="975"/>
         <source>Ouvrir...</source>
         <translation>Ouvrir...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="974"/>
+        <location filename="../gui/main_window.py" line="975"/>
         <source>Ouvrir un fichier existant</source>
         <translation>Ouvrir un fichier existant</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="981"/>
+        <location filename="../gui/main_window.py" line="982"/>
         <source>Ouvrir Journal</source>
         <translation>Ouvrir Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="981"/>
+        <location filename="../gui/main_window.py" line="982"/>
         <source>Ouvrir un répertoire de journal</source>
         <translation>Ouvrir un répertoire de journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="987"/>
+        <location filename="../gui/main_window.py" line="988"/>
         <source>Ouvrir Document...</source>
         <translation>Ouvrir Document...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="987"/>
+        <location filename="../gui/main_window.py" line="988"/>
         <source>Ouvrir un document EPUB ou PDF dans le lecteur</source>
         <translation>Ouvrir un document EPUB ou PDF dans le lecteur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="993"/>
+        <location filename="../gui/main_window.py" line="994"/>
         <source>Sauvegarder dans Journal</source>
         <translation>Sauvegarder dans Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="993"/>
+        <location filename="../gui/main_window.py" line="994"/>
         <source>Sauvegarder le fichier dans le journal</source>
         <translation>Sauvegarder le fichier dans le journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1000"/>
+        <location filename="../gui/main_window.py" line="1001"/>
         <source>Sauvegarder sous...</source>
         <translation>Sauvegarder sous...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1000"/>
+        <location filename="../gui/main_window.py" line="1001"/>
         <source>Sauvegarder sous un nouveau nom</source>
         <translation>Sauvegarder sous un nouveau nom</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1007"/>
+        <location filename="../gui/main_window.py" line="1008"/>
         <source>Sauvegarder comme Modèle...</source>
         <translation>Sauvegarder comme Modèle...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1007"/>
+        <location filename="../gui/main_window.py" line="1008"/>
         <source>Sauvegarder le document actuel comme un nouveau modèle</source>
         <translation>Sauvegarder le document actuel comme un nouveau modèle</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1013"/>
+        <location filename="../gui/main_window.py" line="1014"/>
         <source>Sauvegarde Journal...</source>
         <translation>Sauvegarde Journal...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1013"/>
+        <location filename="../gui/main_window.py" line="1014"/>
         <source>Sauvegarder le journal complet dans une archive ZIP</source>
         <translation>Sauvegarder le journal complet dans une archive ZIP</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1019"/>
+        <location filename="../gui/main_window.py" line="1020"/>
         <source>Restauration Journal...</source>
         <translation>Restauration Journal...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1019"/>
+        <location filename="../gui/main_window.py" line="1020"/>
         <source>Restaurer le journal depuis une archive ZIP</source>
         <translation>Restaurer le journal depuis une archive ZIP</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1025"/>
+        <location filename="../gui/main_window.py" line="1026"/>
         <source>Exporter HTML...</source>
         <translation>Exporter HTML...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2096"/>
+        <location filename="../gui/main_window.py" line="2097"/>
         <source>Exporter en HTML</source>
         <translation>Exporter en HTML</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1031"/>
+        <location filename="../gui/main_window.py" line="1032"/>
         <source>Exporter en PDF...</source>
         <translation>Exporter en PDF...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1031"/>
+        <location filename="../gui/main_window.py" line="1032"/>
         <source>Exporter le fichier actuel en PDF</source>
         <translation>Exporter le fichier actuel en PDF</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1037"/>
+        <location filename="../gui/main_window.py" line="1038"/>
         <source>Exporter Journal PDF...</source>
         <translation>Exporter Journal PDF...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1037"/>
+        <location filename="../gui/main_window.py" line="1038"/>
         <source>Exporter le journal complet en PDF</source>
         <translation>Exporter le journal complet en PDF</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1043"/>
+        <location filename="../gui/main_window.py" line="1044"/>
         <source>Exporter Journal EPUB...</source>
         <translation>Exporter Journal EPUB...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1043"/>
+        <location filename="../gui/main_window.py" line="1044"/>
         <source>Exporter le journal complet en EPUB</source>
         <translation>Exporter le journal complet en EPUB</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1049"/>
+        <location filename="../gui/main_window.py" line="1050"/>
         <source>Préférences...</source>
         <translation>Préférences...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1049"/>
+        <location filename="../gui/main_window.py" line="1050"/>
         <source>Ouvrir les préférences de l'application</source>
         <translation>Ouvrir les préférences de l'application</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1055"/>
+        <location filename="../gui/main_window.py" line="1056"/>
         <source>Quitter</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1055"/>
+        <location filename="../gui/main_window.py" line="1056"/>
         <source>Quitter l&apos;application</source>
         <translation>Quitter l'application</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2343"/>
+        <location filename="../gui/main_window.py" line="2364"/>
         <source>Annuler</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1069"/>
+        <location filename="../gui/main_window.py" line="1070"/>
         <source>Rétablir</source>
         <translation>Rétablir</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1075"/>
+        <location filename="../gui/main_window.py" line="1076"/>
         <source>Rechercher</source>
         <translation>Rechercher</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1082"/>
+        <location filename="../gui/main_window.py" line="1083"/>
         <source>Basculer Navigation Journal</source>
         <translation>Basculer Navigation Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1089"/>
+        <location filename="../gui/main_window.py" line="1090"/>
         <source>Basculer Explorateur de Notes</source>
         <translation>Basculer Explorateur de Notes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1097"/>
+        <location filename="../gui/main_window.py" line="1098"/>
         <source>Afficher/Masquer les détails des notes</source>
         <translation>Afficher/Masquer les détails des notes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1103"/>
+        <location filename="../gui/main_window.py" line="1104"/>
         <source>Basculer Plan du document</source>
         <translation>Basculer Plan du document</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1110"/>
+        <location filename="../gui/main_window.py" line="1111"/>
         <source>Basculer Aperçu HTML</source>
         <translation>Basculer Aperçu HTML</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1117"/>
+        <location filename="../gui/main_window.py" line="1118"/>
         <source>Basculer Lecteur</source>
         <translation>Basculer Lecteur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1124"/>
+        <location filename="../gui/main_window.py" line="1125"/>
         <source>À propos</source>
         <translation>À propos</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1130"/>
+        <location filename="../gui/main_window.py" line="1131"/>
         <source>Documentation en ligne</source>
         <translation>Documentation en ligne</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1136"/>
+        <location filename="../gui/main_window.py" line="1137"/>
         <source>Citation du jour</source>
         <translation>Citation du jour</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1142"/>
+        <location filename="../gui/main_window.py" line="1143"/>
         <source>Vidéo YouTube</source>
         <translation>Vidéo YouTube</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1142"/>
+        <location filename="../gui/main_window.py" line="1143"/>
         <source>Insérer une vidéo YouTube</source>
         <translation>Insérer une vidéo YouTube</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1149"/>
+        <location filename="../gui/main_window.py" line="1150"/>
         <source>Insérer un modèle...</source>
         <translation>Insérer un modèle...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1149"/>
+        <location filename="../gui/main_window.py" line="1150"/>
         <source>Insérer le contenu d'un modèle à la position du curseur</source>
         <translation>Insérer le contenu d'un modèle à la position du curseur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1157"/>
+        <location filename="../gui/main_window.py" line="1158"/>
         <source>Carte GPS</source>
         <translation>Carte GPS</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1157"/>
+        <location filename="../gui/main_window.py" line="1158"/>
         <source>Insérer une carte statique à partir de coordonnées GPS</source>
         <translation>Insérer une carte statique à partir de coordonnées GPS</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1163"/>
+        <location filename="../gui/main_window.py" line="1164"/>
         <source>Trace GPX</source>
         <translation>Trace GPX</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1163"/>
+        <location filename="../gui/main_window.py" line="1164"/>
         <source>Insérer une carte à partir d'une trace GPX</source>
         <translation>Insérer une carte à partir d'une trace GPX</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1169"/>
+        <location filename="../gui/main_window.py" line="1170"/>
         <source>Météo Weatherapi.com</source>
         <translation>Météo Weatherapi.com</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1169"/>
+        <location filename="../gui/main_window.py" line="1170"/>
         <source>Insérer la météo actuelle</source>
         <translation>Insérer la météo actuelle</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1175"/>
+        <location filename="../gui/main_window.py" line="1176"/>
         <source>Amazon ISBN</source>
         <translation>Amazon ISBN</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1175"/>
+        <location filename="../gui/main_window.py" line="1176"/>
         <source>Insérer les informations d'un livre depuis Amazon via son ISBN</source>
         <translation>Insérer les informations d'un livre depuis Amazon via son ISBN</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1183"/>
+        <location filename="../gui/main_window.py" line="1184"/>
         <source>Astro du jour</source>
         <translation>Astro du jour</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1183"/>
+        <location filename="../gui/main_window.py" line="1184"/>
         <source>Insérer les données astronomiques du jour</source>
         <translation>Insérer les données astronomiques du jour</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1189"/>
+        <location filename="../gui/main_window.py" line="1190"/>
         <source>Conversion PDF-Markdown</source>
         <translation>Conversion PDF-Markdown</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1189"/>
+        <location filename="../gui/main_window.py" line="1190"/>
         <source>Convertir un fichier PDF en Markdown avec &apos;markitdown&apos;</source>
         <translation>Convertir un fichier PDF en Markdown avec 'markitdown'</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1195"/>
+        <location filename="../gui/main_window.py" line="1196"/>
         <source>Conversion URL(HTML)-Markdown</source>
         <translation>Conversion URL(HTML)-Markdown</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1195"/>
+        <location filename="../gui/main_window.py" line="1196"/>
         <source>Convertir une page Web (URL ou fichier local) en Markdown</source>
         <translation>Convertir une page Web (URL ou fichier local) en Markdown</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1203"/>
+        <location filename="../gui/main_window.py" line="1204"/>
         <source>🔖 Bookmark</source>
         <translation>🔖 Bookmark</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1203"/>
+        <location filename="../gui/main_window.py" line="1204"/>
         <source>Insérer un signet à partir d'une URL</source>
         <translation>Insérer un signet à partir d'une URL</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1213"/>
+        <location filename="../gui/main_window.py" line="1214"/>
         <source>Titres</source>
         <translation>Titres</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1215"/>
+        <location filename="../gui/main_window.py" line="1216"/>
         <source>Niv 1 (#)</source>
         <translation>Niv 1 (#)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1216"/>
+        <location filename="../gui/main_window.py" line="1217"/>
         <source>Niv 2 (##)</source>
         <translation>Niv 2 (##)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1217"/>
+        <location filename="../gui/main_window.py" line="1218"/>
         <source>Niv 3 (###)</source>
         <translation>Niv 3 (###)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1218"/>
+        <location filename="../gui/main_window.py" line="1219"/>
         <source>Niv 4 (####)</source>
         <translation>Niv 4 (####)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1219"/>
+        <location filename="../gui/main_window.py" line="1220"/>
         <source>Niv 5 (#####)</source>
         <translation>Niv 5 (#####)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1230"/>
+        <location filename="../gui/main_window.py" line="1231"/>
         <source>Style de texte</source>
         <translation>Style de texte</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1232"/>
+        <location filename="../gui/main_window.py" line="1233"/>
         <source>Gras (**texte**)</source>
         <translation>Gras (**texte**)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1233"/>
+        <location filename="../gui/main_window.py" line="1234"/>
         <source>Italique (*texte*)</source>
         <translation>Italique (*texte*)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1234"/>
+        <location filename="../gui/main_window.py" line="1235"/>
         <source>Barré (~~texte~~)</source>
         <translation>Barré (~~texte~~)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1235"/>
+        <location filename="../gui/main_window.py" line="1236"/>
         <source>Surligné (==texte==)</source>
         <translation>Surligné (==texte==)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1248"/>
+        <location filename="../gui/main_window.py" line="1249"/>
         <source>Code</source>
         <translation>Code</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1250"/>
+        <location filename="../gui/main_window.py" line="1251"/>
         <source>Monospace (inline)</source>
         <translation>Monospace (inline)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1251"/>
+        <location filename="../gui/main_window.py" line="1252"/>
         <source>Bloc de code</source>
         <translation>Bloc de code</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1262"/>
+        <location filename="../gui/main_window.py" line="1263"/>
         <source>Listes</source>
         <translation>Listes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1264"/>
+        <location filename="../gui/main_window.py" line="1265"/>
         <source>• Liste non ordonnée</source>
         <translation>• Liste non ordonnée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1265"/>
+        <location filename="../gui/main_window.py" line="1266"/>
         <source>1. Liste ordonnée</source>
         <translation>1. Liste ordonnée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1266"/>
+        <location filename="../gui/main_window.py" line="1267"/>
         <source>☑️ Liste de tâches</source>
         <translation>☑️ Liste de tâches</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1278"/>
+        <location filename="../gui/main_window.py" line="1279"/>
         <source>RaZ (Effacer le formatage)</source>
         <translation>RaZ (Effacer le formatage)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1285"/>
+        <location filename="../gui/main_window.py" line="1286"/>
         <source>Image</source>
         <translation>Image</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1290"/>
+        <location filename="../gui/main_window.py" line="1291"/>
         <source>🔗 Lien</source>
         <translation>🔗 Lien</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1291"/>
+        <location filename="../gui/main_window.py" line="1292"/>
         <source>Lien URL/Email</source>
         <translation>Lien URL/Email</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1292"/>
+        <location filename="../gui/main_window.py" line="1293"/>
         <source>📎 Attachement</source>
         <translation>📎 Attachement</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1313"/>
+        <location filename="../gui/main_window.py" line="1314"/>
         <source>Ligne Horizontale</source>
         <translation>Ligne Horizontale</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1316"/>
+        <location filename="../gui/main_window.py" line="1317"/>
         <source>Commentaire HTML</source>
         <translation>Commentaire HTML</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1321"/>
+        <location filename="../gui/main_window.py" line="1322"/>
         <source>Tableau</source>
         <translation>Tableau</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1323"/>
+        <location filename="../gui/main_window.py" line="1324"/>
         <source>Citation</source>
         <translation>Citation</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1332"/>
+        <location filename="../gui/main_window.py" line="1333"/>
         <source>Tag (@@)</source>
         <translation>Tag (@@)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1336"/>
+        <location filename="../gui/main_window.py" line="1337"/>
         <source>Horodatage</source>
         <translation>Horodatage</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1342"/>
+        <location filename="../gui/main_window.py" line="1343"/>
         <source>Emoji</source>
         <translation>Emoji</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1344"/>
+        <location filename="../gui/main_window.py" line="1345"/>
         <source>📖 Livre</source>
         <translation>📖 Livre</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1345"/>
+        <location filename="../gui/main_window.py" line="1346"/>
         <source>🎵 Musique</source>
         <translation>🎵 Musique</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1346"/>
+        <location filename="../gui/main_window.py" line="1347"/>
         <source>📚 À Lire</source>
         <translation>📚 À Lire</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1347"/>
+        <location filename="../gui/main_window.py" line="1348"/>
         <source>🎬 À Regarder</source>
         <translation>🎬 À Regarder</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1348"/>
+        <location filename="../gui/main_window.py" line="1349"/>
         <source>🎧 A Ecouter</source>
         <translation>🎧 A Ecouter</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1349"/>
+        <location filename="../gui/main_window.py" line="1350"/>
         <source>✈️ Voyage</source>
         <translation>✈️ Voyage</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1350"/>
+        <location filename="../gui/main_window.py" line="1351"/>
         <source>❤️ Santé</source>
         <translation>❤️ Santé</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1351"/>
+        <location filename="../gui/main_window.py" line="1352"/>
         <source>☀️ Soleil</source>
         <translation>☀️ Soleil</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1352"/>
+        <location filename="../gui/main_window.py" line="1353"/>
         <source>☁️ Nuage</source>
         <translation>☁️ Nuage</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1353"/>
+        <location filename="../gui/main_window.py" line="1354"/>
         <source>🌧️ Pluie</source>
         <translation>🌧️ Pluie</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1354"/>
+        <location filename="../gui/main_window.py" line="1355"/>
         <source>🌬️ Vent</source>
         <translation>🌬️ Vent</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1355"/>
+        <location filename="../gui/main_window.py" line="1356"/>
         <source>😊 Content</source>
         <translation>😊 Content</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1356"/>
+        <location filename="../gui/main_window.py" line="1357"/>
         <source>😠 Mécontent</source>
         <translation>😠 Mécontent</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1357"/>
+        <location filename="../gui/main_window.py" line="1358"/>
         <source>😢 Triste</source>
         <translation>😢 Triste</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1358"/>
+        <location filename="../gui/main_window.py" line="1359"/>
         <source>✅ Fait</source>
         <translation>✅ Fait</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1359"/>
+        <location filename="../gui/main_window.py" line="1360"/>
         <source>❌ Annulé</source>
         <translation>❌ Annulé</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1360"/>
+        <location filename="../gui/main_window.py" line="1361"/>
         <source>⚠️ Attention</source>
         <translation>⚠️ Attention</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1361"/>
+        <location filename="../gui/main_window.py" line="1362"/>
         <source>📝 Mémo</source>
         <translation>📝 Mémo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1362"/>
+        <location filename="../gui/main_window.py" line="1363"/>
         <source>❓ Question</source>
         <translation>❓ Question</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1363"/>
+        <location filename="../gui/main_window.py" line="1364"/>
         <source>❗ Exclamation</source>
         <translation>❗ Exclamation</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1374"/>
+        <location filename="../gui/main_window.py" line="1375"/>
         <source>Panneaux</source>
         <translation>Panneaux</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1385"/>
+        <location filename="../gui/main_window.py" line="1386"/>
         <source>Notes</source>
         <translation>Notes</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1390"/>
+        <location filename="../gui/main_window.py" line="1391"/>
         <source>Navigation</source>
         <translation>Navigation</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1395"/>
+        <location filename="../gui/main_window.py" line="1396"/>
         <source>Plan</source>
         <translation>Plan</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1400"/>
+        <location filename="../gui/main_window.py" line="1401"/>
         <source>Éditeur</source>
         <translation>Éditeur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1406"/>
+        <location filename="../gui/main_window.py" line="1407"/>
         <source>Aperçu</source>
         <translation>Aperçu</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1411"/>
+        <location filename="../gui/main_window.py" line="1412"/>
         <source>Lecteur</source>
         <translation>Lecteur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1721"/>
+        <location filename="../gui/main_window.py" line="1722"/>
         <source>Nouveau fichier</source>
         <translation>Nouveau fichier</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1475"/>
+        <location filename="../gui/main_window.py" line="1476"/>
         <source>Cliquez pour rafraîchir l'index des tags</source>
         <translation>Cliquez pour rafraîchir l'index des tags</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1487"/>
+        <location filename="../gui/main_window.py" line="1488"/>
         <source>Sauvegarde en cours...</source>
         <translation>Sauvegarde en cours...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1494"/>
+        <location filename="../gui/main_window.py" line="1495"/>
         <source>Conversion PDF en cours...</source>
         <translation>Conversion PDF en cours...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1501"/>
+        <location filename="../gui/main_window.py" line="1502"/>
         <source>Récupération de la transcription en cours...</source>
         <translation>Récupération de la transcription en cours...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1508"/>
+        <location filename="../gui/main_window.py" line="1509"/>
         <source>Vérification de l'URL...</source>
         <translation>Vérification de l'URL...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1516"/>
+        <location filename="../gui/main_window.py" line="1517"/>
         <source>Conversion URL en cours...</source>
         <translation>Conversion URL en cours...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1539"/>
+        <location filename="../gui/main_window.py" line="1540"/>
         <source>Veuillez patienter...</source>
         <translation>Veuillez patienter...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1549"/>
+        <location filename="../gui/main_window.py" line="1550"/>
         <source>Recherche du livre...</source>
         <translation>Recherche du livre...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1566"/>
+        <location filename="../gui/main_window.py" line="1567"/>
         <source>Sauvegarde en cours…</source>
         <translation>Sauvegarde en cours…</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1645"/>
+        <location filename="../gui/main_window.py" line="1646"/>
         <source>Erreur de Journal</source>
         <translation>Erreur de Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1645"/>
+        <location filename="../gui/main_window.py" line="1646"/>
         <source>Impossible de créer le répertoire de journal par défaut:
 {e}</source>
         <translation>Impossible de créer le répertoire de journal par défaut:
 {e}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1673"/>
+        <location filename="../gui/main_window.py" line="1674"/>
         <source>Journal: {0}</source>
         <translation>Journal: {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1677"/>
+        <location filename="../gui/main_window.py" line="1678"/>
         <source>Journal: Non défini</source>
         <translation>Journal: Non défini</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1726"/>
+        <location filename="../gui/main_window.py" line="1727"/>
         <source>BlueNotebook V{app_version} - {filename} *</source>
         <translation>BlueNotebook V{app_version} - {filename} *</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1733"/>
+        <location filename="../gui/main_window.py" line="1734"/>
         <source>BlueNotebook V{app_version} - {filename}</source>
         <translation>BlueNotebook V{app_version} - {filename}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1747"/>
+        <location filename="../gui/main_window.py" line="1748"/>
         <source>{lines} lignes | {words} mots | {chars} caractères</source>
         <translation>{lines} lignes | {words} mots | {chars} caractères</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1800"/>
+        <location filename="../gui/main_window.py" line="1801"/>
         <source>Le fichier template &apos;{template_name}&apos; est introuvable.</source>
         <translation>Le fichier template '{template_name}' est introuvable.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1818"/>
+        <location filename="../gui/main_window.py" line="1819"/>
         <source>Template manquant</source>
         <translation>Template manquant</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1832"/>
+        <location filename="../gui/main_window.py" line="1833"/>
         <source>Sélectionner le répertoire du Journal</source>
         <translation>Sélectionner le répertoire du Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1840"/>
+        <location filename="../gui/main_window.py" line="1841"/>
         <source>Journal</source>
         <translation>Journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1840"/>
+        <location filename="../gui/main_window.py" line="1841"/>
         <source>Le répertoire du journal est maintenant :
 {0}</source>
         <translation>Le répertoire du journal est maintenant :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2433"/>
+        <location filename="../gui/main_window.py" line="2454"/>
         <source>Erreur</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1872"/>
+        <location filename="../gui/main_window.py" line="1873"/>
         <source>Impossible d&apos;ouvrir le fichier :
 {0}</source>
         <translation>Impossible d'ouvrir le fichier :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1899"/>
+        <location filename="../gui/main_window.py" line="1900"/>
         <source>Fichier Journal déjà existant</source>
         <translation>Fichier Journal déjà existant</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1901"/>
+        <location filename="../gui/main_window.py" line="1902"/>
         <source>Le fichier journal '{0}' existe déjà.</source>
         <translation>Le fichier journal '{0}' existe déjà.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1910"/>
+        <location filename="../gui/main_window.py" line="1911"/>
         <source>Remplacer</source>
         <translation>Remplacer</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1913"/>
+        <location filename="../gui/main_window.py" line="1914"/>
         <source>Ajouter à la fin</source>
         <translation>Ajouter à la fin</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1942"/>
+        <location filename="../gui/main_window.py" line="1943"/>
         <source>Sauvegarder le fichier</source>
         <translation>Sauvegarder le fichier</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1942"/>
+        <location filename="../gui/main_window.py" line="1943"/>
         <source>Fichiers Markdown (*.md);;Fichiers texte (*.txt);;Tous les fichiers (*)</source>
         <translation>Fichiers Markdown (*.md);;Fichiers texte (*.txt);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1965"/>
+        <location filename="../gui/main_window.py" line="1966"/>
         <source>Sauvegarder comme modèle</source>
         <translation>Sauvegarder comme modèle</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1965"/>
+        <location filename="../gui/main_window.py" line="1966"/>
         <source>Fichiers Markdown (*.md)</source>
         <translation>Fichiers Markdown (*.md)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1982"/>
+        <location filename="../gui/main_window.py" line="1983"/>
         <source>Modèle sauvegardé : {0}</source>
         <translation>Modèle sauvegardé : {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1986"/>
+        <location filename="../gui/main_window.py" line="1987"/>
         <source>Impossible de sauvegarder le modèle :
 {0}</source>
         <translation>Impossible de sauvegarder le modèle :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2007"/>
+        <location filename="../gui/main_window.py" line="2008"/>
         <source>Le fichier modèle '{0}' est introuvable.</source>
         <translation>Le fichier modèle '{0}' est introuvable.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2029"/>
+        <location filename="../gui/main_window.py" line="2030"/>
         <source>Modèle manquant</source>
         <translation>Modèle manquant</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2041"/>
+        <location filename="../gui/main_window.py" line="2042"/>
         <source>Fichier sauvegardé : {0}</source>
         <translation>Fichier sauvegardé : {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2048"/>
+        <location filename="../gui/main_window.py" line="2049"/>
         <source>Impossible de sauvegarder le fichier :
 {0}</source>
         <translation>Impossible de sauvegarder le fichier :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2064"/>
+        <location filename="../gui/main_window.py" line="2065"/>
         <source>Contenu ajouté à : {0}</source>
         <translation>Contenu ajouté à : {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2070"/>
+        <location filename="../gui/main_window.py" line="2071"/>
         <source>Impossible d&apos;ajouter au fichier :
 {0}</source>
         <translation>Impossible d'ajouter au fichier :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2096"/>
+        <location filename="../gui/main_window.py" line="2097"/>
         <source>Fichiers HTML (*.html);;Tous les fichiers (*)</source>
         <translation>Fichiers HTML (*.html);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2112"/>
+        <location filename="../gui/main_window.py" line="2113"/>
         <source>Exporté en HTML : {0}</source>
         <translation>Exporté en HTML : {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2122"/>
+        <location filename="../gui/main_window.py" line="2123"/>
         <source>Impossible d&apos;exporter en HTML :
 {0}</source>
         <translation>Impossible d'exporter en HTML :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2140"/>
+        <location filename="../gui/main_window.py" line="2141"/>
         <source>Exportation terminée</source>
         <translation>Exportation terminée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2140"/>
+        <location filename="../gui/main_window.py" line="2141"/>
         <source>Le journal a été exporté avec succès au format {0} dans :
 {1}</source>
         <translation>Le journal a été exporté avec succès au format {0} dans :
 {1}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2151"/>
+        <location filename="../gui/main_window.py" line="2152"/>
         <source>Erreur d&apos;exportation</source>
         <translation>Erreur d'exportation</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2151"/>
+        <location filename="../gui/main_window.py" line="2152"/>
         <source>Une erreur est survenue lors de la création du fichier :
 {0}</source>
         <translation>Une erreur est survenue lors de la création du fichier :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2249"/>
+        <location filename="../gui/main_window.py" line="2250"/>
         <source>Aide non trouvée</source>
         <translation>Aide non trouvée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2249"/>
+        <location filename="../gui/main_window.py" line="2250"/>
         <source>Le fichier d'aide n'a pas été trouvé:
 {0}</source>
         <translation>Le fichier d'aide n'a pas été trouvé:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2260"/>
+        <location filename="../gui/main_window.py" line="2280"/>
         <source>À propos de BlueNotebook</source>
         <translation>À propos de BlueNotebook</translation>
     </message>
     <message>
         <location filename="../gui/main_window.py" line="2263"/>
         <source>&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</source>
-        <translation>&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2373"/>
+        <location filename="../gui/main_window.py" line="2394"/>
         <source>Ouvrir un document</source>
         <translation>Ouvrir un document</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2297"/>
+        <location filename="../gui/main_window.py" line="2318"/>
         <source>Documents (*.epub *.pdf);;Fichiers EPUB (*.epub);;Fichiers PDF (*.pdf)</source>
         <translation>Documents (*.epub *.pdf);;Fichiers EPUB (*.epub);;Fichiers PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2321"/>
+        <location filename="../gui/main_window.py" line="2342"/>
         <source>Format non supporté</source>
         <translation>Format non supporté</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2321"/>
+        <location filename="../gui/main_window.py" line="2342"/>
         <source>Ce format de fichier n'est pas supporté.</source>
         <translation>Ce format de fichier n'est pas supporté.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2332"/>
+        <location filename="../gui/main_window.py" line="2353"/>
         <source>Modifications non sauvegardées</source>
         <translation>Modifications non sauvegardées</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2333"/>
+        <location filename="../gui/main_window.py" line="2354"/>
         <source>Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?</source>
         <translation>Le fichier a été modifié. Voulez-vous sauvegarder les modifications ?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2341"/>
+        <location filename="../gui/main_window.py" line="2362"/>
         <source>Sauvegarder</source>
         <translation>Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2342"/>
+        <location filename="../gui/main_window.py" line="2363"/>
         <source>Ne pas sauvegarder</source>
         <translation>Ne pas sauvegarder</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2373"/>
+        <location filename="../gui/main_window.py" line="2394"/>
         <source>Tous les documents supportés (*.md *.markdown *.txt *.epub *.pdf);;Fichiers Markdown (*.md *.markdown *.txt);;Documents EPUB (*.epub);;Documents PDF (*.pdf);;Tous les fichiers (*)</source>
         <translation>Tous les documents supportés (*.md *.markdown *.txt *.epub *.pdf);;Fichiers Markdown (*.md *.markdown *.txt);;Documents EPUB (*.epub);;Documents PDF (*.pdf);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2414"/>
+        <location filename="../gui/main_window.py" line="2435"/>
         <source>Citation du Jour</source>
         <translation>Citation du Jour</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2415"/>
+        <location filename="../gui/main_window.py" line="2436"/>
         <source>&lt;blockquote&gt;&lt;i&gt;« {0} »&lt;/i&gt;&lt;/blockquote&gt;</source>
         <translation>&lt;blockquote&gt;&lt;i&gt;« {0} »&lt;/i&gt;&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2433"/>
+        <location filename="../gui/main_window.py" line="2454"/>
         <source>Impossible de récupérer la citation du jour.</source>
         <translation>Impossible de récupérer la citation du jour.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2449"/>
+        <location filename="../gui/main_window.py" line="2470"/>
         <source>Vidéo ou Playlist YouTube</source>
         <translation>Vidéo ou Playlist YouTube</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2450"/>
+        <location filename="../gui/main_window.py" line="2471"/>
         <source>Entrez l'URL de la vidéo ou playlist Youtube:</source>
         <translation>Entrez l'URL de la vidéo ou playlist Youtube:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2470"/>
+        <location filename="../gui/main_window.py" line="2491"/>
         <source>Erreur d'intégration YouTube</source>
         <translation>Erreur d'intégration YouTube</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2551"/>
+        <location filename="../gui/main_window.py" line="2572"/>
         <source>Journal non défini</source>
         <translation>Journal non défini</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2495"/>
+        <location filename="../gui/main_window.py" line="2516"/>
         <source>Veuillez définir un répertoire de journal avant d'insérer une carte.</source>
         <translation>Veuillez définir un répertoire de journal avant d'insérer une carte.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2569"/>
+        <location filename="../gui/main_window.py" line="2590"/>
         <source>Taille de la carte</source>
         <translation>Taille de la carte</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2569"/>
+        <location filename="../gui/main_window.py" line="2590"/>
         <source>Largeur de l&apos;image (en pixels):</source>
         <translation>Largeur de l'image (en pixels):</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2546"/>
+        <location filename="../gui/main_window.py" line="2567"/>
         <source>Erreur de création de carte</source>
         <translation>Erreur de création de carte</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2551"/>
+        <location filename="../gui/main_window.py" line="2572"/>
         <source>Veuillez définir un répertoire de journal avant d'insérer une trace GPX.</source>
         <translation>Veuillez définir un répertoire de journal avant d'insérer une trace GPX.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2584"/>
+        <location filename="../gui/main_window.py" line="2605"/>
         <source>Fichier GPX introuvable</source>
         <translation>Fichier GPX introuvable</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2584"/>
+        <location filename="../gui/main_window.py" line="2605"/>
         <source>Impossible de lire le fichier GPX depuis :
 {0}</source>
         <translation>Impossible de lire le fichier GPX depuis :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2607"/>
+        <location filename="../gui/main_window.py" line="2628"/>
         <source>Erreur de création de la trace</source>
         <translation>Erreur de création de la trace</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2617"/>
+        <location filename="../gui/main_window.py" line="2638"/>
         <source>Taille de l&apos;image</source>
         <translation>Taille de l'image</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2617"/>
+        <location filename="../gui/main_window.py" line="2638"/>
         <source>Largeur maximale en pixels:</source>
         <translation>Largeur maximale en pixels:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2642"/>
+        <location filename="../gui/main_window.py" line="2663"/>
         <source>Données EXIF trouvées</source>
         <translation>Données EXIF trouvées</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2642"/>
+        <location filename="../gui/main_window.py" line="2663"/>
         <source>Des données EXIF ont été trouvées dans l'image. Voulez-vous les insérer sous l'image ?</source>
         <translation>Des données EXIF ont été trouvées dans l'image. Voulez-vous les insérer sous l'image ?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3744"/>
+        <location filename="../gui/main_window.py" line="3765"/>
         <source>Fichier non trouvé</source>
         <translation>Fichier non trouvé</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2679"/>
+        <location filename="../gui/main_window.py" line="2700"/>
         <source>Le fichier local &apos;{0}&apos; n&apos;existe pas.</source>
         <translation>Le fichier local '{0}' n'existe pas.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2694"/>
+        <location filename="../gui/main_window.py" line="2715"/>
         <source>Fichier hors du journal</source>
         <translation>Fichier hors du journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2694"/>
+        <location filename="../gui/main_window.py" line="2715"/>
         <source>Le fichier que vous avez sélectionné est en dehors du répertoire du journal.
 
 Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes ?</source>
@@ -2123,94 +2123,94 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
 Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes ?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2724"/>
+        <location filename="../gui/main_window.py" line="2745"/>
         <source>Choisir un dossier de destination dans le journal</source>
         <translation>Choisir un dossier de destination dans le journal</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2738"/>
+        <location filename="../gui/main_window.py" line="2759"/>
         <source>Fichier copié dans {0}</source>
         <translation>Fichier copié dans {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2742"/>
+        <location filename="../gui/main_window.py" line="2763"/>
         <source>Erreur de copie</source>
         <translation>Erreur de copie</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2742"/>
+        <location filename="../gui/main_window.py" line="2763"/>
         <source>Impossible de copier le fichier :
 {0}</source>
         <translation>Impossible de copier le fichier :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2763"/>
+        <location filename="../gui/main_window.py" line="2784"/>
         <source>Erreur Météo</source>
         <translation>Erreur Météo</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2772"/>
+        <location filename="../gui/main_window.py" line="2793"/>
         <source>Météo insérée avec succès.</source>
         <translation>Météo insérée avec succès.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2785"/>
+        <location filename="../gui/main_window.py" line="2806"/>
         <source>Recherche de livre par ISBN</source>
         <translation>Recherche de livre par ISBN</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2785"/>
+        <location filename="../gui/main_window.py" line="2806"/>
         <source>Entrez le code ISBN du livre:</source>
         <translation>Entrez le code ISBN du livre:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2810"/>
+        <location filename="../gui/main_window.py" line="2831"/>
         <source>Configuration requise</source>
         <translation>Configuration requise</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2810"/>
+        <location filename="../gui/main_window.py" line="2831"/>
         <source>Veuillez configurer votre ville dans 'Préférences &gt; Intégrations' pour utiliser cette fonctionnalité.</source>
         <translation>Veuillez configurer votre ville dans 'Préférences &gt; Intégrations' pour utiliser cette fonctionnalité.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2821"/>
+        <location filename="../gui/main_window.py" line="2842"/>
         <source>Récupération des données astronomiques...</source>
         <translation>Récupération des données astronomiques...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2834"/>
+        <location filename="../gui/main_window.py" line="2855"/>
         <source>Données astronomiques insérées.</source>
         <translation>Données astronomiques insérées.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2839"/>
+        <location filename="../gui/main_window.py" line="2860"/>
         <source>Erreur Astro</source>
         <translation>Erreur Astro</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2851"/>
+        <location filename="../gui/main_window.py" line="2872"/>
         <source>Informations du livre insérées avec succès.</source>
         <translation>Informations du livre insérées avec succès.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2859"/>
+        <location filename="../gui/main_window.py" line="2880"/>
         <source>Erreur de recherche</source>
         <translation>Erreur de recherche</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2867"/>
+        <location filename="../gui/main_window.py" line="2888"/>
         <source>Transcription trouvée</source>
         <translation>Transcription trouvée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2867"/>
+        <location filename="../gui/main_window.py" line="2888"/>
         <source>Une transcription en '{0}' existe pour cette vidéo. Voulez-vous l'ajouter ?</source>
         <translation>Une transcription en '{0}' existe pour cette vidéo. Voulez-vous l'ajouter ?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2877"/>
+        <location filename="../gui/main_window.py" line="2898"/>
         <source>
 
 **Transcription de la video Youtube**
@@ -2223,98 +2223,103 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
 </translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2884"/>
+        <location filename="../gui/main_window.py" line="2905"/>
         <source>Erreur de Transcription</source>
         <translation>Erreur de Transcription</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3060"/>
+        <location filename="../gui/main_window.py" line="3081"/>
         <source>Conversion terminée</source>
         <translation>Conversion terminée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2997"/>
+        <location filename="../gui/main_window.py" line="3018"/>
         <source>Le fichier PDF a été converti avec succès.</source>
         <translation>Le fichier PDF a été converti avec succès.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3006"/>
+        <location filename="../gui/main_window.py" line="3027"/>
         <source>Erreur de conversion</source>
         <translation>Erreur de conversion</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3011"/>
+        <location filename="../gui/main_window.py" line="3032"/>
         <source>Sauvegarde terminée</source>
         <translation>Sauvegarde terminée</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3011"/>
+        <location filename="../gui/main_window.py" line="3032"/>
         <source>Le journal a été sauvegardé avec succès dans :
 {0}</source>
         <translation>Le journal a été sauvegardé avec succès dans :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3023"/>
+        <location filename="../gui/main_window.py" line="3044"/>
         <source>Erreur de sauvegarde</source>
         <translation>Erreur de sauvegarde</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3041"/>
+        <location filename="../gui/main_window.py" line="3062"/>
         <source>Erreur de tâche</source>
         <translation>Erreur de tâche</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3060"/>
+        <location filename="../gui/main_window.py" line="3081"/>
         <source>La page a été convertie et sauvegardée dans :
 {0}</source>
         <translation>La page a été convertie et sauvegardée dans :
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3158"/>
+        <location filename="../gui/main_window.py" line="3179"/>
         <source>Indexation en cours...</source>
         <translation>Indexation en cours...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3176"/>
+        <location filename="../gui/main_window.py" line="3197"/>
         <source>{0} tags</source>
         <translation>{0} tags</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3177"/>
+        <location filename="../gui/main_window.py" line="3198"/>
         <source>Index: {0}</source>
         <translation>Index: {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3217"/>
+        <location filename="../gui/main_window.py" line="3238"/>
         <source>Aucune note précédente trouvée dans le journal.</source>
         <translation>Aucune note précédente trouvée dans le journal.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3251"/>
+        <location filename="../gui/main_window.py" line="3272"/>
         <source>Aucune note suivante trouvée dans le journal.</source>
         <translation>Aucune note suivante trouvée dans le journal.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3273"/>
+        <location filename="../gui/main_window.py" line="3294"/>
         <source>Aucune note pour le {0}</source>
         <translation>Aucune note pour le {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3498"/>
+        <location filename="../gui/main_window.py" line="3519"/>
         <source>Redémarrage requis</source>
         <translation>Redémarrage requis</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3498"/>
+        <location filename="../gui/main_window.py" line="3519"/>
         <source>Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.</source>
         <translation>Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3744"/>
+        <location filename="../gui/main_window.py" line="3765"/>
         <source>Le fichier &apos;{0}&apos; n&apos;existe plus.</source>
         <translation>Le fichier '{0}' n'existe plus.</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_window.py" line="2283"/>
+        <source>&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;p&gt; Motorisé par {os_name} &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</source>
+        <translation>&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;p&gt; Motorisé par {os_name} &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -3126,32 +3131,32 @@ pip install weasyprint</translation>
 <context>
     <name>PdfSourceDialog</name>
     <message>
-        <location filename="../gui/main_window.py" line="462"/>
+        <location filename="../gui/main_window.py" line="463"/>
         <source>Source du fichier PDF</source>
         <translation>Source du fichier PDF</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="471"/>
+        <location filename="../gui/main_window.py" line="472"/>
         <source>https://example.com/document.pdf ou /chemin/local/document.pdf</source>
         <translation>https://example.com/document.pdf ou /chemin/local/document.pdf</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="476"/>
+        <location filename="../gui/main_window.py" line="477"/>
         <source>Parcourir...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="480"/>
+        <location filename="../gui/main_window.py" line="481"/>
         <source>Chemin ou URL:</source>
         <translation>Chemin ou URL:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="494"/>
+        <location filename="../gui/main_window.py" line="495"/>
         <source>Sélectionner un fichier PDF</source>
         <translation>Sélectionner un fichier PDF</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="494"/>
+        <location filename="../gui/main_window.py" line="495"/>
         <source>Fichiers PDF (*.pdf)</source>
         <translation>Fichiers PDF (*.pdf)</translation>
     </message>

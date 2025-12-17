@@ -27,6 +27,7 @@ import json
 import shutil
 from datetime import datetime
 import zipfile
+import platform  # Ajout pour récupérer l'info OS
 from urllib.parse import quote
 from datetime import datetime
 import requests
@@ -2256,12 +2257,32 @@ class MainWindow(QMainWindow):
 
     def show_about(self):
         """Afficher la boîte À propos"""
+        # V4.0.7 Récupération du nom de l'OS
+        os_name = "Système inconnu"
+        try:
+            if platform.system() == "Linux":
+                try:
+                    # Python 3.10+
+                    os_release = platform.freedesktop_os_release()
+                    os_name = os_release.get("PRETTY_NAME", "Linux")
+                except (AttributeError, OSError):
+                    os_name = "Linux"
+            elif platform.system() == "Windows":
+                os_name = f"Windows {platform.release()}"
+            elif platform.system() == "Darwin":
+                os_name = f"macOS {platform.mac_ver()[0]}"
+            else:
+                os_name = platform.system()
+        except Exception:
+            os_name = platform.platform()
+
         about_box = QMessageBox(self)
         about_box.setWindowTitle(self.tr("À propos de BlueNotebook"))
         about_box.setIcon(QMessageBox.Information)
         about_box.setTextFormat(Qt.RichText)
         about_text = self.tr(
             "<h2> BlueNotebook V{app_version}</h2>"
+            "<p> Motorisé par {os_name} </p>"
             "<h2>_____________________________________________________________</h2>"
             "<p><b>Éditeur de journal personnel </b></p>"
             "<p>Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,"
@@ -2286,7 +2307,7 @@ class MainWindow(QMainWindow):
             "<p>Dépôt GitHub : <a href='https://github.com/lephotographelibre/BlueNotebook'>BlueNotebook</a></p>"
             "<p>Licence : <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GNU GPLv3</a></p>"
             "<p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"
-        ).format(app_version=self.app_version)
+        ).format(app_version=self.app_version, os_name=os_name)
         about_box.setText(about_text)
         about_box.setStandardButtons(QMessageBox.Ok)
         about_box.resize(800, about_box.height())
