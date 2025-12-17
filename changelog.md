@@ -17,6 +17,9 @@ pip install -r requirements.txt
 
 - Fix prerequis.md 
 
+- Fix Issue [#102](https://github.com/lephotographelibre/BlueNotebook/issues/102)add bookmark timeout #102
+En fait remove Url check and Request/timeout
+
 ## V4.0.6 Launcher Fix
 
 Fix directory issues with the Linux Launcher install.sh, run_bluenotebook.sh and run_bluenotebook.bat
