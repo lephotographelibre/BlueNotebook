@@ -1,4 +1,7 @@
 
+## V4.0.8 Fix Bug Context Menu disapear
+
+
 ## V4.0.7 Fix Issue [#111] [#110] [#102]
 
 - Fix Issue [#111](https://github.com/lephotographelibre/BlueNotebook/issues/111) V4.0.6 Add OS version to the "About" WIndows #111
