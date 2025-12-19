@@ -930,104 +930,93 @@ class MarkdownEditor(QWidget):
         # Appliquer le style à tous les sous-menus qui seront créés
         self.menu_stylesheet = menu_stylesheet
 
-        # Ajouter des actions personnalisées uniquement si du texte est sélectionné
-        cursor = self.text_edit.textCursor()
-        if cursor.hasSelection():
-            # Ajouter un séparateur pour distinguer les actions standard des nôtres
-            menu.addSeparator()
+        # Ajouter un séparateur pour distinguer les actions standard des nôtres
+        menu.addSeparator()
 
-            # --- Création des menus personnalisés ---
-            title_menu = QMenu(self.tr("Titres"), self)
-            title_menu.setStyleSheet(self.menu_stylesheet)
-            title_actions = [
-                (self.tr("Niv 1 (#)"), "h1"),
-                (self.tr("Niv 2 (##)"), "h2"),
-                (self.tr("Niv 3 (###)"), "h3"),
-                (self.tr("Niv 4 (####)"), "h4"),
-                (self.tr("Niv 5 (#####)"), "h5"),
-            ]
-            for name, data in title_actions:
-                action = title_menu.addAction(name)
-                action.triggered.connect(
-                    lambda checked=False, d=data: self.format_text(d)
-                )
-            menu.addMenu(title_menu)
+        # --- Création des menus personnalisés ---
+        title_menu = QMenu(self.tr("Titres"), self)
+        title_menu.setStyleSheet(self.menu_stylesheet)
+        title_actions = [
+            (self.tr("Niv 1 (#)"), "h1"),
+            (self.tr("Niv 2 (##)"), "h2"),
+            (self.tr("Niv 3 (###)"), "h3"),
+            (self.tr("Niv 4 (####)"), "h4"),
+            (self.tr("Niv 5 (#####)"), "h5"),
+        ]
+        for name, data in title_actions:
+            action = title_menu.addAction(name)
+            action.triggered.connect(lambda checked=False, d=data: self.format_text(d))
+        menu.addMenu(title_menu)
 
-            # --- Listes ---
-            list_menu = QMenu(self.tr("Listes"), self)
-            list_menu.setStyleSheet(self.menu_stylesheet)
-            list_actions = [
-                (self.tr("• Liste non ordonnée"), "ul"),
-                (self.tr("1. Liste ordonnée"), "ol"),
-                (self.tr("☑️ Liste de tâches"), "task_list"),
-            ]
-            for name, data in list_actions:
-                action = list_menu.addAction(name)
-                action.triggered.connect(
-                    lambda checked=False, d=data: self.format_text(d)
-                )
-            menu.addMenu(list_menu)
+        # --- Listes ---
+        list_menu = QMenu(self.tr("Listes"), self)
+        list_menu.setStyleSheet(self.menu_stylesheet)
+        list_actions = [
+            (self.tr("• Liste non ordonnée"), "ul"),
+            (self.tr("1. Liste ordonnée"), "ol"),
+            (self.tr("☑️ Liste de tâches"), "task_list"),
+        ]
+        for name, data in list_actions:
+            action = list_menu.addAction(name)
+            action.triggered.connect(lambda checked=False, d=data: self.format_text(d))
+        menu.addMenu(list_menu)
 
-            # --- Style de texte ---
-            style_menu = QMenu(self.tr("Style de texte"), self)
-            style_menu.setStyleSheet(self.menu_stylesheet)
-            bold_action = style_menu.addAction(self.tr("Gras"))
-            bold_action.triggered.connect(lambda: self.format_text("bold"))
-            italic_action = style_menu.addAction(self.tr("Italique"))
-            italic_action.triggered.connect(lambda: self.format_text("italic"))
-            strikethrough_action = style_menu.addAction(self.tr("Barré"))
-            strikethrough_action.triggered.connect(
-                lambda: self.format_text("strikethrough")
-            )
-            highlight_action = style_menu.addAction(self.tr("Surligné"))
-            highlight_action.triggered.connect(lambda: self.format_text("highlight"))
-            menu.addMenu(style_menu)
+        # --- Style de texte ---
+        style_menu = QMenu(self.tr("Style de texte"), self)
+        style_menu.setStyleSheet(self.menu_stylesheet)
+        bold_action = style_menu.addAction(self.tr("Gras"))
+        bold_action.triggered.connect(lambda: self.format_text("bold"))
+        italic_action = style_menu.addAction(self.tr("Italique"))
+        italic_action.triggered.connect(lambda: self.format_text("italic"))
+        strikethrough_action = style_menu.addAction(self.tr("Barré"))
+        strikethrough_action.triggered.connect(
+            lambda: self.format_text("strikethrough")
+        )
+        highlight_action = style_menu.addAction(self.tr("Surligné"))
+        highlight_action.triggered.connect(lambda: self.format_text("highlight"))
+        menu.addMenu(style_menu)
 
-            # --- Code ---
-            code_menu = QMenu(self.tr("Code"), self)
-            code_menu.setStyleSheet(self.menu_stylesheet)
-            inline_code_action = code_menu.addAction(self.tr("Monospace (inline)"))
-            inline_code_action.triggered.connect(
-                lambda: self.format_text("inline_code")
-            )
-            code_block_action = code_menu.addAction(self.tr("Bloc de code"))
-            code_block_action.triggered.connect(lambda: self.format_text("code_block"))
-            menu.addMenu(code_menu)
+        # --- Code ---
+        code_menu = QMenu(self.tr("Code"), self)
+        code_menu.setStyleSheet(self.menu_stylesheet)
+        inline_code_action = code_menu.addAction(self.tr("Monospace (inline)"))
+        inline_code_action.triggered.connect(lambda: self.format_text("inline_code"))
+        code_block_action = code_menu.addAction(self.tr("Bloc de code"))
+        code_block_action.triggered.connect(lambda: self.format_text("code_block"))
+        menu.addMenu(code_menu)
 
-            # --- Liens ---
-            link_menu = QMenu(self.tr("Liens"), self)
-            link_menu.setToolTip(self.tr("Insérer un lien (local ou distant)"))
-            link_menu.setStyleSheet(self.menu_stylesheet)
-            # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
-            markdown_link_action = link_menu.addAction(self.tr("🔗 Lien"))
-            markdown_link_action.triggered.connect(
-                self.main_window._handle_markdown_link
-            )
-            url_link_action = link_menu.addAction(self.tr("Lien URL/Email"))
-            url_link_action.triggered.connect(lambda: self.format_text("url_link"))
+        # --- Liens ---
+        link_menu = QMenu(self.tr("Liens"), self)
+        link_menu.setToolTip(self.tr("Insérer un lien (local ou distant)"))
+        link_menu.setStyleSheet(self.menu_stylesheet)
+        # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
+        markdown_link_action = link_menu.addAction(self.tr("🔗 Lien"))
+        markdown_link_action.triggered.connect(self.main_window._handle_markdown_link)
+        url_link_action = link_menu.addAction(self.tr("<> Lien URL/Email"))
+        url_link_action.triggered.connect(lambda: self.format_text("url_link"))
 
-            # Ajouter l'action pour le bookmark
-            bookmark_action = link_menu.addAction(self.tr("🔖 Bookmark"))
-            bookmark_action.triggered.connect(
-                self.main_window.insert_bookmark_action.trigger
-            )
+        # Ajouter l'action pour le bookmark
+        bookmark_action = link_menu.addAction(self.tr("🔖 Bookmark"))
+        bookmark_action.triggered.connect(
+            self.main_window.insert_bookmark_action.trigger
+        )
 
-            menu.addMenu(link_menu)
+        menu.addMenu(link_menu)
 
-            # V2.9.3 - Menu pour nettoyer le formatage de paragraphe
-            format_menu = QMenu(self.tr("Mise en forme"), self)
-            format_menu.setStyleSheet(self.menu_stylesheet)
+        # V2.9.3 - Menu pour nettoyer le formatage de paragraphe
+        format_menu = QMenu(self.tr("Mise en forme"), self)
+        format_menu.setStyleSheet(self.menu_stylesheet)
 
-            cleanup_action = format_menu.addAction(self.tr("Nettoyer le paragraphe"))
-            cleanup_action.triggered.connect(self.cleanup_paragraph)
+        cleanup_action = format_menu.addAction(self.tr("Nettoyer le paragraphe"))
+        cleanup_action.triggered.connect(self.cleanup_paragraph)
 
-            # V3.2.5 - Ajouter l'action pour supprimer les espaces en début de ligne
-            remove_indent_action = format_menu.addAction(
-                self.tr("Supprime les blancs en début de ligne")
-            )
-            remove_indent_action.triggered.connect(self.remove_leading_whitespace)
+        # V3.2.5 - Ajouter l'action pour supprimer les espaces en début de ligne
+        remove_indent_action = format_menu.addAction(
+            self.tr("Supprime les blancs en début de ligne")
+        )
+        remove_indent_action.triggered.connect(self.remove_leading_whitespace)
 
-            menu.addMenu(format_menu)
+        menu.addMenu(format_menu)
 
         # Afficher le menu à la position du curseur
         menu.exec_(self.text_edit.viewport().mapToGlobal(position))
@@ -1302,7 +1291,9 @@ class MarkdownEditor(QWidget):
             QMessageBox.warning(
                 self,
                 self.tr("Journal non défini"),
-                self.tr("Veuillez définir un répertoire de journal avant d'insérer une pièce jointe."),
+                self.tr(
+                    "Veuillez définir un répertoire de journal avant d'insérer une pièce jointe."
+                ),
             )
             return
 
@@ -1398,7 +1389,9 @@ class MarkdownEditor(QWidget):
                     QMessageBox.warning(
                         self,
                         self.tr("Type de fichier non autorisé"),
-                        self.tr("Le type de fichier distant '{content_type}' n'est pas autorisé.\n\nLes types MIME autorisés sont :\n{allowed_types}").format(
+                        self.tr(
+                            "Le type de fichier distant '{content_type}' n'est pas autorisé.\n\nLes types MIME autorisés sont :\n{allowed_types}"
+                        ).format(
                             content_type=content_type, allowed_types=allowed_types_str
                         ),
                     )
@@ -1438,7 +1431,9 @@ class MarkdownEditor(QWidget):
                     QMessageBox.warning(
                         self,
                         self.tr("Type de fichier non autorisé"),
-                        self.tr("Le type de fichier local '{file_extension}' n'est pas autorisé.\n\nLes extensions autorisées sont : {allowed_ext}").format(
+                        self.tr(
+                            "Le type de fichier local '{file_extension}' n'est pas autorisé.\n\nLes extensions autorisées sont : {allowed_ext}"
+                        ).format(
                             file_extension=file_extension, allowed_ext=allowed_ext_str
                         ),
                     )
@@ -1447,7 +1442,11 @@ class MarkdownEditor(QWidget):
             return f"attachments/{new_filename}"
         except Exception as e:
             QMessageBox.critical(
-                self, self.tr("Erreur de copie"), self.tr("Impossible de copier le fichier : {error}").format(error=str(e))
+                self,
+                self.tr("Erreur de copie"),
+                self.tr("Impossible de copier le fichier : {error}").format(
+                    error=str(e)
+                ),
             )
             return None
 
