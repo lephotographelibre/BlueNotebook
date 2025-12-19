@@ -992,7 +992,7 @@ class MarkdownEditor(QWidget):
         # V3.2.6 - Utiliser la nouvelle boîte de dialogue de lien
         markdown_link_action = link_menu.addAction(self.tr("🔗 Lien"))
         markdown_link_action.triggered.connect(self.main_window._handle_markdown_link)
-        url_link_action = link_menu.addAction(self.tr("Lien URL/Email"))
+        url_link_action = link_menu.addAction(self.tr("<> Lien URL/Email"))
         url_link_action.triggered.connect(lambda: self.format_text("url_link"))
 
         # Ajouter l'action pour le bookmark

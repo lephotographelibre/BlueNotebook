@@ -65,3 +65,14 @@ kate i18n/bluenotebook_en.ts  (change @default --> MainContext)
 linguist i18n/bluenotebook_en.ts
 lrelease i18n/bluenotebook_en.ts i18n/bluenotebook_en.qm
 ./run_bluenotebook.sh 
+
+
+cd BlueNotebook
+pyenv activate .venv_bluenotebook
+cd bluenotebook/
+./update_translations_pyqt5.sh 
+
+
+
+*** ne pas oublier: pyenv activate .venv_bluenotebook *****
+

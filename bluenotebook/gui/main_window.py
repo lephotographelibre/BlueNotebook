@@ -1289,7 +1289,7 @@ class MainWindow(QMainWindow):
                 QKeySequence("Ctrl+Shift+I"),
             ),
             (self.tr("🔗 Lien"), "markdown_link"),
-            (self.tr("Lien URL/Email"), "url_link"),
+            (self.tr("<> Lien URL/Email"), "url_link"),
             (self.tr("📎 Attachement"), "attachment"),
         ]
 

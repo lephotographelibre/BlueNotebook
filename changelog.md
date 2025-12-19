@@ -1,6 +1,9 @@
 
 ## V4.0.8 Fix Bug Context Menu disapear
 
+- Fix Bug Context Menu disapear --> git commit -a -m "V4.0.8 Fix Ctx Menu Editor"
+- Modify "Lien URL/Email" --> "<> Lien URL/Email" for Ctx Menu Editor and Menu + translations
+
 
 ## V4.0.7 Fix Issue [#111] [#110] [#102]
 
