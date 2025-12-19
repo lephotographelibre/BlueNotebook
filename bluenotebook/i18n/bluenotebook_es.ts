@@ -163,19 +163,6 @@
     </message>
 </context>
 <context>
-    <name>BookmarkWorker</name>
-    <message>
-        <location filename="../gui/bookmark_handler.py" line="47"/>
-        <source>URL invalide ou inaccessible : {error}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/bookmark_handler.py" line="53"/>
-        <source>Erreur inattendue : {error}</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CustomWebEngineView</name>
     <message>
         <location filename="../gui/epub_reader_panel.py" line="205"/>
@@ -1492,11 +1479,6 @@ Voulez-vous quand même l'utiliser comme journal ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="1292"/>
-        <source>Lien URL/Email</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../gui/main_window.py" line="1293"/>
         <source>📎 Attachement</source>
         <translation type="unfinished"></translation>
@@ -2286,6 +2268,11 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
         <source>&lt;h2&gt; BlueNotebook V{app_version}&lt;/h2&gt;&lt;p&gt; Motorisé par {os_name} &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Éditeur de journal personnel &lt;/b&gt;&lt;/p&gt;&lt;p&gt;Basé sur un éditeur de texte Markdown avec aperçu HTML en temps réel,développé avec PyQt5 et QWebEngine.&lt;/p&gt;&lt;p&gt;A partir d'une idée initiale de Jendrik Seipp &lt;a href='https://github.com/jendrikseipp/rednotebook'&gt;RedNotebook&lt;/a&gt; &lt;/p&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Fonctionnalités :&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Gestion d'un journal Personnel&lt;/li&gt;&lt;li&gt;Navigation simple dans les notes du journal&lt;/li&gt;&lt;li&gt;Sauvegarde/Restauration Journal&lt;/li&gt;&lt;li&gt;Édition avec coloration syntaxique &lt;/li&gt;&lt;li&gt;Aperçu HTML en temps réel&lt;/li&gt;&lt;li&gt;Export HTML/PDF du journal complet ou partiel&lt;/li&gt;&lt;li&gt;Gestion de Templates personnalisables&lt;/li&gt;&lt;li&gt;Gestion de tags / Recherche par tags&lt;/li&gt;&lt;li&gt;Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo&lt;/li&gt;&lt;li&gt;Lecteur EPUB/PDF intégré avec recherche&lt;/li&gt;&lt;li&gt;Gestion de tâches / TODO Listes&lt;/li&gt;&lt;/ul&gt;&lt;h2&gt;_____________________________________________________________&lt;/h2&gt;&lt;p&gt;Dépôt GitHub : &lt;a href='https://github.com/lephotographelibre/BlueNotebook'&gt;BlueNotebook&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Licence : &lt;a href='https://www.gnu.org/licenses/gpl-3.0.html'&gt;GNU GPLv3&lt;/a&gt;&lt;/p&gt;&lt;p&gt;© 2025 BlueNotebook by Jean-Marc DIGNE&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../gui/main_window.py" line="1292"/>
+        <source>&lt;&gt; Lien URL/Email</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MarkdownEditor</name>
@@ -2295,162 +2282,157 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="940"/>
+        <location filename="../gui/editor.py" line="937"/>
         <source>Titres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="943"/>
+        <location filename="../gui/editor.py" line="940"/>
         <source>Niv 1 (#)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="944"/>
+        <location filename="../gui/editor.py" line="941"/>
         <source>Niv 2 (##)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="945"/>
+        <location filename="../gui/editor.py" line="942"/>
         <source>Niv 3 (###)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="946"/>
+        <location filename="../gui/editor.py" line="943"/>
         <source>Niv 4 (####)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="947"/>
+        <location filename="../gui/editor.py" line="944"/>
         <source>Niv 5 (#####)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="957"/>
+        <location filename="../gui/editor.py" line="952"/>
         <source>Listes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="960"/>
+        <location filename="../gui/editor.py" line="955"/>
         <source>• Liste non ordonnée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="961"/>
+        <location filename="../gui/editor.py" line="956"/>
         <source>1. Liste ordonnée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="962"/>
+        <location filename="../gui/editor.py" line="957"/>
         <source>☑️ Liste de tâches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="972"/>
+        <location filename="../gui/editor.py" line="965"/>
         <source>Style de texte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="974"/>
+        <location filename="../gui/editor.py" line="967"/>
         <source>Gras</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="976"/>
+        <location filename="../gui/editor.py" line="969"/>
         <source>Italique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="978"/>
+        <location filename="../gui/editor.py" line="971"/>
         <source>Barré</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="982"/>
+        <location filename="../gui/editor.py" line="975"/>
         <source>Surligné</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="987"/>
+        <location filename="../gui/editor.py" line="980"/>
         <source>Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="989"/>
+        <location filename="../gui/editor.py" line="982"/>
         <source>Monospace (inline)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="993"/>
+        <location filename="../gui/editor.py" line="984"/>
         <source>Bloc de code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="998"/>
+        <location filename="../gui/editor.py" line="989"/>
         <source>Liens</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="999"/>
+        <location filename="../gui/editor.py" line="990"/>
         <source>Insérer un lien (local ou distant)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1002"/>
+        <location filename="../gui/editor.py" line="993"/>
         <source>🔗 Lien</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1006"/>
-        <source>Lien URL/Email</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/editor.py" line="1010"/>
+        <location filename="../gui/editor.py" line="999"/>
         <source>🔖 Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1018"/>
+        <location filename="../gui/editor.py" line="1007"/>
         <source>Mise en forme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1021"/>
+        <location filename="../gui/editor.py" line="1010"/>
         <source>Nettoyer le paragraphe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1025"/>
+        <location filename="../gui/editor.py" line="1014"/>
         <source>Supprime les blancs en début de ligne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1282"/>
+        <location filename="../gui/editor.py" line="1271"/>
         <source>Largeur de l&apos;image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1282"/>
+        <location filename="../gui/editor.py" line="1271"/>
         <source>Largeur maximale en pixels :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1302"/>
+        <location filename="../gui/editor.py" line="1291"/>
         <source>Journal non défini</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1302"/>
+        <location filename="../gui/editor.py" line="1291"/>
         <source>Veuillez définir un répertoire de journal avant d'insérer une pièce jointe.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1438"/>
+        <location filename="../gui/editor.py" line="1431"/>
         <source>Type de fichier non autorisé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1398"/>
+        <location filename="../gui/editor.py" line="1389"/>
         <source>Le type de fichier distant '{content_type}' n'est pas autorisé.
 
 Les types MIME autorisés sont :
@@ -2458,20 +2440,25 @@ Les types MIME autorisés sont :
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1438"/>
+        <location filename="../gui/editor.py" line="1431"/>
         <source>Le type de fichier local '{file_extension}' n'est pas autorisé.
 
 Les extensions autorisées sont : {allowed_ext}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1449"/>
+        <location filename="../gui/editor.py" line="1444"/>
         <source>Erreur de copie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/editor.py" line="1449"/>
+        <location filename="../gui/editor.py" line="1444"/>
         <source>Impossible de copier le fichier : {error}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/editor.py" line="995"/>
+        <source>&lt;&gt; Lien URL/Email</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4067,29 +4054,18 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="68"/>
+        <location filename="../gui/bookmark_handler.py" line="28"/>
         <source>Insérer un Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="68"/>
+        <location filename="../gui/bookmark_handler.py" line="28"/>
         <source>Entrez l&apos;URL de la page :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/bookmark_handler.py" line="95"/>
+        <location filename="../gui/bookmark_handler.py" line="51"/>
         <source>Bookmark inséré avec succès.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/bookmark_handler.py" line="102"/>
-        <source>Impossible de traiter l&apos;URL &apos;{url}&apos; :
-{error}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/bookmark_handler.py" line="106"/>
-        <source>Erreur de Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
