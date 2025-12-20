@@ -2541,109 +2541,114 @@ Les extensions autorisées sont : {allowed_ext}</translation>
         <translation>Aperçu HTML</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="396"/>
+        <location filename="../gui/preview.py" line="399"/>
         <source>Copier</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="402"/>
+        <location filename="../gui/preview.py" line="405"/>
         <source>Tout sélectionner</source>
         <translation>Tout sélectionner</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="409"/>
+        <location filename="../gui/preview.py" line="412"/>
         <source>Recharger</source>
         <translation>Recharger</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="414"/>
+        <location filename="../gui/preview.py" line="417"/>
         <source>Ouvrir dans le navigateur</source>
         <translation>Ouvrir dans le navigateur</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="266"/>
+        <location filename="../gui/preview.py" line="269"/>
         <source>🔵 Bienvenue dans BlueNotebook</source>
         <translation>🔵 Bienvenue dans BlueNotebook</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="267"/>
+        <location filename="../gui/preview.py" line="270"/>
         <source>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</source>
         <translation>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="270"/>
+        <location filename="../gui/preview.py" line="273"/>
         <source>📝 Syntaxe Markdown supportée :</source>
         <translation>📝 Syntaxe Markdown supportée :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="271"/>
+        <location filename="../gui/preview.py" line="274"/>
         <source>Titres</source>
         <translation>Titres</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="272"/>
+        <location filename="../gui/preview.py" line="275"/>
         <source>Mise en forme</source>
         <translation>Mise en forme</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="273"/>
+        <location filename="../gui/preview.py" line="276"/>
         <source>Gras</source>
         <translation>Gras</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="274"/>
+        <location filename="../gui/preview.py" line="277"/>
         <source>Italique</source>
         <translation>Italique</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="275"/>
+        <location filename="../gui/preview.py" line="278"/>
         <source>Code inline</source>
         <translation>Code inline</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="276"/>
+        <location filename="../gui/preview.py" line="279"/>
         <source>Listes</source>
         <translation>Listes</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="277"/>
+        <location filename="../gui/preview.py" line="280"/>
         <source>Liste à puces :</source>
         <translation>Liste à puces :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="278"/>
+        <location filename="../gui/preview.py" line="281"/>
         <source>Liste numérotée :</source>
         <translation>Liste numérotée :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="279"/>
+        <location filename="../gui/preview.py" line="282"/>
         <source>Autres</source>
         <translation>Autres</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="280"/>
+        <location filename="../gui/preview.py" line="283"/>
         <source>Citations :</source>
         <translation>Citations :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="281"/>
+        <location filename="../gui/preview.py" line="284"/>
         <source>Liens :</source>
         <translation>Liens :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="282"/>
+        <location filename="../gui/preview.py" line="285"/>
         <source>Images :</source>
         <translation>Images :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="283"/>
+        <location filename="../gui/preview.py" line="286"/>
         <source>Tables :</source>
         <translation>Tables :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="284"/>
+        <location filename="../gui/preview.py" line="287"/>
         <source>Code :</source>
         <translation>Code :</translation>
+    </message>
+    <message>
+        <location filename="../gui/preview.py" line="232"/>
+        <source>📋 Table des matières</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -227,7 +227,10 @@ class MarkdownPreview(QWidget):
         """Créer le template HTML complet"""
         toc_html = ""
         if hasattr(self.md, "toc") and self.md.toc:
-            toc_html = f'<div class="toc"><h2>{self.tr("📋 Table des matières")}</h2>{self.md.toc}</div>'
+            # Correction i18n : Extraire self.tr() de la f-string pour que
+            # l'outil de traduction (pylupdate5) puisse détecter la chaîne.
+            toc_title = self.tr("📋 Table des matières")
+            toc_html = f'<div class="toc"><h2>{toc_title}</h2>{self.md.toc}</div>'
 
         # V2.7.7 - Ajout d'un style pour limiter la taille des images Markdown
         # Cette règle s'applique aux images qui ne sont pas dans une <figure>
