@@ -3041,24 +3041,24 @@ Make sure you have installed 'markitdown[pdf]'.</translation>
 <context>
     <name>PdfExporterContext</name>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="113"/>
+        <location filename="../integrations/pdf_exporter.py" line="118"/>
         <source>Période du {start} au {end}</source>
         <translation>Period from {start} to {end}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="193"/>
+        <location filename="../integrations/pdf_exporter.py" line="198"/>
         <source>La bibliothèque 'WeasyPrint' est requise.
 Installez-la avec : pip install WeasyPrint</source>
         <translation>The 'WeasyPrint' library is required.
 Install it with: pip install WeasyPrint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>Module manquant</source>
         <translation>Missing module</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>WeasyPrint n'est pas installé.
 
 Pour utiliser cette fonctionnalité, installez-le avec:
@@ -3069,78 +3069,88 @@ To use this feature, install it with:
 pip install weasyprint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="245"/>
+        <location filename="../integrations/pdf_exporter.py" line="250"/>
         <source>Exporter en PDF</source>
         <translation>Export to PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Fichiers PDF (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="296"/>
+        <location filename="../integrations/pdf_exporter.py" line="301"/>
         <source>Exporté en PDF : {filename}</source>
         <translation>Exported to PDF: {filename}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Impossible d&apos;exporter en PDF :
 {error}</source>
         <translation>Could not export to PDF:
 {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Exportation impossible</source>
         <translation>Export impossible</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Aucun répertoire de journal n'est actuellement défini.</source>
         <translation>No journal directory is currently set.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Journal vide</source>
         <translation>Empty journal</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Aucune note à exporter dans le journal.</source>
         <translation>No notes to export in the journal.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note</source>
         <translation>No notes</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note trouvée pour les critères sélectionnés.</source>
         <translation>No notes found for the selected criteria.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Exporter le journal en PDF</source>
         <translation>Export journal to PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Erreur d&apos;exportation</source>
         <translation>Export error</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Une erreur est survenue lors de la création du PDF :
 {error}</source>
         <translation>An error occurred while creating the PDF:
 {error}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="105"/>
+        <source>Auteur : {author}</source>
+        <translation>Author : {author}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="115"/>
+        <source>Filtré par tag : &lt;strong&gt;{tag}&lt;/strong&gt;</source>
+        <translation>Filtered by tag: &lt;strong&gt;{tag}&lt;/strong&gt;</translation>
     </message>
 </context>
 <context>

@@ -3041,24 +3041,24 @@ Assurez-vous d'avoir installé 'markitdown[pdf]'.</translation>
 <context>
     <name>PdfExporterContext</name>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="113"/>
+        <location filename="../integrations/pdf_exporter.py" line="118"/>
         <source>Période du {start} au {end}</source>
         <translation>Période du {start} au {end}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="193"/>
+        <location filename="../integrations/pdf_exporter.py" line="198"/>
         <source>La bibliothèque 'WeasyPrint' est requise.
 Installez-la avec : pip install WeasyPrint</source>
         <translation>La bibliothèque 'WeasyPrint' est requise.
 Installez-la avec : pip install WeasyPrint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>Module manquant</source>
         <translation>Module manquant</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>WeasyPrint n'est pas installé.
 
 Pour utiliser cette fonctionnalité, installez-le avec:
@@ -3069,78 +3069,88 @@ Pour utiliser cette fonctionnalité, installez-le avec:
 pip install weasyprint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="245"/>
+        <location filename="../integrations/pdf_exporter.py" line="250"/>
         <source>Exporter en PDF</source>
         <translation>Exporter en PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Fichiers PDF (*.pdf)</source>
         <translation>Fichiers PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="296"/>
+        <location filename="../integrations/pdf_exporter.py" line="301"/>
         <source>Exporté en PDF : {filename}</source>
         <translation>Exporté en PDF : {filename}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Erreur</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Impossible d&apos;exporter en PDF :
 {error}</source>
         <translation>Impossible d'exporter en PDF :
 {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Exportation impossible</source>
         <translation>Exportation impossible</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Aucun répertoire de journal n'est actuellement défini.</source>
         <translation>Aucun répertoire de journal n'est actuellement défini.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Journal vide</source>
         <translation>Journal vide</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Aucune note à exporter dans le journal.</source>
         <translation>Aucune note à exporter dans le journal.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note</source>
         <translation>Aucune note</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note trouvée pour les critères sélectionnés.</source>
         <translation>Aucune note trouvée pour les critères sélectionnés.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Exporter le journal en PDF</source>
         <translation>Exporter le journal en PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Erreur d&apos;exportation</source>
         <translation>Erreur d'exportation</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Une erreur est survenue lors de la création du PDF :
 {error}</source>
         <translation>Une erreur est survenue lors de la création du PDF :
 {error}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="105"/>
+        <source>Auteur : {author}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="115"/>
+        <source>Filtré par tag : &lt;strong&gt;{tag}&lt;/strong&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
