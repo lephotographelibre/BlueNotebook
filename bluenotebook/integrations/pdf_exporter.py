@@ -32,6 +32,7 @@ from gui.date_range_dialog import DateRangeDialog
 # This will create a circular import if MainWindow is imported directly.
 # We will pass MainWindow as an argument to the functions.
 
+
 class PdfExporterContext:
     @staticmethod
     def tr(text):
@@ -98,21 +99,25 @@ class PdfExportWorker(QRunnable):
         )
 
         pdf_author = options.get("author", "")
-        author_html = (
-            f'<p class="cover-author">{PdfExporterContext.tr("Auteur : {author}").format(author=pdf_author)}</p>' if pdf_author else ""
-        )
+        author_html = ""
+        if pdf_author:
+            # Correction i18n : Extraire tr() de la f-string pour que l'outil de traduction détecte la chaîne
+            author_fmt = PdfExporterContext.tr("Auteur : {author}")
+            author_html = (
+                f'<p class="cover-author">{author_fmt.format(author=pdf_author)}</p>'
+            )
 
         # V2.9.2 - Ajouter le tag de filtre sur la page de garde s'il existe
         selected_tag = options.get("selected_tag")
-        tag_html = (
-            f'<p class="cover-tag">{PdfExporterContext.tr("Filtré par tag : <strong>{tag}</strong>").format(tag=selected_tag)}</p>'
-            if selected_tag
-            else ""
-        )
+        tag_html = ""
+        if selected_tag:
+            # Correction i18n : Extraire tr() de la f-string
+            tag_fmt = PdfExporterContext.tr("Filtré par tag : <strong>{tag}</strong>")
+            tag_html = f'<p class="cover-tag">{tag_fmt.format(tag=selected_tag)}</p>'
 
         period_text = PdfExporterContext.tr("Période du {start} au {end}").format(
-            start=options['start_date'].toString('d MMMM yyyy'),
-            end=options['end_date'].toString('d MMMM yyyy')
+            start=options["start_date"].toString("d MMMM yyyy"),
+            end=options["end_date"].toString("d MMMM yyyy"),
         )
 
         cover_page_html = f"""
@@ -191,9 +196,9 @@ class PdfExportWorker(QRunnable):
 
         except ImportError:
             message = PdfExporterContext.tr(
-"La bibliothèque 'WeasyPrint' est requise.\n"
-"Installez-la avec : pip install WeasyPrint"
-)
+                "La bibliothèque 'WeasyPrint' est requise.\n"
+                "Installez-la avec : pip install WeasyPrint"
+            )
             self.signals.error.emit(message)
         except Exception as e:
             self.signals.error.emit(str(e))
@@ -221,10 +226,10 @@ def export_single_pdf(main_window):
             main_window,
             PdfExporterContext.tr("Module manquant"),
             PdfExporterContext.tr(
-"WeasyPrint n'est pas installé.\n\n"
-"Pour utiliser cette fonctionnalité, installez-le avec:\n"
-"pip install weasyprint"
-),
+                "WeasyPrint n'est pas installé.\n\n"
+                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+                "pip install weasyprint"
+            ),
         )
         return
 
@@ -293,14 +298,23 @@ def export_single_pdf(main_window):
         html = HTML(string=html_content, base_url=base_url)
         html.write_pdf(filename, stylesheets=[CSS(string=content_css_string)])
 
-        main_window.statusbar.showMessage(PdfExporterContext.tr("Exporté en PDF : {filename}").format(filename=filename), 3000)
+        main_window.statusbar.showMessage(
+            PdfExporterContext.tr("Exporté en PDF : {filename}").format(
+                filename=filename
+            ),
+            3000,
+        )
         main_window.settings_manager.set(
             "pdf.last_directory", str(Path(filename).parent)
         )
         main_window.settings_manager.save_settings()
     except Exception as e:
         QMessageBox.critical(
-            main_window, PdfExporterContext.tr("Erreur"), PdfExporterContext.tr("Impossible d'exporter en PDF :\n{error}").format(error=str(e))
+            main_window,
+            PdfExporterContext.tr("Erreur"),
+            PdfExporterContext.tr("Impossible d'exporter en PDF :\n{error}").format(
+                error=str(e)
+            ),
         )
 
 
@@ -313,10 +327,10 @@ def export_journal_to_pdf(main_window):
             main_window,
             PdfExporterContext.tr("Module manquant"),
             PdfExporterContext.tr(
-"WeasyPrint n'est pas installé.\n\n"
-"Pour utiliser cette fonctionnalité, installez-le avec:\n"
-"pip install weasyprint"
-),
+                "WeasyPrint n'est pas installé.\n\n"
+                "Pour utiliser cette fonctionnalité, installez-le avec:\n"
+                "pip install weasyprint"
+            ),
         )
         return
 
@@ -324,7 +338,9 @@ def export_journal_to_pdf(main_window):
         QMessageBox.warning(
             main_window,
             PdfExporterContext.tr("Exportation impossible"),
-            PdfExporterContext.tr("Aucun répertoire de journal n'est actuellement défini."),
+            PdfExporterContext.tr(
+                "Aucun répertoire de journal n'est actuellement défini."
+            ),
         )
         return
 
@@ -348,7 +364,9 @@ def export_journal_to_pdf(main_window):
 
     if not note_files:
         QMessageBox.information(
-            main_window, PdfExporterContext.tr("Journal vide"), PdfExporterContext.tr("Aucune note à exporter dans le journal.")
+            main_window,
+            PdfExporterContext.tr("Journal vide"),
+            PdfExporterContext.tr("Aucune note à exporter dans le journal."),
         )
         return
 
@@ -416,7 +434,9 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
         QMessageBox.information(
             main_window,
             PdfExporterContext.tr("Aucune note"),
-            PdfExporterContext.tr("Aucune note trouvée pour les critères sélectionnés."),
+            PdfExporterContext.tr(
+                "Aucune note trouvée pour les critères sélectionnés."
+            ),
         )
         return
 
@@ -481,5 +501,7 @@ def export_journal_to_pdf_worker(main_window, options, note_files, tags_index_pa
         QMessageBox.critical(
             main_window,
             PdfExporterContext.tr("Erreur d'exportation"),
-            PdfExporterContext.tr("Une erreur est survenue lors de la création du PDF :\n{error}").format(error=str(e)),
+            PdfExporterContext.tr(
+                "Une erreur est survenue lors de la création du PDF :\n{error}"
+            ).format(error=str(e)),
         )

@@ -40,7 +40,7 @@ def handle_insert_bookmark(main_window):
     icon = "🐙" if is_github else "🔖"
 
     if is_github:
-        markdown_link = f"{icon} [{url}]({url})"
+        markdown_link = f"{icon} [Github | {url}]({url})"
     else:
         markdown_link = f"{icon} [Bookmark | {url}]({url})"
 

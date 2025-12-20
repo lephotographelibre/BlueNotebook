@@ -2478,108 +2478,113 @@ Les extensions autorisées sont : {allowed_ext}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="396"/>
+        <location filename="../gui/preview.py" line="399"/>
         <source>Copier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="402"/>
+        <location filename="../gui/preview.py" line="405"/>
         <source>Tout sélectionner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="409"/>
+        <location filename="../gui/preview.py" line="412"/>
         <source>Recharger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="414"/>
+        <location filename="../gui/preview.py" line="417"/>
         <source>Ouvrir dans le navigateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="266"/>
+        <location filename="../gui/preview.py" line="269"/>
         <source>🔵 Bienvenue dans BlueNotebook</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="267"/>
+        <location filename="../gui/preview.py" line="270"/>
         <source>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="270"/>
+        <location filename="../gui/preview.py" line="273"/>
         <source>📝 Syntaxe Markdown supportée :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="271"/>
+        <location filename="../gui/preview.py" line="274"/>
         <source>Titres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="272"/>
+        <location filename="../gui/preview.py" line="275"/>
         <source>Mise en forme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="273"/>
+        <location filename="../gui/preview.py" line="276"/>
         <source>Gras</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="274"/>
+        <location filename="../gui/preview.py" line="277"/>
         <source>Italique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="275"/>
+        <location filename="../gui/preview.py" line="278"/>
         <source>Code inline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="276"/>
+        <location filename="../gui/preview.py" line="279"/>
         <source>Listes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="277"/>
+        <location filename="../gui/preview.py" line="280"/>
         <source>Liste à puces :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="278"/>
+        <location filename="../gui/preview.py" line="281"/>
         <source>Liste numérotée :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="279"/>
+        <location filename="../gui/preview.py" line="282"/>
         <source>Autres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="280"/>
+        <location filename="../gui/preview.py" line="283"/>
         <source>Citations :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="281"/>
+        <location filename="../gui/preview.py" line="284"/>
         <source>Liens :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="282"/>
+        <location filename="../gui/preview.py" line="285"/>
         <source>Images :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="283"/>
+        <location filename="../gui/preview.py" line="286"/>
         <source>Tables :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="284"/>
+        <location filename="../gui/preview.py" line="287"/>
         <source>Code :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/preview.py" line="232"/>
+        <source>📋 Table des matières</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2957,23 +2962,23 @@ Assurez-vous d'avoir installé 'markitdown[pdf]'.</source>
 <context>
     <name>PdfExporterContext</name>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="113"/>
+        <location filename="../integrations/pdf_exporter.py" line="118"/>
         <source>Période du {start} au {end}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="193"/>
+        <location filename="../integrations/pdf_exporter.py" line="198"/>
         <source>La bibliothèque 'WeasyPrint' est requise.
 Installez-la avec : pip install WeasyPrint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>Module manquant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>WeasyPrint n'est pas installé.
 
 Pour utiliser cette fonctionnalité, installez-le avec:
@@ -2981,75 +2986,85 @@ pip install weasyprint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="245"/>
+        <location filename="../integrations/pdf_exporter.py" line="250"/>
         <source>Exporter en PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Fichiers PDF (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="296"/>
+        <location filename="../integrations/pdf_exporter.py" line="301"/>
         <source>Exporté en PDF : {filename}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Impossible d&apos;exporter en PDF :
 {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Exportation impossible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Aucun répertoire de journal n'est actuellement défini.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Journal vide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Aucune note à exporter dans le journal.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note trouvée pour les critères sélectionnés.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Exporter le journal en PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Erreur d&apos;exportation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Une erreur est survenue lors de la création du PDF :
 {error}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="105"/>
+        <source>Auteur : {author}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="115"/>
+        <source>Filtré par tag : &lt;strong&gt;{tag}&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
