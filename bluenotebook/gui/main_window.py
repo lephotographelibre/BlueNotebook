@@ -119,7 +119,10 @@ from integrations.youtube_video import (
     TranscriptWorker,
 )
 from integrations.sun_moon import get_sun_moon_markdown
-from integrations.gps_map_handler import generate_gps_map_markdown
+from integrations.gps_map_handler import (
+    generate_gps_map_markdown,
+    parse_gps_coordinates,
+)
 from integrations.url_to_markdown_handler import (
     run_url_to_markdown_conversion,
 )
@@ -2524,17 +2527,8 @@ class MainWindow(QMainWindow):
 
         lat, lon = None, None
         selected_text = self.editor.text_edit.textCursor().selectedText().strip()
-        if (
-            selected_text
-            and selected_text.startswith("[")
-            and selected_text.endswith("]")
-        ):
-            try:
-                coords = json.loads(selected_text)
-                if isinstance(coords, list) and len(coords) == 2:
-                    lat, lon = float(coords[0]), float(coords[1])
-            except (json.JSONDecodeError, ValueError, TypeError):
-                pass  # Si le parsing échoue, on ouvre la boîte de dialogue
+        if selected_text:
+            lat, lon = parse_gps_coordinates(selected_text)
 
         if lat is None:
             gps_dialog = GpsInputDialog(self)
