@@ -1,4 +1,4 @@
-## V4.0.9 Fix Issue [#100] [#116]
+## V4.0.9 Fix Issue [#100] [#116] [#101]
 
 - Fix Issue [#100](https://github.com/lephotographelibre/BlueNotebook/issues/100)
 - MAJ requirements_linux_3.13.5.txt
