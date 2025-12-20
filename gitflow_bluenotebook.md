@@ -64,7 +64,7 @@ Everything up-to-date
 $ git merge --no-ff develop
 Updating ea1b82a..05e9557
 (Summary of changes)
-$ git merge --no-ff release-1.2
+$ 
 Merge made by the 'ort' strategy.
 (Summary of changes)
 ```
@@ -92,7 +92,7 @@ $ git pull
 Déjà à jour.
 $ git tag -a v1.0.0 -m "Version stable initiale"
 $ git show v1.0.0 
-$ git git push origin v1.0.0   -- verify on github and create new release if appropriate
+$ git push origin v1.0.0   -- verify on github and create new release if appropriate
 ```
 ## Creating the hotfix branch
 

@@ -2536,22 +2536,22 @@ Allowed extensions are: {allowed_ext}</translation>
 <context>
     <name>MarkdownPreview</name>
     <message>
-        <location filename="../gui/preview.py" line="396"/>
+        <location filename="../gui/preview.py" line="399"/>
         <source>Copier</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="402"/>
+        <location filename="../gui/preview.py" line="405"/>
         <source>Tout sélectionner</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="409"/>
+        <location filename="../gui/preview.py" line="412"/>
         <source>Recharger</source>
         <translation>Reload</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="414"/>
+        <location filename="../gui/preview.py" line="417"/>
         <source>Ouvrir dans le navigateur</source>
         <translation>Open in browser</translation>
     </message>
@@ -2561,89 +2561,94 @@ Allowed extensions are: {allowed_ext}</translation>
         <translation>HTML Preview</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="266"/>
+        <location filename="../gui/preview.py" line="269"/>
         <source>🔵 Bienvenue dans BlueNotebook</source>
         <translation>🔵 Welcome to BlueNotebook</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="267"/>
+        <location filename="../gui/preview.py" line="270"/>
         <source>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</source>
         <translation>Start typing Markdown in the editor to see the preview here.</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="270"/>
+        <location filename="../gui/preview.py" line="273"/>
         <source>📝 Syntaxe Markdown supportée :</source>
         <translation>📝 Supported Markdown syntax:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="271"/>
+        <location filename="../gui/preview.py" line="274"/>
         <source>Titres</source>
         <translation>Titles</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="272"/>
+        <location filename="../gui/preview.py" line="275"/>
         <source>Mise en forme</source>
         <translation>Formatting</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="273"/>
+        <location filename="../gui/preview.py" line="276"/>
         <source>Gras</source>
         <translation>Bold</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="274"/>
+        <location filename="../gui/preview.py" line="277"/>
         <source>Italique</source>
         <translation>Italic</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="275"/>
+        <location filename="../gui/preview.py" line="278"/>
         <source>Code inline</source>
         <translation>Inline code</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="276"/>
+        <location filename="../gui/preview.py" line="279"/>
         <source>Listes</source>
         <translation>Lists</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="277"/>
+        <location filename="../gui/preview.py" line="280"/>
         <source>Liste à puces :</source>
         <translation>Bulleted list:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="278"/>
+        <location filename="../gui/preview.py" line="281"/>
         <source>Liste numérotée :</source>
         <translation>Numbered list:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="279"/>
+        <location filename="../gui/preview.py" line="282"/>
         <source>Autres</source>
         <translation>Others</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="280"/>
+        <location filename="../gui/preview.py" line="283"/>
         <source>Citations :</source>
         <translation>Quotes :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="281"/>
+        <location filename="../gui/preview.py" line="284"/>
         <source>Liens :</source>
         <translation>Links :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="282"/>
+        <location filename="../gui/preview.py" line="285"/>
         <source>Images :</source>
         <translation>Images :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="283"/>
+        <location filename="../gui/preview.py" line="286"/>
         <source>Tables :</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="284"/>
+        <location filename="../gui/preview.py" line="287"/>
         <source>Code :</source>
         <translation>Code :</translation>
+    </message>
+    <message>
+        <location filename="../gui/preview.py" line="232"/>
+        <source>📋 Table des matières</source>
+        <translation>📋 Table of Contents</translation>
     </message>
 </context>
 <context>
@@ -3036,24 +3041,24 @@ Make sure you have installed 'markitdown[pdf]'.</translation>
 <context>
     <name>PdfExporterContext</name>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="113"/>
+        <location filename="../integrations/pdf_exporter.py" line="118"/>
         <source>Période du {start} au {end}</source>
         <translation>Period from {start} to {end}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="193"/>
+        <location filename="../integrations/pdf_exporter.py" line="198"/>
         <source>La bibliothèque 'WeasyPrint' est requise.
 Installez-la avec : pip install WeasyPrint</source>
         <translation>The 'WeasyPrint' library is required.
 Install it with: pip install WeasyPrint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>Module manquant</source>
         <translation>Missing module</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="312"/>
+        <location filename="../integrations/pdf_exporter.py" line="326"/>
         <source>WeasyPrint n'est pas installé.
 
 Pour utiliser cette fonctionnalité, installez-le avec:
@@ -3064,78 +3069,88 @@ To use this feature, install it with:
 pip install weasyprint</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="245"/>
+        <location filename="../integrations/pdf_exporter.py" line="250"/>
         <source>Exporter en PDF</source>
         <translation>Export to PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Fichiers PDF (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="296"/>
+        <location filename="../integrations/pdf_exporter.py" line="301"/>
         <source>Exporté en PDF : {filename}</source>
         <translation>Exported to PDF: {filename}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="302"/>
+        <location filename="../integrations/pdf_exporter.py" line="312"/>
         <source>Impossible d&apos;exporter en PDF :
 {error}</source>
         <translation>Could not export to PDF:
 {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Exportation impossible</source>
         <translation>Export impossible</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="324"/>
+        <location filename="../integrations/pdf_exporter.py" line="338"/>
         <source>Aucun répertoire de journal n'est actuellement défini.</source>
         <translation>No journal directory is currently set.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Journal vide</source>
         <translation>Empty journal</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="350"/>
+        <location filename="../integrations/pdf_exporter.py" line="366"/>
         <source>Aucune note à exporter dans le journal.</source>
         <translation>No notes to export in the journal.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note</source>
         <translation>No notes</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="416"/>
+        <location filename="../integrations/pdf_exporter.py" line="434"/>
         <source>Aucune note trouvée pour les critères sélectionnés.</source>
         <translation>No notes found for the selected criteria.</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="430"/>
+        <location filename="../integrations/pdf_exporter.py" line="450"/>
         <source>Exporter le journal en PDF</source>
         <translation>Export journal to PDF</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Erreur d&apos;exportation</source>
         <translation>Export error</translation>
     </message>
     <message>
-        <location filename="../integrations/pdf_exporter.py" line="481"/>
+        <location filename="../integrations/pdf_exporter.py" line="501"/>
         <source>Une erreur est survenue lors de la création du PDF :
 {error}</source>
         <translation>An error occurred while creating the PDF:
 {error}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="105"/>
+        <source>Auteur : {author}</source>
+        <translation>Author : {author}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/pdf_exporter.py" line="115"/>
+        <source>Filtré par tag : &lt;strong&gt;{tag}&lt;/strong&gt;</source>
+        <translation>Filtered by tag: &lt;strong&gt;{tag}&lt;/strong&gt;</translation>
     </message>
 </context>
 <context>

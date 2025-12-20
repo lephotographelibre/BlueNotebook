@@ -18,6 +18,7 @@ Gère la logique d'insertion d'une carte statique à partir de coordonnées GPS.
 """
 
 import re
+import json
 from datetime import datetime
 from pathlib import Path
 
@@ -30,6 +31,41 @@ class GpsMapHandlerContext:
     @staticmethod
     def tr(text):
         return QCoreApplication.translate("GpsMapHandlerContext", text)
+
+
+def parse_gps_coordinates(text: str) -> tuple[float | None, float | None]:
+    """
+    Tente d'extraire la latitude et la longitude d'une chaîne de caractères.
+    Accepte les formats :
+    - [lat, lon] (JSON)
+    - lat, lon (Google Maps)
+    """
+    text = text.strip()
+    if not text:
+        return None, None
+
+    # 1. Format JSON [lat, lon]
+    if text.startswith("[") and text.endswith("]"):
+        try:
+            coords = json.loads(text)
+            if isinstance(coords, list) and len(coords) == 2:
+                return float(coords[0]), float(coords[1])
+        except (json.JSONDecodeError, ValueError, TypeError):
+            # Si ça ressemble à du JSON mais que le parsing échoue, c'est une erreur.
+            # On ne tente pas l'autre format.
+            return None, None
+
+    # 2. Si ce n'est pas du JSON, on tente le format relaxé "lat, lon"
+    try:
+        parts = text.split(",")
+        if len(parts) == 2:
+            return float(parts[0].strip()), float(parts[1].strip())
+    except (ValueError, TypeError):
+        # Le format relaxé a échoué
+        return None, None
+
+    # Si aucun format ne correspond
+    return None, None
 
 
 def generate_gps_map_markdown(
@@ -88,7 +124,9 @@ def generate_gps_map_markdown(
     ).format(location=location_name, lat=lat, lon=lon)
 
     gps_label = GpsMapHandlerContext.tr("GPS :")
-    location_link_text = location_name  # Le nom du lieu est déjà dynamique, pas besoin de tr ici
+    location_link_text = (
+        location_name  # Le nom du lieu est déjà dynamique, pas besoin de tr ici
+    )
 
     markdown_block = (
         f"[![{alt_text}]({relative_image_path})]({osm_link})\n\n"
