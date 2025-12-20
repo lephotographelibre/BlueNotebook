@@ -1,3 +1,8 @@
+## V4.0.9 Fix Issue [#100]
+
+- Fix Issue [#100](https://github.com/lephotographelibre/BlueNotebook/issues/100)
+- MAJ requirements_linux_3.13.5.txt
+A Tester sur Distrobox, Windows
 
 ## V4.0.8 Fix Bug Context Menu disapear
 
