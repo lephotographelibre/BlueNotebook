@@ -4,7 +4,7 @@
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
 
-![BlueNotebook](docs/Screencopy/V2.6.2_bluenotebook_4_panneaux.jpg)
+![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
 
 ![Bluenotebook_the_writing_experience](docs/Bluenotebook_the_writing_experience.png)
 
@@ -82,6 +82,25 @@ This level represents the application's ability to help the user organize, retri
  ---
 
  **Documentation**
+
+[🇺🇸 🇬🇧 BlueNotebook Technical Documentation](./docs/technical_documentation.md)
+
+[🇺🇸 🇬🇧 BlueNotebook Online Help - English](./bluenotebook/resources/html/online_help.md)
+
+[🇫🇷 🇨🇦 BlueNotebook Documentation Technique](./docs/documentation_technique.md)
+
+[🇫🇷 🇨🇦 BlueNotebook Aide en ligne - French](./bluenotebook/resources/html/online_en_ligne.md)
+
+ **Screenshots**
+
+The Markdown Editor  ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
+
+The Journal ![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
+
+The Integrated PUDB/PDF Reader ![BlueNotebook](docs/Screencopy/409_Reader_english.jpg)
+
+Note-taking management ![BlueNotebook](docs/Screencopy/V4.1.0_notes.jpg)
+
 
  **License**
 

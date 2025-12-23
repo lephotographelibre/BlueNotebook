@@ -33,8 +33,11 @@ Display language list with English first and a short description for each field
         self.lang_combo.addItem(self.tr("Anglais"))
         self.lang_combo.addItem(self.tr("Français"))
 ```
+===> git commit -a -m "V4.1.0 Fix issues [#121]"
 
-
+- Traduire les doc en ligne (Gemini)
+ bluenotebook/resources/html/aide_en_ligne.md et bluenotebook/resources/html/online_help.md
+- Modifier README pour ajourter les doc en ligne 
 ## V4.0.9 Fix Issue [#100] [#116] [#101]
 
 - Fix Issue [#100](https://github.com/lephotographelibre/BlueNotebook/issues/100)
