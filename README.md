@@ -85,7 +85,7 @@ This level represents the application's ability to help the user organize, retri
 
  ---
 
- **Documentation**
+ **BlueNotebook Documentation**
 
 [🇺🇸 🇬🇧 BlueNotebook Technical Documentation](./docs/technical_documentation.md)
 
@@ -182,13 +182,19 @@ PS C:\Users\xx> ./run_bluenotebook.bat
 
 **Screenshots**
 
-The Markdown Editor  ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
+The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
 
-The Journal ![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
+The Journal and the Task Manager on Linux ![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
 
-The Integrated PUDB/PDF Reader ![BlueNotebook](docs/Screencopy/409_Reader_english.jpg)
+The Integrated EPUB/PDF Reader ![BlueNotebook](docs/Screencopy/409_Reader_english.jpg)
 
 Note-taking management ![BlueNotebook](docs/Screencopy/V4.1.0_notes.jpg)
+
+The Markdown Editor on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows_Editor_English.jpg)
+
+Note-taking management on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows_Notes_English.jpg)
+
+
 
 
  **License**
