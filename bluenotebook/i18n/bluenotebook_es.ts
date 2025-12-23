@@ -527,86 +527,96 @@ pip install EbookLib Pillow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="101"/>
+        <location filename="../gui/first_start.py" line="103"/>
         <source>Langue de l&apos;application :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="103"/>
+        <location filename="../gui/first_start.py" line="106"/>
         <source>Français</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="103"/>
-        <source>English</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/first_start.py" line="110"/>
+        <location filename="../gui/first_start.py" line="113"/>
         <source>Répertoire du Journal :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="127"/>
+        <location filename="../gui/first_start.py" line="139"/>
         <source>Choisir...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="123"/>
+        <location filename="../gui/first_start.py" line="135"/>
         <source>Répertoire de Sauvegarde :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="143"/>
+        <location filename="../gui/first_start.py" line="164"/>
         <source>Terminé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="156"/>
+        <location filename="../gui/first_start.py" line="177"/>
         <source>Choisir l&apos;emplacement du journal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="166"/>
+        <location filename="../gui/first_start.py" line="187"/>
         <source>Choisir l&apos;emplacement des sauvegardes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="180"/>
+        <location filename="../gui/first_start.py" line="201"/>
         <source>Le répertoire « {dirname} » existe déjà et n'est pas vide.
 Voulez-vous quand même l'utiliser comme journal ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="185"/>
+        <location filename="../gui/first_start.py" line="206"/>
         <source>Répertoire existant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="201"/>
+        <location filename="../gui/first_start.py" line="222"/>
         <source>Impossible de créer le répertoire du journal :
 {e}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="214"/>
+        <location filename="../gui/first_start.py" line="233"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="212"/>
+        <location filename="../gui/first_start.py" line="231"/>
         <source>Impossible de créer le répertoire de sauvegarde :
 {e}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="230"/>
+        <location filename="../gui/first_start.py" line="249"/>
         <source>Configuration terminée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="230"/>
+        <location filename="../gui/first_start.py" line="249"/>
         <source>BlueNotebook est prêt. Bon journal !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/first_start.py" line="105"/>
+        <source>Anglais</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/first_start.py" line="124"/>
+        <source>Choisir le répertoire où sera créé le dossier du journal qui s'appelera BlueNotebookJournal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/first_start.py" line="146"/>
+        <source>Choisir le répertoire où sera créé le dossier de sauvegarde du journal qui s'appelera BlueNotebookBackup</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

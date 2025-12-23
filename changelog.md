@@ -25,6 +25,15 @@ change initial default values `settings.py` (English Language, Blue theme)
 Fix issue [#122](https://github.com/lephotographelibre/BlueNotebook/issues/122) V4.0.9 Integration Maps GPS #122
 Fix Issue [#119](https://github.com/lephotographelibre/BlueNotebook/issues/119) V4.0.9 Editor: Modify default Color theme #119
 
+====> git commit -a -m "V4.1.0 Fix issues [#119] [#122]"
+
+- Fix issue [#121] V4.0.9 First Start Panel #121
+Display language list with English first and a short description for each field
+```python
+        self.lang_combo.addItem(self.tr("Anglais"))
+        self.lang_combo.addItem(self.tr("Français"))
+```
+
 
 ## V4.0.9 Fix Issue [#100] [#116] [#101]
 
