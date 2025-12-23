@@ -91,15 +91,96 @@ This level represents the application's ability to help the user organize, retri
 
 [🇺🇸 🇬🇧 BlueNotebook Online Help](./bluenotebook/resources/html/online_help.md)
 
-[🇺🇸 🇬🇧 BlueNotebook Installation Platform prerequisites](./docs/prerequis.md)
-
 [🇫🇷 🇨🇦 BlueNotebook Documentation Technique](./docs/documentation_technique.md)
 
 [🇫🇷 🇨🇦 BlueNotebook Aide en ligne - French](./bluenotebook/resources/html/aide_en_ligne.md)
 
-[🇫🇷 🇨🇦 BlueNotebook Installation Pré requis de la plateforme](./docs/prerequisites.md)
+ 
 
- **Screenshots**
+**How to Launch Bluenotebook**
+
+A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
+
+But for now:
+
+**Ubuntu/Debian**
+
+`pyenv` is used to create an isolated Python environment based on Python 3.11.13.
+
+```bash
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+```
+
+add these lines to `.bash_profile`
+
+```bash
+# User specific environment and startup programs
+#
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+```
+
+add tothis line to `.bashrc`
+
+```bash
+eval "$(pyenv virtualenv-init -)"
+```
+Install the following librairies/packages
+
+```bash
+sudo apt-get update
+sudo apt-get install git libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
+
+# Launch Bluenotebook
+git clone https://github.com/lephotographelibre/BlueNotebook.git
+cd Bluenotebook
+./run_bluenotebook.sh
+```
+
+**Windows 10/11**
+
+`pyenv-win` is used to create an isolated Python environment based on Python 3.11.9. Therefore, install pyenv-win first: <https://github.com/pyenv-win/pyenv-win>
+
+- Install `pyenv-win`
+
+```powershell
+PS C:\Users\xx> Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+Reopen PowerShell
+PS C:\Users\xx>  pyenv --version
+```
+
+- Add the following to your PATH variable:
+
+`C:\Users\xx\.pyenv\pyenv-win\bin` 
+`C:\Users\xx\.pyenv\pyenv-win\shims`
+
+- Add the `pyenv-virtualenv` plugin:
+
+```powershell
+git clone https://github.com/pyenv/pyenv-virtualenv.git "$(pyenv root)\plugins\pyenv-virtualenv"
+```
+
+- Install the required Cairo libraries (including `libcairo-2.dll`) by downloading and running the following installer:
+
+  <https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2022-01-04/gtk3-runtime-3.24.31-2022-01-04-ts-win64.exe>
+
+- Add the bin directory containing `libcairo-2.dll` to your PATH environment variable:
+
+  `C:\Program Files\GTK3-Runtime Win64\bin`
+
+Open a PowerShell terminal.
+```powershell
+#Launch Bluenotebook
+PS C:\Users\xx> git clone https://github.com/lephotographelibre/BlueNotebook.git
+PS C:\Users\xx> cd Bluenotebook
+PS C:\Users\xx> ./run_bluenotebook.bat
+```
+
+
+
+
+**Screenshots**
 
 The Markdown Editor  ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
 
