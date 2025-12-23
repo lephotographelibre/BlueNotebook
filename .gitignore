@@ -224,3 +224,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# JM flatpak
+repo
+build-dir

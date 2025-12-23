@@ -1363,6 +1363,7 @@ class MainWindow(QMainWindow):
             (self.tr("❌ Annulé"), "❌"),
             (self.tr("⚠️ Attention"), "⚠️"),
             (self.tr("📝 Mémo"), "📝"),
+            (self.tr("📌 Note"), "📌"),
             (self.tr("❓ Question"), "❓"),
             (self.tr("❗ Exclamation"), "❗"),
         ]

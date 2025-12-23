@@ -1,3 +1,21 @@
+## V4.1.0 Flatpak Ready
+
+### NEPAS OUBLIER main.py, aide_en_ligne, online_help, et traductions (main_window.py "Note")
+
+- add (self.tr("📌 Note"), "📌"),
+
+- requirements.txt  Python 3.11.13 (Flatpak, Linux, Windows)
+QT_VERSION="5.15.11"
+PYTHON_VERSION="3.11.13"
+VENV_NAME=".venv_3.11.13"
+- Modyfy run_bluenotebook.sh for the new standard Python environment
+- add .gitignore
+```bash
+# JM flatpak
+repo
+build-dir
+```
+
 ## V4.0.9 Fix Issue [#100] [#116] [#101]
 
 - Fix Issue [#100](https://github.com/lephotographelibre/BlueNotebook/issues/100)
