@@ -15,6 +15,16 @@ VENV_NAME=".venv_3.11.13"
 repo
 build-dir
 ```
+Fix Issue [#118](https://github.com/lephotographelibre/BlueNotebook/issues/118) V4.0.9 Python: use a common Python platform across Linux, Windows, and Flatpak. #118
+
+
+==> git commit -a -m "V4.1.0 Python env changes"
+
+- Modify settings.py and gps_map_generator.py
+change initial default values `settings.py` (English Language, Blue theme)
+Fix issue [#122](https://github.com/lephotographelibre/BlueNotebook/issues/122) V4.0.9 Integration Maps GPS #122
+Fix Issue [#119](https://github.com/lephotographelibre/BlueNotebook/issues/119) V4.0.9 Editor: Modify default Color theme #119
+
 
 ## V4.0.9 Fix Issue [#100] [#116] [#101]
 

@@ -30,31 +30,31 @@ class SettingsManager:
         self.settings_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Définir les paramètres par défaut
+        # Définir les paramètres par défaut
         self.defaults = {
             "app": {
-                "language": "fr_FR",
+                "language": "en_US",
             },
             "editor": {
                 "font_family": "Noto Sans",
-                "font_size": 14,
-                "background_color": "#f0f2f5",
-                "text_color": "#16191b",
-                "selection_text_color": "#d0c9c8",
-                "show_line_numbers": "true",
-                # Couleurs de syntaxe
-                "heading_color": "#d06146",
-                "list_color": "#d06146",
-                "inline_code_text_color": "#6a4041",
-                "inline_code_background_color": "#edf0e9",
-                "code_block_background_color": "#f0f2f5",
-                "bold_color": "#6a4041",
-                "italic_color": "#6a4041",
-                "strikethrough_color": "#6a4041",
+                "font_size": 12,
+                "background_color": "#ffffff",
+                "text_color": "#253443",
+                "selection_text_color": "#a4b5cf",
+                "show_line_numbers": True,
+                "heading_color": "#4c6eab",
+                "list_color": "#a4b5cf",
+                "inline_code_text_color": "#4c6eab",
+                "inline_code_background_color": "#f7f8fa",
+                "code_block_background_color": "#f7f8fa",
+                "bold_color": "#4c6eab",
+                "italic_color": "#253443",
+                "strikethrough_color": "#253443",
                 "highlight_color": "#fffec7",
-                "tag_color": "#6a4041",
-                "timestamp_color": "#6a4041",
-                "quote_color": "#363c42",
-                "link_color": "#6a4041",
+                "tag_color": "#4c6eab",
+                "timestamp_color": "#1d4ed8",
+                "quote_color": "#4c6eab",
+                "link_color": "#4c6eab",
                 "code_font_family": "Courier New",
                 "html_comment_color": "#9ca3af",
             },
@@ -127,7 +127,7 @@ class SettingsManager:
 
     def save_settings(self):
         """Sauvegarde les paramètres actuels dans le fichier JSON."""
-        # PAS d'ENCAPSULATION  anglais   conservé, 
+        # PAS d'ENCAPSULATION  anglais   conservé,
         try:
             with open(self.settings_path, "w", encoding="utf-8") as f:
                 json.dump(self.settings, f, indent=4)
