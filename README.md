@@ -101,7 +101,7 @@ This level represents the application's ability to help the user organize, retri
 
 A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
 
-But for now:
+But for now **only manual installation** is available:
 
 **Ubuntu/Debian**
 
@@ -199,4 +199,4 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Copyright (C) 2025 Jean-Marc DIGNE
+Copyright (C) 2026 Jean-Marc DIGNE
