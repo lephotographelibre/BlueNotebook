@@ -4,18 +4,14 @@ REM Launch script for BlueNotebook on Windows
 REM Move to the script directory to ensure relative paths work
 cd /d "%~dp0"
 
+# no version 3.11.13 available on pyenv-win Windows
 set PYTHON_VERSION=3.11.9
-set VENV_NAME=.venv_bluenotebook
+set VENV_NAME=.venv_3.11.9
 set VENV_DIR=bluenotebook\%VENV_NAME%
 
-echo "🚀 BlueNotebook launch... ---"
+echo "--- BlueNotebook launch... ---"
 
-
-echo "--- copy requirements.txt ---"
-COPY requirements_windows3.11.9.txt requirements.txt /A /V /Y
-
-
-
+ 
 REM --- Environment Verification ---
 
 REM 1. Check if pyenv-win is installed
