@@ -1,6 +1,10 @@
 
 ![BlueNotebook](docs/bluenotebook_bandeau.jpg)
 
+[![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
+![Static Badge](https://img.shields.io/badge/Python-3.11.13-green)
+![Static Badge](https://img.shields.io/badge/PythonQt5-5.15.11-blue)
+
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
 
@@ -85,11 +89,15 @@ This level represents the application's ability to help the user organize, retri
 
 [🇺🇸 🇬🇧 BlueNotebook Technical Documentation](./docs/technical_documentation.md)
 
-[🇺🇸 🇬🇧 BlueNotebook Online Help - English](./bluenotebook/resources/html/online_help.md)
+[🇺🇸 🇬🇧 BlueNotebook Online Help](./bluenotebook/resources/html/online_help.md)
+
+[🇺🇸 🇬🇧 BlueNotebook Installation Platform prerequisites](./docs/prerequis.md)
 
 [🇫🇷 🇨🇦 BlueNotebook Documentation Technique](./docs/documentation_technique.md)
 
-[🇫🇷 🇨🇦 BlueNotebook Aide en ligne - French](./bluenotebook/resources/html/online_en_ligne.md)
+[🇫🇷 🇨🇦 BlueNotebook Aide en ligne - French](./bluenotebook/resources/html/aide_en_ligne.md)
+
+[🇫🇷 🇨🇦 BlueNotebook Installation Pré requis de la plateforme](./docs/prerequisites.md)
 
  **Screenshots**
 
