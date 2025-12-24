@@ -35,6 +35,11 @@ Display language list with English first and a short description for each field
 ```
 ===> git commit -a -m "V4.1.0 Fix issues [#121]"
 
+Fix Issue [#123] v4.0.1 i18n: Weather: French label not translated #123
+
+
+==>  git commit -a -m "V4.1.0 Fix Issue [#123] i18n Weather"
+
 - Traduire les doc en ligne (Gemini)
  bluenotebook/resources/html/aide_en_ligne.md et bluenotebook/resources/html/online_help.md
 - Modifier README pour ajourter les doc en ligne 
