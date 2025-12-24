@@ -1,4 +1,4 @@
-#  Aide en Ligne - BlueNotebook V4.1.0
+#  Aide en Ligne - BlueNotebook V4.1.1
 
 ## Table des matières
 *   [1. Introduction](#introduction)
