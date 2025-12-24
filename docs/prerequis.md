@@ -66,16 +66,14 @@ Il est fortement recommandé d'installer ces paquets dans un environnement virtu
 
 ```bash
 # 1. Créez un environnement virtuel
-python3 -m venv .venv_bluenotebook
+python3 -m venv .venv_3.11.13
 
 # 2. Activez-le
-source .venv_bluenotebook/bin/activate
+source .venv_3.11.13/bin/activate
 
 # 3. Installez tous les paquets requis
 # Linux 
-pip install -r requirements_linux_3.13.5.txt
-# Windows
-pip install -r requirements_windows3.11.9.txt
+pip install -r requirements.txt
 ```
 
 ### Liste des Paquets Python (`requirements.txt`)

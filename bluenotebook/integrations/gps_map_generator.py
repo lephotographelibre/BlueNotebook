@@ -67,6 +67,10 @@ def create_gps_map(lat, lon, width, height, output_path):
     """
     if not staticmaps.cairo_is_supported():
         print("⚠️ Cairo is not supported. Map cannot be generated.")
+        try:
+            import cairo
+        except ImportError:
+            print("❌ The Python module 'pycairo' is missing")
         return False
 
     try:

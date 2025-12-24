@@ -1,5 +1,5 @@
 # **BlueNotebook - Documentation Technique**
-![BlueNotebook](images/bluenotebook_bandeau.jpg)
+
 
 **Version du Document :** V2.6.2
 **Date :** 17 octobre 2025
@@ -24,9 +24,7 @@ Copyright (C) 2025 Jean-Marc DIGNE (Word indexing and search removed in V3.1.1)
 
 
 [![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
-
-![BlueNotebook](docs/Screencopy/V2.6.2_bluenotebook_4_panneaux.jpg)
-
+ 
 
 ## **Table des Matières**
 1.  [Introduction et Vision du Produit](#1-introduction-et-vision-du-produit)

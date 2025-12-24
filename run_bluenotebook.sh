@@ -7,8 +7,8 @@ set -e # Arrête le script si une commande échoue
 cd "$(dirname "$0")"
 
 QT_VERSION="5.15.11"
-PYTHON_VERSION="3.13.5"
-VENV_NAME=".venv_bluenotebook"
+PYTHON_VERSION="3.11.13"
+VENV_NAME=".venv_3.11.13"
 VENV_PATH="$(pyenv root)/versions/${VENV_NAME}"
 
 echo "🚀 BlueNotebook launch..."
@@ -49,7 +49,7 @@ PYTHON_EXEC="${VENV_PATH}/bin/python"
 PIP_EXEC="${VENV_PATH}/bin/pip"
 
 # set requirements file
-cp -p requirements_linux_3.13.5.txt requirements.txt
+#cp -p requirements_linux_3.13.5.txt requirements.txt
 
 # Vérifier et installer les dépendances seulement si requirements.txt est plus récent
 if [ "requirements.txt" -nt "${VENV_PATH}/.dependencies_installed" ]; then

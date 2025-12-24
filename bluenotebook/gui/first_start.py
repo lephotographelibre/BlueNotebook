@@ -85,7 +85,9 @@ class FirstStartWindow(QDialog):
 
         # --- Texte d'introduction ---
         intro_label = QLabel(
-            self.tr("Pour ce premier démarrage, nous allons définir quelques paramètres essentiels :"),
+            self.tr(
+                "Pour ce premier démarrage, nous allons définir quelques paramètres essentiels :"
+            ),
             self,
         )
         main_layout.addWidget(intro_label)
@@ -100,7 +102,8 @@ class FirstStartWindow(QDialog):
         lang_layout = QHBoxLayout()
         lang_label = QLabel(self.tr("Langue de l'application :"), self)
         self.lang_combo = QComboBox(self)
-        self.lang_combo.addItems([self.tr("Français"), self.tr("English")])
+        self.lang_combo.addItem(self.tr("Anglais"))
+        self.lang_combo.addItem(self.tr("Français"))
         lang_layout.addWidget(lang_label)
         lang_layout.addWidget(self.lang_combo)
         main_layout.addLayout(lang_layout)
@@ -118,6 +121,15 @@ class FirstStartWindow(QDialog):
         main_layout.addLayout(journal_layout)
         self.journal_button = journal_button
 
+        journal_help_label = QLabel(
+            self.tr(
+                "Choisir le répertoire où sera créé le dossier du journal qui s'appelera BlueNotebookJournal"
+            ),
+            self,
+        )
+        journal_help_label.setAlignment(Qt.AlignLeft)
+        main_layout.addWidget(journal_help_label)
+
         # --- Répertoire de Sauvegarde ---
         backup_layout = QHBoxLayout()
         backup_label = QLabel(self.tr("Répertoire de Sauvegarde :"), self)
@@ -130,6 +142,15 @@ class FirstStartWindow(QDialog):
         backup_layout.addWidget(backup_button)
         main_layout.addLayout(backup_layout)
         self.backup_button = backup_button
+
+        backup_help_label = QLabel(
+            self.tr(
+                "Choisir le répertoire où sera créé le dossier de sauvegarde du journal qui s'appelera BlueNotebookBackup"
+            ),
+            self,
+        )
+        backup_help_label.setAlignment(Qt.AlignLeft)
+        main_layout.addWidget(backup_help_label)
 
         # --- Espaceur et Bouton Terminé ---
         main_layout.addSpacerItem(
@@ -200,9 +221,7 @@ class FirstStartWindow(QDialog):
         except Exception as e:
             message = self.tr("Impossible de créer le répertoire du journal :\n{e}")
             message = message.format(e=e)
-            QMessageBox.critical(
-                self, self.tr("Erreur"), message
-            )
+            QMessageBox.critical(self, self.tr("Erreur"), message)
             return
 
         # --- Création du répertoire de sauvegarde ---
@@ -228,6 +247,8 @@ class FirstStartWindow(QDialog):
         self.settings_manager.save_settings()
 
         QMessageBox.information(
-            self, self.tr("Configuration terminée"), self.tr("BlueNotebook est prêt. Bon journal !")
+            self,
+            self.tr("Configuration terminée"),
+            self.tr("BlueNotebook est prêt. Bon journal !"),
         )
         self.accept()

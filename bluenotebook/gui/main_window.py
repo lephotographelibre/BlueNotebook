@@ -1363,6 +1363,7 @@ class MainWindow(QMainWindow):
             (self.tr("❌ Annulé"), "❌"),
             (self.tr("⚠️ Attention"), "⚠️"),
             (self.tr("📝 Mémo"), "📝"),
+            (self.tr("📌 Note"), "📌"),
             (self.tr("❓ Question"), "❓"),
             (self.tr("❗ Exclamation"), "❗"),
         ]
@@ -2771,8 +2772,14 @@ class MainWindow(QMainWindow):
         """Récupère et insère la météo actuelle dans l'éditeur."""
         city = self.settings_manager.get("integrations.weather.city")
         api_key = self.settings_manager.get("integrations.weather.api_key")
+        # Récupérer la langue de l'application (ex: "fr_FR" -> "fr")
+        app_lang = self.settings_manager.get("app.language", "fr_FR")
+        lang_code = app_lang.split("_")[0] if "_" in app_lang else app_lang
+        print(f"🌍 Weather app_lang: {app_lang} lang_code: {lang_code}")
 
-        markdown_fragment, error_message = get_weather_markdown(city, api_key)
+        markdown_fragment, error_message = get_weather_markdown(
+            city, api_key, lang=lang_code
+        )
 
         if error_message:
             QMessageBox.warning(

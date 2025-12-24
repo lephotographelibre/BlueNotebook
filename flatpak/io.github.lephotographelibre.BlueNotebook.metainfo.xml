@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.lephotographelibre.BlueNotebook</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>BlueNotebook</name>
+  <developer_name>Jean-Marc DIGNE</developer_name>
+  <summary>BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown</summary>
+  <summary xml:lang="fr">BlueNotebook est une application de journal et de prise de notes conçue pour les utilisateurs qui apprécient la puissance et la portabilité du Markdown</summary>
+  <description>
+    <p> BlueNotebook is a desktop application designed for note-taking and personal journaling. It combines the power of Markdown with a rich graphical interface.
+    </p>
+    <ul>
+        <li>One note per day (file format)</li>
+        <li>Markdown editor with syntax highlighting</li>
+        <li>Real-time HTML preview</li>
+        <li>Navigation by calendar and tags</li>
+        <li>PDF and EPUB export</li>
+        <li>Integrations (Weather, YouTube, GPS Maps)</li>
+        <li>Integrated EPUB &amp; PDF Book Reader</li>
+        <li>Note-taking management independent of the journal</li>
+    </ul>
+    <p> Inspired by the RedNotebook app developed by Jendrik Seipp </p>
+    <p> Available in English and French </p>
+  </description>
+  <description xml:lang="fr">
+    <p> BlueNotebook est une application de bureau conçue pour la prise de notes et le journal personnel. Elle combine la puissance du Markdown avec une interface graphique riche.
+    </p>
+    <ul>
+        <li>Une note par jour (format fichier)</li>
+        <li>Éditeur Markdown avec coloration syntaxique</li>
+        <li>Aperçu HTML en temps réel</li>
+        <li>Navigation par calendrier et tags</li>
+        <li>Export PDF et EPUB</li>
+        <li>Intégrations (Météo, YouTube, Cartes GPS)</li>
+        <li>Lecteur de livres EPUB et PDF intégré</li>
+        <li>Gestion de prise de Notes indépendante du journal</li>
+    </ul>
+    <p> Inspirée par l'application RedNotebook developpée par Jendrik Seipp </p>
+    <p> Disponible en Anglais et Français </p>
+  </description>
+  <launchable type="desktop-id">io.github.lephotographelibre.BlueNotebook.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/lephotographelibre/BlueNotebook/main/docs/Screencopy/409_Editor_english.jpg</image>
+      <caption>Markdown Editor</caption>
+      <caption xml:lang="fr">Éditeur Markdown</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/lephotographelibre/BlueNotebook/main/docs/Screencopy/409_Journal_english.jpg</image>
+      <caption>Journal Navigation</caption>
+      <caption xml:lang="fr">Navigation dans le Journal</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/lephotographelibre/BlueNotebook/main/docs/Screencopy/409_Notes_Panel.jpg</image>
+       <caption>Note-taking management</caption>
+       <caption xml:lang="fr">Gestion de prise de notes</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/lephotographelibre/BlueNotebook/main/docs/Screencopy/409_Reader_Panel.jpg</image>
+      <caption>Integrated EPUB &amp; PDF Book Reader</caption>
+      <caption xml:lang="fr">Lecteur de livres EPUB et PDF intégré</caption>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/lephotographelibre/BlueNotebook</url>
+  <url type="bugtracker">https://github.com/lephotographelibre/BlueNotebook/issues</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="4.0.9" date="2025-12-20" />
+  </releases>
+</component>
