@@ -1,10 +1,14 @@
 
 ![BlueNotebook](docs/bluenotebook_bandeau.jpg)
 
+[![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
+![Static Badge](https://img.shields.io/badge/Python-3.11.13-green)
+![Static Badge](https://img.shields.io/badge/PythonQt5-5.15.11-blue)
+
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
 
-![BlueNotebook](docs/Screencopy/V2.6.2_bluenotebook_4_panneaux.jpg)
+![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
 
 ![Bluenotebook_the_writing_experience](docs/Bluenotebook_the_writing_experience.png)
 
@@ -81,7 +85,117 @@ This level represents the application's ability to help the user organize, retri
 
  ---
 
- **Documentation**
+ **BlueNotebook Documentation**
+
+[🇺🇸 🇬🇧 BlueNotebook Technical Documentation](./docs/technical_documentation.md)
+
+[🇺🇸 🇬🇧 BlueNotebook Online Help](./bluenotebook/resources/html/online_help.md)
+
+[🇫🇷 🇨🇦 BlueNotebook Documentation Technique](./docs/documentation_technique.md)
+
+[🇫🇷 🇨🇦 BlueNotebook Aide en ligne - French](./bluenotebook/resources/html/aide_en_ligne.md)
+
+ 
+
+**How to Launch Bluenotebook**
+
+A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
+
+But for now **only manual installation** is available:
+
+**Ubuntu/Debian**
+
+`pyenv` is used to create an isolated Python environment based on Python 3.11.13.
+
+```bash
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+```
+
+add these lines to `.bash_profile`
+
+```bash
+# User specific environment and startup programs
+#
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+```
+
+add tothis line to `.bashrc`
+
+```bash
+eval "$(pyenv virtualenv-init -)"
+```
+Install the following librairies/packages
+
+```bash
+sudo apt-get update
+sudo apt-get install git libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
+
+# Launch Bluenotebook
+git clone https://github.com/lephotographelibre/BlueNotebook.git
+cd Bluenotebook
+./run_bluenotebook.sh
+```
+
+**Windows 10/11**
+
+`pyenv-win` is used to create an isolated Python environment based on Python 3.11.9. Therefore, install pyenv-win first: <https://github.com/pyenv-win/pyenv-win>
+
+- Install `pyenv-win`
+
+```powershell
+PS C:\Users\xx> Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+Reopen PowerShell
+PS C:\Users\xx>  pyenv --version
+```
+
+- Add the following to your PATH variable:
+
+`C:\Users\xx\.pyenv\pyenv-win\bin` 
+`C:\Users\xx\.pyenv\pyenv-win\shims`
+
+- Add the `pyenv-virtualenv` plugin:
+
+```powershell
+git clone https://github.com/pyenv/pyenv-virtualenv.git "$(pyenv root)\plugins\pyenv-virtualenv"
+```
+
+- Install the required Cairo libraries (including `libcairo-2.dll`) by downloading and running the following installer:
+
+  <https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2022-01-04/gtk3-runtime-3.24.31-2022-01-04-ts-win64.exe>
+
+- Add the bin directory containing `libcairo-2.dll` to your PATH environment variable:
+
+  `C:\Program Files\GTK3-Runtime Win64\bin`
+
+Open a PowerShell terminal.
+```powershell
+#Launch Bluenotebook
+PS C:\Users\xx> git clone https://github.com/lephotographelibre/BlueNotebook.git
+PS C:\Users\xx> cd Bluenotebook
+PS C:\Users\xx> ./run_bluenotebook.bat
+```
+
+
+
+
+**Screenshots**
+
+The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
+
+The Journal and the Task Manager on Linux ![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
+
+The Integrated EPUB/PDF Reader ![BlueNotebook](docs/Screencopy/409_Reader_english.jpg)
+
+Note-taking management ![BlueNotebook](docs/Screencopy/V4.1.0_notes.jpg)
+
+The Markdown Editor on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows_Editor_English.jpg)
+
+Note-taking management on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows_Notes_English.jpg)
+
+
+
 
  **License**
 
@@ -91,4 +205,4 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Copyright (C) 2025 Jean-Marc DIGNE
+Copyright (C) 2026 Jean-Marc DIGNE

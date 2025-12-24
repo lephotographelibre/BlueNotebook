@@ -1,3 +1,48 @@
+## V4.1.0 Flatpak Ready
+
+### NEPAS OUBLIER main.py, aide_en_ligne, online_help, et traductions (main_window.py "Note")
+
+- add (self.tr("📌 Note"), "📌"),
+
+- requirements.txt  Python 3.11.13 (Flatpak, Linux, Windows)
+QT_VERSION="5.15.11"
+PYTHON_VERSION="3.11.13"
+VENV_NAME=".venv_3.11.13"
+- Modyfy run_bluenotebook.sh for the new standard Python environment
+- add .gitignore
+```bash
+# JM flatpak
+repo
+build-dir
+```
+Fix Issue [#118](https://github.com/lephotographelibre/BlueNotebook/issues/118) V4.0.9 Python: use a common Python platform across Linux, Windows, and Flatpak. #118
+
+
+==> git commit -a -m "V4.1.0 Python env changes"
+
+- Modify settings.py and gps_map_generator.py
+change initial default values `settings.py` (English Language, Blue theme)
+Fix issue [#122](https://github.com/lephotographelibre/BlueNotebook/issues/122) V4.0.9 Integration Maps GPS #122
+Fix Issue [#119](https://github.com/lephotographelibre/BlueNotebook/issues/119) V4.0.9 Editor: Modify default Color theme #119
+
+====> git commit -a -m "V4.1.0 Fix issues [#119] [#122]"
+
+- Fix issue [#121] V4.0.9 First Start Panel #121
+Display language list with English first and a short description for each field
+```python
+        self.lang_combo.addItem(self.tr("Anglais"))
+        self.lang_combo.addItem(self.tr("Français"))
+```
+===> git commit -a -m "V4.1.0 Fix issues [#121]"
+
+Fix Issue [#123] v4.0.1 i18n: Weather: French label not translated #123
+
+
+==>  git commit -a -m "V4.1.0 Fix Issue [#123] i18n Weather"
+
+- Traduire les doc en ligne (Gemini)
+ bluenotebook/resources/html/aide_en_ligne.md et bluenotebook/resources/html/online_help.md
+- Modifier README pour ajourter les doc en ligne 
 ## V4.0.9 Fix Issue [#100] [#116] [#101]
 
 - Fix Issue [#100](https://github.com/lephotographelibre/BlueNotebook/issues/100)

@@ -1,10 +1,10 @@
 # pyenv versions
-pyenv install 3.13.5 
+pyenv install 3.11.13
 # pyenv install 3.11.9
-pyenv virtualenv 3.13.5 .venv_bluenotebook
+pyenv virtualenv 3.11.13 .venv_3.11.13
 # pyenv virtualenv-delete .venv_bluenotebook
-#pyenv virtualenv 3.11.9 .venv_bluenotebook
-pyenv activate .venv_bluenotebook
+ 
+pyenv activate .venv_3.11.13
 # python -V
 # pip -V
 #xargs pip uninstall -y
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 bash
 cd bluenotebook
-pyenv activate .venv_bluenotebook
+pyenv activate .venv_3.11.13
 pip install -r requirements.txt
 pip -V
 
@@ -59,7 +59,7 @@ git checkout -b nom-branche-local origin/nom-de-la-branche-distante
 =========== traduction Linux ===================
 
 cd bluenotebook
-pyenv activate .venv_bluenotebook
+pyenv activate .venv_3.11.13
 pylupdate5 -verbose  main.py gui/main_window.py -ts i18n/bluenotebook_en.ts
 kate i18n/bluenotebook_en.ts  (change @default --> MainContext)
 linguist i18n/bluenotebook_en.ts
@@ -68,7 +68,7 @@ lrelease i18n/bluenotebook_en.ts i18n/bluenotebook_en.qm
 
 
 cd BlueNotebook
-pyenv activate .venv_bluenotebook
+pyenv activate .venv_3.11.13
 cd bluenotebook/
 ./update_translations_pyqt5.sh 
 
