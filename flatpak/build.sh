@@ -5,7 +5,9 @@ flatpak install flathub com.riverbankcomputing.PyQt.BaseApp//5.15-23.08 org.kde.
 
 cd BlueNotebook/flatpak
 #  
-pyenv activate .venv_bluenotebook
+pyenv activate .venv_3.11.13
+# Install requirements-parserfir Flapak builds
+pip install requirements-parser
 
 # Package order is mandatory
 python3 flatpak-pip-generator.py \

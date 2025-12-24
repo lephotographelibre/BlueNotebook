@@ -1,3 +1,26 @@
+## V4.1.1 Fix Issue [#125] Start Screen Configuration
+
+Fix Issue [#125]
+
+Lors du premier demarrage, le fichier settings.json des preferences utilisateur n'existe pas (c'est normal)
+L'ecran du premierfirst_start.py demarrage s'affiche en anglais (c'est normal).
+dans cet ecran Lorsuque l'utilisateur change la langue (d'de English à French) puis arrete manuellement l'application.
+Le fichier settings.json est alors écrit sur disque avec les bonnes valeurs pour le backup et le Journal
+    "backup": {
+        "last_directory": "/home/jm/BlueNotebookBackup"
+    },
+    "journal": {
+        "directory": "/home/jm/BlueNotebookJournal"
+    }
+
+    mais la langue reste à 
+
+        "app": {
+        "language": "en_US"
+ et pas à "fr_FR" pour le français qui a été choisi par l'utilisateur
+
+- Restart app si la langue a été modifié sur l'écran de démarrage
+
 ## V4.1.0 Flatpak Ready
 
 ### NEPAS OUBLIER main.py, aide_en_ligne, online_help, et traductions (main_window.py "Note")
