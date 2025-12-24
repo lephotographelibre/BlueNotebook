@@ -18,7 +18,6 @@
 """
 
 import os
-import sys
 from pathlib import Path
 
 from PyQt5.QtWidgets import (
@@ -36,7 +35,7 @@ from PyQt5.QtWidgets import (
     QFrame,
 )
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import Qt, QLocale
+from PyQt5.QtCore import Qt
 
 from core.settings import SettingsManager
 
@@ -246,29 +245,9 @@ class FirstStartWindow(QDialog):
 
         self.settings_manager.save_settings()
 
-        # Vérifier si la langue a changé par rapport à la locale système
-        system_lang = QLocale.system().name()
-        # Comparaison des 2 premiers caractères (ex: "fr" vs "en")
-        if selected_lang_code[:2] != system_lang[:2]:
-            msg = self.tr("BlueNotebook est prêt. Bon journal !") + "\n\n"
-            msg += (
-                self.tr(
-                    "Cette application va être arrêtée pour prendre en compte votre changement de langue."
-                )
-                + "\n"
-            )
-            msg += self.tr("Veuillez redémarrer cette application.")
-
-            QMessageBox.information(
-                self,
-                self.tr("Configuration terminée"),
-                msg,
-            )
-            sys.exit(0)
-        else:
-            QMessageBox.information(
-                self,
-                self.tr("Configuration terminée"),
-                self.tr("BlueNotebook est prêt. Bon journal !"),
-            )
-            self.accept()
+        QMessageBox.information(
+            self,
+            self.tr("Configuration terminée"),
+            self.tr("BlueNotebook est prêt. Bon journal !"),
+        )
+        self.accept()

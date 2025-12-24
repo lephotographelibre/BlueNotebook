@@ -1,4 +1,4 @@
-# Online Help - BlueNotebook V4.1.0
+# Online Help - BlueNotebook V4.1.1
 
 ## Table of Contents
 *   [1. Introduction](#introduction)

@@ -532,27 +532,27 @@ pip install EbookLib Pillow</translation>
 <context>
     <name>FirstStartWindow</name>
     <message>
-        <location filename="../gui/first_start.py" line="50"/>
+        <location filename="../gui/first_start.py" line="51"/>
         <source>BlueNotebook - Premier Démarrage</source>
         <translation>BlueNotebook - First Start</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="77"/>
+        <location filename="../gui/first_start.py" line="78"/>
         <source>Bienvenue dans BlueNotebook</source>
         <translation>Welcome to BlueNotebook</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="87"/>
+        <location filename="../gui/first_start.py" line="88"/>
         <source>Pour ce premier démarrage, nous allons définir quelques paramètres essentiels :</source>
         <translation>For this first start, we will define some essential settings:</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="103"/>
+        <location filename="../gui/first_start.py" line="104"/>
         <source>Langue de l&apos;application :</source>
         <translation>Application language:</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="106"/>
+        <location filename="../gui/first_start.py" line="107"/>
         <source>Français</source>
         <translation>French</translation>
     </message>
@@ -562,90 +562,100 @@ pip install EbookLib Pillow</translation>
         <translation type="obsolete">English</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="113"/>
+        <location filename="../gui/first_start.py" line="114"/>
         <source>Répertoire du Journal :</source>
         <translation>Journal Directory:</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="139"/>
+        <location filename="../gui/first_start.py" line="140"/>
         <source>Choisir...</source>
         <translation>Choose...</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="135"/>
+        <location filename="../gui/first_start.py" line="136"/>
         <source>Répertoire de Sauvegarde :</source>
         <translation>Backup Directory:</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="164"/>
+        <location filename="../gui/first_start.py" line="165"/>
         <source>Terminé</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="177"/>
+        <location filename="../gui/first_start.py" line="178"/>
         <source>Choisir l&apos;emplacement du journal</source>
         <translation>Choose journal location</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="187"/>
+        <location filename="../gui/first_start.py" line="188"/>
         <source>Choisir l&apos;emplacement des sauvegardes</source>
         <translation>Choose backup location</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="201"/>
+        <location filename="../gui/first_start.py" line="202"/>
         <source>Le répertoire « {dirname} » existe déjà et n'est pas vide.
 Voulez-vous quand même l'utiliser comme journal ?</source>
         <translation>The directory &quot;{dirname}&quot; already exists and is not empty.
 Do you want to use it as a journal anyway?</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="206"/>
+        <location filename="../gui/first_start.py" line="207"/>
         <source>Répertoire existant</source>
         <translation>Existing directory</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="222"/>
+        <location filename="../gui/first_start.py" line="223"/>
         <source>Impossible de créer le répertoire du journal :
 {e}</source>
         <translation>Could not create journal directory:
 {e}</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="233"/>
+        <location filename="../gui/first_start.py" line="234"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="231"/>
+        <location filename="../gui/first_start.py" line="232"/>
         <source>Impossible de créer le répertoire de sauvegarde :
 {e}</source>
         <translation>Could not create backup directory:
 {e}</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="249"/>
+        <location filename="../gui/first_start.py" line="269"/>
         <source>Configuration terminée</source>
         <translation>Configuration finished</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="249"/>
+        <location filename="../gui/first_start.py" line="269"/>
         <source>BlueNotebook est prêt. Bon journal !</source>
         <translation>BlueNotebook is ready. Happy journaling!</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="105"/>
+        <location filename="../gui/first_start.py" line="106"/>
         <source>Anglais</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="124"/>
+        <location filename="../gui/first_start.py" line="125"/>
         <source>Choisir le répertoire où sera créé le dossier du journal qui s'appelera BlueNotebookJournal</source>
         <translation>Choose the directory where the journal folder, which will be called BlueNotebook Journal, will be created</translation>
     </message>
     <message>
-        <location filename="../gui/first_start.py" line="146"/>
+        <location filename="../gui/first_start.py" line="147"/>
         <source>Choisir le répertoire où sera créé le dossier de sauvegarde du journal qui s'appelera BlueNotebookBackup</source>
         <translation>Choose the directory where the backup folder, named BlueNotebookBackup, will be created</translation>
+    </message>
+    <message>
+        <location filename="../gui/first_start.py" line="254"/>
+        <source>Cette application va être arrêtée pour prendre en compte votre changement de langue.</source>
+        <translation>This application will be stopped to take into account your language change.</translation>
+    </message>
+    <message>
+        <location filename="../gui/first_start.py" line="260"/>
+        <source>Veuillez redémarrer cette application.</source>
+        <translation>Please restart this application.</translation>
     </message>
 </context>
 <context>
@@ -2114,7 +2124,7 @@ Do you want to use it as a journal anyway?</translation>
         <translation>EXIF data was found in the image. Do you want to insert it under the image?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3760"/>
+        <location filename="../gui/main_window.py" line="3766"/>
         <source>Fichier non trouvé</source>
         <translation>File not found</translation>
     </message>
@@ -2160,72 +2170,72 @@ Do you want to copy it to the journal to ensure the portability of your notes?</
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2779"/>
+        <location filename="../gui/main_window.py" line="2785"/>
         <source>Erreur Météo</source>
         <translation>Weather Error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2788"/>
+        <location filename="../gui/main_window.py" line="2794"/>
         <source>Météo insérée avec succès.</source>
         <translation>Weather inserted successfully.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2801"/>
+        <location filename="../gui/main_window.py" line="2807"/>
         <source>Recherche de livre par ISBN</source>
         <translation>Book search by ISBN</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2801"/>
+        <location filename="../gui/main_window.py" line="2807"/>
         <source>Entrez le code ISBN du livre:</source>
         <translation>Enter the ISBN code of the book:</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2826"/>
+        <location filename="../gui/main_window.py" line="2832"/>
         <source>Configuration requise</source>
         <translation>Configuration required</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2826"/>
+        <location filename="../gui/main_window.py" line="2832"/>
         <source>Veuillez configurer votre ville dans 'Préférences &gt; Intégrations' pour utiliser cette fonctionnalité.</source>
         <translation>Please configure your city in 'Preferences &gt; Integrations' to use this feature.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2837"/>
+        <location filename="../gui/main_window.py" line="2843"/>
         <source>Récupération des données astronomiques...</source>
         <translation>Retrieving astronomical data...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2850"/>
+        <location filename="../gui/main_window.py" line="2856"/>
         <source>Données astronomiques insérées.</source>
         <translation>Astronomical data inserted.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2855"/>
+        <location filename="../gui/main_window.py" line="2861"/>
         <source>Erreur Astro</source>
         <translation>Astro Error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2867"/>
+        <location filename="../gui/main_window.py" line="2873"/>
         <source>Informations du livre insérées avec succès.</source>
         <translation>Book information inserted successfully.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2875"/>
+        <location filename="../gui/main_window.py" line="2881"/>
         <source>Erreur de recherche</source>
         <translation>Search error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2883"/>
+        <location filename="../gui/main_window.py" line="2889"/>
         <source>Transcription trouvée</source>
         <translation>Transcription found</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2883"/>
+        <location filename="../gui/main_window.py" line="2889"/>
         <source>Une transcription en '{0}' existe pour cette vidéo. Voulez-vous l'ajouter ?</source>
         <translation>A transcription in '{0}' exists for this video. Do you want to add it?</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2893"/>
+        <location filename="../gui/main_window.py" line="2899"/>
         <source>
 
 **Transcription de la video Youtube**
@@ -2238,96 +2248,96 @@ Do you want to copy it to the journal to ensure the portability of your notes?</
 </translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="2900"/>
+        <location filename="../gui/main_window.py" line="2906"/>
         <source>Erreur de Transcription</source>
         <translation>Transcription Error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3076"/>
+        <location filename="../gui/main_window.py" line="3082"/>
         <source>Conversion terminée</source>
         <translation>Conversion finished</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3013"/>
+        <location filename="../gui/main_window.py" line="3019"/>
         <source>Le fichier PDF a été converti avec succès.</source>
         <translation>The PDF file was successfully converted.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3022"/>
+        <location filename="../gui/main_window.py" line="3028"/>
         <source>Erreur de conversion</source>
         <translation>Conversion error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3027"/>
+        <location filename="../gui/main_window.py" line="3033"/>
         <source>Sauvegarde terminée</source>
         <translation>Save finished</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3027"/>
+        <location filename="../gui/main_window.py" line="3033"/>
         <source>Le journal a été sauvegardé avec succès dans :
 {0}</source>
         <translation>The journal has been successfully saved in:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3039"/>
+        <location filename="../gui/main_window.py" line="3045"/>
         <source>Erreur de sauvegarde</source>
         <translation>Save error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3057"/>
+        <location filename="../gui/main_window.py" line="3063"/>
         <source>Erreur de tâche</source>
         <translation>Task error</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3076"/>
+        <location filename="../gui/main_window.py" line="3082"/>
         <source>La page a été convertie et sauvegardée dans :
 {0}</source>
         <translation>The page has been converted and saved in:
 {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3174"/>
+        <location filename="../gui/main_window.py" line="3180"/>
         <source>Indexation en cours...</source>
         <translation>Indexing in progress...</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3192"/>
+        <location filename="../gui/main_window.py" line="3198"/>
         <source>{0} tags</source>
         <translation>{0} tags</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3193"/>
+        <location filename="../gui/main_window.py" line="3199"/>
         <source>Index: {0}</source>
         <translation>Index: {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3233"/>
+        <location filename="../gui/main_window.py" line="3239"/>
         <source>Aucune note précédente trouvée dans le journal.</source>
         <translation>No previous note found in the journal.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3267"/>
+        <location filename="../gui/main_window.py" line="3273"/>
         <source>Aucune note suivante trouvée dans le journal.</source>
         <translation>No next note found in the journal.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3289"/>
+        <location filename="../gui/main_window.py" line="3295"/>
         <source>Aucune note pour le {0}</source>
         <translation>No note for {0}</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3514"/>
+        <location filename="../gui/main_window.py" line="3520"/>
         <source>Redémarrage requis</source>
         <translation>Restart required</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3514"/>
+        <location filename="../gui/main_window.py" line="3520"/>
         <source>Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.</source>
         <translation>Some changes, such as the application font, require a restart to be fully applied.</translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3760"/>
+        <location filename="../gui/main_window.py" line="3766"/>
         <source>Le fichier &apos;{0}&apos; n&apos;existe plus.</source>
         <translation>The file '{0}' no longer exists.</translation>
     </message>
@@ -4076,22 +4086,22 @@ Click 'Validate' to save the changes.</translation>
 <context>
     <name>WeatherContext</name>
     <message>
-        <location filename="../integrations/weather.py" line="94"/>
+        <location filename="../integrations/weather.py" line="97"/>
         <source>La ville et la clé API doivent être renseignées dans les Préférences.</source>
         <translation>The city and API key must be set in the Preferences.</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="127"/>
+        <location filename="../integrations/weather.py" line="125"/>
         <source>N/A</source>
         <translation>N/A</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="138"/>
+        <location filename="../integrations/weather.py" line="136"/>
         <source>**{emoji} Météo pour {city} :** {condition}, **{temp}°C** à {time}  Vent : {wind} km/h, Humidité : {humidity}%</source>
         <translation>**{emoji} Weather for {city}:** {condition}, **{temp}°C** at {time} Wind: {wind} km/h, Humidity: {humidity}%</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="153"/>
+        <location filename="../integrations/weather.py" line="151"/>
         <source>Erreur d'authentification. Vérifiez votre clé API.</source>
         <translation>Authentication error. Check your API key.</translation>
     </message>
@@ -4101,17 +4111,17 @@ Click 'Validate' to save the changes.</translation>
         <translation>City not found: '{city}'. Check the city name.</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="157"/>
+        <location filename="../integrations/weather.py" line="159"/>
         <source>Erreur HTTP : {error}</source>
         <translation>HTTP error: {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="159"/>
+        <location filename="../integrations/weather.py" line="161"/>
         <source>Erreur de connexion : {error}</source>
         <translation>Connection error: {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/weather.py" line="161"/>
+        <location filename="../integrations/weather.py" line="163"/>
         <source>Une erreur inattendue est survenue : {error}</source>
         <translation>An unexpected error occurred: {error}</translation>
     </message>

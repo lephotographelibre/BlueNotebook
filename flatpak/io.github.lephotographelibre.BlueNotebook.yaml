@@ -109,4 +109,4 @@ modules:
         # Pour la version Flathub, ce sera remplacé par :
         # type: git
         # url: https://github.com/lephotographelibre/BlueNotebook.git
-        # tag: v4.0.9 
+        # tag: v4.1.1
