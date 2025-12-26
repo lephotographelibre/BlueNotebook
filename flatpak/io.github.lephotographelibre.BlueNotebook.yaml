@@ -22,7 +22,7 @@ finish-args:
     # --filesystem=xdg-documents
   - --filesystem=home
   # Accès au fichier de configuration sur l'hôte (au lieu du dossier privé de la sandbox)
-  - --filesystem=xdg-config/BlueNotebook
+  #- --filesystem=xdg-config/BlueNotebook
   # Accès au portail du bureau pour une meilleure intégration (ouverture de liens)
   #- --talk-name=org.freedesktop.portal.Desktop
   # Permet de lire la liste des applications par défaut pour éviter le sélecteur
@@ -111,4 +111,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/lephotographelibre/BlueNotebook.git
-        tag: v4.1.2
+        tag: v4.1.3
