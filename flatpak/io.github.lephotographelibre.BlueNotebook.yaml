@@ -9,6 +9,8 @@ finish-args:
   # Accès au serveur d'affichage (X11 et Wayland)
   - --socket=fallback-x11
   - --socket=wayland
+  # Requis pour X11 (mémoire partagée)
+  - --share=ipc
   # Accès à l'accélération graphique (pour WebEngine)
   - --device=dri
   # Accès au réseau (Météo, YouTube, etc.)
@@ -17,11 +19,14 @@ finish-args:
   - --socket=pulseaudio
   # Accès aux fichiers utilisateur (pour sauvegarder le journal)
   # On peut restreindre à xdg-documents si on veut être plus strict
-  - --filesystem=home
+    # --filesystem=xdg-documents
+    - --filesystem=home
+  # Accès au fichier de configuration sur l'hôte (au lieu du dossier privé de la sandbox)
+  - --filesystem=xdg-config/BlueNotebook
   # Accès au portail du bureau pour une meilleure intégration (ouverture de liens)
-  - --talk-name=org.freedesktop.portal.Desktop
+  #- --talk-name=org.freedesktop.portal.Desktop
   # Permet de lire la liste des applications par défaut pour éviter le sélecteur
-  - --filesystem=xdg-config/mimeapps.list:ro
+  #- --filesystem=xdg-config/mimeapps.list:ro
   # Forcer fontconfig à lire la configuration de la police emoji
   - --env=FONTCONFIG_FILE=/app/etc/fonts/fonts.conf
 
@@ -104,9 +109,6 @@ modules:
 
 
     sources:
-      - type: dir
-        path: ..  # Pointe vers la racine du projet local pour le test
-        # Pour la version Flathub, ce sera remplacé par :
-        # type: git
-        # url: https://github.com/lephotographelibre/BlueNotebook.git
-        # tag: v4.1.1
+      - type: git
+        url: https://github.com/lephotographelibre/BlueNotebook.git
+        tag: v4.1.1
