@@ -1,3 +1,18 @@
+## V4.1.2 Flatpak MAJ
+Modifications avant submission flatpak. Correction d'erreur linter.
+Le choix fait ici est d'ouvrir l'acces au répertoire home.
+  - --filesystem=home
+
+Cela va générer 
+- une erreur au linter
+- une erreur lors de la soumission que l'on traiter par une exception.
+
+La sotution de repli sera doc
+1- Gérer l'exception en soumettant un exception via une PR
+2- Modifier l'application pour n'autoriser que 
+--filesystem=xdg-documents et   --filesystem=xdg-config
+
+
 ## V4.1.1 Fix Issue [#125] Start Screen Configuration
 
 Fix Issue [#125]
