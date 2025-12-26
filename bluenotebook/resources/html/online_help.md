@@ -1,4 +1,4 @@
-# Online Help - BlueNotebook V4.1.1
+# Online Help - BlueNotebook V4.1.2
 
 ## Table of Contents
 *   [1. Introduction](#introduction)
@@ -869,7 +869,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
     *   **GitHub Repository:** [github.com/geopy/geopy](https://github.com/geopy/geopy)
 
 ---
-*This manual was written for BlueNotebook V4.1.0*
+*This manual was written for BlueNotebook V4.1.2*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
