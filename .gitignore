@@ -226,6 +226,6 @@ build/
 *.egg-info/
 
 # JM flatpak
-flatpak
-repo
-build-dir
+repo/
+build-dir/
+var/
