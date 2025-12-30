@@ -22,4 +22,6 @@ dist/
 
 # Le dossier docker lui-même n'a pas besoin d'être dans l'image finale
 docker/
+
+# Le dossier flatpak n'a pas besoin d'être dans l'image finale
 flatpak/

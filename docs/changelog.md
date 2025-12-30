@@ -1,3 +1,28 @@
+## V4.1.4 MAJ pour docker et flathub
+
+### Integration des fonts dans l'application
+resources/fonts
+├── NotoColorEmoji.ttf
+├── NotoSans-BoldItalic.ttf
+├── NotoSans-Bold.ttf
+├── NotoSans-Italic.ttf
+└── NotoSans-Regular.ttf
+
+outil de test des emojis
+`tests/test_fonts.py`
+
+resources/html
+===> git commit -a -m  "v4.1.4_fonts_integration"
+
+### docker image build
+
+repertoire docker + Dockerfile (based on debian trixie) + doc
+.dockerignore
+modify README.md for docker install instructions
+
+===> git commit -a -m  "v4.1.4_docker_build"
+
+
 ## V4.1.2 Flatpak MAJ
 Modifications avant submission flatpak. Correction d'erreur linter.
 Le choix fait ici est d'ouvrir l'acces au répertoire home.
