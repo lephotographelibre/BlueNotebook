@@ -162,6 +162,8 @@ Install the following librairies/packages
 ```bash
 sudo apt-get update
 sudo apt-get install git libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
+# for QtWebEngine
+sudo apt-get install libasound2t64
 
 # Launch Bluenotebook
 git clone https://github.com/lephotographelibre/BlueNotebook.git

@@ -14,6 +14,22 @@ outil de test des emojis
 resources/html
 ===> git commit -a -m  "v4.1.4_fonts_integration"
 
+### Mise a jour des fichiers de configuration flatpak (fonts intégrées)
+
+        supprimé :        flatpak/75-noto-color-emoji.conf
+        nouveau fichier : flatpak/V4.1.3_Flatpak_set_up 25.08.txt
+        supprimé :        flatpak/fonts.conf
+        modifié :         flatpak/io.github.lephotographelibre.BlueNotebook.metainfo.xml
+        modifié :         flatpak/io.github.lephotographelibre.BlueNotebook.yaml
+
+===> git commit -a -m  "v4.1.4_flathub_config"
+
+### Correction README.md
+missign packages for Ubuntu configuration Issue [#130](https://github.com/lephotographelibre/BlueNotebook/issues/130)
+- sudo apt-get install libasound2t64
+
+===>  git commit -a -m  "v4.1.4_Issue [#130]"
+
 ### docker image build
 
 repertoire docker + Dockerfile (based on debian trixie) + doc
