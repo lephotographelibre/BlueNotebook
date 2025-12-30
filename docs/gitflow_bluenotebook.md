@@ -32,11 +32,13 @@ Switched to a new branch "vX.Y.Z_feature"
 ...
 do work
 ....
+$ git status
 $ git add .
 $ git commit -a -m "vX.Y.Z zerzerzerze"
 
 do work
 ....
+$ git status
 $ git add .
 $ git commit -a -m "vX.Y.Z zerzerzerze"
 ```

@@ -229,3 +229,4 @@ build/
 repo/
 build-dir/
 var/
+.flatpak-builder/

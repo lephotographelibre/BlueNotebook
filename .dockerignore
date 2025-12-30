@@ -1,0 +1,27 @@
+# Fichiers et dossiers liés à Git
+.git
+.gitignore
+
+# Environnements virtuels Python
+.venv*
+venv/
+
+# Fichiers Python compilés et caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dossiers de développement et de build
+.idea/
+.vscode/
+build-dir/
+repo/
+dist/
+*.egg-info/
+
+# Le dossier docker lui-même n'a pas besoin d'être dans l'image finale
+docker/
+
+# Le dossier flatpak n'a pas besoin d'être dans l'image finale
+flatpak/

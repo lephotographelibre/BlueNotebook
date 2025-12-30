@@ -13,11 +13,39 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo, QCoreApplication
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 from gui.main_window import MainWindow
 from core.settings import SettingsManager
 from gui.first_start import FirstStartWindow
 from pathlib import Path
+
+
+def load_local_fonts():
+    """Charge les polices locales pour assurer leur disponibilité (Flatpak/Docker)."""
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    fonts_dir = os.path.join(base_path, "resources", "fonts")
+
+    fonts_to_load = [
+        "NotoColorEmoji.ttf",
+        "NotoSans-Regular.ttf",
+        "NotoSans-Bold.ttf",
+        "NotoSans-Italic.ttf",
+        "NotoSans-BoldItalic.ttf",
+    ]
+
+    if os.path.exists(fonts_dir):
+        print(f"📂 Loading local fonts from: {fonts_dir}")
+        for font_file in fonts_to_load:
+            font_path = os.path.join(fonts_dir, font_file)
+            if os.path.exists(font_path):
+                font_id = QFontDatabase.addApplicationFont(font_path)
+                if font_id != -1:
+                    loaded_families = QFontDatabase.applicationFontFamilies(font_id)
+                    print(f"  ✅ Font loaded: {font_file} -> {loaded_families}")
+                else:
+                    print(f"  ❌ Error loading font: {font_file}")
+    else:
+        print(f"ℹ️ Local fonts directory not found: {fonts_dir}")
 
 
 def main():
@@ -42,8 +70,59 @@ def main():
     # --- ÉTAPE 3 : Forcer LANG AVANT QApplication ---
     os.environ["LANG"] = f"{locale_to_set}.UTF-8"
 
+    # --- ÉTAPE 3bis : Configurer Fontconfig pour Flatpak ---
+    # Configure fontconfig to see local fonts (especially Noto Color Emoji)
+    # This is necessary because we cannot install fonts system-wide in Flatpak
+    # without modifying the manifest.
+    if sys.platform == "linux":
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        fonts_dir = os.path.join(base_path, "resources", "fonts")
+
+        if os.path.exists(fonts_dir):
+            import tempfile
+
+            try:
+                uid = os.getuid()
+            except AttributeError:
+                uid = "user"
+
+            font_conf_path = os.path.join(
+                tempfile.gettempdir(), f"bluenotebook_fonts_{uid}.conf"
+            )
+
+            # Create a minimal fonts.conf that adds our directory and includes system defaults
+            xml_content = f"""<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <dir>{fonts_dir}</dir>
+  <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
+  <match target="pattern">
+    <test qual="any" name="family"><string>sans-serif</string></test>
+    <edit name="family" mode="append" binding="weak"><string>Noto Color Emoji</string></edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family"><string>serif</string></test>
+    <edit name="family" mode="append" binding="weak"><string>Noto Color Emoji</string></edit>
+  </match>
+  <match target="pattern">
+    <test qual="any" name="family"><string>monospace</string></test>
+    <edit name="family" mode="append" binding="weak"><string>Noto Color Emoji</string></edit>
+  </match>
+</fontconfig>
+"""
+            try:
+                with open(font_conf_path, "w") as f:
+                    f.write(xml_content)
+                os.environ["FONTCONFIG_FILE"] = font_conf_path
+                print(f"✅ Fontconfig configured: {font_conf_path}")
+            except Exception as e:
+                print(f"⚠️ Failed to configure fontconfig: {e}")
+
     # --- ÉTAPE 4 : Créer QApplication ---
     app = QApplication(sys.argv)
+
+    # --- ÉTAPE 4bis : Charger les polices locales ---
+    load_local_fonts()
 
     # --- ÉTAPE 5 : Appliquer la police globale AVANT les traductions ---
     app_font_family = settings_manager.get("ui.app_font_family", app.font().family())
@@ -132,7 +211,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        version = "4.1.3"
+        version = "4.1.4"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")

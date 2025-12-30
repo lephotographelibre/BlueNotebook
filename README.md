@@ -101,7 +101,38 @@ This level represents the application's ability to help the user organize, retri
 
 A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
 
-But for now **only manual installation** is available:
+**Docker image**
+
+A docker image for **BlueNotebook** is available 
+
+```bash
+# get the docker image (2.6GB )
+docker pull jmdigne/bluenotebook:4.1.4
+#create mandatoruy directories on the host
+mkdir -p ~/bluenotebook_docker/config \
+         ~/bluenotebook_docker/BlueNotebookJournal \
+         ~/bluenotebook_docker/BlueNotebookBackup
+# Modify the ownership and access rights
+chown -R $(id -u):$(id -g) ~/bluenotebook_docker
+chmod -R u+rwX ~/bluenotebook_docker
+
+# Run  the docker image
+docker run -it --rm \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v ~/bluenotebook_docker:/data \
+    -v ~/bluenotebook_docker/config:/home/appuser/.config \
+    -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
+    -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
+    --user=$(id -u):$(id -g) \
+    bluenotebook:4.1.4
+```
+.⚠️.⚠️.⚠️ Do not change the Journal and Backup directories on the home screen, as you already configured them before launching the application. You can change the application language (English or French)..⚠️.⚠️.⚠️
+ 
+![BlueNotebook](docs/Screencopy/V4.1.4_docker_first_screen.jpg)
+
+
+But a simple **manual installation** is also available:
 
 **Ubuntu/Debian**
 
@@ -131,6 +162,8 @@ Install the following librairies/packages
 ```bash
 sudo apt-get update
 sudo apt-get install git libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
+# for QtWebEngine
+sudo apt-get install libasound2t64
 
 # Launch Bluenotebook
 git clone https://github.com/lephotographelibre/BlueNotebook.git
