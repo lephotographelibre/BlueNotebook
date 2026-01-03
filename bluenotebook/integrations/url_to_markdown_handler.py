@@ -16,6 +16,7 @@
 # Conversion URL/HTML vers Markdown
 
 import os
+from pathlib import Path
 from PyQt5.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -46,7 +47,9 @@ class UrlToMarkdownDialog(QDialog):
 
     def __init__(self, initial_url="", parent=None):
         super().__init__(parent)
-        self.setWindowTitle(UrlToMarkdownContext.tr("Conversion URL/HTML vers Markdown"))
+        self.setWindowTitle(
+            UrlToMarkdownContext.tr("Conversion URL/HTML vers Markdown")
+        )
         self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
@@ -62,15 +65,21 @@ class UrlToMarkdownDialog(QDialog):
         layout.addLayout(url_layout)
 
         # Options
-        self.title_checkbox = QCheckBox(UrlToMarkdownContext.tr("Ajouter le titre en #"))
+        self.title_checkbox = QCheckBox(
+            UrlToMarkdownContext.tr("Ajouter le titre en #")
+        )
         self.title_checkbox.setChecked(True)
         layout.addWidget(self.title_checkbox)
 
-        self.links_checkbox = QCheckBox(UrlToMarkdownContext.tr("Conserver les liens Markdown"))
+        self.links_checkbox = QCheckBox(
+            UrlToMarkdownContext.tr("Conserver les liens Markdown")
+        )
         self.links_checkbox.setChecked(True)
         layout.addWidget(self.links_checkbox)
 
-        self.clean_checkbox = QCheckBox(UrlToMarkdownContext.tr("Utiliser Readability pour nettoyer"))
+        self.clean_checkbox = QCheckBox(
+            UrlToMarkdownContext.tr("Utiliser Readability pour nettoyer")
+        )
         self.clean_checkbox.setChecked(True)
         layout.addWidget(self.clean_checkbox)
 
@@ -156,7 +165,9 @@ class UrlToMarkdownWorker(QRunnable):
             self.signals.finished.emit(markdown_content, self.destination_path)
 
         except Exception as e:
-            message = UrlToMarkdownContext.tr("Erreur lors de la conversion : {error}").format(error=e)
+            message = UrlToMarkdownContext.tr(
+                "Erreur lors de la conversion : {error}"
+            ).format(error=e)
             self.signals.error.emit(message)
 
 
@@ -170,21 +181,38 @@ def run_url_to_markdown_conversion(main_window, initial_url=""):
         default_dir = os.path.join(main_window.journal_directory, "notes")
         os.makedirs(default_dir, exist_ok=True)
 
-        destination_path, _ = QFileDialog.getSaveFileName(
-            main_window,
-            UrlToMarkdownContext.tr("Sauvegarder le fichier Markdown"),
-            default_dir,
-            UrlToMarkdownContext.tr("Fichiers Markdown (*.md)"),
-        )
+        while True:
+            destination_path, _ = QFileDialog.getSaveFileName(
+                main_window,
+                UrlToMarkdownContext.tr("Sauvegarder le fichier Markdown"),
+                default_dir,
+                UrlToMarkdownContext.tr("Fichiers Markdown (*.md)"),
+            )
 
-        if not destination_path:
-            return
+            if not destination_path:
+                return
+
+            path_obj = Path(destination_path)
+            if path_obj.suffix.lower() == ".md":
+                break
+            elif path_obj.suffix == "":
+                destination_path = str(path_obj.with_suffix(".md"))
+                break
+            else:
+                QMessageBox.warning(
+                    main_window,
+                    UrlToMarkdownContext.tr("Extension invalide"),
+                    UrlToMarkdownContext.tr("L'extension du fichier doit être .md"),
+                )
+                default_dir = str(path_obj.with_suffix(""))
 
         # Sauvegarder le fichier en cours d'édition avant de continuer
         main_window.save_file()
 
         # Lancer le worker
-        main_window.start_task(UrlToMarkdownContext.tr("Conversion en Markdown en cours..."))
+        main_window.start_task(
+            UrlToMarkdownContext.tr("Conversion en Markdown en cours...")
+        )
         worker = UrlToMarkdownWorker(options, destination_path)
         worker.signals.finished.connect(main_window.on_url_to_markdown_finished)
         worker.signals.error.connect(main_window.on_task_error)
