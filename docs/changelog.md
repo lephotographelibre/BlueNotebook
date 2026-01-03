@@ -1,3 +1,8 @@
+## V4.1.5 Icon New theme
+
+- New theme for icons & images
+
+
 ## V4.1.4 MAJ pour docker et flathub
 
 ### Integration des fonts dans l'application
