@@ -171,6 +171,7 @@ git clone https://github.com/lephotographelibre/BlueNotebook.git
 cd Bluenotebook
 ./run_bluenotebook.sh
 ```
+You can add a launcher for this application using the `install.sh` script, which will create the `bluenotebook.desktop` file and register it correctly.
 
 **Windows 10/11**
 
