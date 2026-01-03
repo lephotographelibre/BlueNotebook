@@ -4036,48 +4036,48 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="75"/>
+        <location filename="../integrations/youtube_video.py" line="77"/>
         <source>Vidéo YouTube</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="90"/>
+        <location filename="../integrations/youtube_video.py" line="92"/>
         <source>Impossible de vérifier la vidéo : {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="101"/>
+        <location filename="../integrations/youtube_video.py" line="105"/>
         <source>Impossible de trouver les données initiales de la playlist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="107"/>
+        <location filename="../integrations/youtube_video.py" line="113"/>
         <source>Playlist YouTube</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="113"/>
+        <location filename="../integrations/youtube_video.py" line="123"/>
         <source>Inconnu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="152"/>
+        <location filename="../integrations/youtube_video.py" line="164"/>
         <source>Impossible de vérifier la playlist : {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="160"/>
+        <location filename="../integrations/youtube_video.py" line="174"/>
         <source>@@Youtube {title} [Voir sur YouTube : {url}]({url})</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="165"/>
-        <source>@@Musique @@Youtube @@Playlist {title} [{author} - {count}]({url})</source>
+        <location filename="../integrations/youtube_video.py" line="335"/>
+        <source>Erreur lors de la récupération de la transcription : {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="323"/>
-        <source>Erreur lors de la récupération de la transcription : {error}</source>
+        <location filename="../integrations/youtube_video.py" line="181"/>
+        <source>@@Youtube Playlist {title} [{author} - {count}]({url})</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

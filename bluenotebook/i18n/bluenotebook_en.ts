@@ -4134,49 +4134,54 @@ Click 'Validate' to save the changes.</translation>
         <translation>The provided URL is not a valid YouTube video or playlist URL.</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="75"/>
+        <location filename="../integrations/youtube_video.py" line="77"/>
         <source>Vidéo YouTube</source>
         <translation>YouTube Video</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="90"/>
+        <location filename="../integrations/youtube_video.py" line="92"/>
         <source>Impossible de vérifier la vidéo : {error}</source>
         <translation>Could not verify video: {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="101"/>
+        <location filename="../integrations/youtube_video.py" line="105"/>
         <source>Impossible de trouver les données initiales de la playlist.</source>
         <translation>Could not find initial playlist data.</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="107"/>
+        <location filename="../integrations/youtube_video.py" line="113"/>
         <source>Playlist YouTube</source>
         <translation>YouTube Playlist</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="113"/>
+        <location filename="../integrations/youtube_video.py" line="123"/>
         <source>Inconnu</source>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="152"/>
+        <location filename="../integrations/youtube_video.py" line="164"/>
         <source>Impossible de vérifier la playlist : {error}</source>
         <translation>Could not verify playlist: {error}</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="160"/>
+        <location filename="../integrations/youtube_video.py" line="174"/>
         <source>@@Youtube {title} [Voir sur YouTube : {url}]({url})</source>
         <translation>@@Youtube {title} [See on YouTube: {url}]({url})</translation>
     </message>
     <message>
         <location filename="../integrations/youtube_video.py" line="165"/>
         <source>@@Musique @@Youtube @@Playlist {title} [{author} - {count}]({url})</source>
-        <translation>@@Music @@Youtube @@Playlist {title} [{author} - {count}]({url})</translation>
+        <translation type="obsolete">@@Music @@Youtube @@Playlist {title} [{author} - {count}]({url})</translation>
     </message>
     <message>
-        <location filename="../integrations/youtube_video.py" line="323"/>
+        <location filename="../integrations/youtube_video.py" line="335"/>
         <source>Erreur lors de la récupération de la transcription : {error}</source>
         <translation>Error retrieving transcription: {error}</translation>
+    </message>
+    <message>
+        <location filename="../integrations/youtube_video.py" line="181"/>
+        <source>@@Youtube Playlist {title} [{author} - {count}]({url})</source>
+        <translation>@@Youtube Playlist {title} [{author} - {count}]({url})</translation>
     </message>
 </context>
 <context>

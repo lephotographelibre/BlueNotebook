@@ -1,6 +1,11 @@
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images
+-> git commit -a -m "v4.1.5 icons new theme"
+
+- Fix issue [#146](https://github.com/lephotographelibre/BlueNotebook/issues/146) Youtube tags
+-> git commit -a -m "v4.1.5 Issue [#146] youtube tags"
+
 
 
 ## V4.1.4 MAJ pour docker et flathub
