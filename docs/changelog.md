@@ -6,6 +6,8 @@
 - Fix issue [#146](https://github.com/lephotographelibre/BlueNotebook/issues/146) Youtube tags
 -> git commit -a -m "v4.1.5 Issue [#146] youtube tags"
 
+- Fix Issue [#143](https://github.com/lephotographelibre/BlueNotebook/issues/143) Improve docke install
+-> git commit -a -m "v4.1.5 Issue [#143] Improve docker install"
 
 
 ## V4.1.4 MAJ pour docker et flathub
