@@ -4,6 +4,7 @@
 [![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
 ![Static Badge](https://img.shields.io/badge/Python-3.11.13-green)
 ![Static Badge](https://img.shields.io/badge/PythonQt5-5.15.11-blue)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jmdigne/bluenotebook?style=flat-square&logo=docker)](https://img.shields.io/docker/pulls/jmdigne/bluenotebook)
 
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
