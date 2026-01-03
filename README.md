@@ -99,7 +99,7 @@ This level represents the application's ability to help the user organize, retri
 
 **How to Launch Bluenotebook**
 
-A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
+A Linux Appimage package  and a Windows installer will soon be available. Stay tuned.
 
 **Docker image**
 
