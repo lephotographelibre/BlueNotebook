@@ -62,7 +62,9 @@ def get_youtube_video_details(url: str) -> dict | str:
     if video_id:
         return _get_video_details(url, video_id)
 
-    return YoutubeVideoContext.tr("L'URL fournie n'est pas une URL de vidéo ou de playlist YouTube valide.")
+    return YoutubeVideoContext.tr(
+        "L'URL fournie n'est pas une URL de vidéo ou de playlist YouTube valide."
+    )
 
 
 def _get_video_details(url: str, video_id: str) -> dict | str:
@@ -87,7 +89,9 @@ def _get_video_details(url: str, video_id: str) -> dict | str:
             "url": url,
         }
     except requests.RequestException as e:
-        return YoutubeVideoContext.tr("Impossible de vérifier la vidéo : {error}").format(error=e)
+        return YoutubeVideoContext.tr(
+            "Impossible de vérifier la vidéo : {error}"
+        ).format(error=e)
 
 
 def _get_playlist_details(url: str, playlist_id: str) -> dict | str:
@@ -98,19 +102,27 @@ def _get_playlist_details(url: str, playlist_id: str) -> dict | str:
 
         match = re.search(r"var ytInitialData = ({.*?});", response.text)
         if not match:
-            return YoutubeVideoContext.tr("Impossible de trouver les données initiales de la playlist.")
+            return YoutubeVideoContext.tr(
+                "Impossible de trouver les données initiales de la playlist."
+            )
 
         data = json.loads(match.group(1))
 
         header = data.get("header", {}).get("playlistHeaderRenderer", {})
 
-        title = header.get("title", {}).get("simpleText", YoutubeVideoContext.tr("Playlist YouTube"))
+        title = header.get("title", {}).get(
+            "simpleText", YoutubeVideoContext.tr("Playlist YouTube")
+        )
 
         owner_text_runs = header.get("ownerText", {}).get("runs")
         if owner_text_runs:
-            owner_text = owner_text_runs[0].get("text", YoutubeVideoContext.tr("Inconnu"))
+            owner_text = owner_text_runs[0].get(
+                "text", YoutubeVideoContext.tr("Inconnu")
+            )
         else:
-            owner_text = header.get("subtitle", {}).get("simpleText", YoutubeVideoContext.tr("Inconnu"))
+            owner_text = header.get("subtitle", {}).get(
+                "simpleText", YoutubeVideoContext.tr("Inconnu")
+            )
 
         track_count = "N/A"
 
@@ -149,7 +161,9 @@ def _get_playlist_details(url: str, playlist_id: str) -> dict | str:
             "url": url,
         }
     except requests.RequestException as e:
-        return YoutubeVideoContext.tr("Impossible de vérifier la playlist : {error}").format(error=e)
+        return YoutubeVideoContext.tr(
+            "Impossible de vérifier la playlist : {error}"
+        ).format(error=e)
 
 
 def generate_youtube_markdown_block(details: dict) -> str:
@@ -157,22 +171,26 @@ def generate_youtube_markdown_block(details: dict) -> str:
     Génère le fragment Markdown complet pour une vidéo ou une playlist YouTube.
     """
     if details["type"] == "video":
-        tags = YoutubeVideoContext.tr("@@Youtube {title} [Voir sur YouTube : {url}]({url})").format(
-            title=details['title'], url=details['url']
+        tags = YoutubeVideoContext.tr(
+            "@@Youtube {title} [Voir sur YouTube : {url}]({url})"
+        ).format(title=details["title"], url=details["url"])
+        thumbnail_url = (
+            f"https://img.youtube.com/vi/{details['video_id']}/hqdefault.jpg"
         )
-        thumbnail_url = f"https://img.youtube.com/vi/{details['video_id']}/hqdefault.jpg"
     elif details["type"] == "playlist":
-        tags = YoutubeVideoContext.tr("@@Musique @@Youtube @@Playlist {title} [{author} - {count}]({url})").format(
-            title=details['title'],
-            author=details['author'],
-            count=details['track_count'],
-            url=details['url']
+        tags = YoutubeVideoContext.tr(
+            "@@Youtube Playlist {title} [{author} - {count}]({url})"
+        ).format(
+            title=details["title"],
+            author=details["author"],
+            count=details["track_count"],
+            url=details["url"],
         )
         thumbnail_url = details["thumbnail_url"]
     else:
         return ""
 
-    alt_text = details['title']
+    alt_text = details["title"]
 
     markdown_block = f"""
 {tags}
@@ -244,25 +262,19 @@ def get_youtube_transcript(video_id: str) -> tuple[str | None, str | None]:
         for lang in ["fr", "en"]:
             try:
                 target_transcript = transcript_list.find_transcript([lang])
-                print(
-                    f"🎥 [Transcript] Transcript found for the language: '{lang}'"
-                )
+                print(f"🎥 [Transcript] Transcript found for the language: '{lang}'")
                 break
             except Exception:
                 print(f"🎥 [Transcript] No Transcript found for the language: '{lang}'")
                 continue
 
         if not target_transcript:
-            print(
-                "🎥 [Transcript] No transcript found in 'fr' or 'en'. Abandoned."
-            )
+            print("🎥 [Transcript] No transcript found in 'fr' or 'en'. Abandoned.")
             return None, None
 
         fetched_transcript = target_transcript.fetch()
         if not fetched_transcript:
-            print(
-                "🎥 [Transcript] Error: The transcript is empty after retrieval."
-            )
+            print("🎥 [Transcript] Error: The transcript is empty after retrieval.")
             return None, None
 
         print("🎥 [Transcript] Text formatting...")
@@ -320,5 +332,7 @@ class TranscriptWorker(QRunnable):
             self.signals.finished.emit(formatted_text, target_transcript.language_code)
 
         except Exception as e:
-            message = YoutubeVideoContext.tr("Erreur lors de la récupération de la transcription : {error}").format(error=e)
+            message = YoutubeVideoContext.tr(
+                "Erreur lors de la récupération de la transcription : {error}"
+            ).format(error=e)
             self.signals.error.emit(message)
