@@ -2075,7 +2075,7 @@ Voulez-vous quand même l'utiliser comme journal ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3766"/>
+        <location filename="../gui/main_window.py" line="3772"/>
         <source>Fichier non trouvé</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2197,7 +2197,7 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3082"/>
+        <location filename="../gui/main_window.py" line="3088"/>
         <source>Conversion terminée</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2233,53 +2233,53 @@ Voulez-vous le copier dans le journal pour garantir la portabilité de vos notes
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3082"/>
+        <location filename="../gui/main_window.py" line="3088"/>
         <source>La page a été convertie et sauvegardée dans :
 {0}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3180"/>
+        <location filename="../gui/main_window.py" line="3186"/>
         <source>Indexation en cours...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3198"/>
+        <location filename="../gui/main_window.py" line="3204"/>
         <source>{0} tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3199"/>
+        <location filename="../gui/main_window.py" line="3205"/>
         <source>Index: {0}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3239"/>
+        <location filename="../gui/main_window.py" line="3245"/>
         <source>Aucune note précédente trouvée dans le journal.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3273"/>
+        <location filename="../gui/main_window.py" line="3279"/>
         <source>Aucune note suivante trouvée dans le journal.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3295"/>
+        <location filename="../gui/main_window.py" line="3301"/>
         <source>Aucune note pour le {0}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3520"/>
+        <location filename="../gui/main_window.py" line="3526"/>
         <source>Redémarrage requis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3520"/>
+        <location filename="../gui/main_window.py" line="3526"/>
         <source>Certains changements, comme la police de l'application, nécessitent un redémarrage pour être pleinement appliqués.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/main_window.py" line="3766"/>
+        <location filename="../gui/main_window.py" line="3772"/>
         <source>Le fichier &apos;{0}&apos; n&apos;existe plus.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3895,67 +3895,67 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
 <context>
     <name>UrlToMarkdownContext</name>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="49"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="50"/>
         <source>Conversion URL/HTML vers Markdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="56"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="59"/>
         <source>Chemin ou URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="59"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="62"/>
         <source>Parcourir...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="65"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="68"/>
         <source>Ajouter le titre en #</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="69"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="74"/>
         <source>Conserver les liens Markdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="73"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="80"/>
         <source>Utiliser Readability pour nettoyer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="85"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="94"/>
         <source>Sélectionner un fichier HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="85"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="94"/>
         <source>Fichiers HTML (*.html *.htm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="128"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="137"/>
         <source>Le chemin ou l&apos;URL &apos;{path}&apos; n&apos;est pas valide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="159"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="168"/>
         <source>Erreur lors de la conversion : {error}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="173"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="185"/>
         <source>Sauvegarder le fichier Markdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="173"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="185"/>
         <source>Fichiers Markdown (*.md)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../integrations/url_to_markdown_handler.py" line="187"/>
+        <location filename="../integrations/url_to_markdown_handler.py" line="213"/>
         <source>Conversion en Markdown en cours...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3982,6 +3982,16 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</source>
     <message>
         <location filename="../integrations/url_converter.py" line="306"/>
         <source>Réponses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../integrations/url_to_markdown_handler.py" line="202"/>
+        <source>Extension invalide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../integrations/url_to_markdown_handler.py" line="202"/>
+        <source>L'extension du fichier doit être .md</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

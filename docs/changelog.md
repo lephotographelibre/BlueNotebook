@@ -9,6 +9,17 @@
 - Fix Issue [#143](https://github.com/lephotographelibre/BlueNotebook/issues/143) Improve docke install
 -> git commit -a -m "v4.1.5 Issue [#143] Improve docker install"
 
+- Fix Issue [#140](https://github.com/lephotographelibre/BlueNotebook/issues/140) v4.1.4: Integration Convert from URL need an .md file extension #140
+
+lorsque l'on importe une url comme fichier markdonw en utilisant url_to_markdown_handlet.py si l'utilisateur après avoir choisi un dossier  de destination  fournit un nom de fichier AVEC l'extension .md tout fonctionne bien.
+Mais si l'utilisateur ne fournit qu'un nom de fichier SANS extentesion.md alors le fichier est crré sans expetnsion à la racines des Notes. ce n'est pas le comportement attendu.
+Ce qu'il faut corriger c'est que si l'utilisateur oublie de fournir une extension il faut forcer le nom de fichier avec eextension .md et bien créer le fichier  "nom_de_fichier.md" dans le dossier choisi par l'utilisateur.
+Comme cela que l'utilisateur fournisse ou pas une extension .md le fonctionnement sera le meme.
+
+Si l'utilisateur fournit une extension autre que .md affichier un message d'erreur "indiquant de l'extension doit etre .md" et reinitialiser le champ de saisie du nom de fichier sans extension
++ i18n files 
+
+-> git commit -a -m "v4.1.5 i18n Url to Markdown"
 
 ## V4.1.4 MAJ pour docker et flathub
 
