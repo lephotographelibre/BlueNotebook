@@ -3075,6 +3075,12 @@ class MainWindow(QMainWindow):
     def on_url_to_markdown_finished(self, markdown_content, output_file_path):
         """Slot appelé lorsque la conversion URL -> MD est terminée."""
         self.stop_task()
+
+        # V4.1.5 Fix Issue #140: Force .md extension
+        path_obj = Path(output_file_path)
+        if path_obj.suffix.lower() != ".md":
+            output_file_path = str(path_obj.with_suffix(".md"))
+
         try:
             with open(output_file_path, "w", encoding="utf-8") as f:
                 f.write(markdown_content)

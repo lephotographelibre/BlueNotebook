@@ -100,11 +100,12 @@ This level represents the application's ability to help the user organize, retri
 
 **How to Launch Bluenotebook**
 
-A Flatpak for Linux and a Windows installer will soon be available. Stay tuned.
+A Linux Appimage package  and a Windows installer will soon be available. Stay tuned.
 
 **Docker image**
 
-A docker image for **BlueNotebook** is available 
+A **BlueNotebook** docker image  is available at <https://hub.docker.com/repository/docker/jmdigne/bluenotebook/general>.
+You can launch this BlueNotebook Docker image directly by running the `run_docker.sh` script, or manually:
 
 ```bash
 # get the docker image (2.6GB )
