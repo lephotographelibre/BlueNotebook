@@ -28,6 +28,7 @@ import shutil
 from datetime import datetime
 import zipfile
 import platform  # Ajout pour récupérer l'info OS
+import sys
 from urllib.parse import quote
 from datetime import datetime
 import requests
@@ -84,6 +85,7 @@ from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
 from .backup_handler import backup_journal, restore_journal
 from .preferences_dialog import PreferencesDialog
+from .on_line_help import OnlineHelpWindow
 from core.journal_backup_worker import JournalBackupWorker
 from core.quote_fetcher import QuoteFetcher
 
@@ -2221,7 +2223,7 @@ class MainWindow(QMainWindow):
         self.toggle_reader()
 
     def show_online_help(self):
-        """Affiche la page d'aide HTML dans le navigateur par défaut."""
+        """Affiche la page d'aide HTML dans une fenêtre interne."""
         # Déterminer le fichier d'aide en fonction de la langue de l'application
         app_locale = QLocale()
         if app_locale.language() == QLocale.English:
@@ -2234,9 +2236,9 @@ class MainWindow(QMainWindow):
             base_path, "..", "resources", "html", help_filename
         )
 
+        final_url = None
         if os.path.exists(help_file_path):
-            url = f"file:///{os.path.abspath(help_file_path)}"
-            webbrowser.open(url)
+            final_url = f"file:///{os.path.abspath(help_file_path)}"
         else:
             # Si le fichier spécifique à la langue n'est pas trouvé, essayer l'autre en fallback
             fallback_filename = (
@@ -2248,8 +2250,7 @@ class MainWindow(QMainWindow):
                 base_path, "..", "resources", "html", fallback_filename
             )
             if os.path.exists(fallback_path):
-                url = f"file:///{os.path.abspath(fallback_path)}"
-                webbrowser.open(url)
+                final_url = f"file:///{os.path.abspath(fallback_path)}"
             else:
                 QMessageBox.warning(
                     self,
@@ -2258,6 +2259,11 @@ class MainWindow(QMainWindow):
                         help_file_path
                     ),
                 )
+                return
+
+        if final_url:
+            self.help_window = OnlineHelpWindow(final_url, self)
+            self.help_window.show()
 
     def show_about(self):
         """Afficher la boîte À propos"""
@@ -2272,7 +2278,17 @@ class MainWindow(QMainWindow):
                 except (AttributeError, OSError):
                     os_name = "Linux"
             elif platform.system() == "Windows":
-                os_name = f"Windows {platform.release()}"
+                try:
+                    if hasattr(sys, "getwindowsversion"):
+                        version = sys.getwindowsversion()
+                        if version.major == 10 and version.build >= 22000:
+                            os_name = "Windows 11"
+                        else:
+                            os_name = f"Windows {platform.release()}"
+                    else:
+                        os_name = f"Windows {platform.release()}"
+                except Exception:
+                    os_name = f"Windows {platform.release()}"
             elif platform.system() == "Darwin":
                 os_name = f"macOS {platform.mac_ver()[0]}"
             else:
@@ -2432,6 +2448,12 @@ class MainWindow(QMainWindow):
 
     def show_quote_of_the_day(self):
         """Affiche la citation du jour dans une boîte de dialogue."""
+        # V4.1.6 - Fix Issue #131: Quote service is only in French
+        app_locale = QLocale()
+        if app_locale.language() != QLocale.French:
+            # Ne rien faire si la langue n'est pas le français
+            return
+
         if self.settings_manager.get("integrations.show_quote_of_the_day"):
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
             if self.daily_quote and self.daily_author:
@@ -2449,6 +2471,16 @@ class MainWindow(QMainWindow):
 
     def insert_quote_of_the_day(self):
         """Insère la citation du jour dans l'éditeur, en la récupérant si nécessaire."""
+        # V4.1.6 - Fix Issue #131: Quote service is only in French
+        app_locale = QLocale()
+        if app_locale.language() != QLocale.French:
+            QMessageBox.information(
+                self,
+                self.tr("Service non disponible"),
+                self.tr("Ce service n'est pas disponible dans votre langue."),
+            )
+            return
+
         if not self.daily_quote:
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
 
@@ -2940,6 +2972,8 @@ class MainWindow(QMainWindow):
         """Arrête le clignotement à la fin de la sauvegarde"""
         self.backup_flash_timer.stop()
         self.backup_status_label.setVisible(False)
+        # V4.1.6 Fix Issue: Ensure "Veuillez patienter" is also hidden
+        self.pdf_status_label.setVisible(False)
 
     def _start_pdf_convert_flashing(self):
         """Démarre le message clignotant pour la conversion PDF."""
