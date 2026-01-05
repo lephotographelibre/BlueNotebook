@@ -168,7 +168,9 @@ $ alias bluenotebook='flatpak run io.github.lephotographelibre.BlueNotebook'
 ```
 Launch bluenotebook
 
-### **Ubuntu/Debian** install from source
+
+### **Ubuntu/Debian** install from source files
+
 
 `pyenv` is used to create an isolated Python environment based on Python 3.11.13.
 
@@ -206,7 +208,9 @@ cd Bluenotebook
 ```
 You can add a launcher for this application using the `install.sh` script, which will create the `bluenotebook.desktop` file and register it correctly.
 
-### **Windows 10/11** install from source
+
+### **Windows 10/11** install from source files
+
 
 `pyenv-win` is used to create an isolated Python environment based on Python 3.11.9. Therefore, install pyenv-win first: <https://github.com/pyenv-win/pyenv-win>
 
@@ -248,7 +252,9 @@ PS C:\Users\xx> ./run_bluenotebook.bat
 
 
 
-## **Screenshots**
+
+## **Screenshots**
+
 
 The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
 

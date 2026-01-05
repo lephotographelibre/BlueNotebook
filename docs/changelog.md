@@ -1,3 +1,41 @@
+## V4.1.6 On-line help Window Fix Issue [#132]
+
+Issue [#132](https://github.com/lephotographelibre/BlueNotebook/issues/132) V4.1.3: Doc: launch help_on_line in a private instance of Qt WebEngine #132
+
+- Create an on-line help window to display the on-line doc 
+--> git commit -a -m "v4.1.6 Fix Issue [#132] On line help Window"
+
+
+Issue [#153](https://github.com/lephotographelibre/BlueNotebook/issues/153)V4.1.5 Integration: URLtoMarkdown add source url to .md file #153
+
+--> git commit -a -m "v4.1.6 Fix Issue [#153] Source URL to .md file"
+
+
+Fix Issue [#137] v4.1.4 GUI: A Propos: Windows version detection is wrong #137
+
+A propos detection plateform windows. J'a besoin de différencier Windows 11, évitez de vous fier uniquement à platform.platform(). Utilisez plutôt une vérification du numéro de build :
+
+```python
+import platform
+import sys
+
+if sys.platform == "win32":
+    version = sys.getwindowsversion()
+    major, minor, build = version.major, version.minor, version.build
+    if major == 10 and build >= 22000:
+        print("Windows 11 ou supérieur")
+    else:
+        print("Windows 10 ou antérieur")
+```
+Cela fonctionnera correctement sur votre système (build 26200 ≥ 22000).
+
+--> git commit -a -m "v4.1.6 Fix Issue [#137] Windows version"
+
+Issue [#136](https://github.com/lephotographelibre/BlueNotebook/issues/136) V4.1.4: main_windows: blink effect after backup not removed #136
+
+Lorsque j'effectue une sauvegarde le message Veuillez Patienté est affiché en clignotant. Lorsque la sauvegarde est terminée le message reste affiché dans la barre d'étét. Iden lors de la création d'un epub. Par contre le clignotement d'une message lors de la récupération d'un libre via intégration Amazon ISBN lui fonctionne correctement. Peux tu corriger les deux problemes pour les bacakup et pub.
+
+--> git commit -a -m "v4.1.6 Fix Issue [#136] clignotement backup et epub"
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images
