@@ -4071,27 +4071,27 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</translation>
         <translation>Conversion en Markdown en cours...</translation>
     </message>
     <message>
-        <location filename="../integrations/url_converter.py" line="90"/>
+        <location filename="../integrations/url_converter.py" line="97"/>
         <source>❌ Url ou html_content requis</source>
         <translation>❌ Url ou html_content requis</translation>
     </message>
     <message>
-        <location filename="../integrations/url_converter.py" line="185"/>
+        <location filename="../integrations/url_converter.py" line="196"/>
         <source>Lien</source>
         <translation>Lien</translation>
     </message>
     <message>
-        <location filename="../integrations/url_converter.py" line="188"/>
+        <location filename="../integrations/url_converter.py" line="199"/>
         <source>Référence</source>
         <translation>Référence</translation>
     </message>
     <message>
-        <location filename="../integrations/url_converter.py" line="297"/>
+        <location filename="../integrations/url_converter.py" line="310"/>
         <source>Question</source>
         <translation>Question</translation>
     </message>
     <message>
-        <location filename="../integrations/url_converter.py" line="306"/>
+        <location filename="../integrations/url_converter.py" line="321"/>
         <source>Réponses</source>
         <translation>Réponses</translation>
     </message>
@@ -4104,6 +4104,15 @@ Cliquez sur 'Valider' pour enregistrer les modifications.</translation>
         <location filename="../integrations/url_to_markdown_handler.py" line="202"/>
         <source>L'extension du fichier doit être .md</source>
         <translation>L'extension du fichier doit être .md</translation>
+    </message>
+    <message>
+        <location filename="../integrations/url_converter.py" line="71"/>
+        <source>URL : &lt;{url}&gt;
+
+</source>
+        <translation>URL : &lt;{url}&gt;
+
+</translation>
     </message>
 </context>
 <context>
