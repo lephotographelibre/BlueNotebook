@@ -2448,6 +2448,12 @@ class MainWindow(QMainWindow):
 
     def show_quote_of_the_day(self):
         """Affiche la citation du jour dans une boîte de dialogue."""
+        # V4.1.6 - Fix Issue #131: Quote service is only in French
+        app_locale = QLocale()
+        if app_locale.language() != QLocale.French:
+            # Ne rien faire si la langue n'est pas le français
+            return
+
         if self.settings_manager.get("integrations.show_quote_of_the_day"):
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
             if self.daily_quote and self.daily_author:
@@ -2465,6 +2471,16 @@ class MainWindow(QMainWindow):
 
     def insert_quote_of_the_day(self):
         """Insère la citation du jour dans l'éditeur, en la récupérant si nécessaire."""
+        # V4.1.6 - Fix Issue #131: Quote service is only in French
+        app_locale = QLocale()
+        if app_locale.language() != QLocale.French:
+            QMessageBox.information(
+                self,
+                self.tr("Service non disponible"),
+                self.tr("Ce service n'est pas disponible dans votre langue."),
+            )
+            return
+
         if not self.daily_quote:
             self.daily_quote, self.daily_author = QuoteFetcher.get_quote_of_the_day()
 
