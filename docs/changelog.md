@@ -6,6 +6,10 @@ Issue [#132](https://github.com/lephotographelibre/BlueNotebook/issues/132) V4.1
 --> git commit -a -m "v4.1.6 Fix Issue [#132] On line help Window"
 
 
+Issue [#153](https://github.com/lephotographelibre/BlueNotebook/issues/153)V4.1.5 Integration: URLtoMarkdown add source url to .md file #153
+
+--> git commit -a -m "v4.1.6 Fix Issue [#153] Source URL to .md file"
+
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images

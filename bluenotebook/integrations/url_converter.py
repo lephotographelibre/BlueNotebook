@@ -15,7 +15,7 @@
 
 # urltomarkdown.py (version améliorée pour tables larges)
 # pip install requests beautifulsoup4 readability-lxml markdownify validators
- 
+
 
 import re
 import html
@@ -65,6 +65,13 @@ class UrlToMarkdown:
             r"^https?://stackoverflow\.com/questions/\d+", re.IGNORECASE
         )
 
+    def _add_source_url(self, md: str, url: str) -> str:
+        """Ajoute l'URL source au début du contenu Markdown si c'est une URL web."""
+        if url and url.startswith(("http://", "https://")):
+            source_line = UrlToMarkdownContext.tr("URL : <{url}>\n\n").format(url=url)
+            return source_line + md
+        return md
+
     def convert(
         self,
         url: str,
@@ -98,7 +105,8 @@ class UrlToMarkdown:
             if json_url:
                 try:
                     data = json.loads(self._fetch(json_url))
-                    return self._parse_apple_json(data, title, ignore_links)
+                    md = self._parse_apple_json(data, title, ignore_links)
+                    return self._add_source_url(md, url)
                 except:
                     pass  # fallback
 
@@ -106,7 +114,8 @@ class UrlToMarkdown:
         if self.so_regex.match(base_url):
             html = html_content or self._fetch(base_url)
             html = self._clean_html(html)
-            return self._convert_stackoverflow(html, base_url, title, ignore_links)
+            md = self._convert_stackoverflow(html, base_url, title, ignore_links)
+            return self._add_source_url(md, url)
 
         # 3. Conversion classique
         html = html_content or self._fetch(base_url)
@@ -129,7 +138,9 @@ class UrlToMarkdown:
         if title and page_title:
             md = f"# {page_title}\n\n{md}"
 
-        return md.strip() + "\n"
+        final_md = self._add_source_url(md, url)
+
+        return final_md.strip() + "\n"
 
     # ————————————————————————————————————————
     # Méthodes privées
@@ -182,10 +193,12 @@ class UrlToMarkdown:
                 elif t == "codeVoice":
                     text += f"`{it.get('code', '')}`"
                 elif t == "link" and not ignore_links:
-                    link_title = it.get('title', UrlToMarkdownContext.tr("Lien"))
+                    link_title = it.get("title", UrlToMarkdownContext.tr("Lien"))
                     text += link_title
                 elif t == "reference" and it.get("identifier") in refs:
-                    ref_title = refs[it["identifier"]].get("title", UrlToMarkdownContext.tr("Référence"))
+                    ref_title = refs[it["identifier"]].get(
+                        "title", UrlToMarkdownContext.tr("Référence")
+                    )
                     text += ref_title
             return text
 
@@ -295,7 +308,9 @@ class UrlToMarkdown:
     ) -> str:
         soup = BeautifulSoup(html_content, "html.parser")
         page_title = (
-            soup.find("h1").get_text(strip=True) if soup.find("h1") else UrlToMarkdownContext.tr("Question")
+            soup.find("h1").get_text(strip=True)
+            if soup.find("h1")
+            else UrlToMarkdownContext.tr("Question")
         )
 
         q = soup.find("div", id="question")
@@ -304,7 +319,9 @@ class UrlToMarkdown:
         md = markdownify(str(q), heading_style="ATX") if q else ""
         if a and not str(a).strip().endswith("Your Answer"):
             answers_title = UrlToMarkdownContext.tr("Réponses")
-            md += f"\n\n## {answers_title}\n\n" + markdownify(str(a), heading_style="ATX")
+            md += f"\n\n## {answers_title}\n\n" + markdownify(
+                str(a), heading_style="ATX"
+            )
 
         md = self._postprocess(md, base_url, ignore_links)
         if title:
