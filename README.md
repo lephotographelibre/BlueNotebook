@@ -4,6 +4,7 @@
 [![License GNU](https://img.shields.io/github/license/lephotographelibre/BlueNotebook)](https://www.gnu.org/licenses/>)
 ![Static Badge](https://img.shields.io/badge/Python-3.11.13-green)
 ![Static Badge](https://img.shields.io/badge/PythonQt5-5.15.11-blue)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jmdigne/bluenotebook?style=flat-square&logo=docker)](https://img.shields.io/docker/pulls/jmdigne/bluenotebook)
 
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
@@ -97,11 +98,12 @@ This level represents the application's ability to help the user organize, retri
 
  
 
-**How to Launch Bluenotebook**
+## How to Launch Bluenotebook 
 
-A Linux Appimage package  and a Windows installer will soon be available. Stay tuned.
+**New** A docker image and a Flatpak bundle are available with V4.1.4 
+An Appimage for Linux  and a Windows installer will soon be available. Stay tuned.
 
-**Docker image**
+### **Docker image**
 
 A **BlueNotebook** docker image  is available at <https://hub.docker.com/repository/docker/jmdigne/bluenotebook/general>.
 You can launch this BlueNotebook Docker image directly by running the `run_docker.sh` script, or manually:
@@ -132,10 +134,41 @@ docker run -it --rm \
  
 ![BlueNotebook](docs/Screencopy/V4.1.4_docker_first_screen.jpg)
 
+### **Flatpak bundle**
 
-But a simple **manual installation** is also available:
+**New** A Flatpak bundle is available `BlueNotebook.flatpak`
 
-**Ubuntu/Debian**
+```bash
+# Download bundke from github
+
+$ ls -al *.flatpak
+-rw-r--r-- 1 jm jm 180191256 janv.  4 13:50 BlueNotebook.flatpak
+
+
+# Install bundle
+$ flatpak install --bundle --user BlueNotebook.flatpak
+
+io.github.lephotographelibre.BlueNotebook permissions:
+    ipc      network      fallback-x11      pulseaudio      wayland      x11      dri      file access [1]     dbus access [2]
+
+    [1] home, xdg-config/kdeglobals:ro
+    [2] com.canonical.AppMenu.Registrar, org.kde.KGlobalSettings, org.kde.kconfig.notify
+
+
+        ID                                                     Branch              Op              Remote                          Download
+ 1. [✓] io.github.lephotographelibre.BlueNotebook              master              i               bluenotebook-origin             0 bytes
+
+Installation complete.
+$ flatpak list | grep blue
+Jean-Marc DIGNE io.github.lephotographelibre.BlueNotebook       4.1.4   master  bluenotebook-origin     user
+
+# create an alias for BluenNotebook App
+$ alias bluenotebook='flatpak run io.github.lephotographelibre.BlueNotebook'
+
+```
+Launch bluenotebook
+
+### **Ubuntu/Debian** install from source files
 
 `pyenv` is used to create an isolated Python environment based on Python 3.11.13.
 
@@ -171,8 +204,9 @@ git clone https://github.com/lephotographelibre/BlueNotebook.git
 cd Bluenotebook
 ./run_bluenotebook.sh
 ```
+You can add a launcher for this application using the `install.sh` script, which will create the `bluenotebook.desktop` file and register it correctly.
 
-**Windows 10/11**
+### **Windows 10/11** install from source files
 
 `pyenv-win` is used to create an isolated Python environment based on Python 3.11.9. Therefore, install pyenv-win first: <https://github.com/pyenv-win/pyenv-win>
 
@@ -214,7 +248,7 @@ PS C:\Users\xx> ./run_bluenotebook.bat
 
 
 
-**Screenshots**
+## **Screenshots**
 
 The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
 
@@ -230,8 +264,7 @@ Note-taking management on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows
 
 
 
-
- **License**
+## **License**
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

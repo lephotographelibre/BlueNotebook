@@ -1,3 +1,11 @@
+## V4.1.6 On-line help Window Fix Issue [#132]
+
+Issue [#132](https://github.com/lephotographelibre/BlueNotebook/issues/132) V4.1.3: Doc: launch help_on_line in a private instance of Qt WebEngine #132
+
+- Create an on-line help window to display the on-line doc 
+--> git commit -a -m "v4.1.6 Fix Issue [#132] On line help Window"
+
+
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images

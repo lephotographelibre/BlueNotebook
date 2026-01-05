@@ -84,6 +84,7 @@ from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
 from .backup_handler import backup_journal, restore_journal
 from .preferences_dialog import PreferencesDialog
+from .on_line_help import OnlineHelpWindow
 from core.journal_backup_worker import JournalBackupWorker
 from core.quote_fetcher import QuoteFetcher
 
@@ -2221,7 +2222,7 @@ class MainWindow(QMainWindow):
         self.toggle_reader()
 
     def show_online_help(self):
-        """Affiche la page d'aide HTML dans le navigateur par défaut."""
+        """Affiche la page d'aide HTML dans une fenêtre interne."""
         # Déterminer le fichier d'aide en fonction de la langue de l'application
         app_locale = QLocale()
         if app_locale.language() == QLocale.English:
@@ -2234,9 +2235,9 @@ class MainWindow(QMainWindow):
             base_path, "..", "resources", "html", help_filename
         )
 
+        final_url = None
         if os.path.exists(help_file_path):
-            url = f"file:///{os.path.abspath(help_file_path)}"
-            webbrowser.open(url)
+            final_url = f"file:///{os.path.abspath(help_file_path)}"
         else:
             # Si le fichier spécifique à la langue n'est pas trouvé, essayer l'autre en fallback
             fallback_filename = (
@@ -2248,8 +2249,7 @@ class MainWindow(QMainWindow):
                 base_path, "..", "resources", "html", fallback_filename
             )
             if os.path.exists(fallback_path):
-                url = f"file:///{os.path.abspath(fallback_path)}"
-                webbrowser.open(url)
+                final_url = f"file:///{os.path.abspath(fallback_path)}"
             else:
                 QMessageBox.warning(
                     self,
@@ -2258,6 +2258,11 @@ class MainWindow(QMainWindow):
                         help_file_path
                     ),
                 )
+                return
+
+        if final_url:
+            self.help_window = OnlineHelpWindow(final_url, self)
+            self.help_window.show()
 
     def show_about(self):
         """Afficher la boîte À propos"""
