@@ -28,6 +28,7 @@ import shutil
 from datetime import datetime
 import zipfile
 import platform  # Ajout pour récupérer l'info OS
+import sys
 from urllib.parse import quote
 from datetime import datetime
 import requests
@@ -2277,7 +2278,17 @@ class MainWindow(QMainWindow):
                 except (AttributeError, OSError):
                     os_name = "Linux"
             elif platform.system() == "Windows":
-                os_name = f"Windows {platform.release()}"
+                try:
+                    if hasattr(sys, "getwindowsversion"):
+                        version = sys.getwindowsversion()
+                        if version.major == 10 and version.build >= 22000:
+                            os_name = "Windows 11"
+                        else:
+                            os_name = f"Windows {platform.release()}"
+                    else:
+                        os_name = f"Windows {platform.release()}"
+                except Exception:
+                    os_name = f"Windows {platform.release()}"
             elif platform.system() == "Darwin":
                 os_name = f"macOS {platform.mac_ver()[0]}"
             else:

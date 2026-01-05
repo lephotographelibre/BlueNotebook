@@ -10,6 +10,28 @@ Issue [#153](https://github.com/lephotographelibre/BlueNotebook/issues/153)V4.1.
 
 --> git commit -a -m "v4.1.6 Fix Issue [#153] Source URL to .md file"
 
+
+Fix  Issue [#137] v4.1.4 GUI: A Propos: Windows version detection is wrong #137
+
+A propos detection plateform windows. J'a besoin de différencier Windows 11, évitez de vous fier uniquement à platform.platform(). Utilisez plutôt une vérification du numéro de build :
+
+```python
+import platform
+import sys
+
+if sys.platform == "win32":
+    version = sys.getwindowsversion()
+    major, minor, build = version.major, version.minor, version.build
+    if major == 10 and build >= 22000:
+        print("Windows 11 ou supérieur")
+    else:
+        print("Windows 10 ou antérieur")
+```
+Cela fonctionnera correctement sur votre système (build 26200 ≥ 22000).
+
+--> git commit -a -m "v4.1.6 Fix Issue [#137] Windows version"
+
+
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images
