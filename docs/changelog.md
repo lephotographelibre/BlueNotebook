@@ -11,7 +11,7 @@ Issue [#153](https://github.com/lephotographelibre/BlueNotebook/issues/153)V4.1.
 --> git commit -a -m "v4.1.6 Fix Issue [#153] Source URL to .md file"
 
 
-Fix  Issue [#137] v4.1.4 GUI: A Propos: Windows version detection is wrong #137
+Fix Issue [#137] v4.1.4 GUI: A Propos: Windows version detection is wrong #137
 
 A propos detection plateform windows. J'a besoin de différencier Windows 11, évitez de vous fier uniquement à platform.platform(). Utilisez plutôt une vérification du numéro de build :
 
@@ -31,7 +31,11 @@ Cela fonctionnera correctement sur votre système (build 26200 ≥ 22000).
 
 --> git commit -a -m "v4.1.6 Fix Issue [#137] Windows version"
 
+Issue [#136](https://github.com/lephotographelibre/BlueNotebook/issues/136) V4.1.4: main_windows: blink effect after backup not removed #136
 
+Lorsque j'effectue une sauvegarde le message Veuillez Patienté est affiché en clignotant. Lorsque la sauvegarde est terminée le message reste affiché dans la barre d'étét. Iden lors de la création d'un epub. Par contre le clignotement d'une message lors de la récupération d'un libre via intégration Amazon ISBN lui fonctionne correctement. Peux tu corriger les deux problemes pour les bacakup et pub.
+
+--> git commit -a -m "v4.1.6 Fix Issue [#136] clignotement backup et epub"
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images

@@ -2956,6 +2956,8 @@ class MainWindow(QMainWindow):
         """Arrête le clignotement à la fin de la sauvegarde"""
         self.backup_flash_timer.stop()
         self.backup_status_label.setVisible(False)
+        # V4.1.6 Fix Issue: Ensure "Veuillez patienter" is also hidden
+        self.pdf_status_label.setVisible(False)
 
     def _start_pdf_convert_flashing(self):
         """Démarre le message clignotant pour la conversion PDF."""
