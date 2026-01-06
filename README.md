@@ -128,7 +128,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    bluenotebook:4.1.4
+    jmdigne/bluenotebook:4.1.4
 ```
 .⚠️.⚠️.⚠️ Do not change the Journal and Backup directories on the home screen, as you already configured them before launching the application. You can change the application language (English or French)..⚠️.⚠️.⚠️
  
