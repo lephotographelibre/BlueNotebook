@@ -3,6 +3,9 @@ Fix Issue [#155](https://github.com/lephotographelibre/BlueNotebook/issues/155)
 Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)V4.1.4 Doc: correct typo README.md docker images #135
 Fix Issue [#133](https://github.com/lephotographelibre/BlueNotebook/issues/133) V4.1.3 Integration i18n Astro #133
 
+Fix Issue [#138] Add environment detection (Native, Docker, Flatpak, AppImage) at startup.
+--> git commit -a -m "v4.1.6 Feat: Add environment detection at startup"
+
 
 ## V4.1.6 On-line help Window Fix Issue [#132]
 
