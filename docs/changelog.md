@@ -1,6 +1,8 @@
 ## V4.1.6 Fix Issuee [#155] Windows on-line Help 
 Fix Issue [#155](https://github.com/lephotographelibre/BlueNotebook/issues/155)
-Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)
+Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)V4.1.4 Doc: correct typo README.md docker images #135
+Fix Issue [#133](https://github.com/lephotographelibre/BlueNotebook/issues/133) V4.1.3 Integration i18n Astro #133
+
 
 ## V4.1.6 On-line help Window Fix Issue [#132]
 
