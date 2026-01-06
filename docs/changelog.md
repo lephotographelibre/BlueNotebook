@@ -1,3 +1,12 @@
+## V4.1.6 Fix Issuee [#155] Windows on-line Help 
+Fix Issue [#155](https://github.com/lephotographelibre/BlueNotebook/issues/155)
+Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)V4.1.4 Doc: correct typo README.md docker images #135
+Fix Issue [#133](https://github.com/lephotographelibre/BlueNotebook/issues/133) V4.1.3 Integration i18n Astro #133
+
+Fix Issue [#138] Add environment detection (Native, Docker, Flatpak, AppImage) at startup.
+--> git commit -a -m "v4.1.6 Feat: Add environment detection at startup"
+
+
 ## V4.1.6 On-line help Window Fix Issue [#132]
 
 Issue [#132](https://github.com/lephotographelibre/BlueNotebook/issues/132) V4.1.3: Doc: launch help_on_line in a private instance of Qt WebEngine #132
@@ -36,6 +45,15 @@ Issue [#136](https://github.com/lephotographelibre/BlueNotebook/issues/136) V4.1
 Lorsque j'effectue une sauvegarde le message Veuillez Patienté est affiché en clignotant. Lorsque la sauvegarde est terminée le message reste affiché dans la barre d'étét. Iden lors de la création d'un epub. Par contre le clignotement d'une message lors de la récupération d'un libre via intégration Amazon ISBN lui fonctionne correctement. Peux tu corriger les deux problemes pour les bacakup et pub.
 
 --> git commit -a -m "v4.1.6 Fix Issue [#136] clignotement backup et epub"
+
+
+Fix Issue [#131](https://github.com/lephotographelibre/BlueNotebook/issues/131)V4.1.3: i18n: Quote of the is always in French #131
+
+l'integration citation du jour n'est disponible pour l'instant qu'en français. Si la langue de l'inteface utilisateur est autre chose que francais alors lorsque l'utilisateur appelle le menu "Citation du jour" on affichera une boite de dialogue "Ce service n'est pas disponible dans votre langue"
+
+--> git commit -a -m "v4.1.6 Fix Issue [#131] Quote Service is not available in English"
+
+
 ## V4.1.5 Icon New theme
 
 - New theme for icons & images
