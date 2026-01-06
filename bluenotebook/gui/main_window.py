@@ -2238,7 +2238,7 @@ class MainWindow(QMainWindow):
 
         final_url = None
         if os.path.exists(help_file_path):
-            final_url = f"file:///{os.path.abspath(help_file_path)}"
+            final_url = QUrl.fromLocalFile(os.path.abspath(help_file_path)).toString()
         else:
             # Si le fichier spécifique à la langue n'est pas trouvé, essayer l'autre en fallback
             fallback_filename = (
@@ -2250,7 +2250,9 @@ class MainWindow(QMainWindow):
                 base_path, "..", "resources", "html", fallback_filename
             )
             if os.path.exists(fallback_path):
-                final_url = f"file:///{os.path.abspath(fallback_path)}"
+                final_url = QUrl.fromLocalFile(
+                    os.path.abspath(fallback_path)
+                ).toString()
             else:
                 QMessageBox.warning(
                     self,
