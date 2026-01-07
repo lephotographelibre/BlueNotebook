@@ -1,3 +1,9 @@
+## V4.1.6 Fix Issue 
+
+fix Issue [#158](https://github.com/lephotographelibre/BlueNotebook/issues/158)
+
+--> git commit -a -m "V4.1.6_MAJ_A_Propos"
+
 ## V4.1.6 Fix Issuee [#155] Windows on-line Help 
 Fix Issue [#155](https://github.com/lephotographelibre/BlueNotebook/issues/155)
 Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)V4.1.4 Doc: correct typo README.md docker images #135

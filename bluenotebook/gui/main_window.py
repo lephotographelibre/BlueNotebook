@@ -2324,11 +2324,12 @@ class MainWindow(QMainWindow):
             "<li>Insertion Cartes OpenStreetMap, Trace GPX, Videos Youtube et Météo</li>"
             "<li>Lecteur EPUB/PDF intégré avec recherche</li>"
             "<li>Gestion de tâches / TODO Listes</li>"
+            "<li>Prise de Notes et Gestion des liens inter-notes</li>"
             "</ul>"
             "<h2>_____________________________________________________________</h2>"
             "<p>Dépôt GitHub : <a href='https://github.com/lephotographelibre/BlueNotebook'>BlueNotebook</a></p>"
             "<p>Licence : <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GNU GPLv3</a></p>"
-            "<p>© 2025 BlueNotebook by Jean-Marc DIGNE</p>"
+            "<p>© 2025-2026 BlueNotebook - Jean-Marc DIGNE</p>"
         ).format(app_version=self.app_version, os_name=os_name)
         about_box.setText(about_text)
         about_box.setStandardButtons(QMessageBox.Ok)
