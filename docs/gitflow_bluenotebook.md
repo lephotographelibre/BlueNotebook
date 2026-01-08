@@ -27,7 +27,9 @@ git push --set-upstream origin develop
 ```bash
 $ git switch develop
 $ git pull
+$ ********** Ne pas oublier develop ***************
 $ git checkout -b vX.Y.Z_feature develop   !!!!! Attention ne pas oublier develop !!!!
+
 Switched to a new branch "vX.Y.Z_feature"
 ...
 do work

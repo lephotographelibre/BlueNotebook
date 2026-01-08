@@ -37,7 +37,8 @@ python3 flatpak-pip-generator.py \
     markitdown \
     validators \
     readability-lxml \
-    markdownify
+    markdownify \
+    markitdown[pdf]
 
 # 1. Construire et exporter dans un dépôt local nommé 'repo'
 flatpak-builder --user --install --force-clean --repo=repo build-dir ./io.github.lephotographelibre.BlueNotebook.yaml
