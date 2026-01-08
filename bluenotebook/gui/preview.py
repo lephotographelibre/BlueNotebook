@@ -28,8 +28,8 @@ from PyQt5.QtCore import QUrl
 from pygments.formatters import HtmlFormatter
 from markdown.inlinepatterns import InlineProcessor
 import markdown
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
-from PyQt5.QtCore import QUrl, QEvent, Qt
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineProfile
+from PyQt5.QtCore import QUrl, QEvent, Qt, QStandardPaths
 from PyQt5.QtGui import QDesktopServices
 import webbrowser
 
@@ -115,8 +115,19 @@ class MarkdownPreview(QWidget):
         layout.addLayout(header_layout)
 
         self.web_view = QWebEngineView()
-        custom_page = CustomWebEnginePage(self.web_view)
-        self.web_view.setPage(custom_page)
+
+        # V4.2.0 Correction erreur "Failed to delete the database" & Crash
+        # Le profil et la page doivent être des membres de l'instance (self) pour
+        # éviter qu'ils ne soient détruits prématurément par le garbage collector.
+        data_dir = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation)
+        cache_path = os.path.join(data_dir, "bluenotebook", "cache")
+
+        self.profile = QWebEngineProfile(self)  # Crée un profil enfant du widget
+        self.profile.setCachePath(cache_path)
+        self.profile.setPersistentStoragePath(cache_path)
+
+        self.custom_page = CustomWebEnginePage(self.profile, self.web_view)
+        self.web_view.setPage(self.custom_page)
 
         self.web_view.setStyleSheet(
             """
@@ -453,3 +464,9 @@ class MarkdownPreview(QWidget):
         if event.type() == QEvent.LanguageChange:
             self.retranslate_ui()
         super().changeEvent(event)
+
+    def cleanup(self):
+        """Libère les ressources de la vue web avant la fermeture."""
+        self.web_view.setPage(None)
+        if hasattr(self, "custom_page"):
+            self.custom_page.deleteLater()

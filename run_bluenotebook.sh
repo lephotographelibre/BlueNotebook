@@ -45,6 +45,8 @@ if [ ! -d "$VENV_PATH" ]; then
 fi
 
 # --- Activation et Lancement ---
+# VENV_NAME=".venv_3.11.13"
+# pyenv activate .venv_3.11.13
 PYTHON_EXEC="${VENV_PATH}/bin/python"
 PIP_EXEC="${VENV_PATH}/bin/pip"
 

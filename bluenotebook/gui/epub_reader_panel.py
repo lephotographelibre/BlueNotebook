@@ -50,7 +50,7 @@ from PyQt5.QtWebEngineWidgets import (
     QWebEngineContextMenuData,
 )
 from PyQt5.QtWebEngineCore import QWebEngineUrlSchemeHandler, QWebEngineUrlRequestJob
-from PyQt5.QtCore import Qt, QUrl, QBuffer, QIODevice, QByteArray, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QUrl, QBuffer, QIODevice, QByteArray, pyqtSignal, QTimer, QStandardPaths
 from PyQt5.QtGui import QPixmap
 from PIL import Image
 import io
@@ -322,6 +322,13 @@ class EpubReaderPanel(QWidget):
         self.settings_manager = settings_manager
         self.scheme_handler = EpubSchemeHandler()
         self.profile = QWebEngineProfile()
+
+        # V4.2.0 Correction erreur "Failed to delete the database"
+        data_dir = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation)
+        cache_path = os.path.join(data_dir, "bluenotebook", "cache_epub")
+        self.profile.setCachePath(cache_path)
+        self.profile.setPersistentStoragePath(cache_path)
+
         self.profile.installUrlSchemeHandler(b"epub", self.scheme_handler)
         self.search_results = []
         self.current_search_index = -1
@@ -1056,12 +1063,11 @@ class EpubReaderPanel(QWidget):
 
     def closeEvent(self, event):
         """
-        V3.3.8 - S'assure que la page web est correctement libérée pour éviter
+        V4.2.0 - S'assure que la page web est correctement libérée pour éviter
         l'erreur "WebEnginePage still not deleted".
         """
         self.web_view.setPage(None)
+        if hasattr(self, 'web_page'):
+            self.web_page.deleteLater()
         self.web_view.deleteLater()
-        if self.web_view:
-            self.web_view.setPage(None)
-            self.web_view.deleteLater()
         super().closeEvent(event)

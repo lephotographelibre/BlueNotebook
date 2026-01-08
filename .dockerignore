@@ -20,8 +20,8 @@ repo/
 dist/
 *.egg-info/
 
-# Le dossier docker lui-même n'a pas besoin d'être dans l'image finale
+# Les dossiers packaging n'ont pas besoin d'être dans l'image finale
 docker/
-
-# Le dossier flatpak n'a pas besoin d'être dans l'image finale
 flatpak/
+appimage/
+assets/

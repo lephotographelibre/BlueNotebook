@@ -19,7 +19,7 @@ Boîte de dialogue pour les préférences de BlueNotebook.
 
 import os
 import json
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile
 import re
 from pathlib import Path
 from PyQt5.QtWidgets import (
@@ -45,7 +45,8 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QComboBox,
 )
-from PyQt5.QtCore import QDir
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile, QWebEnginePage
+from PyQt5.QtCore import QDir, QStandardPaths
 from geopy.geocoders import Nominatim
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt
@@ -506,6 +507,18 @@ class PreferencesDialog(QDialog):
 
         # === SECTION MINI-APERÇU HTML ===
         self.html_preview_widget = QWebEngineView()
+        
+        # V4.2.0 Correction erreur "Failed to delete the database" & Crash
+        data_dir = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation)
+        cache_path = os.path.join(data_dir, "bluenotebook", "cache_prefs")
+
+        self.profile_html = QWebEngineProfile(self)
+        self.profile_html.setCachePath(cache_path)
+        self.profile_html.setPersistentStoragePath(cache_path)
+
+        self.page_html = QWebEnginePage(self.profile_html, self.html_preview_widget)
+        self.html_preview_widget.setPage(self.page_html)
+
         self.html_preview_widget.setMinimumHeight(300)
         layout.addWidget(self.html_preview_widget, row, 0, 1, 4)
 
@@ -609,6 +622,18 @@ class PreferencesDialog(QDialog):
 
         # === SECTION MINI-APERÇU PDF ===
         self.pdf_preview_widget = QWebEngineView()
+        
+        # V4.2.0 Correction erreur "Failed to delete the database" & Crash
+        data_dir = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation)
+        cache_path = os.path.join(data_dir, "bluenotebook", "cache_prefs_pdf")
+        
+        self.profile_pdf = QWebEngineProfile(self)
+        self.profile_pdf.setCachePath(cache_path)
+        self.profile_pdf.setPersistentStoragePath(cache_path)
+        
+        self.page_pdf = QWebEnginePage(self.profile_pdf, self.pdf_preview_widget)
+        self.pdf_preview_widget.setPage(self.page_pdf)
+        
         self.pdf_preview_widget.setMinimumHeight(300)
         layout.addWidget(self.pdf_preview_widget, row, 0, 1, 4)
 
@@ -1278,3 +1303,16 @@ class PreferencesDialog(QDialog):
         # Pour l'instant, on appelle juste super().accept()
 
         super().accept()
+
+    def closeEvent(self, event):
+        # V4.2.0 - Correction pour l'erreur "WebEnginePage still not deleted".
+        # Libérer les pages web manuellement avant la fermeture de la fenêtre.
+        self.html_preview_widget.setPage(None)
+        if hasattr(self, "page_html"):
+            self.page_html.deleteLater()
+
+        self.pdf_preview_widget.setPage(None)
+        if hasattr(self, "page_pdf"):
+            self.page_pdf.deleteLater()
+            
+        super().closeEvent(event)

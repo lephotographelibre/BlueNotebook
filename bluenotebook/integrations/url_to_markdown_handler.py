@@ -171,14 +171,18 @@ class UrlToMarkdownWorker(QRunnable):
             self.signals.error.emit(message)
 
 
-def run_url_to_markdown_conversion(main_window, initial_url=""):
+def run_url_to_markdown_conversion(main_window, initial_url="", default_save_dir=None):
     """Fonction principale pour lancer le processus de conversion."""
     dialog = UrlToMarkdownDialog(initial_url, main_window)
     if dialog.exec_() == QDialog.Accepted:
         options = dialog.get_options()
 
         # Demander où sauvegarder le fichier .md
-        default_dir = os.path.join(main_window.journal_directory, "notes")
+        if default_save_dir:
+            default_dir = default_save_dir
+        else:
+            default_dir = os.path.join(main_window.journal_directory, "notes")
+
         os.makedirs(default_dir, exist_ok=True)
 
         while True:
