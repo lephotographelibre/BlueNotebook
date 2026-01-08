@@ -1,4 +1,16 @@
-## V4.1.6 Fix Issue 
+## V4.1.6 Fix Issue [#140]
+
+Fix Issue [#140](https://github.com/lephotographelibre/BlueNotebook/issues/140) v4.1.4: Integration Convert from URL need an .md file extension #140
+ ajouter le meme menu `Conversion URL(HTML)-Markdown` au menu contextuel du panneau Notes. 
+
+
+
+ Fix error QtWebEngigine database cache
+[872624:872624:0108/111045.779468:ERROR:service_worker_storage.cc(1753)] Failed to delete the database: Database IO error
+--> git commit -a -m "V4.2.0 FixFix Issue [#140] & QtWebengine cache"
+
+
+## V4.1.6 Fix Issue [#158] [#144]
 
 fix Issue [#158](https://github.com/lephotographelibre/BlueNotebook/issues/158)
 

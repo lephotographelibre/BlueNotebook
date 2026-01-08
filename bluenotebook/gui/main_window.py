@@ -1379,6 +1379,7 @@ class MainWindow(QMainWindow):
     def setup_panels_toolbar(self):
         """Configure la barre d'outils pour basculer les panneaux."""
         self.panels_toolbar = QToolBar(self.tr("Panneaux"))
+        self.panels_toolbar.setObjectName("panelsToolbar")
         self.panels_toolbar.setMovable(False)
         self.addToolBar(Qt.TopToolBarArea, self.panels_toolbar)
 
@@ -1624,6 +1625,7 @@ class MainWindow(QMainWindow):
         self.navigation_panel.refresh_requested.connect(self.refresh_tag_index_from_nav)
         self.notes_panel.file_open_request.connect(self.open_file_from_notes)
         self.notes_panel.directory_selected.connect(self.on_notes_dir_selected)
+        self.notes_panel.url_to_markdown_request.connect(self.convert_url_to_markdown_from_notes)
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -3109,6 +3111,12 @@ class MainWindow(QMainWindow):
 
         run_url_to_markdown_conversion(self, initial_url=selected_text)
 
+    def convert_url_to_markdown_from_notes(self, directory):
+        """Gère la conversion URL -> MD depuis le panneau de notes."""
+        if not self.check_save_changes():
+            return
+        run_url_to_markdown_conversion(self, initial_url="", default_save_dir=directory)
+
     def on_url_to_markdown_finished(self, markdown_content, output_file_path):
         """Slot appelé lorsque la conversion URL -> MD est terminée."""
         self.stop_task()
@@ -3857,3 +3865,46 @@ class MainWindow(QMainWindow):
     def on_notes_dir_selected(self, dir_path):
         """Sauvegarde le dernier répertoire sélectionné dans le panneau de notes."""
         self.settings_manager.set("notes.last_selected_dir", dir_path)
+
+    def closeEvent(self, event):
+        """Gère la fermeture propre de l'application."""
+        if not self.check_save_changes():
+            event.ignore()
+            return
+
+        # V4.2.0 - Nettoyage explicite pour éviter l'erreur "WebEnginePage still not deleted"
+        self.preview.cleanup()
+        self.epub_reader_panel.close()
+
+        # V3.2.1 - Sauvegarde des derniers réglages
+        if self.epub_reader_panel.has_document():
+            self.settings_manager.set(
+                "reader.last_document", self.last_document_reader
+            )
+        if self.notes_panel.tree_view.currentIndex().isValid():
+            source_index = self.notes_panel.proxy_model.mapToSource(self.notes_panel.tree_view.currentIndex())
+            last_dir = self.notes_panel.model.filePath(source_index)
+            self.settings_manager.set("notes.last_selected_dir", last_dir)
+
+        # Sauvegarder la géométrie et l'état de la fenêtre
+        self.settings_manager.set("window.geometry", self.saveGeometry().data().hex())
+        self.settings_manager.set("window.state", self.saveState().data().hex())
+
+        # Sauvegarder la visibilité des panneaux
+        self.settings_manager.set(
+            "ui.show_notes_panel", self.notes_panel.isVisible()
+        )
+        self.settings_manager.set(
+            "ui.show_navigation_panel", self.navigation_panel.isVisible()
+        )
+        self.settings_manager.set(
+            "ui.show_outline_panel", self.outline_panel.isVisible()
+        )
+        self.settings_manager.set("ui.show_preview_panel", self.preview.isVisible())
+        self.settings_manager.set(
+            "ui.show_reader_panel", self.epub_reader_panel.isVisible()
+        )
+
+        self.settings_manager.save_settings()
+
+        event.accept()

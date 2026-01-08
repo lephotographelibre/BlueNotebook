@@ -257,6 +257,7 @@ class NotesPanel(QWidget):
     file_open_request = pyqtSignal(str, str)
     directory_selected = pyqtSignal(str)
     settings_changed = pyqtSignal()
+    url_to_markdown_request = pyqtSignal(str)
 
     VALID_EXTENSIONS = [
         ".md",
@@ -639,19 +640,29 @@ class NotesPanel(QWidget):
         menu = QMenu()
 
         if is_dir:
-            menu.addAction(self.tr("Nouvelle note..."), lambda: self.create_new_note(file_path))
             menu.addAction(
-                self.tr("Créer un sous-dossier..."), lambda: self.create_sub_folder(file_path)
+                self.tr("Nouvelle note..."), lambda: self.create_new_note(file_path)
             )
             menu.addAction(
-                self.tr("Importer un fichier..."), lambda: self.import_file_to_folder(file_path)
+                self.tr("Créer un sous-dossier..."),
+                lambda: self.create_sub_folder(file_path),
+            )
+            menu.addAction(
+                self.tr("Importer un fichier..."),
+                lambda: self.import_file_to_folder(file_path),
+            )
+            menu.addAction(
+                self.tr("Conversion URL(HTML)-Markdown"),
+                lambda: self.url_to_markdown_request.emit(file_path),
             )
             menu.addSeparator()
             menu.addAction(
-                self.tr("Déplier tout"), lambda: self.expand_all_from_index(source_index)
+                self.tr("Déplier tout"),
+                lambda: self.expand_all_from_index(source_index),
             )
             menu.addAction(
-                self.tr("Réplier tout"), lambda: self.collapse_all_from_index(source_index)
+                self.tr("Réplier tout"),
+                lambda: self.collapse_all_from_index(source_index),
             )
             menu.addSeparator()
 
@@ -665,7 +676,8 @@ class NotesPanel(QWidget):
                 )
             color_menu.addSeparator()
             menu.addAction(
-                self.tr("Aucune couleur"), lambda: self.set_folder_color(file_path, None)
+                self.tr("Aucune couleur"),
+                lambda: self.set_folder_color(file_path, None),
             )
             menu.addSeparator()
 
@@ -717,7 +729,9 @@ class NotesPanel(QWidget):
 
         if file_path.exists():
             QMessageBox.warning(
-                self, self.tr("Fichier existant"), self.tr("Une note avec ce nom existe déjà.")
+                self,
+                self.tr("Fichier existant"),
+                self.tr("Une note avec ce nom existe déjà."),
             )
             return
 
@@ -759,7 +773,9 @@ class NotesPanel(QWidget):
     def create_sub_folder(self, parent_directory_path):
         """Crée un nouveau sous-dossier dans le dossier parent spécifié."""
         folder_name, ok = QInputDialog.getText(
-            self, self.tr("Nouveau Sous-Dossier"), self.tr("Nom du nouveau sous-dossier :")
+            self,
+            self.tr("Nouveau Sous-Dossier"),
+            self.tr("Nom du nouveau sous-dossier :"),
         )
 
         if ok and folder_name.strip():
@@ -767,7 +783,9 @@ class NotesPanel(QWidget):
 
             if new_folder_path.exists():
                 QMessageBox.warning(
-                    self, self.tr("Dossier existant"), self.tr("Un dossier avec ce nom existe déjà.")
+                    self,
+                    self.tr("Dossier existant"),
+                    self.tr("Un dossier avec ce nom existe déjà."),
                 )
                 return
 
@@ -822,7 +840,9 @@ class NotesPanel(QWidget):
             destination_path = Path(destination_folder) / filename
 
             if destination_path.exists():
-                msg = self.tr("Le fichier '{}' existe déjà dans ce dossier. Voulez-vous le remplacer ?")
+                msg = self.tr(
+                    "Le fichier '{}' existe déjà dans ce dossier. Voulez-vous le remplacer ?"
+                )
                 reply = QMessageBox.question(
                     self,
                     self.tr("Fichier existant"),
@@ -848,9 +868,7 @@ class NotesPanel(QWidget):
 
         except Exception as e:
             msg = self.tr("Impossible d'importer le fichier :\n{}")
-            QMessageBox.critical(
-                self, self.tr("Erreur d'importation"), msg.format(e)
-            )
+            QMessageBox.critical(self, self.tr("Erreur d'importation"), msg.format(e))
 
     def copy_item(self, path):
         """Met le chemin en mémoire pour une opération de copie."""
@@ -881,7 +899,9 @@ class NotesPanel(QWidget):
             return
 
         if dest_path.exists():
-            msg = self.tr("Un élément nommé '{}' existe déjà. Voulez-vous le remplacer ?")
+            msg = self.tr(
+                "Un élément nommé '{}' existe déjà. Voulez-vous le remplacer ?"
+            )
             reply = QMessageBox.question(
                 self,
                 self.tr("Conflit"),
@@ -898,9 +918,7 @@ class NotesPanel(QWidget):
                     dest_path.unlink()
             except OSError as e:
                 msg_err = self.tr("Impossible de remplacer l'élément existant :\n{}")
-                QMessageBox.critical(
-                    self, self.tr("Erreur"), msg_err.format(e)
-                )
+                QMessageBox.critical(self, self.tr("Erreur"), msg_err.format(e))
                 return
 
         try:
@@ -913,9 +931,7 @@ class NotesPanel(QWidget):
                 shutil.move(str(source_path), str(dest_path))
         except Exception as e:
             msg = self.tr("L'opération a échoué :\n{}")
-            QMessageBox.critical(
-                self, self.tr("Erreur de collage"), msg.format(e)
-            )
+            QMessageBox.critical(self, self.tr("Erreur de collage"), msg.format(e))
         finally:
             self.source_path_for_paste = None
             self.paste_operation = None
@@ -924,7 +940,9 @@ class NotesPanel(QWidget):
         """Crée un nouveau dossier à la racine du répertoire des notes."""
         if not self.journal_directory:
             QMessageBox.warning(
-                self, self.tr("Action impossible"), self.tr("Le répertoire du journal n'est pas défini.")
+                self,
+                self.tr("Action impossible"),
+                self.tr("Le répertoire du journal n'est pas défini."),
             )
             return
 
@@ -938,7 +956,9 @@ class NotesPanel(QWidget):
 
             if new_folder_path.exists():
                 QMessageBox.warning(
-                    self, self.tr("Dossier existant"), self.tr("Un dossier avec ce nom existe déjà.")
+                    self,
+                    self.tr("Dossier existant"),
+                    self.tr("Un dossier avec ce nom existe déjà."),
                 )
                 return
 
@@ -946,9 +966,7 @@ class NotesPanel(QWidget):
                 os.mkdir(new_folder_path)
             except OSError as e:
                 msg = self.tr("Impossible de créer le dossier :\n{}")
-                QMessageBox.critical(
-                    self, self.tr("Erreur"), msg.format(e)
-                )
+                QMessageBox.critical(self, self.tr("Erreur"), msg.format(e))
 
     def rename_item(self, index):
         """Renomme un fichier ou un dossier."""
@@ -978,7 +996,9 @@ class NotesPanel(QWidget):
         if is_dir:
             sub_folders, files = self._count_folder_contents(file_path)
             if sub_folders == 0 and files == 0:
-                question = self.tr("Le dossier '{}' est vide. Voulez-vous le supprimer ?")
+                question = self.tr(
+                    "Le dossier '{}' est vide. Voulez-vous le supprimer ?"
+                )
             else:
                 question = self.tr(
                     "Le dossier '{}' n'est pas vide.\n"
@@ -988,7 +1008,11 @@ class NotesPanel(QWidget):
             reply = QMessageBox.question(
                 self,
                 self.tr("Confirmation de suppression"),
-                question.format(item_name) if sub_folders == 0 and files == 0 else question,
+                (
+                    question.format(item_name)
+                    if sub_folders == 0 and files == 0
+                    else question
+                ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
