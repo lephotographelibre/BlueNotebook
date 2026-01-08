@@ -9,6 +9,13 @@ Fix doc `docker\Docker_V4.1.6_Resume.md`
 
 --> git commit -a -m "V4.1.6_fix Issue [#158] doc docker"
 
+Fix  errors when running on linux with Nvidia gpu `run_bluenotebook.sh`
+```bash
+export QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
+```
+--> git commit -a -m "V4.1.6_fix errors with NVIDIA gpu"
+
+
 ## V4.1.6 Fix Issuee [#155] Windows on-line Help 
 Fix Issue [#155](https://github.com/lephotographelibre/BlueNotebook/issues/155)
 Fix Issue [#135](https://github.com/lephotographelibre/BlueNotebook/issues/135)V4.1.4 Doc: correct typo README.md docker images #135
