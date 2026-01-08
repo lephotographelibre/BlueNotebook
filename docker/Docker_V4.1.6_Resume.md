@@ -74,14 +74,16 @@ CMD ["python", "main.py"]
 -- build docker image
 
 $ cd Bluenotebook
-$ docker build -f docker/Dockerfile -t bluenotebook:4.1.4 -t bluenotebook:latest .
+$ docker build -f docker/Dockerfile -t bluenotebook:4.1.6 -t bluenotebook:latest .
 
 
 $ docker images
 REPOSITORY             TAG         IMAGE ID       CREATED        SIZE
-jmdigne/bluenotebook   4.1.4       8b37af965f22   17 hours ago   2.26GB
-bluenotebook           4.1.4       8b37af965f22   17 hours ago   2.26GB
-bluenotebook           latest      8b37af965f22   17 hours ago   2.26GB
+bluenotebook           4.1.6       5ee108775ea3   19 seconds ago   2.36GB
+bluenotebook           latest      5ee108775ea3   19 seconds ago   2.36GB
+python                 3.11-slim   955f4ccb5624   7 days ago       124MB
+jmdigne/bluenotebook   4.1.4       8b37af965f22   7 days ago       2.26GB
+
 
 
 -- set env for docker image
@@ -105,34 +107,36 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    bluenotebook:4.1.4
+    bluenotebook:latest
 
 -- save docker image in a file
 
-$ docker save bluenotebook:latest | gzip > V4.1.4_bluenotebook_docker_image.tar.gz
+$ docker save bluenotebook:latest | gzip > docker/BlueNotebook-4.1.6-docker.tar.gz
+
+ 
 
 
 -- dockerhub https://app.docker.com/accounts/jmdigne ---
 
 docker login
-docker tag bluenotebook:4.1.4 jmdigne/bluenotebook:4.1.4
-docker push jmdigne/bluenotebook:4.1.4
-The push refers to repository [docker.io/jmdigne/bluenotebook]
-fe9b6420471d: Pushed
-88441d54aa70: Pushed
-fbe95e127e02: Pushed
-7d0f56eed6b4: Pushed
-9f0535ed5ca2: Pushed
-fa384bf02ac1: Mounted from library/python
-600af8de593b: Mounted from library/python
-424dc4972605: Mounted from library/python
-77a2b55fbe8b: Mounted from library/python
-4.1.3: digest: sha256:a2f12d0a593cefe6ecb3c7cb452e858c95e82feec254ec6f12f5a02f8c3c4e1a size: 2219
+docker build -t bluenotebook:4.1.6 -t bluenotebook:latest .
+
+# 2. Tagger pour Docker Hub avec la version spécifique
+docker tag bluenotebook:4.1.6 jmdigne/bluenotebook:4.1.6
+
+# 3. Tagger pour Docker Hub avec latest
+docker tag bluenotebook:4.1.6 jmdigne/bluenotebook:latest
+
+# 4. Push des deux tags
+docker push jmdigne/bluenotebook:4.1.6
+docker push jmdigne/bluenotebook:latest
 
 See it at https://hub.docker.com/repository/docker/jmdigne/bluenotebook/general
 Use it using
 
-docker pull jmdigne/bluenotebook:4.1.4
+docker pull jmdigne/bluenotebook:latest
+or 
+docker pull jmdigne/bluenotebook:4.1.6
 
 -- docker command cleanup all vm/containers
 
@@ -141,4 +145,76 @@ docker rm $(docker ps -a -q)         # Supprime tous les conteneurs (arrêtés i
 docker rmi -f $(docker images -q)
 
 
+---------------
+
+Voici un exemple complet avec deux versions consécutives (4.1.6 et 4.1.7) :
+
+## Version 4.1.6 (première version)
+
+```bash
+# 1. Construire l'image avec les deux tags
+docker build -t bluenotebook:4.1.6 -t bluenotebook:latest .
+
+# 2. Tagger pour Docker Hub avec la version spécifique
+docker tag bluenotebook:4.1.6 jmdigne/bluenotebook:4.1.6
+
+# 3. Tagger pour Docker Hub avec latest
+docker tag bluenotebook:4.1.6 jmdigne/bluenotebook:latest
+
+# 4. Push des deux tags
+docker push jmdigne/bluenotebook:4.1.6
+docker push jmdigne/bluenotebook:latest
 ```
+
+## Version 4.1.7 (version suivante)
+
+```bash
+# 1. Construire la nouvelle image avec les deux tags
+docker build -t bluenotebook:4.1.7 -t bluenotebook:latest .
+
+# 2. Tagger pour Docker Hub avec la version spécifique
+docker tag bluenotebook:4.1.7 jmdigne/bluenotebook:4.1.7
+
+# 3. Tagger pour Docker Hub avec latest (écrase l'ancien latest)
+docker tag bluenotebook:4.1.7 jmdigne/bluenotebook:latest
+
+# 4. Push des deux tags
+docker push jmdigne/bluenotebook:4.1.7
+docker push jmdigne/bluenotebook:latest  # Écrase le latest précédent sur Docker Hub
+```
+
+## Pull de l'image
+
+```bash
+# Pull de la dernière version (toujours la plus récente)
+docker pull jmdigne/bluenotebook:latest
+
+# Pull d'une version spécifique
+docker pull jmdigne/bluenotebook:4.1.6
+docker pull jmdigne/bluenotebook:4.1.7
+```
+## Run générique
+
+
+```bash
+
+docker run -it --rm \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v ~/bluenotebook_docker:/data \
+    -v ~/bluenotebook_docker/config:/home/appuser/.config \
+    -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
+    -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
+    --user=$(id -u):$(id -g) \
+    jmdigne/bluenotebook:latest
+```
+
+
+## Points clés
+
+- Le tag `latest` pointe toujours vers la dernière image poussée
+- Les versions spécifiques (4.1.6, 4.1.7) restent accessibles et ne changent jamais
+- Quand vous poussez un nouveau `latest`, il écrase l'ancien sur Docker Hub
+- `docker pull` sans tag utilise automatiquement `:latest`
+
+ 
