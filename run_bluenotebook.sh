@@ -81,7 +81,8 @@ if [ -n "$PLATFORM_THEME" ]; then
 else
     echo "❗ Desktop environment not detected or not supported for a specific theme. Qt will choose the default."
 fi
-
+# remove errors when running on linux with Nvidia gpu
+export QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
 
 echo "" # Ligne vide pour l'aération
 echo "📘 Launch of the BlueNotebook application..."
@@ -95,9 +96,9 @@ echo "📘 Launch of the BlueNotebook application..."
 # export BLUENOTEBOOK_LOCALE="en_US"
 # export JOURNAL_DIRECTORY="/home/jm/Work/BlueNotebook/"
 export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
-
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
 # export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
 export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
 
+#
 cd bluenotebook && "$PYTHON_EXEC" main.py "$@"
