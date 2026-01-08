@@ -1625,7 +1625,12 @@ class MainWindow(QMainWindow):
         self.navigation_panel.refresh_requested.connect(self.refresh_tag_index_from_nav)
         self.notes_panel.file_open_request.connect(self.open_file_from_notes)
         self.notes_panel.directory_selected.connect(self.on_notes_dir_selected)
-        self.notes_panel.url_to_markdown_request.connect(self.convert_url_to_markdown_from_notes)
+        self.notes_panel.url_to_markdown_request.connect(
+            self.convert_url_to_markdown_from_notes
+        )
+        self.notes_panel.pdf_to_markdown_request.connect(
+            self.convert_pdf_to_markdown_from_notes
+        )
 
     def setup_journal_directory(self):
         """Initialise le répertoire du journal au lancement."""
@@ -3156,13 +3161,72 @@ class MainWindow(QMainWindow):
 
         self._start_pdf_convert_flashing()
 
-        from integrations.pdf_to_markdown_converter import PdfToMarkdownWorker
+        from integrations.pdf_converter import PdfToMarkdownWorker
 
         worker = PdfToMarkdownWorker(pdf_path)
         worker.signals.finished.connect(self.on_pdf_convert_finished)
         worker.signals.error.connect(self.on_pdf_convert_error)
 
         self.thread_pool.start(worker)
+
+    def convert_pdf_to_markdown_from_notes(self, directory):
+        """Gère la conversion PDF -> MD depuis le panneau de notes."""
+        if not self.check_save_changes():
+            return
+
+        dialog = PdfSourceDialog(self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        pdf_path = dialog.get_path()
+        if not pdf_path:
+            return
+
+        self._start_pdf_convert_flashing()
+
+        from integrations.pdf_converter import PdfToMarkdownWorker
+
+        worker = PdfToMarkdownWorker(pdf_path)
+        worker.signals.finished.connect(
+            lambda content: self.on_pdf_convert_from_notes_finished(
+                content, directory, pdf_path
+            )
+        )
+        worker.signals.error.connect(self.on_pdf_convert_error)
+
+        self.thread_pool.start(worker)
+
+    def on_pdf_convert_from_notes_finished(self, markdown_content, directory, pdf_path):
+        """Slot appelé lorsque la conversion PDF -> MD depuis notes est terminée."""
+        self._stop_pdf_convert_flashing()
+
+        pdf_name = Path(pdf_path).stem
+        default_path = os.path.join(directory, f"{pdf_name}.md")
+
+        destination_path, _ = QFileDialog.getSaveFileName(
+            self,
+            self.tr("Sauvegarder le fichier Markdown"),
+            default_path,
+            self.tr("Fichiers Markdown (*.md)"),
+        )
+
+        if not destination_path:
+            return
+
+        try:
+            with open(destination_path, "w", encoding="utf-8") as f:
+                f.write(markdown_content)
+
+            QMessageBox.information(
+                self,
+                self.tr("Conversion terminée"),
+                self.tr(
+                    "Le fichier PDF a été converti et sauvegardé dans :\n{0}"
+                ).format(destination_path),
+            )
+            self.open_specific_file(destination_path)
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("Erreur"), str(e))
 
     def _on_journal_backup_finished(self, backup_path: str):
         """Slot appelé lorsque la sauvegarde du journal est terminée avec succès."""
@@ -3878,11 +3942,11 @@ class MainWindow(QMainWindow):
 
         # V3.2.1 - Sauvegarde des derniers réglages
         if self.epub_reader_panel.has_document():
-            self.settings_manager.set(
-                "reader.last_document", self.last_document_reader
-            )
+            self.settings_manager.set("reader.last_document", self.last_document_reader)
         if self.notes_panel.tree_view.currentIndex().isValid():
-            source_index = self.notes_panel.proxy_model.mapToSource(self.notes_panel.tree_view.currentIndex())
+            source_index = self.notes_panel.proxy_model.mapToSource(
+                self.notes_panel.tree_view.currentIndex()
+            )
             last_dir = self.notes_panel.model.filePath(source_index)
             self.settings_manager.set("notes.last_selected_dir", last_dir)
 
@@ -3891,9 +3955,7 @@ class MainWindow(QMainWindow):
         self.settings_manager.set("window.state", self.saveState().data().hex())
 
         # Sauvegarder la visibilité des panneaux
-        self.settings_manager.set(
-            "ui.show_notes_panel", self.notes_panel.isVisible()
-        )
+        self.settings_manager.set("ui.show_notes_panel", self.notes_panel.isVisible())
         self.settings_manager.set(
             "ui.show_navigation_panel", self.navigation_panel.isVisible()
         )

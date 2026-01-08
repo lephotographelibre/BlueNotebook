@@ -230,3 +230,10 @@ repo/
 build-dir/
 var/
 .flatpak-builder/
+
+# Les dossiers packaging n'ont pas besoin d'être dans l'image finale
+docker/
+flatpak/
+appimage/
+assets/
+

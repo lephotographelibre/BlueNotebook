@@ -258,6 +258,7 @@ class NotesPanel(QWidget):
     directory_selected = pyqtSignal(str)
     settings_changed = pyqtSignal()
     url_to_markdown_request = pyqtSignal(str)
+    pdf_to_markdown_request = pyqtSignal(str)
 
     VALID_EXTENSIONS = [
         ".md",
@@ -650,6 +651,10 @@ class NotesPanel(QWidget):
             menu.addAction(
                 self.tr("Importer un fichier..."),
                 lambda: self.import_file_to_folder(file_path),
+            )
+            menu.addAction(
+                self.tr("Conversion PDF-Markdown"),
+                lambda: self.pdf_to_markdown_request.emit(file_path),
             )
             menu.addAction(
                 self.tr("Conversion URL(HTML)-Markdown"),

@@ -2,13 +2,21 @@
 
 Fix Issue [#140](https://github.com/lephotographelibre/BlueNotebook/issues/140) v4.1.4: Integration Convert from URL need an .md file extension #140
  ajouter le meme menu `Conversion URL(HTML)-Markdown` au menu contextuel du panneau Notes. 
-
+ ajouter le menu `Ìntégrations\Conversion PDF-Markdown` au menu contextuel du panneau Notes au dessus de `Conversion URL(HTML)-Markdown` 
 
 
  Fix error QtWebEngigine database cache
 [872624:872624:0108/111045.779468:ERROR:service_worker_storage.cc(1753)] Failed to delete the database: Database IO error
 --> git commit -a -m "V4.2.0 FixFix Issue [#140] & QtWebengine cache"
 
+Fix Issue [#140]
+ ajouter le menu `Ìntégrations\Conversion PDF-Markdown` au menu contextuel du panneau Notes au dessus de `Conversion URL(HTML)-Markdown` 
+ --> pip install markitdown[pdf]
+
+MAJ Flatpak (icones/version/markitdown[pdf])
+MAJ Docker (.dockerignore)
+
+--> git commit -a -m "V4.2.0 Fix #140 PDF Convert+ Flatpak/Docker"
 
 ## V4.1.6 Fix Issue [#158] [#144]
 

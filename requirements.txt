@@ -19,6 +19,7 @@ markitdown
 Pillow==9.5.0
 PyMuPDF
 WeasyPrint
+markitdown[pdf]
 
 # Integrations and network
 geopy
