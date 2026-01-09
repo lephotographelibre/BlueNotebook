@@ -25,3 +25,4 @@ docker/
 flatpak/
 appimage/
 assets/
+windows_installer/

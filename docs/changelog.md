@@ -14,7 +14,8 @@ Mod flatpak
 Add Infrastructure pour Windows Installer
 -> Document Process
 --> Copier fichier de Windows
-
+ 
+ --> git commit -a -m "V4.2.1_windows_installer_conf"
 
 ## V4.1.6 Fix Issue [#140]
 

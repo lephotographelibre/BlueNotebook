@@ -27,3 +27,7 @@ py-staticmaps
 requests
 validators
 youtube-transcript-api
+
+# Windows tools only
+pyinstaller 
+pyinstaller-hooks-contrib
