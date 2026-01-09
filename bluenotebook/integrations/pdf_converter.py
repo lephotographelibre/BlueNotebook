@@ -20,9 +20,9 @@ import requests
 from pathlib import Path
 
 try:
-    from markitdown import MarkItDown
+    import pymupdf4llm
 except ImportError:
-    MarkItDown = None
+    pymupdf4llm = None
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, pyqtSlot, QCoreApplication
 
@@ -35,25 +35,26 @@ class PdfConverterContext:
 
 class PdfToMarkdownWorker(QRunnable):
     """
-    Worker to convert a PDF to Markdown using the 'markit' tool in the background.
+    Worker to convert a PDF to Markdown using 'pymupdf4llm' in the background.
     """
 
     class Signals(QObject):
         finished = pyqtSignal(str)  # Emits the resulting markdown content
         error = pyqtSignal(str)
 
-    def __init__(self, pdf_input_path: str):
+    def __init__(self, pdf_input_path: str, images_path: str = None):
         super().__init__()
         self.pdf_input_path = pdf_input_path
+        self.images_path = images_path
         self.signals = self.Signals()
 
     @pyqtSlot()
     def run(self):
         """Executes the conversion process."""
-        if MarkItDown is None:
+        if pymupdf4llm is None:
             error_msg = PdfConverterContext.tr(
-                "❌ Conversion PDF: La bibliothèque 'markitdown' est introuvable.\n\n"
-                "Veuillez l'installer avec : pip install markitdown[pdf]"
+                "❌ Conversion PDF: La bibliothèque 'pymupdf4llm' est introuvable.\n\n"
+                "Veuillez l'installer avec : pip install pymupdf4llm"
             )
             self.signals.error.emit(error_msg)
             return
@@ -71,18 +72,20 @@ class PdfToMarkdownWorker(QRunnable):
                         shutil.copyfileobj(response.raw, f)
                     input_path = str(local_pdf_path)
 
-                # Initialize the converter
-                md_converter = MarkItDown(enable_plugins=False)
+                # Convert the PDF to Markdown using pymupdf4llm
+                kwargs = {}
+                if self.images_path:
+                    kwargs["write_images"] = True
+                    kwargs["image_path"] = self.images_path
 
-                # Convert the PDF to Markdown
-                result = md_converter.convert(input_path)
+                md_text = pymupdf4llm.to_markdown(input_path, **kwargs)
 
                 # Emit the resulting markdown content
-                self.signals.finished.emit(result.text_content)
+                self.signals.finished.emit(md_text)
 
             except Exception as e:
                 error_msg = PdfConverterContext.tr(
                     "❌ Conversion PDF: Une erreur est survenue lors de la conversion : {error}\n\n"
-                    "Assurez-vous d'avoir installé 'markitdown[pdf]'."
+                    "Assurez-vous d'avoir installé 'pymupdf4llm'."
                 ).format(error=str(e))
                 self.signals.error.emit(error_msg)

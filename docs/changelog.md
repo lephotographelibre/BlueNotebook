@@ -1,3 +1,22 @@
+## V4.2.1 New PDF/Markdown Converter 
+
+Modifier le converter PDF-> Markdown
+pip uninstall markitdown[pdf]
+pip install pymupdf4llm
+--> git commit -a -m "V4.2.1_Mod_pdf_converter"
+
+Mod flatpak  
+-> creation fichiers `bluenotebook/build_assets.sh`
+--> modifier build flatpak pour le nouveau package pymupdf4llm
+-> reintégrer les emojis
+--> git commit -a -m "V4.2.1_Flatpak_conf"
+
+Add Infrastructure pour Windows Installer
+-> Document Process
+--> Copier fichier de Windows
+ 
+ --> git commit -a -m "V4.2.1_windows_installer_conf"
+
 ## V4.1.6 Fix Issue [#140]
 
 Fix Issue [#140](https://github.com/lephotographelibre/BlueNotebook/issues/140) v4.1.4: Integration Convert from URL need an .md file extension #140

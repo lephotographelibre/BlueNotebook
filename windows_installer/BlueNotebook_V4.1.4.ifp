@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<InstallForgeProject>
+  <Metadata productVersion="1.6.1" projectFileVersion="2.0"/>
+  <ProductInformation>
+    <Name>BlueNotebook</Name>
+    <Version>4.1.4</Version>
+    <CompanyName>io.github.lephotographelibre</CompanyName>
+    <WebURI>https://github.com/lephotographelibre/BlueNotebook#</WebURI>
+  </ProductInformation>
+  <InstallerConfiguration>
+    <Prerequisites>
+      <OperatingSystem check="true">
+        <WindowsXP>false</WindowsXP>
+        <WindowsServer2003>false</WindowsServer2003>
+        <WindowsVista>false</WindowsVista>
+        <WindowsServer2008>false</WindowsServer2008>
+        <Windows7>false</Windows7>
+        <Windows8>false</Windows8>
+        <Windows10>true</Windows10>
+        <WindowsServer2016>false</WindowsServer2016>
+        <WindowsServer2019>false</WindowsServer2019>
+        <WindowsServer2022>false</WindowsServer2022>
+        <Windows11>true</Windows11>
+        <WindowsServer2025>false</WindowsServer2025>
+      </OperatingSystem>
+    </Prerequisites>
+    <UserInterface>
+      <WizardImage filePath="C:\Program Files (x86)\solicus\InstallForge\images\Wizard_1.bmp"/>
+      <HeaderImage filePath="C:\Program Files (x86)\solicus\InstallForge\images\Header_1.bmp"/>
+      <Label isEnabled="true"/>
+      <VisualStyle isEnabled="true"/>
+    </UserInterface>
+    <InstallationFiles defaultInstallationPath="&lt;ProgramFiles&gt;\&lt;Company&gt;\&lt;AppName&gt;\" isDefaultInstallationPathAlterable ="true">
+      <InstallationFile size="16 MB" type="exe">C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist\BlueNotebook\BlueNotebook.exe</InstallationFile>
+      <InstallationFile size="N/A" type="[Folder]">C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist\BlueNotebook\</InstallationFile>
+    </InstallationFiles>
+    <Languages>
+      <Language>English</Language>
+      <Language>Français</Language>
+    </Languages>
+    <Variables/>
+    <Commands/>
+    <Registry/>
+    <Shortcuts defaultPath="&lt;Company&gt;\&lt;AppName&gt;\" isDefaultPathAlterable="false" isCreateStartmenuShortcutsForAllUsers="false" isCreateDesktopShortcutsForAllUsers="false">
+      <Shortcut destination="Desktop" name="BlueNotebook" targetFile="&lt;InstallPath&gt;\BlueNotebook.exe" commandLineArguments="" iconFilePath="&lt;InstallPath&gt;\resources\icons\bluenotebook_256-x256_fond_blanc.ico" iconIndex="0"/>
+      <Shortcut destination="Startmenu" name="&lt;StartMenu&gt;\&lt;AppName&gt;" targetFile="&lt;InstallPath&gt;\BlueNotebook.exe" commandLineArguments="" iconFilePath="" iconIndex="0"/>
+    </Shortcuts>
+    <Serials isDialogEnabled="false" count="1000" mask ="#####-#####-#####-#####"/>
+    <SplashScreen isDialogEnabled="false" delayTime="2">
+      <Image filePath=""/>
+      <Sound isEnabled="false" filePath=""/>
+    </SplashScreen>
+    <License isDialogEnabled="false">
+      <Data>e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcbm91aWNvbXBhdFxkZWZsYW5nMTAzNntcZm9udHRibHtcZjBcZm5pbCBBcmlhbDt9fQ0Ke1wqXGdlbmVyYXRvciBSaWNoZWQyMCAxMC4wLjI2MTAwfVx2aWV3a2luZDRcdWMxIA0KXHBhcmRcZjBcZnMyMFxwYXINCn0NCgA=</Data>
+    </License>
+    <Finish isRebootMachineEnabled="false">
+      <Program executableFilePath="&lt;InstallPath&gt;\BlueNotebook.exe" isLaunchEnabled="true" arguments=""/>
+    </Finish>
+  </InstallerConfiguration>
+  <UninstallerConfiguration isPackaged="true">
+    <UninstallerExecutableFileName>Uninstall</UninstallerExecutableFileName>
+    <OpenWebURIAfterUninstallation isEnabled="false">https://</OpenWebURIAfterUninstallation>
+    <CustomDisplayIcon isEnabled="false" iconFilePath="&lt;InstallPath&gt;\"/>
+  </UninstallerConfiguration>
+  <VisualUpdateConfiguration isPackaged="false">
+    <ProductName>&lt;AppName&gt;</ProductName>
+    <ProductVersion>&lt;AppVersion&gt;</ProductVersion>
+    <Language>0</Language>
+    <UpdateScriptURIs>
+      <MainURI>https://</MainURI>
+      <FirstMirrorURI>https://</FirstMirrorURI>
+      <SecondMirrorURI>https://</SecondMirrorURI>
+    </UpdateScriptURIs>
+    <updateExecutableFileName>Update</updateExecutableFileName>
+    <proEditionLicenseKey/>
+    <Program executableFilePath="" isLaunchEnabled="false" isTerminationEnabled="false"/>
+  </VisualUpdateConfiguration>
+  <BuildConfiguration>
+    <SetupFilePath>C:\Users\jmdig\Desktop\BlueNotebook_Setup_4.1.4.exe</SetupFilePath>
+    <SetupIconPath>C:\Program Files (x86)\solicus\InstallForge\icons\ancient.ico</SetupIconPath>
+    <UninstallerIconPath>C:\Program Files (x86)\solicus\InstallForge\icons\ancient.ico</UninstallerIconPath>
+    <Compression method="0" level="2"/>
+    <CodeSigning isEnabled="false" signToolCommandLine="/n &quot;Subject&quot; /tr http://timestamp.digicert.com /td sha256 /fd sha256 &quot;&lt;ExecutableFilePath&gt;&quot;"/>
+  </BuildConfiguration>
+</InstallForgeProject>

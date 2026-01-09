@@ -1,0 +1,497 @@
+REM depart d'une v4.1.4
+- Fabrication de l'icone 256x256.ico --> ressources/icons à partir de https://convertico.com/
+- Copies des dll
+- installation pyinstaller: pip install pyinstaller pyinstaller-hooks-contrib
+- Creation du fichiers spec
+
+- Télechargement inno setup --> site officiel : jrsoftware.org/isdl.php
+C:\Program Files (x86)\Inno Setup 6
+- Téléchargement et installation d'InstallForge: : installforge.net/download/.
+C:\Program Files (x86)\solicus\InstallForge\
+
+@@TODO
+1 Ajouter un deinstaller avec shprtcut et Icone
+2 traiter le pb de fonton non chargée
+3 pb de virus ?? changer de soft ?
+4 remove fenetre noire
+
+
+------------------------------------------------------------------------------------
+
+
+set "PATH=%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;%PATH%"
+cd .\github\
+cd .\BlueNotebook\
+.\bluenotebook\.venv_3.11.9\Scripts\Activate.ps1   ***** IMPORTANT **** créé par une premiere execution de ./run_bluenotebook.bat
+pip -V
+pip 24.0 from C:\Users\jmdig\.pyenv\pyenv-win\versions\3.11.9\Lib\site-packages\pip (python 3.11)
+PS C:\Users\jmdig\github\BlueNotebook>
+
+
+REM instal pyinstaller
+pip install pyinstaller pyinstaller-hooks-contrib
+
+REM Include any additional files, such as UI resources, icons, or custom DLLs, in subfolders (e.g., resources/ or dlls/).
+REM BlueNotebook\bluenotebook\resources\dll
+REM COPY C:\Program Files\GTK3-Runtime Win64\bin\*cairo*.dll ---> BlueNotebook\bluenotebook\resources\dll
+
+REM - Navigate to your project directory in the command prompt.
+REM Run an initial build to generate a `.spec` file:
+
+cd BlueNotebook\bluenotebook
+pyinstaller main.py  --> 
+Create: 
+===> BlueNotebook\bluenotebook\main.spec
+
+===> BlueNotebook\bluenotebook\dist
+===> BlueNotebook\bluenotebook\dist/app/` directory will contain the executable and dependencies.
+===> BlueNotebook\bluenotebook\build
+
+ 
+# pyinstaller --distpath ../windows_installer main.py
+
+
+86 INFO: PyInstaller: 6.17.0, contrib hooks: 2025.11
+86 INFO: Python: 3.11.9
+104 INFO: Platform: Windows-10-10.0.26200-SP0
+104 INFO: Python environment: C:\Users\jmdig\.pyenv\pyenv-win\versions\3.11.9
+104 INFO: wrote C:\Users\jmdig\github\BlueNotebook\bluenotebook\main.spec
+105 INFO: Module search paths (PYTHONPATH):
+['C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Scripts\\pyinstaller.exe',
+ 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\python311.zip',
+ 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\DLLs',
+ 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib',
+ 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9',
+ 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages',
+ 'C:\\Users\\jmdig\\github\\BlueNotebook\\bluenotebook']
+299 INFO: checking Analysis
+299 INFO: Building Analysis because Analysis-00.toc is non existent
+299 INFO: Looking for Python shared library...
+299 INFO: Using Python shared library: C:\Users\jmdig\.pyenv\pyenv-win\versions\3.11.9\python311.dll
+299 INFO: Running Analysis Analysis-00.toc
+299 INFO: Target bytecode optimization level: 0
+299 INFO: Initializing module dependency graph...
+299 INFO: Initializing module graph hook caches...
+308 INFO: Analyzing modules for base_library.zip ...
+976 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+1041 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+2122 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+3454 INFO: Caching module dependency graph...
+3482 INFO: Analyzing C:\Users\jmdig\github\BlueNotebook\bluenotebook\main.py
+3626 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+3692 INFO: Processing standard module hook 'hook-xml.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+3730 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks'
+3951 INFO: Processing module hooks (post-graph stage)...
+4163 INFO: Performing binary vs. data reclassification (1 entries)
+4163 INFO: Looking for ctypes DLLs
+4175 INFO: Analyzing run-time hooks ...
+4175 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\Users\\jmdig\\.pyenv\\pyenv-win\\versions\\3.11.9\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+4179 INFO: Creating base_library.zip...
+4194 INFO: Looking for dynamic libraries
+4275 INFO: Extra DLL search directories (AddDllDirectory): []
+4275 INFO: Extra DLL search directories (PATH): []
+4387 INFO: Warnings written to C:\Users\jmdig\github\BlueNotebook\bluenotebook\build\main\warn-main.txt
+4403 INFO: Graph cross-reference written to C:\Users\jmdig\github\BlueNotebook\bluenotebook\build\main\xref-main.html
+4403 INFO: checking PYZ
+4403 INFO: Building PYZ because PYZ-00.toc is non existent
+4403 INFO: Building PYZ (ZlibArchive) C:\Users\jmdig\github\BlueNotebook\bluenotebook\build\main\PYZ-00.pyz
+4531 INFO: Building PYZ (ZlibArchive) C:\Users\jmdig\github\BlueNotebook\bluenotebook\build\main\PYZ-00.pyz completed successfully.
+4615 INFO: checking PKG
+4615 INFO: Building PKG because PKG-00.toc is non existent
+4615 INFO: Building PKG (CArchive) main.pkg
+4643 INFO: Building PKG (CArchive) main.pkg completed successfully.
+4643 INFO: Bootloader C:\Users\jmdig\.pyenv\pyenv-win\versions\3.11.9\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
+4643 INFO: checking EXE
+4643 INFO: Building EXE because EXE-00.toc is non existent
+4643 INFO: Building EXE from EXE-00.toc
+4643 INFO: Copying bootloader EXE to C:\Users\jmdig\github\BlueNotebook\bluenotebook\build\main\main.exe
+4675 INFO: Copying icon to EXE
+4676 INFO: Copying 0 resources to EXE
+4678 INFO: Embedding manifest in EXE
+4678 INFO: Appending PKG archive to EXE
+4681 INFO: Fixing EXE headers
+4762 INFO: Building EXE from EXE-00.toc completed successfully.
+4762 INFO: checking COLLECT
+4762 INFO: Building COLLECT because COLLECT-00.toc is non existent
+4764 INFO: Building COLLECT COLLECT-00.toc
+4898 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+4898 INFO: Build complete! The results are available in: C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist 
+
+===> C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist
+
+REM This creates `build/`, `dist/`, and `app.spec` folders. The `dist/app/` directory will contain the executable and dependencies.
+
+REM - Edit the `C:\Users\jmdig\github\BlueNotebook\bluenotebook\main.spec` file for customization (use Gemini to verify the file) 
+
+REM add icon :  icon='resources/icons/bluenotebook_256-x256_fond_blanc.ico',   
+
+-------------------------------------- main.spec --------------------------
+
+# -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
+
+block_cipher = None
+
+# 1. Collecte automatique des fichiers de données pour pyphen (césure)
+datas_pyphen = collect_data_files('pyphen')
+
+# 2. Définition manuelle de vos dossiers de ressources
+# Format : (Chemin_Source_Relatif, Chemin_Destination_Dans_EXE)
+my_datas = [
+    ('resources', 'resources'),
+    ('i18n', 'i18n'),
+]
+
+# Fusion des listes de données
+all_datas = datas_pyphen + my_datas
+
+a = Analysis(
+    ['main.py'],
+    pathex=[],
+    # 3. Inclusion des DLLs : on prend tout ce qui est dans resources/dll et on le met à la racine (.)
+    binaries=[('resources/dll/*.dll', '.')],
+    datas=all_datas,
+    # 4. Ajout des imports cachés nécessaires pour les plugins Qt et librairies dynamiques
+    hiddenimports=[
+        'PyQt5.QtPrintSupport',
+        'PyQt5.QtWebEngineWidgets',
+        'PyQt5.QtNetwork',
+        'PyQt5.QtXml',
+        'PyQt5.QtSvg',
+        'weasyprint',
+        'cairosvg',
+        'pyphen',
+        'markdown',
+        'ebooklib',
+        'fitz',  # PyMuPDF
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='BlueNotebook',  # Nom de l'exécutable
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,  # Mettre à False pour cacher la fenêtre noire (console)
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon='resources/icons/bluenotebook_256-x256_fond_blanc.ico',  # Décommentez et ajustez le chemin si vous avez une icône .ico
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='BlueNotebook',  # Nom du dossier de sortie dans dist/
+)
+
+---------------------------------------------------------------------------
+
+REM Build again
+pyinstaller main.py
+
+11379 INFO: Build complete! The results are available in: C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist
+
+REM - Test the bundle
+
+.\dist\BlueNotebook\BlueNotebook.exe
+
+REM !!!!! erreur rien ne s'affiche --> fichier spec console=True et recomplie
+
+cd c:\Users\jmdig\github\BlueNotebook\bluenotebook
+# Assurez-vous que votre environnement virtuel est activé
+.\.venv_3.11.9\Scripts\Activate.ps1
+
+# Recompiler
+pyinstaller main.spec --clean --noconfirm
+
+OK 
+
+___________   Verision complete de main.spec _______________________________
+
+# -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_all, collect_data_files, copy_metadata
+
+block_cipher = None
+
+# 1. Collecte automatique pour pyphen
+datas_pyphen = collect_data_files('pyphen')
+
+# 2. Collecte complète pour pymdownx
+# On récupère tout : sources, données, binaires, imports cachés
+pymdownx_ret = collect_all('pymdownx')
+datas_pymdownx = pymdownx_ret[0]
+binaries_pymdownx = pymdownx_ret[1]
+hiddenimports_pymdownx = pymdownx_ret[2]
+
+# AJOUT CRITIQUE : Copie des métadonnées du package pip
+# Cela permet à pkg_resources de trouver la version de pymdown-extensions
+datas_pymdownx += copy_metadata('pymdown-extensions')
+
+# 3. Vos ressources manuelles
+my_datas = [
+    ('resources', 'resources'),
+    ('i18n', 'i18n'),
+]
+
+# Fusion des listes de données
+all_datas = datas_pyphen + datas_pymdownx + my_datas
+
+# 4. Liste explicite des imports cachés (Ceinture et bretelles)
+# On force l'inclusion des modules que vous utilisez dans preview.py
+explicit_hiddenimports = [
+    'PyQt5.QtPrintSupport',
+    'PyQt5.QtWebEngineWidgets',
+    'PyQt5.QtNetwork',
+    'PyQt5.QtXml',
+    'PyQt5.QtSvg',
+    'weasyprint',
+    'cairosvg',
+    'pyphen',
+    'markdown',
+    'ebooklib',
+    'fitz',
+    # Modules pymdownx spécifiques
+    'pymdownx',
+    'pymdownx.tilde',
+    'pymdownx.mark',
+    'pymdownx.superfences',
+    'pymdownx.tasklist',
+    'pymdownx.emoji',
+    'pymdownx.highlight',
+    'pymdownx.inlinehilite',
+    'pymdownx.magiclink',
+    'pymdownx.saneheaders',
+    'pymdownx.smartsymbols',
+    'pymdownx.snippets',
+    'pymdownx.keys',
+    'pymdownx.details',
+    'pymdownx.arithmatex',
+    'pymdownx.betterem',
+    'pymdownx.caret',
+    'pymdownx.critic',
+    'pymdownx.escapeall',
+    'pymdownx.extra',
+    'pymdownx.progressbar',
+    'pymdownx.striphtml',
+]
+
+a = Analysis(
+    ['main.py'],
+    pathex=[],
+    binaries=[('resources/dll/*.dll', '.')] + binaries_pymdownx,
+    datas=all_datas,
+    hiddenimports=explicit_hiddenimports + hiddenimports_pymdownx,
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='BlueNotebook',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=True, # Gardez True pour voir si l'erreur change
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    # icon='resources/images/icon.ico',
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='BlueNotebook',
+)
+___________________________________________________________________________________________________________________
+
+
+ # Guide de packaging avec InstallForge pour BlueNotebook
+
+Ce guide explique comment créer un installateur Windows (`setup.exe`) pour l'application **BlueNotebook** à partir des fichiers générés par PyInstaller, en utilisant le logiciel gratuit **InstallForge**.
+
+## Prérequis
+
+1.  Avoir généré l'exécutable avec PyInstaller (dossier `dist\BlueNotebook` ou `dist\main`).
+2.  Avoir installé InstallForge.
+
+## Étapes de configuration
+
+### 1. Onglet "General"
+*   **Program Name** : `BlueNotebook`
+*   **Program Version** : `4.1.4` (ou la version actuelle)
+*   **Company Name** : *Votre Nom* ou *BlueNotebook Team*
+*   **Website** : `https://github.com/lephotographelibre/BlueNotebook`
+*   **Windows Support** : Cochez les versions ciblées (Windows 10, Windows 11).
+
+### 2. Onglet "Setup"
+*   **Install Path** : `<ProgramFiles>\<Company>\<AppName>`
+    *   Ceci installera l'application dans `C:\Program Files\BlueNotebook Team\BlueNotebook`.
+
+### 3. Onglet "Files" (Important)
+C'est ici que vous incluez les fichiers de votre application.
+
+1.  Dans la vue de droite (liste des fichiers), assurez-vous que le chemin de destination est `<InstallPath>`.
+2.  Ouvrez l'explorateur Windows et allez dans votre dossier `dist\BlueNotebook`.
+3.  **ATTENTION :** Ne glissez pas le dossier `BlueNotebook` lui-même !
+4.  Entrez **DANS** le dossier `dist\BlueNotebook`.
+5.  Faites **Ctrl+A** pour sélectionner **tout le contenu** (l'exécutable, le dossier `_internal`, les DLLs, `resources`, etc.).
+6.  Glissez-déposez cette sélection multiple dans la liste d'InstallForge.
+7.  Répondez **Oui** pour inclure les sous-dossiers.
+
+### 4. Onglet "Uninstall"
+*   Cochez **Include Uninstaller**.
+*   Cela permet une désinstallation propre via le Panneau de configuration Windows.
+
+### 5. Onglet "Dialogs"
+*   **Finish** :
+    *   Cochez **Run program**.
+    *   **Target File** : Sélectionnez `<InstallPath>\BlueNotebook.exe`.
+
+### 6. Onglet "System" (Raccourcis)
+Allez dans la sous-section **Shortcuts**.
+
+**Pour le Bureau :**
+1.  Cliquez sur **Add...**
+2.  **Link Name** : `BlueNotebook`
+3.  **Link Path** : `<Desktop>`
+4.  **Target File** : `<InstallPath>\BlueNotebook.exe`
+5.  **Icon File** : `<InstallPath>\resources\icons\bluenotebook.ico` (Assurez-vous que le fichier `.ico` est bien présent dans vos fichiers sources inclus).
+
+**Pour le Menu Démarrer :**
+1.  Cliquez sur **Add...**
+2.  **Link Name** : `BlueNotebook`
+3.  **Link Path** : `<StartMenu>\<AppName>`
+4.  **Target File** : `<InstallPath>\BlueNotebook.exe`
+
+### 7. Onglet "Build"
+1.  **Setup File** : Choisissez l'emplacement et le nom du fichier d'installation (ex: `BlueNotebook_Setup_4.1.4.exe`).
+2.  Cliquez sur le bouton **Build** dans la barre d'outils.
+
+Une fois la compilation terminée, vous aurez un fichier `.exe` unique prêt à être distribué.
+
+___________________________________________________________________________________________________
+
+# J'ai créé mon installer, mais je n'arrive pas a deinstaller cette application
+
+
+
+
+Le problème de désinstallation impossible après la création d’un installateur avec **InstallForge** provient généralement du fait que l’option d’inclusion d’un désinstalleur n’a pas été activée lors de la configuration du projet. Par défaut, InstallForge n’ajoute pas automatiquement un uninstaller visible dans « Applications et fonctionnalités » de Windows ou dans le Panneau de configuration.
+
+    ### @@TODO Solution : Activer et configurer le désinstalleur dans InstallForge
+    1. Ouvrez votre projet InstallForge (.ifp).
+    2. Dans le panneau de gauche, naviguez vers la catégorie **Setup** > section **Uninstallation** (ou « Désinstallation » si l’interface est en français).
+    3. Cochez la case **Include Uninstaller** (ou « Inclure le désinstalleur »).
+    4. Vérifiez que le nom du fichier exécutable du désinstalleur est bien **Uninstall.exe** (valeur par défaut recommandée).
+    5.+++++ (Optionnel mais recommandé) Activez **Use custom display icon** pour spécifier une icône personnalisée (extraite de votre exe principal ou d’un fichier .ico) afin qu’elle apparaisse correctement dans les applications installées.
+    6. +++++++Dans l’onglet **Shortcuts** (Raccourcis), ajoutez un raccourci vers l’uninstaller :
+       - Type : Programme (ou Start Menu).
+       - Cible : `<InstallPath>\Uninstall.exe`.
+       - Emplacement : Menu Démarrer (et éventuellement Bureau).
+    7. Enregistrez le projet et reconstruisez (**Build**) l’installateur.
+
+Voici des captures d’écran illustrant la section Uninstallation et les fichiers ajoutés :
+
+
+Après reconstruction, réinstallez votre application avec la nouvelle version de l’installateur. L’entrée devrait alors apparaître dans **Paramètres > Applications > Applications installées** (ou Panneau de configuration > Programmes et fonctionnalités), avec une option de désinstallation.
+
+### Si votre application est déjà installée (sans uninstaller fonctionnel)
+- **Méthode manuelle** : Supprimez manuellement le dossier d’installation (généralement dans `C:\Program Files\` ou `C:\Program Files (x86)\` suivi du nom de votre application).
+- **Vérifiez les raccourcis** : Si vous aviez ajouté un fichier `Uninstall.exe` dans le dossier, exécutez-le directement.
+- **Nettoyage registre** (avancé, avec précaution) : Utilisez un outil comme CCleaner ou recherchez manuellement dans le registre (regedit) sous `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\` ou `HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\` pour supprimer l’entrée correspondant à votre application.
+- **Outil Microsoft** : Exécutez l’outil de dépannage « Program Install and Uninstall Troubleshooter » disponible sur le site Microsoft pour forcer la suppression d’entrées orphelines.
+
+===> https://support.microsoft.com/en-us/topic/fix-problems-that-block-programs-from-being-installed-or-removed-cca7d1b6-65a9-3d98-426b-e9f927e1eb4d
+
+### Cas particulier avec votre application BlueNotebook
+Si l’application est en cours d’exécution lors de la tentative de désinstallation, certains fichiers peuvent être verrouillés. Fermez complètement l’application avant de désinstaller (ou ajoutez une vérification dans une version future).
+
+En suivant ces étapes, votre prochain installateur inclura un désinstalleur fiable. Si le problème persiste après reconfiguration (par exemple, un message d’erreur spécifique), fournissez plus de détails pour un diagnostic supplémentaire.
+
+
+_______________________________________________________________________
+
+@@Prompt
+Windows11, j'ai créé mon installer windows avec Installforge. je l'ai installé et puis je l'ai deinstallé en utilisant le programme Uninstall.exe fournit par Installforge. tout est ok et fonctionne correctement. je reinstalle mon programme, Mais si je vais voir la liste des programmes installé je vois bien mon application dans la liste des applications installées (Applications > Applications installées) mais impossible d'utiliser le menu deinstaller ici. je suis obligé d'aller dans le répertoire d'installation de mon application pour activer le programme Uninstall.exe
+
+@@Réponse
+
+Votre problème est lié au fonctionnement de l’uninstallateur généré par **InstallForge** sur Windows 11. Lorsque l’option « Include Uninstaller » est activée, InstallForge crée automatiquement une entrée dans la base de registre (sous `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall` ou la branche Wow6432Node pour les applications 32 bits), ce qui fait apparaître votre application dans la liste **Paramètres > Applications > Applications installées**.
+
+Cependant, le bouton « Désinstaller » n’est pas toujours fonctionnel dans cette interface moderne de Windows 11 pour certains programmes non-MSI (comme ceux créés avec InstallForge). Cela peut provenir de :
+
+- Une incompatibilité ou un bug dans l’application Paramètres de Windows 11, qui gère moins bien les uninstallateurs exécutables personnalisés (par opposition aux installateurs MSI standards).
+- Une configuration de la valeur **UninstallString** dans le registre qui pointe correctement vers `Uninstall.exe`, mais que l’interface Paramètres ne lance pas de manière interactive ou silencieuse comme attendu.
+
+L’uninstallateur manuel via `Uninstall.exe` dans le répertoire d’installation fonctionne parfaitement, car il s’agit du mécanisme natif d’InstallForge.
+
+### Solutions recommandées
+1. **Utiliser l’ancien Panneau de configuration** (plus fiable pour ce type d’applications) :  
+   - Appuyez sur **Windows + R**, tapez `control` et validez pour ouvrir le Panneau de configuration.  
+   - Allez dans **Programmes > Programmes et fonctionnalités**.  
+   - Trouvez votre application dans la liste, cliquez droit dessus et sélectionnez **Désinstaller**.  
+   Cela devrait lancer `Uninstall.exe` correctement.
+
+2. **Vérifier et corriger manuellement la clé de registre** (avec prudence) :  
+   - Sauvegardez d’abord la base de registre (Regedit > Fichier > Exporter).  
+   - Ouvrez `regedit` en administrateur.  
+   - Naviguez vers :  
+     `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall`  
+     ou (pour applications 32 bits sur Windows 64 bits) :  
+     `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall`  
+   - Recherchez la sous-clé correspondant à votre application (via la valeur **DisplayName**).  
+   - Vérifiez que la valeur **UninstallString** est bien :  
+     `"Chemin\vers\votre\répertoire\Uninstall.exe"` (avec guillemets si le chemin contient des espaces).  
+   - Si une valeur **QuietUninstallString** existe, assurez-la similaire (éventuellement avec un paramètre silencieux si supporté par InstallForge).  
+   - Après modification, rafraîchissez la liste des applications (F5) ou redémarrez.
+
+3. **Améliorations dans InstallForge pour futures versions** :  
+   - Assurez-vous d’utiliser la version la plus récente d’InstallForge (les notes de mise à jour mentionnent des améliorations pour l’affichage dans « Apps & Features », dont l’icône et les informations de taille/date).  
+   - Dans l’onglet **Uninstallation**, activez **Include Uninstaller** et configurez une icône personnalisée si nécessaire (via « Use custom display icon »).
+
+Si le problème persiste après ces étapes, il s’agit probablement d’une limitation de l’interface Paramètres de Windows 11 pour les uninstallateurs non-MSI. L’utilisation du Panneau de configuration reste une solution fiable et standard.
+
+Fournissez plus de détails (version exacte d’InstallForge, nom de l’application, ou capture d’écran de la clé de registre) si vous souhaitez une assistance plus précise.

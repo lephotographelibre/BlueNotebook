@@ -107,7 +107,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V4.2.0</h1>
+            Aide en Ligne - BlueNotebook V4.2.1</h1>
     </header>
 
 <div class="main-container">
@@ -613,12 +613,12 @@
         <h3 id="pdf-to-markdown">10.8 Convertir un PDF en Markdown</h3>
         <p>Cette intégration puissante vous permet de transformer le contenu textuel d'un fichier PDF (local ou distant) en un document Markdown propre et éditable. C'est l'outil parfait pour extraire le contenu d'articles, de rapports ou de documents que vous souhaitez archiver et rendre consultables dans votre journal.</p>
         <ol>
-            <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code>.</li>
+            <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code> ou faites un clic-droit sur un dossier dans le panneau "Notes".</li>
             <li>Une boîte de dialogue s'ouvre, vous invitant à fournir le chemin vers un fichier PDF local (via le bouton "Parcourir...") ou à coller l'URL d'un PDF en ligne.</li>
             <li>Après validation, l'application télécharge et analyse le PDF en arrière-plan.</li>
-            <li>Une fois la conversion terminée, le contenu Markdown est automatiquement chargé dans l'éditeur, prêt à être modifié, annoté et sauvegardé comme une nouvelle note.</li>
+            <li>Une fois la conversion terminée, le contenu Markdown est soit chargé dans l'éditeur, soit sauvegardé comme un nouveau fichier dans le dossier que vous avez choisi, prêt à être modifié et annoté.</li>
         </ol>
-        <p><strong>Note :</strong> Cette fonctionnalité s'appuie sur la bibliothèque <code>markitdown</code> de Microsoft. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).</p>
+        <p><strong>Note :</strong> Cette fonctionnalité s'appuie sur la bibliothèque <code>pymupdf4llm</code>. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).</p>
 
         <h3 id="url-to-markdown">10.9 Convertir une URL/HTML en Markdown</h3>
         <p>Transformez n'importe quelle page web ou fichier HTML local en une note Markdown propre et lisible. Cette fonctionnalité est idéale pour archiver des articles de blog, des documentations techniques ou toute autre page web que vous souhaitez conserver et annoter.</p>
@@ -1142,9 +1142,9 @@ Aide
 
         <h3>Conversion de Documents</h3>
         <ul>
-            <li><strong>markitdown</strong> : Une bibliothèque de Microsoft utilisée pour la nouvelle fonctionnalité de conversion de PDF en Markdown. Elle analyse la structure du PDF pour générer un fichier Markdown équivalent.
+            <li><strong>pymupdf4llm</strong> : Une bibliothèque de l'écosystème PyMuPDF utilisée pour la conversion de PDF en Markdown. Elle est optimisée pour extraire un contenu propre et structuré, adapté à une utilisation avec les grands modèles de langage (LLM).
                 <ul>
-                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/microsoft/markitdown" target="_blank">github.com/microsoft/markitdown</a></li>
+                    <li><strong>Dépôt GitHub :</strong> <a href="https://github.com/pymupdf/pymupdf-llm" target="_blank">github.com/pymupdf/pymupdf-llm</a></li>
                 </ul>
             </li>
         </ul>

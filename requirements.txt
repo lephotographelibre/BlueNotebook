@@ -15,11 +15,10 @@ pycairo
 cairosvg
 cffi<2.0.0
 EbookLib
-markitdown
 Pillow==9.5.0
 PyMuPDF
 WeasyPrint
-markitdown[pdf]
+pymupdf4llm
 
 # Integrations and network
 geopy
@@ -28,3 +27,7 @@ py-staticmaps
 requests
 validators
 youtube-transcript-api
+
+# Windows tools only
+pyinstaller 
+pyinstaller-hooks-contrib
