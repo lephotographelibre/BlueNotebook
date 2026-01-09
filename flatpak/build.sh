@@ -11,7 +11,7 @@ pip install requirements-parser
 
 # Package order is mandatory
 python3 flatpak-pip-generator.py \
-    --runtime=org.kde.Sdk//5.15-23.08 \
+    --runtime=org.kde.Sdk//5.15-25.08 \
     --yaml \
     --output=./python3-requirements \
     --ignore-installed=markdown,Pygments \
@@ -38,7 +38,7 @@ python3 flatpak-pip-generator.py \
     validators \
     readability-lxml \
     markdownify \
-    markitdown[pdf]
+    pymupdf4llm
 
 # 1. Construire et exporter dans un dépôt local nommé 'repo'
 flatpak-builder --user --install --force-clean --repo=repo build-dir ./io.github.lephotographelibre.BlueNotebook.yaml

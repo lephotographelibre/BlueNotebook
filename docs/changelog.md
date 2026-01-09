@@ -1,11 +1,15 @@
 ## V4.2.1 New PDF/Markdown Converter 
 
 Modifier le converter PDF-> Markdown
+pip uninstall markitdown[pdf]
+pip install pymupdf4llm
 --> git commit -a -m "V4.2.1_Mod_pdf_converter"
 
 Mod flatpak  
+-> creation fichiers `bluenotebook/build_assets.sh`
+--> modifier build flatpak pour le nouveau package pymupdf4llm
 -> reintégrer les emojis
-
+--> git commit -a -m "V4.2.1_Flatpak_conf"
 
 Add Infrastructure pour Windows Installer
 -> Document Process
