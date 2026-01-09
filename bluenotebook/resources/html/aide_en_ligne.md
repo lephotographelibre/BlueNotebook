@@ -394,9 +394,9 @@ Cette intégration puissante vous permet de transformer le contenu textuel d'un 
 1.  Allez dans le menu `Intégrations > Conversion PDF-Markdown`.
 2.  Une boîte de dialogue s'ouvre, vous invitant à fournir le chemin vers un fichier PDF local (via le bouton "Parcourir...") ou à coller l'URL d'un PDF en ligne.
 3.  Après validation, l'application télécharge et analyse le PDF en arrière-plan.
-4.  Une fois la conversion terminée, le contenu Markdown est automatiquement chargé dans l'éditeur, prêt à être modifié, annoté et sauvegardé comme une nouvelle note.
+4.  Une fois la conversion terminée, le contenu Markdown est soit chargé dans l'éditeur, soit sauvegardé comme un nouveau fichier dans le dossier que vous avez choisi, prêt à être modifié et annoté.
 
-**Note :** Cette fonctionnalité s'appuie sur la bibliothèque `markitdown` de Microsoft. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).
+**Note :** Cette fonctionnalité s'appuie sur la bibliothèque `pymupdf4llm`. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).
 
 <h3 id="url-to-markdown">10.9 Convertir une URL/HTML en Markdown</h3>
 Transformez n'importe quelle page web ou fichier HTML local en une note Markdown propre et lisible. Cette fonctionnalité est idéale pour archiver des articles de blog, des documentations techniques ou toute autre page web que vous souhaitez conserver et annoter.
@@ -845,8 +845,8 @@ Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilis
     *   **Dépôt GitHub :** <a href="https://github.com/pymupdf/PyMuPDF" target="_blank">github.com/pymupdf/PyMuPDF</a>
 
 ### Conversion de Documents
-*   **markitdown** : Une bibliothèque de Microsoft utilisée pour la nouvelle fonctionnalité de conversion de PDF en Markdown. Elle analyse la structure du PDF pour générer un fichier Markdown équivalent.
-    *   **Dépôt GitHub :** <a href="https://github.com/microsoft/markitdown" target="_blank">github.com/microsoft/markitdown</a>
+*   **pymupdf4llm** : Une bibliothèque de l'écosystème PyMuPDF utilisée pour la conversion de PDF en Markdown. Elle est optimisée pour extraire un contenu propre et structuré, adapté à une utilisation avec les grands modèles de langage (LLM).
+    *   **Dépôt GitHub :** <a href="https://github.com/pymupdf/pymupdf-llm" target="_blank">github.com/pymupdf/pymupdf-llm</a>
 
 ### Manipulation d'Images
 *   **Pillow** (un fork de PIL) : Utilisée pour tout ce qui touche à la manipulation d'images. Elle sert principalement à créer l'image de couverture composite pour l'export EPUB (en combinant une image et du texte) et à redimensionner/compresser les images avant de les inclure dans le livre numérique.
@@ -865,7 +865,7 @@ Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilis
     *   **Dépôt GitHub :** <a href="https://github.com/geopy/geopy" target="_blank">github.com/geopy/geopy</a>
 
 ---
-*Ce manuel a été rédigé pour la version V4.2.0 de BlueNotebook.*
+*Ce manuel a été rédigé pour la version V4.2.1 de BlueNotebook.*
 
 Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.
 

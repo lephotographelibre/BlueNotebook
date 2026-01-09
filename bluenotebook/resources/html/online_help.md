@@ -397,12 +397,12 @@ Add the sunrise/sunset times and the phase of the moon for the city of your choi
 ### 10.8 Converting a PDF to Markdown <a id="pdf-to-markdown"></a>
 This powerful integration allows you to transform the textual content of a PDF file (local or remote) into a clean and editable Markdown document. It is the perfect tool for extracting the content of articles, reports or documents that you want to archive and make searchable in your journal.
 
-1.  Go to the `Integrations > PDF-Markdown Conversion` menu.
+1.  Go to the `Integrations > PDF-Markdown Conversion` menu or right-click on a folder in the "Notes" panel.
 2.  A dialog box opens, inviting you to provide the path to a local PDF file (via the "Browse..." button) or to paste the URL of an online PDF.
 3.  After validation, the application downloads and analyzes the PDF in the background.
-4.  Once the conversion is complete, the Markdown content is automatically loaded into the editor, ready to be modified, annotated and saved as a new note.
+4.  Once the conversion is complete, the Markdown content is either loaded into the editor or saved as a new file in the folder you chose, ready to be modified and annotated.
 
-**Note:** This feature relies on the `markitdown` library from Microsoft. The quality of the conversion depends on the structure of the source PDF (text-based PDFs work better than image-based ones).
+**Note:** This feature relies on the `pymupdf4llm` library. The quality of the conversion depends on the structure of the source PDF (text-based PDFs work better than image-based ones).
 
 ### 10.9 Converting a URL/HTML to Markdown <a id="url-to-markdown"></a>
 Transform any web page or local HTML file into a clean and readable Markdown note. This feature is ideal for archiving blog articles, technical documentation or any other web page that you want to keep and annotate.
@@ -869,7 +869,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
     *   **GitHub Repository:** [github.com/geopy/geopy](https://github.com/geopy/geopy)
 
 ---
-*This manual was written for BlueNotebook V4.2.0*
+*This manual was written for BlueNotebook V4.2.1*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 

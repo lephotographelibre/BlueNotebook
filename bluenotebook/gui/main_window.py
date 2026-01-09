@@ -1195,7 +1195,9 @@ class MainWindow(QMainWindow):
         self.convert_pdf_markdown_action = QAction(
             self.tr("Conversion PDF-Markdown"),
             self,
-            statusTip=self.tr("Convertir un fichier PDF en Markdown avec 'markitdown'"),
+            statusTip=self.tr(
+                "Convertir un fichier PDF en Markdown avec 'pymupdf4llm'"
+            ),
             triggered=self.convert_pdf_to_markdown,
         )
         self.convert_url_markdown_action = QAction(
@@ -3163,7 +3165,14 @@ class MainWindow(QMainWindow):
 
         from integrations.pdf_converter import PdfToMarkdownWorker
 
-        worker = PdfToMarkdownWorker(pdf_path)
+        images_dir = None
+        if self.journal_directory:
+            images_dir = self.journal_directory / "images"
+            images_dir.mkdir(exist_ok=True)
+
+        worker = PdfToMarkdownWorker(
+            pdf_path, images_path=str(images_dir) if images_dir else None
+        )
         worker.signals.finished.connect(self.on_pdf_convert_finished)
         worker.signals.error.connect(self.on_pdf_convert_error)
 
@@ -3186,7 +3195,14 @@ class MainWindow(QMainWindow):
 
         from integrations.pdf_converter import PdfToMarkdownWorker
 
-        worker = PdfToMarkdownWorker(pdf_path)
+        images_dir = None
+        if self.journal_directory:
+            images_dir = self.journal_directory / "images"
+            images_dir.mkdir(exist_ok=True)
+
+        worker = PdfToMarkdownWorker(
+            pdf_path, images_path=str(images_dir) if images_dir else None
+        )
         worker.signals.finished.connect(
             lambda content: self.on_pdf_convert_from_notes_finished(
                 content, directory, pdf_path
