@@ -35,7 +35,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Clonage du dépôt GitHub
-RUN git clone https://github.com/lephotographelibre/BlueNotebook.git /app
+ARG GIT_COMMIT=main
+RUN git clone https://github.com/lephotographelibre/BlueNotebook.git /app && \
+        cd /app && \
+        git checkout $GIT_COMMIT && \
+        rm -rf /app/.git
 
 # Installation des dépendances Python via pip
 WORKDIR /app

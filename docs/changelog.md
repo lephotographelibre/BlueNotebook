@@ -7,6 +7,11 @@ V4.2.2 main et html files
 --> git commit -a -m " V4.2.2 Save phase simplified"
 ---> git commit -a -m " V4.2.2 Save phase simplified MAJ Doc"
 
+reorganise les dossiers scripts et tests dans un dossier dev
+Fix Issue [#162] V4.2.0 Flatpak: add again fonts/Emojis to flatpak app
+
+---> git commit -a -m " V4.2.2 Fix Issue [#162] Emojis Flatpak"
+
 ## V4.2.1 New PDF/Markdown Converter 
 
 Modifier le converter PDF-> Markdown
