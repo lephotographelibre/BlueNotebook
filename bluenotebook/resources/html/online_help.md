@@ -111,12 +111,7 @@ BlueNotebook is organized around a simple but powerful concept: your journal is 
 At each launch, BlueNotebook checks your journal folder. It looks for a file corresponding to the current date, named according to the format `YYYYMMDD.md` (for example, `20250920.md`). If this file exists, it opens it automatically. Otherwise, it presents you with a new blank page, ready to become the entry of the day.
 
 ### Smart Saving
-The save action (`File > Save` or `Ctrl+S`) is at the heart of this system:
-
-*   **If the note of the day does not yet exist**, it will simply be created with the content of the editor in your journal folder.
-*   **If the note of the day already exists**, a dialog box will offer you two choices:
-    *   **Append to the end**: Your new text will be added to the end of the existing content, separated by a line. This is the ideal option for adding thoughts or notes throughout the day without losing previous information.
-    *   **Replace**: The original content of the note of the day will be completely overwritten and replaced by what is currently in the editor. Be careful with this option!
+The save action (`File > Save` or `Ctrl+S`) the original content of the note of the day will be completely overwritten and replaced by what is currently in the editor. Be careful with this option!
 
 ## 5. Managing and Using Templates <a id="templates"></a>
 Templates are pre-filled note structures that allow you to start your work quickly. BlueNotebook offers you complete management of templates to create, use and insert recurring structures.

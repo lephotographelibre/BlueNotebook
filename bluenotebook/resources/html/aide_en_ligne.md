@@ -111,12 +111,7 @@ BlueNotebook est organisé autour d'un concept simple mais puissant : votre jour
 À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format `AAAAMMJJ.md` (par exemple, `20250920.md`). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.
 
 ### La Sauvegarde Intelligente
-L'action de sauvegarde (`Fichier > Sauvegarder` ou `Ctrl+S`) est au cœur de ce système :
-
-*   **Si la note du jour n'existe pas encore**, elle sera simplement créée avec le contenu de l'éditeur dans votre dossier de journal.
-*   **Si la note du jour existe déjà**, une boîte de dialogue vous proposera deux choix :
-    *   **Ajouter à la fin**: Votre nouveau texte sera ajouté à la suite du contenu existant, séparé par une ligne. C'est l'option idéale pour ajouter des pensées ou des notes tout au long de la journée sans perdre les informations précédentes.
-    *   **Remplacer**: Le contenu original de la note du jour sera entièrement écrasé et remplacé par ce qui se trouve actuellement dans l'éditeur. Soyez prudent avec cette option !
+L'action de sauvegarde (`Fichier > Sauvegarder` ou `Ctrl+S`) le contenu original de la note du jour sera entièrement écrasé et remplacé par ce qui se trouve actuellement dans l'éditeur. Soyez prudent avec cette option !
 
 ## 5. Gérer et Utiliser les Modèles (Templates) <a id="templates"></a>
 Les modèles sont des structures de notes pré-remplies qui vous permettent de démarrer rapidement votre travail. BlueNotebook vous offre une gestion complète des modèles pour créer, utiliser et insérer des structures récurrentes.

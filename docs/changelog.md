@@ -1,3 +1,12 @@
+## V4.2.2 Fixes
+
+
+Le processus de sauvegarde a été simplifié. Désormais, toute sauvegarde dans le journal remplacera directement le fichier du jour s'il existe déjà.
+V4.2.2 main et html files
+
+--> git commit -a -m " V4.2.2 Save phase simplified"
+---> git commit -a -m " V4.2.2 Save phase simplified MAJ Doc"
+
 ## V4.2.1 New PDF/Markdown Converter 
 
 Modifier le converter PDF-> Markdown
