@@ -100,7 +100,8 @@ This level represents the application's ability to help the user organize, retri
 
 ## How to Launch Bluenotebook 
 
-**New** A docker image and a Flatpak bundle are available with V4.1.4 
+**New** A docker image and a Flatpak bundle are available . Check the latest packages available at <https://github.com/lephotographelibre/BlueNotebook/releases>
+
 An Appimage for Linux  and a Windows installer will soon be available. Stay tuned.
 
 ### **Docker image**
@@ -110,7 +111,7 @@ You can launch this BlueNotebook Docker image directly by running the `run_docke
 
 ```bash
 # get the docker image (2.6GB )
-docker pull jmdigne/bluenotebook:4.1.4
+docker pull jmdigne/bluenotebook:latest
 #create mandatoruy directories on the host
 mkdir -p ~/bluenotebook_docker/config \
          ~/bluenotebook_docker/BlueNotebookJournal \
@@ -128,7 +129,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    jmdigne/bluenotebook:4.1.4
+    jmdigne/bluenotebook:latest
 ```
 .⚠️.⚠️.⚠️ Do not change the Journal and Backup directories on the home screen, as you already configured them before launching the application. You can change the application language (English or French)..⚠️.⚠️.⚠️
  

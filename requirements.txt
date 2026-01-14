@@ -29,5 +29,5 @@ validators
 youtube-transcript-api
 
 # Windows tools only
-pyinstaller 
-pyinstaller-hooks-contrib
+# pyinstaller
+# pyinstaller-hooks-contrib

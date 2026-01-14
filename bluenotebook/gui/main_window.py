@@ -1354,15 +1354,6 @@ class MainWindow(QMainWindow):
             (self.tr("📚 À Lire"), "📚"),
             (self.tr("🎬 À Regarder"), "🎬"),
             (self.tr("🎧 A Ecouter"), "🎧"),
-            (self.tr("✈️ Voyage"), "✈️"),
-            (self.tr("❤️ Santé"), "❤️"),
-            (self.tr("☀️ Soleil"), "☀️"),
-            (self.tr("☁️ Nuage"), "☁️"),
-            (self.tr("🌧️ Pluie"), "🌧️"),
-            (self.tr("🌬️ Vent"), "🌬️"),
-            (self.tr("😊 Content"), "😊"),
-            (self.tr("😠 Mécontent"), "😠"),
-            (self.tr("😢 Triste"), "😢"),
             (self.tr("✅ Fait"), "✅"),
             (self.tr("❌ Annulé"), "❌"),
             (self.tr("⚠️ Attention"), "⚠️"),
@@ -1910,45 +1901,8 @@ class MainWindow(QMainWindow):
 
         journal_file_path = file_to_save_path
 
-        if journal_file_path.exists():
-            dialog = QDialog(self)
-            dialog.setWindowTitle(self.tr("Fichier Journal déjà existant"))
-            layout = QVBoxLayout()
-            layout.addWidget(
-                QLabel(
-                    self.tr("Le fichier journal '{0}' existe déjà.").format(
-                        journal_file_path.name
-                    )
-                )
-            )
-
-            buttons = QDialogButtonBox()
-            replace_button = buttons.addButton(
-                self.tr("Remplacer"), QDialogButtonBox.DestructiveRole
-            )
-            append_button = buttons.addButton(
-                self.tr("Ajouter à la fin"), QDialogButtonBox.AcceptRole
-            )
-            cancel_button = buttons.addButton(
-                self.tr("Annuler"), QDialogButtonBox.RejectRole
-            )
-            layout.addWidget(buttons)
-            dialog.setLayout(layout)
-
-            replace_button.clicked.connect(lambda: dialog.done(1))
-            append_button.clicked.connect(lambda: dialog.done(2))
-            cancel_button.clicked.connect(dialog.reject)
-
-            result = dialog.exec_()
-
-            if result == 1:
-                self._save_to_file(str(journal_file_path))
-            elif result == 2:
-                self._append_to_file(str(journal_file_path))
-            else:
-                return
-        else:
-            self._save_to_file(str(journal_file_path))
+        # Le fichier est sauvegardé et remplacé s'il existe, sans confirmation.
+        self._save_to_file(str(journal_file_path))
 
         self.current_file = str(journal_file_path)
         self.update_title()
