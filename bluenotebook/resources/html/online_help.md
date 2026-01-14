@@ -869,7 +869,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
     *   **GitHub Repository:** [github.com/geopy/geopy](https://github.com/geopy/geopy)
 
 ---
-*This manual was written for BlueNotebook V4.2.1*
+*This manual was written for BlueNotebook V4.2.2*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
