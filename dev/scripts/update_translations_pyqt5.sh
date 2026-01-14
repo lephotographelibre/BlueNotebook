@@ -2,14 +2,14 @@
 # update_and_compile_translations_pyqt5.sh
 # À placer à la racine du projet
 echo "*** ne pas oublier: pyenv activate .venv_bluenotebook *****"
-pyenv activate .venv_bluenotebook
+# pyenv activate .venv_bluenotebook
 
 
 # !!!!!!!!!!!!!!! A executer EN DEHORS DEV VSCODE !!!!!!!!!!!!!!!!!!!!!!!!!!
 # Flatpak --> ou ouvrir le file system avec flatseal
 
-
-cd "bluenotebook" || exit 1
+cd ../../bluenotebook
+pwd
 
 # ------------------------------------------------------------------
 # 1. Création des dossiers
@@ -23,6 +23,7 @@ FILES=$(find . -type f -name "*.py" \
     ! -path "*/__pycache__/*" \
     ! -path "*/tests/*" \
     ! -path "*/scripts/*" \
+    ! -path "*/resources/*" \
     ! -path "./.venv_bluenotebook/*" \
     ! -name "*wrap_strings*")
 
