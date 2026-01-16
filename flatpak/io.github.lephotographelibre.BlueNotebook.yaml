@@ -18,6 +18,8 @@ finish-args:
   - --filesystem=home
   # For emoji font
   - --env=FONTCONFIG_FILE=/app/etc/fonts/fonts.conf
+  # For Bug Qt with Nvidia 
+  - --env=QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu
 
 modules:
   # Python dependancies generated
@@ -98,7 +100,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/lephotographelibre/BlueNotebook.git
-        tag: v4.2.2
+        tag: v4.2.3
       #- type: dir
       #  path: ..
 

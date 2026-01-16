@@ -1,4 +1,30 @@
+## V4.2.3 Fixes docker Flatpak
+
+- add env variable to Dockerfile
+ENV QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
+
+Dockerfile (multiphase par defaut)
+
+flatpak add env variable
+  # For Bug Qt with Nvidia 
+  - --env=QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu
+flatpak version to V4.2.3/Github v4.2.3
+
+
+
+ Pushing container images to github container
+ $ export CR_PAT=******* *******
+$ echo $CR_PAT | docker login ghcr.io -u lephotographelibre --password-stdin
+
+echo "--- Docker tag push to github package ---"
+docker tag "bluenotebook:$VERSION" "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
+docker push "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
+
+creation du fichier synchro_git.sh puor synchroniser a la fin develope et main
+
+
 ## V4.2.2 Fixes
+
 
 
 Le processus de sauvegarde a été simplifié. Désormais, toute sauvegarde dans le journal remplacera directement le fichier du jour s'il existe déjà.
