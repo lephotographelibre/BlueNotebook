@@ -22,6 +22,7 @@ docker push "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
 
 creation du fichier synchro_git.sh puor synchroniser a la fin develope et main
 
+---> git commit -a -m "V4.2.3 Fix docker/flatpak"
 
 ## V4.2.2 Fixes
 
