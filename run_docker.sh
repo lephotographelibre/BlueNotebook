@@ -82,6 +82,10 @@ fi
 
 # 3. Launch container
 echo "[3/3] Launching BlueNotebook..."
-docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$DATA_DIR":/data -v "$DATA_DIR/config":/home/appuser/.config -v "$DATA_DIR/BlueNotebookJournal":/home/appuser/BlueNotebookJournal -v "$DATA_DIR/BlueNotebookBackup":/home/appuser/BlueNotebookBackup --user=$(id -u):$(id -g) $IMAGE_NAME
 
-echo "👋 Session ended."
+# Temporarily allow the local user to connect to the X server for the container.
+# This rule is automatically revoked when the script exits.
+xhost +si:localuser:$(id -un)
+trap 'xhost -si:localuser:$(id -un); echo "👋 Session ended."' EXIT
+
+docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$DATA_DIR":/data -v "$DATA_DIR/config":/home/appuser/.config -v "$DATA_DIR/BlueNotebookJournal":/home/appuser/BlueNotebookJournal -v "$DATA_DIR/BlueNotebookBackup":/home/appuser/BlueNotebookBackup --user=$(id -u):$(id -g) $IMAGE_NAME

@@ -71,7 +71,7 @@ class SearchResultsPanel(QWidget):
         """Met à jour la liste des résultats."""
         self.results_tree.clear()
         if search_query.lower() == "@@todo":
-            self.label.setText(self.tr("✔ Liste des Tâches @@TODO 🗘"))
+            self.label.setText(self.tr("✔ Liste des Tâches @@TODO "))
         else:
             self.label.setText(self.tr("🔍 Résultats de la Recherche"))
 

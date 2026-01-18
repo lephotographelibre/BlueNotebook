@@ -1,7 +1,7 @@
-# Étape 1 : Builder stage pour la construction et l'installation des dépendances
-FROM python:3.11-slim AS builder
+# Image de base légère basée sur Debian (Python 3.11)
+FROM python:3.11-slim
 
-# Mise à jour et installation des dépendances système (runtime + build)
+# Mise à jour et installation des dépendances système
 RUN apt-get update && apt-get install -y \
     git \
     libcairo2 \
@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo \
     libpng16-16 \
     zlib1g \
+    && apt-get install -y --no-install-recommends \
     build-essential \
     libcairo2-dev \
     pkg-config \
@@ -36,46 +37,24 @@ RUN apt-get update && apt-get install -y \
 # Clonage du dépôt GitHub
 ARG GIT_COMMIT=main
 RUN git clone https://github.com/lephotographelibre/BlueNotebook.git /app && \
-    cd /app && \
-    git checkout $GIT_COMMIT && \
-    rm -rf /app/.git
+        cd /app && \
+        git checkout $GIT_COMMIT && \
+        rm -rf /app/.git
 
 # Installation des dépendances Python via pip
 WORKDIR /app
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Étape 2 : Final stage pour l'image runtime minimale
-FROM python:3.11-slim
-
-# Installation des dépendances système runtime uniquement (sans outils de build)
-RUN apt-get update && apt-get install -y \
-    libcairo2 \
-    libpango-1.0-0 \
-    libgdk-pixbuf-2.0-0 \
-    libqt5widgets5 \
-    libqt5gui5 \
-    libqt5core5a \
-    libqt5dbus5 \
-    libqt5network5 \
-    libqt5svg5 \
-    libqt5webengine5 \
-    libqt5webenginewidgets5 \
-    libqt5webenginecore5 \
-    libqt5printsupport5 \
-    libx11-6 \
-    libxext6 \
-    libxrender1 \
-    libfontconfig1 \
-    libfreetype6 \
-    libjpeg62-turbo \
-    libpng16-16 \
-    zlib1g \
+# Nettoyage des outils de build temporaires pour réduire la taille de l'image
+RUN apt-get purge -y --auto-remove \
+    build-essential \
+    libcairo2-dev \
+    pkg-config \
+    python3-dev \
+    meson \
+    ninja-build \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
-
-# Copie des fichiers nécessaires depuis la builder stage
-COPY --from=builder /app /app
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Création d'un utilisateur non-root pour plus de sécurité
 RUN groupadd -g 1000 appgroup && \
@@ -88,8 +67,6 @@ USER appuser
 
 # Répertoire de travail dans l'application
 WORKDIR /app/bluenotebook
-
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
-
 # Commande de lancement de l'application
 CMD ["python", "main.py"]

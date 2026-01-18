@@ -1,0 +1,179 @@
+cd flatpak# Prepare Runtime
+flatpak install flathub com.riverbankcomputing.PyQt.BaseApp//5.15-23.08 org.kde.Sdk//5.15-23.08 org.kde.Platform//5.15-23.08
+
+
+5.15-25.08  flatpak install flathub com.riverbankcomputing.PyQt.BaseApp//5.15-25.08
+5.15-25.08  flatpak install org.kde.Sdk//5.15-25.08 org.kde.Platform/5.15-25.08
+
+flatpak install flathub com.riverbankcomputing.PyQt.BaseApp//5.15-25.08 org.kde.Sdk//5.15-25.08
+
+cd BlueNotebook/flatpak
+#  
+pyenv activate .venv_3.11.13
+# Install requirements-parserfir Flapak builds
+pip install requirements-parser
+
+# Package order is mandatory
+python3 flatpak-pip-generator.py \
+    --runtime=org.kde.Sdk//5.15-25.08 \
+    --yaml \
+    --output=./python3-requirements \
+    --ignore-installed=markdown,Pygments \
+    validators \
+    meson-python \
+    pycairo \
+    hatchling \
+    pybind11 \
+    "cffi<2.0.0" \
+    requests \
+    markdown \
+    beautifulsoup4 \
+    WeasyPrint \
+    gpxpy \
+    py-staticmaps \
+    geopy \
+    EbookLib \
+    Pillow \
+    cairosvg \
+    Pygments \
+    pymdown-extensions \
+    PyMuPDF \
+    youtube-transcript-api \
+    markitdown \
+    readability-lxml \
+    markdownify \
+    pymupdf4llm
+
+#.0 installer flatpak builder from flathub
+flatpak install flathub org.flatpak.Builder
+Run
+flatpak run org.flatpak.Builder
+
+# 1. Construire et exporter dans un dépôt local nommé 'repo'
+flatpak run org.flatpak.Builder --user --install --force-clean --repo=repo build-dir ./io.github.lephotographelibre.BlueNotebook.yaml
+
+# 2. Lancement en ligne de commande (Recommandé pour voir les logs)C'est la méthode la plus efficace pour tester car vous verrez directement les messages de sortie et les erreurs potentielles dans votre terminal.
+flatpak run io.github.lephotographelibre.BlueNotebook
+
+# 3. Créer le fichier bundle (.flatpak) distribuable
+flatpak build-bundle repo BlueNotebook.flatpak io.github.lephotographelibre.BlueNotebook
+
+
+# 4. Verifier l'installation
+(.venv_3.11.13) jm@jm-22:~/Work/BlueNotebookV4.1.2/flatpak$ flatpak list --user | grep BlueNotebook
+BlueNotebook    io.github.lephotographelibre.BlueNotebook       4.1.2   master  bluenotebook1-origin
+
+# 5. run the linter
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.lephotographelibre.BlueNotebook.yaml
+{
+    "errors": [
+        "finish-args-home-filesystem-access"
+    ],
+    "warnings": [
+        "runtime-is-eol-org.kde.Platform-5.15-23.08"
+    ],
+    "message": "See https://docs.flathub.org/linter for details and exceptions"
+}
+
+# 5.linter repo
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder repo repo
+{
+    "errors": [
+        "appstream-external-screenshot-url",
+        "appstream-screenshots-not-mirrored-in-ostree",
+        "finish-args-home-filesystem-access"
+    ],
+    "warnings": [
+        "runtime-is-eol-org.kde.Platform-5.15-23.08"
+    ],
+    "info": [
+        "appstream-external-screenshot-url: Screenshots are not mirrored to https://dl.flathub.org/media"
+    ],
+    "message": "See https://docs.flathub.org/linter for details and exceptions"
+}
+
+#  6. Débogage : Entrer dans le conteneur Si l'application ne se lance pas ou crashe, vous pouvez ouvrir un terminal à l'intérieur de l'environnement Flatpak pour explorer les fichiers et tester manuellement :
+flatpak run --command=sh io.github.lephotographelibre.BlueNotebook
+
+$ flatpak run -v --command=sh io.github.lephotographelibre.BlueNotebook
+sh: flatpak : commande introuvable
+(.venv_bluenotebook) jm@jm-22:~/Work/BlueNotebook$ /app/bin/bluenotebook
+🚀 Lancement de BlueNotebook...
+📂 Journal: /home/jm/Documents/BlueNotebookJournal
+python3: can't open file '/app/share/bluenotebook/main.py': [Errno 2] No such file or directory
+
+
+
+# 7. Nettoyer l'installation
+flatpak uninstall --user io.github.lephotographelibre.BlueNotebook
+flatpak list --user | grep BlueNotebook
+
+
+
+# 8.Fork the Flathub repository on GitHub with "Copy the master branch only" unchecked.
+
+#Clone the fork:
+# fix
+git clone https://github.com/lephotographelibre/flathub.git
+cd flathub
+git remote add upstream https://github.com/flathub/flathub.git
+git fetch upstream
+git checkout -b new-pr upstream/new-pr
+
+git checkout -b io.github.lephotographelibre.BlueNotebook new-pr
+
+#Add the required files using git add, commit them and push using git commit and git push.
+$ ls -al
+total 72
+drwxrwxr-x  3 jm jm  4096 déc.  26 15:09 .
+drwxr-xr-x 65 jm jm  4096 déc.  26 14:56 ..
+-rw-r--r--  1 jm jm   720 déc.  24 10:27 75-noto-color-emoji.conf
+-rw-r--r--  1 jm jm 13281 déc.  24 10:27 bluenotebook_128x128.png
+-rw-r--r--  1 jm jm  1725 déc.  24 10:27 bluenotebook_32x32.png
+-rw-r--r--  1 jm jm  4504 déc.  24 10:27 bluenotebook_64x64.png
+-rw-r--r--  1 jm jm  1214 déc.  24 10:27 bluenotebook-wrapper.sh
+-rw-r--r--  1 jm jm   446 déc.  24 10:27 fonts.conf
+drwxrwxr-x  8 jm jm  4096 déc.  26 15:07 .git
+-rw-r--r--  1 jm jm   425 déc.  26 10:59 io.github.lephotographelibre.BlueNotebook.desktop
+-rw-r--r--  1 jm jm  4240 déc.  26 14:24 io.github.lephotographelibre.BlueNotebook.metainfo.xml
+-rw-r--r--  1 jm jm  4982 déc.  26 14:24 io.github.lephotographelibre.BlueNotebook.yaml
+
+git commit
+git push
+fatal: The current branch io.github.lephotographelibre.BlueNotebook has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin io.github.lephotographelibre.BlueNotebook
+
+$ git push --set-upstream origin io.github.lephotographelibre.BlueNotebook
+Username for 'https://github.com': lephotographelibre
+Password for 'https://lephotographelibre@github.com':  *****
+Enumerating objects: 12, done.
+Counting objects: 100% (12/12), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (11/11), done.
+Writing objects: 100% (11/11), 24.07 KiB | 24.07 MiB/s, done.
+Total 11 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: Create a pull request for 'io.github.lephotographelibre.BlueNotebook' on GitHub by visiting:
+remote:      https://github.com/lephotographelibre/flathub/pull/new/io.github.lephotographelibre.BlueNotebook
+remote: 
+To https://github.com/lephotographelibre/flathub.git
+ * [new branch]      io.github.lephotographelibre.BlueNotebook -> io.github.lephotographelibre.BlueNotebook
+Branch 'io.github.lephotographelibre.BlueNotebook' set up to track remote branch 'io.github.lephotographelibre.BlueNotebook' from 'origin'.
+
+
+# Étape 1 : Accéder à la page de création
+https://github.com/lephotographelibre/flathub/pull/new/io.github.lephotographelibre.BlueNotebook
+
+#Étape 2 : Changer la branche de base (Crucial)
+C'est l'étape la plus importante. Par défaut, GitHub va essayer de fusionner votre code vers la branche master. Vous devez changer cela.
+
+En haut de la page, repérez la barre grise avec les menus déroulants "base repository", "base", "head repository", etc.
+Assurez-vous que base repository est bien flathub/flathub.
+Changez le menu base : cliquez dessus et sélectionnez new-pr (au lieu de master).
+Si vous ne faites pas cela, votre PR contiendra des milliers de commits inutiles et sera refusée.
+
+La ligne de comparaison doit ressembler à ceci : flathub/flathub : new-pr ⬅️ lephotographelibre/flathub : io.github.lephotographelibre.BlueNotebook
+
+PR ===> https://github.com/flathub/flathub/pull/7406

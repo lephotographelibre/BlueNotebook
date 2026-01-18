@@ -15,7 +15,7 @@ cd ../..
 source ~/.bash_profile
 source ~/.bashrc
 pyenv activate .venv_3.11.13
-pip install requirements-parser
+pip install requirements-parser PyYAML
 
 
 echo "--- Starting Docker Image Build ---"
@@ -38,6 +38,13 @@ echo "--- Docker tag push to dockerhub ---"
 docker push "jmdigne/bluenotebook:$VERSION"
 docker push jmdigne/bluenotebook:latest
 
+echo "--- Docker tag push to github package ---"
+export CR_PAT=********** 
+echo $CR_PAT | docker login ghcr.io -u lephotographelibre --password-stdin
+docker tag "bluenotebook:$VERSION" "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
+docker push "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
+
+
 echo "--- Docker list images ---"
 #5. List images
 docker images
@@ -53,10 +60,14 @@ echo "--- Starting Flatpak Build ---"
 ## Build flatpak
 cd flatpak
 echo "--- Flatpak Clean previous installation ---"
+
+# 0. Clean previous installation & install builder
 flatpak list --user | grep BlueNotebook
-# 0. Clean previous installation
 flatpak uninstall --user io.github.lephotographelibre.BlueNotebook
 flatpak list --user | grep BlueNotebook
+
+#0. Install the builder
+flatpak install flathub org.flatpak.Builder
 
 echo "--- Flatpak python3-requirements ---"
 # 1. Generate python3-requirements.yaml
