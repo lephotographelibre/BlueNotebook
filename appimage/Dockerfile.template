@@ -1,0 +1,121 @@
+# =============================================================================
+# Dockerfile Template pour BlueNotebook AppImage
+# =============================================================================
+# Ce Dockerfile est un template utilisé par build_all_appimage.sh
+# La version spécifique (GIT_TAG) est injectée lors du build
+# =============================================================================
+
+# Utiliser une base Debian 11 (GLIBC 2.31) pour meilleure compatibilité
+FROM debian:11-slim AS builder
+
+# Installation des dépendances de build
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libffi-dev \
+    liblzma-dev \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libgdk-pixbuf-2.0-dev \
+    pkg-config \
+    python3-dev \
+    libqt5widgets5 \
+    libqt5gui5 \
+    libqt5core5a \
+    libqt5dbus5 \
+    libqt5network5 \
+    libqt5svg5 \
+    libqt5webengine5 \
+    libqt5webenginewidgets5 \
+    libqt5webenginecore5 \
+    libqt5printsupport5 \
+    qtbase5-dev \
+    qtwebengine5-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Compilation de Python 3.11.13 depuis les sources
+WORKDIR /tmp
+RUN wget https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz && \
+    tar xzf Python-3.11.13.tgz && \
+    cd Python-3.11.13 && \
+    ./configure --enable-optimizations --enable-shared --prefix=/usr/local && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig && \
+    cd .. && \
+    rm -rf Python-3.11.13*
+
+# Création des liens symboliques Python
+RUN ln -sf /usr/local/bin/python3.11 /usr/local/bin/python3 && \
+    ln -sf /usr/local/bin/pip3.11 /usr/local/bin/pip3
+
+# Clonage du dépôt BlueNotebook à la version spécifique
+# ARG GIT_TAG sera injecté par le script de build
+ARG GIT_TAG=main
+RUN git clone https://github.com/lephotographelibre/BlueNotebook.git /app && \
+    cd /app && \
+    git checkout ${GIT_TAG} && \
+    rm -rf /app/.git
+
+# Installation des dépendances Python
+WORKDIR /app
+RUN /usr/local/bin/pip3.11 install --no-cache-dir -r requirements.txt
+
+# =============================================================================
+# Étape finale : Image runtime minimale
+# =============================================================================
+FROM debian:11-slim
+
+# Installation des bibliothèques runtime uniquement
+RUN apt-get update && apt-get install -y \
+    libcairo2 \
+    libpango-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    libqt5widgets5 \
+    libqt5gui5 \
+    libqt5core5a \
+    libqt5dbus5 \
+    libqt5network5 \
+    libqt5svg5 \
+    libqt5webengine5 \
+    libqt5webenginewidgets5 \
+    libqt5webenginecore5 \
+    libqt5printsupport5 \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    libfontconfig1 \
+    libfreetype6 \
+    libjpeg62-turbo \
+    libpng16-16 \
+    zlib1g \
+    libssl1.1 \
+    libffi7 \
+    libsqlite3-0 \
+    libreadline8 \
+    libbz2-1.0 \
+    liblzma5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie de Python compilé et ses bibliothèques
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /app /app
+
+# Configuration de ldconfig pour libpython
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/python.conf && ldconfig
+
+WORKDIR /app/bluenotebook
+ENV QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
+
+CMD ["python3.11", "main.py"]

@@ -105,6 +105,7 @@ python3 flatpak-pip-generator.py \
 
 echo "--- Flatpak Build ---"
 # 2. Build flatpak
+# add  --install-deps-from=flathub 
 flatpak run org.flatpak.Builder --user --install --force-clean --repo=repo build-dir ./io.github.lephotographelibre.BlueNotebook.yaml
 
 echo "--- Flatpak List app ---"
@@ -119,8 +120,18 @@ flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.githu
 flatpak run --command=flatpak-builder-lint org.flatpak.Builder repo repo
 echo "--- Flatpak Build Complete ---"
 
+
+cd ..
+cd appimage
 echo "--- Starting AppImage Build ---"
-## build Appimage
+./build_all_appimage.sh $VERSION
+mv BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-appimage.AppImage
+mv BlueNotebook-$VERSION.desktop ./assets/BlueNotebook-$VERSION-Appimage.desktop
+mv install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh
+mv uninstall_BlueNotebook-$VERSION.sh ../assets/uninstall_BlueNotebook-$VERSION-AppImage.sh
+./cleanup.sh
+
+
 echo "--- AppImage Build Complete ---"
 
 

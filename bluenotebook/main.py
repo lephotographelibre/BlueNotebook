@@ -49,14 +49,16 @@ def load_local_fonts():
 
 
 def detect_environment():
-    """Détecte l'environnement d'exécution (natif, Docker, Flatpak, AppImage)."""
+    """Détecte l'environnement d'exécution (linux/windows, Docker, Flatpak, AppImage)."""
     if "FLATPAK_ID" in os.environ or os.path.exists("/.flatpak-info"):
         return "Flatpak"
     if os.path.exists("/.dockerenv"):
         return "Docker"
     if "APPIMAGE" in os.environ and "APPDIR" in os.environ:
         return "AppImage"
-    return "Native"
+    if sys.platform == "win32":
+        return "Windows"
+    return "Linux"
 
 
 def main():
@@ -222,7 +224,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        version = "4.2.2"
+        version = "4.2.4"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")
@@ -231,7 +233,11 @@ def main():
         print(f"⚙️ Run-Time environment : {environment}")
 
         print(f"🚀 Launching BlueNotebook App V{version}...")
-        window = MainWindow(journal_dir_arg=args.journal_dir, app_version=version)
+        window = MainWindow(
+            journal_dir_arg=args.journal_dir,
+            app_version=version,
+            environment=environment,
+        )
         window.show()
 
         sys.exit(app.exec_())
