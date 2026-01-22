@@ -729,10 +729,11 @@ class InsertLinkDialog(QDialog):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, journal_dir_arg=None, app_version="2.4.4"):
+    def __init__(self, journal_dir_arg=None, app_version="2.4.4", environment="Native"):
         super().__init__()
         self.journal_dir_arg = journal_dir_arg
         self.app_version = app_version
+        self.environment = environment
         self.journal_directory = None
         self.current_file = None
         self.is_modified = False
@@ -789,8 +790,9 @@ class MainWindow(QMainWindow):
     def setup_ui(self):
         """Configuration de l'interface utilisateur"""
         self.setWindowTitle(
-            self.tr("BlueNotebook V{app_version} - Éditeur Markdown").format(
-                app_version=self.app_version
+            self.tr("BlueNotebook V{app_version} - {environment} - Éditeur Markdown").format(
+                app_version=self.app_version,
+                environment=self.environment
             )
         )
         self.setGeometry(100, 100, 1400, 900)
@@ -1731,15 +1733,19 @@ class MainWindow(QMainWindow):
         if self.is_modified:
             self._set_file_label_color("red")
             self.setWindowTitle(
-                self.tr("BlueNotebook V{app_version} - {filename} *").format(
-                    app_version=self.app_version, filename=filename
+                self.tr("BlueNotebook V{app_version} - {environment} - {filename} *").format(
+                    app_version=self.app_version,
+                    environment=self.environment,
+                    filename=filename
                 )
             )
             self.modified_label.setText("●")
         else:
             self.setWindowTitle(
-                self.tr("BlueNotebook V{app_version} - {filename}").format(
-                    app_version=self.app_version, filename=filename
+                self.tr("BlueNotebook V{app_version} - {environment} - {filename}").format(
+                    app_version=self.app_version,
+                    environment=self.environment,
+                    filename=filename
                 )
             )
             self.modified_label.setText("")
