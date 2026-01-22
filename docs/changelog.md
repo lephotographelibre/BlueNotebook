@@ -1,3 +1,20 @@
+## V4.2.4 Appimage build/ Flatpak fix
+
+- modification de code main.py et main_window.py pour afficher l'environnement dans la barre de titre  **!!!!!! ATTENTTION !!!! ne pas oublier de refaire les traductions** 
+
+- verifier que les repertoires assets existes dans github et n'est pas filtré par .gitignore
+
+- creer dossier appimage avec fichier de build
+
+- modifier build_assets pour intégrer appimage scripts
+flatpak run command si pb de fonts  🔗 [[[fix_emojis_flatpak]]](notes/Bluenotebook/flatpak/fix_emojis_flatpak.md) 
+
+- modify build asset.py --install-deps-from=flathub 
+```
+flatpak-builder --install-deps-from=flathub --force-clean build-dir flatpak/io.github.lephotographelibre.BlueNotebook.yaml
+```
+- script de renommage de version 4.2.3 -> 4.2.4 dev/scripts/update_version.sh
+
 ## V4.2.3 Fixes docker Flatpak
 
 - add env variable to Dockerfile
