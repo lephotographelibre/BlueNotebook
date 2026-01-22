@@ -105,6 +105,7 @@ python3 flatpak-pip-generator.py \
 
 echo "--- Flatpak Build ---"
 # 2. Build flatpak
+# add  --install-deps-from=flathub 
 flatpak run org.flatpak.Builder --user --install --force-clean --repo=repo build-dir ./io.github.lephotographelibre.BlueNotebook.yaml
 
 echo "--- Flatpak List app ---"
