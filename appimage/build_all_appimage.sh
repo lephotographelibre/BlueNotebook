@@ -363,6 +363,9 @@ LIBS_TO_COPY=(
     "libnssutil3.so*"
     "libplc4.so*"
     "libplds4.so*"
+    "libsoftokn3.so*"
+    "libfreebl3.so*"
+    "libfreeblpriv3.so*"
 )
 
 for lib_pattern in "${LIBS_TO_COPY[@]}"; do
@@ -457,6 +460,10 @@ export QT_QPA_PLATFORM_PLUGIN_PATH="$HERE/usr/local/lib/python3.11/site-packages
 export QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu --no-sandbox"
 export QT_XCB_GL_INTEGRATION=none
 export QTWEBENGINE_DISABLE_SANDBOX=1
+
+# Force NSS to use AppImage libraries (prevent system NSS conflicts)
+export NSS_DISABLE_UNLOAD=1
+export LD_PRELOAD="$HERE/usr/lib/x86_64-linux-gnu/libnss3.so:$HERE/usr/lib/x86_64-linux-gnu/libnssutil3.so:$HERE/usr/lib/x86_64-linux-gnu/libsoftokn3.so:$HERE/usr/lib/x86_64-linux-gnu/libfreeblpriv3.so:$HERE/usr/lib/x86_64-linux-gnu/libfreebl3.so:$HERE/usr/lib/x86_64-linux-gnu/libsmime3.so:$HERE/usr/lib/x86_64-linux-gnu/libnspr4.so:$HERE/usr/lib/x86_64-linux-gnu/libplc4.so:$HERE/usr/lib/x86_64-linux-gnu/libplds4.so"
 export QTWEBENGINEPROCESS_PATH="$HERE/usr/local/lib/python3.11/site-packages/PyQt5/Qt5/libexec/QtWebEngineProcess"
 export QTWEBENGINE_RESOURCES_PATH="$HERE/usr/local/lib/python3.11/site-packages/PyQt5/Qt5/resources"
 export QTWEBENGINE_LOCALES_PATH="$HERE/usr/local/lib/python3.11/site-packages/PyQt5/Qt5/translations"

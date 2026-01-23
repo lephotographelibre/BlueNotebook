@@ -35,13 +35,13 @@ Switched to a new branch "vX.Y.Z_feature"
 do work
 ....
 $ git status
-$ git add .
+$ git add --all
 $ git commit -a -m "vX.Y.Z zerzerzerze"
 
 do work
 ....
 $ git status
-$ git add .
+$ git add --all
 $ git commit -a -m "vX.Y.Z zerzerzerze"
 ```
 
@@ -97,6 +97,8 @@ Déjà à jour.
 $ git tag -a v1.0.0 -m "Version stable initiale"
 $ git show v1.0.0 
 $ git push origin v1.0.0   -- verify on github and create new release if appropriate
+++++++++ IMPORTANT ++++++
+./dev/script/synchro_git.sh  #synchro main & develop branches
 ```
 ## Creating the hotfix branch
 

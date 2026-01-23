@@ -57,6 +57,7 @@ HTML_DIR="$PROJECT_ROOT/bluenotebook/resources/html"
 MAIN_PY="$PROJECT_ROOT/bluenotebook/main.py"
 FLATPAK_YAML="$PROJECT_ROOT/flatpak/io.github.lephotographelibre.BlueNotebook.yaml"
 FLATPAK_METAINFO="$PROJECT_ROOT/flatpak/io.github.lephotographelibre.BlueNotebook.metainfo.xml"
+RELEASE_ASSET_TEMPLATE="$PROJECT_ROOT/assets/release_asset_template.md"
 
 # Counter for changes
 changes_made=0
@@ -153,6 +154,10 @@ process_file "$MAIN_PY"
 echo -e "\n${GREEN}Processing flatpak files...${NC}"
 process_file "$FLATPAK_YAML"
 process_file "$FLATPAK_METAINFO"
+
+# Process release asset template
+echo -e "\n${GREEN}Processing release asset template...${NC}"
+process_file "$RELEASE_ASSET_TEMPLATE"
 
 # Summary
 echo -e "\n${BLUE}========================================${NC}"
