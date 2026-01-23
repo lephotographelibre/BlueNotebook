@@ -12,7 +12,7 @@ Connexion : Méthode existante self.on_today_button_clicked
 - Fix Issue [#174] App Images
 
 
---> git commit - a -m "V4.2.5 Fix Issue [#172] [#174] AppImages"
+--> git commit - a -m "V4.2.5 Fix Issue[#172][#174]AppImages"
 
 
 
