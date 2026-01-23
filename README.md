@@ -9,7 +9,7 @@
 
 BlueNotebook is a journaling and note-taking desktop application designed for users who appreciate the power and portability of Markdown, while benefiting from a rich graphical interface and advanced organizational tools. This document analyzes its features in four overlapping layers, from the basic writing tool to the knowledge management platform.
 
-![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
+![BlueNotebook](docs/Screencopy/V4.2.5_MainPageEn.jpg)
 
 ![Bluenotebook_the_writing_experience](docs/Bluenotebook_the_writing_experience.png)
 
@@ -100,156 +100,10 @@ This level represents the application's ability to help the user organize, retri
 
 ## How to Launch Bluenotebook 
 
-**New** A docker image and a Flatpak bundle are available . Check the latest packages available at <https://github.com/lephotographelibre/BlueNotebook/releases>
 
-An Appimage for Linux  and a Windows installer will soon be available. Stay tuned.
+To run BlueNotebook on your system, several formats are available under Linux: AppImage, Flatpak Local, and Docker Image (Docker Hub and GitHub packages). See the list on the Release page <https://github.com/lephotographelibre/BlueNotebook/releases>.
 
-### **Docker image**
-
-A **BlueNotebook** docker image  is available at <https://hub.docker.com/repository/docker/jmdigne/bluenotebook/general>.
-You can launch this BlueNotebook Docker image directly by running the `run_docker.sh` script, or manually:
-
-```bash
-# get the docker image (2.6GB )
-docker pull jmdigne/bluenotebook:latest
-#create mandatoruy directories on the host
-mkdir -p ~/bluenotebook_docker/config \
-         ~/bluenotebook_docker/BlueNotebookJournal \
-         ~/bluenotebook_docker/BlueNotebookBackup
-# Modify the ownership and access rights
-chown -R $(id -u):$(id -g) ~/bluenotebook_docker
-chmod -R u+rwX ~/bluenotebook_docker
-
-# Run  the docker image
-docker run -it --rm \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v ~/bluenotebook_docker:/data \
-    -v ~/bluenotebook_docker/config:/home/appuser/.config \
-    -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
-    -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
-    --user=$(id -u):$(id -g) \
-    jmdigne/bluenotebook:latest
-```
-.⚠️.⚠️.⚠️ Do not change the Journal and Backup directories on the home screen, as you already configured them before launching the application. You can change the application language (English or French)..⚠️.⚠️.⚠️
- 
-![BlueNotebook](docs/Screencopy/V4.1.4_docker_first_screen.jpg)
-
-### **Flatpak bundle**
-
-**New** A Flatpak bundle is available `BlueNotebook.flatpak`
-
-```bash
-# Download bundke from github
-
-$ ls -al *.flatpak
--rw-r--r-- 1 jm jm 180191256 janv.  4 13:50 BlueNotebook.flatpak
-
-
-# Install bundle
-$ flatpak install --bundle --user BlueNotebook.flatpak
-
-io.github.lephotographelibre.BlueNotebook permissions:
-    ipc      network      fallback-x11      pulseaudio      wayland      x11      dri      file access [1]     dbus access [2]
-
-    [1] home, xdg-config/kdeglobals:ro
-    [2] com.canonical.AppMenu.Registrar, org.kde.KGlobalSettings, org.kde.kconfig.notify
-
-
-        ID                                                     Branch              Op              Remote                          Download
- 1. [✓] io.github.lephotographelibre.BlueNotebook              master              i               bluenotebook-origin             0 bytes
-
-Installation complete.
-$ flatpak list | grep blue
-Jean-Marc DIGNE io.github.lephotographelibre.BlueNotebook       4.1.4   master  bluenotebook-origin     user
-
-# create an alias for BluenNotebook App
-$ alias bluenotebook='flatpak run io.github.lephotographelibre.BlueNotebook'
-
-```
-Launch bluenotebook
-
-
-### **Ubuntu/Debian** install from source files
-
-
-`pyenv` is used to create an isolated Python environment based on Python 3.11.13.
-
-```bash
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-```
-
-add these lines to `.bash_profile`
-
-```bash
-# User specific environment and startup programs
-#
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
-```
-
-add tothis line to `.bashrc`
-
-```bash
-eval "$(pyenv virtualenv-init -)"
-```
-Install the following librairies/packages
-
-```bash
-sudo apt-get update
-sudo apt-get install git libcairo2-dev libpango-1.0-0 libgdk-pixbuf2.0-0
-# for QtWebEngine
-sudo apt-get install libasound2t64
-
-# Launch Bluenotebook
-git clone https://github.com/lephotographelibre/BlueNotebook.git
-cd Bluenotebook
-./run_bluenotebook.sh
-```
-You can add a launcher for this application using the `install.sh` script, which will create the `bluenotebook.desktop` file and register it correctly.
-
-
-### **Windows 10/11** install from source files
-
-
-`pyenv-win` is used to create an isolated Python environment based on Python 3.11.9. Therefore, install pyenv-win first: <https://github.com/pyenv-win/pyenv-win>
-
-- Install `pyenv-win`
-
-```powershell
-PS C:\Users\xx> Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-Reopen PowerShell
-PS C:\Users\xx>  pyenv --version
-```
-
-- Add the following to your PATH variable:
-
-`C:\Users\xx\.pyenv\pyenv-win\bin` 
-`C:\Users\xx\.pyenv\pyenv-win\shims`
-
-- Add the `pyenv-virtualenv` plugin:
-
-```powershell
-git clone https://github.com/pyenv/pyenv-virtualenv.git "$(pyenv root)\plugins\pyenv-virtualenv"
-```
-
-- Install the required Cairo libraries (including `libcairo-2.dll`) by downloading and running the following installer:
-
-  <https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2022-01-04/gtk3-runtime-3.24.31-2022-01-04-ts-win64.exe>
-
-- Add the bin directory containing `libcairo-2.dll` to your PATH environment variable:
-
-  `C:\Program Files\GTK3-Runtime Win64\bin`
-
-Open a PowerShell terminal.
-```powershell
-#Launch Bluenotebook
-PS C:\Users\xx> git clone https://github.com/lephotographelibre/BlueNotebook.git
-PS C:\Users\xx> cd Bluenotebook
-PS C:\Users\xx> ./run_bluenotebook.bat
-```
-
+A Windows installer will be available soon. Stay Tuned ! 
 
 
 
