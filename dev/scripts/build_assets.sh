@@ -38,9 +38,13 @@ echo "--- Docker tag push to dockerhub ---"
 docker push "jmdigne/bluenotebook:$VERSION"
 docker push jmdigne/bluenotebook:latest
 
+
 echo "--- Docker tag push to github package ---"
-export CR_PAT=********** 
-echo $CR_PAT | docker login ghcr.io -u lephotographelibre --password-stdin
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "⚠️  GITHUB_TOKEN non défini"
+    exit 1
+fi
+echo $GITHUB_TOKEN | docker login ghcr.io -u lephotographelibre --password-stdin
 docker tag "bluenotebook:$VERSION" "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
 docker push "ghcr.io/lephotographelibre/bluenotebook:$VERSION"
 
@@ -125,11 +129,13 @@ cd ..
 cd appimage
 echo "--- Starting AppImage Build ---"
 ./build_all_appimage.sh $VERSION
-mv BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-appimage.AppImage
-mv BlueNotebook-$VERSION.desktop ./assets/BlueNotebook-$VERSION-Appimage.desktop
-mv install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh
-mv uninstall_BlueNotebook-$VERSION.sh ../assets/uninstall_BlueNotebook-$VERSION-AppImage.sh
+ls -al
+mv -v BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-x86_64.AppImage
+mv -v *.desktop ../assets/
+mv -v install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh
+mv -v uninstall_BlueNotebook-$VERSION.sh ../assets/uninstall_BlueNotebook-$VERSION-AppImage.sh
 ./cleanup.sh
+rm ./cleanup.sh
 
 
 echo "--- AppImage Build Complete ---"

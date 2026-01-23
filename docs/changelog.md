@@ -1,3 +1,21 @@
+## V4.2.5 Fix Issues #174 AppImage - Notes du jour - 
+
+- Création de .claude/CLAUDE.md avec les regles de codage pour les traductions
+- Mise en oeuvre du bouton Note du Jour
+```text
+Nom de variable : self.note_du_jour_button
+Label : "📅 Aujourd'hui"
+Police : Police système de l'application
+Connexion : Méthode existante self.on_today_button_clicked
+```
+- Fix Issue [#172](https://github.com/lephotographelibre/BlueNotebook/issues/172) Add Button Aujourd'hui
+- Fix Issue [#174] App Images
+
+
+--> git commit - a -m "V4.2.5 Fix Issue[#172][#174]AppImages"
+
+
+
 ## V4.2.4 Appimage build/ Flatpak fix
 
 - modification de code main.py et main_window.py pour afficher l'environnement dans la barre de titre  **!!!!!! ATTENTTION !!!! ne pas oublier de refaire les traductions** 

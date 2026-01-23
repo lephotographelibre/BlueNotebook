@@ -1,4 +1,4 @@
-#  Aide en Ligne - BlueNotebook V4.2.4
+#  Aide en Ligne - BlueNotebook V4.2.5
 
 ## Table des matières
 *   [1. Introduction](#introduction)
@@ -860,7 +860,7 @@ Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilis
     *   **Dépôt GitHub :** <a href="https://github.com/geopy/geopy" target="_blank">github.com/geopy/geopy</a>
 
 ---
-*Ce manuel a été rédigé pour la version V4.2.4 de BlueNotebook.*
+*Ce manuel a été rédigé pour la version V4.2.5 de BlueNotebook.*
 
 Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.
 

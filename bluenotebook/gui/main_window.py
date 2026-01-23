@@ -1415,6 +1415,17 @@ class MainWindow(QMainWindow):
         self.reader_button.toggled.connect(self.toggle_reader_from_button)
         self.panels_toolbar.addWidget(self.reader_button)
 
+        # Ajouter un spacer pour pousser le bouton "Note du Jour" vers la droite
+        spacer = QWidget()
+        spacer.setSizePolicy(QWidget().sizePolicy().Expanding, QWidget().sizePolicy().Preferred)
+        self.panels_toolbar.addWidget(spacer)
+
+        # Bouton "Note du Jour" à l'extrême droite
+        self.note_du_jour_button = QPushButton("📅 " + self.tr("Aujourd'hui"))
+        self.note_du_jour_button.setFont(QApplication.font())
+        self.note_du_jour_button.clicked.connect(self.on_today_button_clicked)
+        self.panels_toolbar.addWidget(self.note_du_jour_button)
+
         # Note: Les états initiaux seront définis dans apply_settings() après le chargement des préférences
 
     def _sync_panel_controls(self):
