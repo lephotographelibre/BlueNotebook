@@ -9,6 +9,8 @@
 
 - refaire les copie d'écrans V.4.25 avec nouveau logo
 
+--> git commit -a -m "V4.2.6 new screenshots"
+
 
 ## V4.2.5 Fix Issues #174 AppImage - Notes du jour - 
 
