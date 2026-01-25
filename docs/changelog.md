@@ -1,3 +1,17 @@
+## V4.2.6 Backup + Assets download
+
+~~- add dev/scripts/upload_assetscfrom Work~~ Fix Issue #176
+- Fix Issue [#104](https://github.com/lephotographelibre/BlueNotebook/issues/104) V4.0.4 Journal Directory: How to create a new Directory Journal ?  
+- mise a jour de la doc resources/html/* + fichier script conversion .html to .md
+- aide_en_ligne avec recherche Javascript intégrée
+ 
+--> git commit -a -m "V4.2.6 Fix Issue [#104] backup"
+
+- refaire les copie d'écrans V.4.25 avec nouveau logo
+
+--> git commit -a -m "V4.2.6 new screenshots"
+
+
 ## V4.2.5 Fix Issues #174 AppImage - Notes du jour - 
 
 - Création de .claude/CLAUDE.md avec les regles de codage pour les traductions

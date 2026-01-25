@@ -100,6 +100,136 @@
     
         /* Petit confort supplémentaire */
         img { max-width: 100%; height: auto; border-radius: 6px; }
+
+        /* ============================================= */
+        /* RECHERCHE INTÉGRÉE                           */
+        /* ============================================= */
+        .search-box {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 35px 10px 12px;
+            border: 2px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .search-box input:focus {
+            border-color: #3498db;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: none;
+        }
+
+        .clear-search:hover {
+            color: #333;
+        }
+
+        .search-results-count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Liste des résultats */
+        .search-results-list {
+            margin-top: 10px;
+            padding: 0;
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .search-results-list li {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-results-list li:last-child {
+            border-bottom: none;
+        }
+
+        .search-results-list li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-results-list li a {
+            text-decoration: none;
+            color: #2980b9;
+            display: block;
+            font-size: 13px;
+        }
+
+        .search-results-list li a:hover {
+            color: #1a5f8f;
+        }
+
+        /* Mise en évidence des résultats */
+        .highlight {
+            background-color: #fff59d !important;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .search-match {
+            border-left: 4px solid #27ae60 !important;
+        }
+
+        /* TOC highlight pour les résultats */
+        .toc-container li.toc-match {
+            background-color: #e8f5e9;
+            border-left: 3px solid #27ae60;
+            padding-left: 8px;
+        }
+
+        /* Masquage des sections non correspondantes */
+        .toc-container li.hidden {
+            display: none;
+        }
+
+        .content-container section.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -107,60 +237,68 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V4.2.5</h1>
+            Aide en Ligne - BlueNotebook V4.2.6</h1>
     </header>
 
 <div class="main-container">
 
     <div class="toc-container">
         <h2>Table des matières</h2>
-        <ul>
+
+        <!-- Champ de recherche -->
+        <div class="search-box">
+            <input type="search" id="doc-search" placeholder="🔍 Rechercher dans la documentation..." autocomplete="off">
+            <button class="clear-search" id="clear-search" title="Effacer la recherche">×</button>
+        </div>
+        <div class="search-results-count" id="search-results-count"></div>
+        <ul class="search-results-list" id="search-results-list" style="display: none;"></ul>
+
+        <ul id="toc-list">
             <li><a href="#introduction">1. Introduction</a></li>
-            <li><a href="#lancement">2. Lancement et Configuration du Journal</a></li>
-            <li><a href="#interface">3. L'Interface Principale</a></li>
-            <li><a href="#concept-journal">4. Le Concept de "Note du Jour"</a></li>
-            <li><a href="#templates">5. Gérer et Utiliser les Modèles (Templates)</a></li>
-            <li><a href="#navigation-temporelle">6. Navigation dans le Journal</a></li>
-            <li><a href="#images-fichiers">7. Gestion des Images et Pièces Jointes</a>
+            <li><a href="#interface">2. L'Interface Principale</a></li>
+            <li><a href="#concept-journal">3. Le Concept de "Note du Jour"</a></li>
+            <li><a href="#templates">4. Gérer et Utiliser les Modèles (Templates)</a></li>
+            <li><a href="#navigation-temporelle">5. Navigation dans le Journal</a></li>
+            <li><a href="#images-fichiers">6. Gestion des Images et Pièces Jointes</a>
                 <ul>
-                    <li><a href="#bookmarks">7.1 Insérer un Bookmark (Signet)</a></li>
-                    <li><a href="#images-markdown">7.2 Insertion d'Images (Markdown et HTML)</a></li>
-                    <li><a href="#attachements">7.3 Gestion des Pièces Jointes (Attachements)</a></li>
-                    <li><a href="#exif-data">7.4 Insertion d'images avec données EXIF</a></li>
-                    <li><a href="#liens-locaux">7.5 Insertion de Liens (locaux et distants)</a></li>
+                    <li><a href="#bookmarks">6.1 Insérer un Bookmark (Signet)</a></li>
+                    <li><a href="#images-markdown">6.2 Insertion d'Images (Markdown et HTML)</a></li>
+                    <li><a href="#attachements">6.3 Gestion des Pièces Jointes (Attachements)</a></li>
+                    <li><a href="#exif-data">6.4 Insertion d'images avec données EXIF</a></li>
+                    <li><a href="#liens-locaux">6.5 Insertion de Liens (locaux et distants)</a></li>
                 </ul>
             </li>
-            <li><a href="#lecteur-epub">8. Le Panneau Lecteur (EPUB et PDF)</a></li>
-            <li><a href="#gestion-notes">9. La Gestion des Notes (Explorateur de Fichiers)</a>
-                <ul><li><a href="#notes-recherche">9.1 Recherche et Tri</a></li><li><a href="#notes-colonnes">9.2 Affichage des colonnes de détails</a></li><li><a href="#notes-operations">9.3 Opérations sur les Fichiers et Dossiers</a></li></ul>
+            <li><a href="#lecteur-epub">7. Le Panneau Lecteur (EPUB et PDF)</a></li>
+            <li><a href="#gestion-notes">8. La Gestion des Notes (Explorateur de Fichiers)</a>
+                <ul><li><a href="#notes-recherche">8.1 Recherche et Tri</a></li><li><a href="#notes-colonnes">8.2 Affichage des colonnes de détails</a></li><li><a href="#notes-operations">8.3 Opérations sur les Fichiers et Dossiers</a></li></ul>
             </li>
-            <li><a href="#integrations">10. Intégrations (Météo, YouTube, etc.)</a>
+            <li><a href="#integrations">9. Intégrations (Météo, YouTube, etc.)</a>
                 <ul>
-                    <li><a href="#meteo">10.1 Insérer la Météo du Jour</a></li>
-                    <li><a href="#gpx-trace">10.2 Intégrer une Trace GPX</a></li>
-                    <li><a href="#cartes-gps">10.3 Intégrer une Carte Statique (GPS)</a></li>
-                    <li><a href="#youtube-video">10.4 Intégrer une Vidéo YouTube</a>
-                        <ul><li><a href="#youtube-transcript">10.4.1 Récupération de la Transcription</a></li></ul>
+                    <li><a href="#meteo">9.1 Insérer la Météo du Jour</a></li>
+                    <li><a href="#gpx-trace">9.2 Intégrer une Trace GPX</a></li>
+                    <li><a href="#cartes-gps">9.3 Intégrer une Carte Statique (GPS)</a></li>
+                    <li><a href="#youtube-video">9.4 Intégrer une Vidéo YouTube</a>
+                        <ul><li><a href="#youtube-transcript">9.4.1 Récupération de la Transcription</a></li></ul>
                     </li>
-                    <li><a href="#amazon-isbn">10.5 Intégrer un Livre (Amazon ISBN)</a></li>
-                    <li><a href="#quote-of-the-day">10.6 Insérer la Citation du Jour</a></li>
-                    <li><a href="#astro-du-jour">10.7 Insérer les Données Astronomiques du Jour</a></li>
-                    <li><a href="#pdf-to-markdown">10.8 Convertir un PDF en Markdown</a></li>
-                    <li><a href="#url-to-markdown">10.9 Convertir une URL/HTML en Markdown</a></li>
+                    <li><a href="#amazon-isbn">9.5 Intégrer un Livre (Amazon ISBN)</a></li>
+                    <li><a href="#quote-of-the-day">9.6 Insérer la Citation du Jour</a></li>
+                    <li><a href="#astro-du-jour">9.7 Insérer les Données Astronomiques du Jour</a></li>
+                    <li><a href="#pdf-to-markdown">9.8 Convertir un PDF en Markdown</a></li>
+                    <li><a href="#url-to-markdown">9.9 Convertir une URL/HTML en Markdown</a></li>
                 </ul>
             </li>
-            <li><a href="#recherche-avancee">11. Recherche et Navigation Avancée</a></li>
-            <li><a href="#menus">12. Exploration des Menus</a></li>
-            <li><a href="#exportation-fichiers">13. Exportation de Fichiers</a>
+            <li><a href="#recherche-avancee">10. Recherche et Navigation Avancée</a></li>
+            <li><a href="#menus">11. Exploration des Menus</a></li>
+            <li><a href="#exportation-fichiers">12. Exportation de Fichiers</a>
                 <ul>
-                    <li><a href="#export-html-single">12.1. Exporter en HTML (fichier individuel)</a></li>
-                    <li><a href="#export-pdf-single">12.2. Exporter en PDF (fichier individuel)</a></li>
-                    <li><a href="#export-journal-pdf">12.3. Exporter le Journal en PDF</a></li>
-                    <li><a href="#export-journal-epub">12.4. Exporter le Journal en EPUB</a></li>
+                    <li><a href="#export-html-single">12.1 Exporter en HTML (fichier individuel)</a></li>
+                    <li><a href="#export-pdf-single">12.2 Exporter en PDF (fichier individuel)</a></li>
+                    <li><a href="#export-journal-pdf">12.3 Exporter le Journal en PDF</a></li>
+                    <li><a href="#export-journal-epub">12.4 Exporter le Journal en EPUB</a></li>
                 </ul>
             </li>
-            <li><a href="#backup-restore">14. Sauvegarde et Restauration</a></li>
-            <li><a href="#preferences">15. Personnalisation Avancée</a>
+            <li><a href="#backup-restore">13. Sauvegarde et Restauration</a></li>
+            <li><a href="#preferences">14. Personnalisation Avancée</a>
                 <ul>
                     <li><a href="#themes-editeur">14.1 Thèmes de l'Éditeur</a></li>
                     <li><a href="#themes-apercu">14.2 Thèmes de l'Aperçu HTML</a></li>
@@ -180,49 +318,52 @@
         <p>BlueNotebook est un éditeur de texte simple qui vous permet de vous concentrer sur l'écriture. Il utilise la syntaxe Markdown et affiche un aperçu en temps réel de votre document.</p>
         <p>Des fonctionnalités avancées de recherche et navigation permettent aux utilisateurs de retrouver rapidement des informations dans les différentes notes journalières avec le support de tags et une indexation automatique.</p>
         <p>De nouvelles fonctionnalités de gestion de documents vous permettent de gérér, conjointement aux notes chronologiques du journal, des documents Markdown, PDF, ebooks Epub, cartes et images qui constituront peu à peu votre base de connaissance personnelle intégrée au journal à travers des objets liens, bookmarks et pièces jointes</p>
-    </section>
 
-    <section id="lancement">
-        <h2>2. Lancement et Configuration du Journal</h2>
-        <h3>Comment Lancer BlueNotebook</h3>
+        <h3>Premier démarrage</h3>
+        <p>Lors du tout premier lancement de BlueNotebook (lorsqu'aucun fichier de configuration n'existe), un écran de bienvenue s'affiche automatiquement pour vous guider dans la configuration initiale. Cet écran vous permet de définir les paramètres essentiels avant de commencer à utiliser l'application.</p>
+
+        <h4>Configuration initiale</h4>
+        <p>L'écran de premier démarrage présente une interface claire avec le logo BlueNotebook et vous propose de configurer trois paramètres principaux :</p>
+
+        <h4>1. Langue de l'application</h4>
+        <p>Choisissez la langue d'interface de l'application :</p>
         <ul>
-            <li><strong>Sur Windows</strong> : Double-cliquez sur le fichier <code>run_bluenotebook.bat</code>. Une fenêtre de terminal s'ouvrira pour configurer l'environnement, puis l'application se lancera.</li>
-            <li><strong>Sur Linux</strong> : Ouvrez un terminal, rendez le script exécutable une seule fois avec la commande <code>chmod +x run_bluenotebook.sh</code>, puis lancez-le avec <code>./run_bluenotebook.sh</code>.</li>
+            <li><strong>Anglais</strong> (English)</li>
+            <li><strong>Français</strong></li>
         </ul>
-        <h3>Configurer votre Répertoire de Journal</h3>
-        <p>BlueNotebook a besoin de savoir où sauvegarder vos notes. Il existe trois manières de lui indiquer, par ordre de priorité :</p>
+        <p>Ce choix détermine la langue de tous les menus, dialogues et messages de l'application. Vous pourrez modifier ce paramètre ultérieurement dans <code>Fichier > Préférences > Général</code>.</p>
+        <p><strong>Note :</strong> Si vous changez la langue par rapport à celle de votre système, l'application devra être redémarrée pour que le changement soit pris en compte.</p>
+
+        <h4>2. Répertoire du Journal</h4>
+        <p>Définissez l'emplacement où toutes vos notes, images et pièces jointes seront sauvegardées :</p>
+        <ul>
+            <li><strong>Emplacement par défaut :</strong> <code>~/BlueNotebookJournal</code> (dans votre répertoire personnel)</li>
+            <li><strong>Personnalisation :</strong> Cliquez sur le bouton <strong>"Choisir..."</strong> pour sélectionner un autre emplacement parent. Le dossier <code>BlueNotebookJournal</code> sera automatiquement créé à l'emplacement choisi.</li>
+        </ul>
+        <p>Les sous-dossiers nécessaires (<code>notes</code>, <code>images</code>, <code>attachments</code>, <code>gpx</code>) seront créés automatiquement lors de la validation.</p>
+        <p><strong>Important :</strong> Si le dossier choisi existe déjà et n'est pas vide, l'application vous demandera confirmation avant de l'utiliser comme journal.</p>
+
+        <h4>3. Répertoire de Sauvegarde</h4>
+        <p>Choisissez où seront stockées les archives de sauvegarde de votre journal (créées via <code>Fichier > Sauvegarde Journal...</code>) :</p>
+        <ul>
+            <li><strong>Emplacement par défaut :</strong> <code>~/BlueNotebookBackup</code> (dans votre répertoire personnel)</li>
+            <li><strong>Personnalisation :</strong> Cliquez sur le bouton <strong>"Choisir..."</strong> pour sélectionner un autre emplacement parent. Le dossier <code>BlueNotebookBackup</code> sera automatiquement créé à l'emplacement choisi.</li>
+        </ul>
+        <p>Ce répertoire sera proposé par défaut lors de vos futures sauvegardes manuelles du journal.</p>
+
+        <h4>Validation et démarrage</h4>
+        <p>Une fois vos choix effectués, cliquez sur le bouton <strong>"Terminé"</strong> en bas à droite de la fenêtre. BlueNotebook va alors :</p>
         <ol>
-            <li><strong>Argument de Ligne de Commande <code>--journal</code> (Priorité la plus haute)</strong><br>
-                Vous pouvez spécifier un dossier de journal directement au lancement. C'est la méthode la plus flexible.<br>
-                - Sur Linux : <code>./run_bluenotebook.sh --journal /chemin/vers/mon/journal</code><br>
-                - Sur Windows : <code>run_bluenotebook.bat --journal C:\Users\VotreNom\Documents\Journal</code>
-            </li>
-            <li><strong>Variable d'Environnement <code>JOURNAL_DIRECTORY</code></strong><br>
-                Vous pouvez définir cette variable pour que BlueNotebook l'utilise par défaut à chaque lancement.<br>
-                - Sur Linux (temporaire) : <code>export JOURNAL_DIRECTORY="/chemin/vers/mon/journal" && ./run_bluenotebook.sh</code><br>
-                - Sur Windows (temporaire) : <code>set JOURNAL_DIRECTORY=C:\chemin\vers\journal && run_bluenotebook.bat</code>
-            </li>
-            <li><strong>Répertoire par Défaut (Priorité la plus basse)</strong><br>
-                Si aucune des méthodes ci-dessus n'est utilisée, BlueNotebook créera et utilisera un dossier nommé <code>bluenotebook</code> dans votre répertoire personnel.</li>
+            <li>Créer les répertoires nécessaires</li>
+            <li>Sauvegarder vos paramètres dans le fichier de configuration</li>
+            <li>Afficher un message de confirmation</li>
+            <li>Démarrer l'application (ou vous inviter à la redémarrer si vous avez changé de langue)</li>
         </ol>
+        <p>Vous êtes maintenant prêt à utiliser BlueNotebook ! L'application se lancera et vous pourrez commencer à écrire votre première note.</p>
     </section>
-    <h3>L'Écran de Premier Démarrage</h3>
-    <p>Lors du tout premier lancement de BlueNotebook (lorsqu'aucun fichier de configuration n'existe), un écran de bienvenue s'affiche pour vous guider dans la configuration initiale. Cet écran vous permet de définir les paramètres essentiels avant de commencer à utiliser l'application.</p>
-    <p>Voici les options que vous pourrez configurer :</p>
-    <ul>
-        <li><strong>Langue de l'application :</strong> Choisissez entre "Français" et "English" pour l'interface de l'application. Ce choix pourra être modifié plus tard dans <code>Préférences > Général</code>.</li>
-        <li><strong>Répertoire du Journal :</strong> C'est l'emplacement où toutes vos notes, images et pièces jointes seront sauvegardées. Par défaut, un dossier <code>BlueNotebookJournal</code> est proposé dans votre répertoire personnel, mais vous pouvez choisir un autre emplacement. Les sous-dossiers nécessaires (<code>notes</code>, <code>images</code>, etc.) seront créés automatiquement.</li>
-        <li><strong>Répertoire de Sauvegarde :</strong> Choisissez où seront stockées les archives de sauvegarde de votre journal (créées via <code>Fichier > Sauvegarde Journal...</code>). Par défaut, un dossier <code>BlueNotebookBackup</code> est proposé.</li>
-    </ul>
-    <p>Une fois vos choix effectués, cliquez sur <strong>"Terminé"</strong>. BlueNotebook sauvegardera ces paramètres, créera les dossiers nécessaires et se lancera, prêt à être utilisé.</p>
-
-
-
-
-
 
     <section id="interface">
-        <h2>3. L'interface Principale</h2>
+        <h2>2. L'interface Principale</h2>
         <p>L'interface est divisée en plusieurs panneaux pour s'adapter à votre façon de travailler :</p>
         <ul>
             <li><strong>Panneau "Notes" (<code>F9</code>) :</strong> Situé à l'extrême gauche, est un gestionnaire de fichiers puissant et intégré, conçu pour organiser tous les documents associés aux notes de votre journal.</li>
@@ -248,7 +389,7 @@
     </section>
 
     <section id="concept-journal">
-        <h2>4. Le Concept de "Note du Jour"</h2>
+        <h2>3. Le Concept de "Note du Jour"</h2>
         <p>BlueNotebook est organisé autour d'un concept simple mais puissant : votre journal est un dossier sur votre ordinateur, et chaque journée est un fichier texte.</p>
         <h3>La Note du Jour</h3>
         <p>À chaque lancement, BlueNotebook vérifie votre dossier de journal. Il cherche un fichier correspondant à la date du jour, nommé selon le format <code>AAAAMMJJ.md</code> (par exemple, <code>20250920.md</code>). Si ce fichier existe, il l'ouvre automatiquement. Sinon, il vous présente une nouvelle page vierge, prête à devenir l'entrée de la journée.</p>
@@ -260,7 +401,7 @@
     </section>
 
     <section id="templates">
-        <h2>5. Gérer et Utiliser les Modèles (Templates)</h2>
+        <h2>4. Gérer et Utiliser les Modèles (Templates)</h2>
         <p>Les modèles sont des structures de notes pré-remplies qui vous permettent de démarrer rapidement votre travail. BlueNotebook vous offre une gestion complète des modèles pour créer, utiliser et insérer des structures récurrentes.</p>
         
         <h3>Utiliser un modèle pour une nouvelle note</h3>
@@ -297,7 +438,7 @@
     </section>
 
     <section id="navigation-temporelle">
-        <h2>6. Navigation dans le Journal</h2>
+        <h2>5. Navigation dans le Journal</h2>
         <p>Le panneau de Navigation (<code>F6</code>) vous offre plusieurs outils pour voyager dans le temps à travers vos notes.</p>
         <ul>
             <li><strong>Le Calendrier :</strong> Les jours pour lesquels une note existe sont mis en évidence. Cliquez sur une date pour ouvrir la note correspondante.</li>
@@ -306,8 +447,8 @@
     </section>
 
     <section id="images-fichiers">
-        <h2>7. Gestion des Images et Pièces Jointes</h2>
-        <h3 id="bookmarks">7.1 Insérer un Bookmark (Signet)</h3>
+        <h2>6. Gestion des Images et Pièces Jointes</h2>
+        <h3 id="bookmarks">6.1 Insérer un Bookmark (Signet)</h3>
         <p>La fonctionnalité "Bookmark" vous permet de créer des liens enrichis vers des pages web. BlueNotebook va vérifier l'URL, récupérer le titre de la page et générer un lien Markdown formaté.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
@@ -325,7 +466,7 @@
                 </ul>
             </li>
         </ol>
-        <h3 id="images-markdown">7.2 Insertion d'Images (Markdown et HTML)</h3>
+        <h3 id="images-markdown">6.2 Insertion d'Images (Markdown et HTML)</h3>
         <p>Pour garantir que votre journal reste complet et portable, BlueNotebook adopte une gestion robuste et intelligente des images que vous insérez, qu'elles proviennent de votre ordinateur ou d'une URL distante.</p>
         <h4>Le Processus Automatique</h4>
         <p>Que vous utilisiez <code>Insérer > Image Markdown</code> ou <code>Insérer > Image (&lt;img...&gt;)</code>, l'application effectue systématiquement les actions suivantes en arrière-plan :</p>
@@ -345,7 +486,7 @@
     </section>
 
     <section id="attachements">
-        <h3>7.3 Gestion des Pièces Jointes (Attachements)</h3> 
+        <h3>6.3 Gestion des Pièces Jointes (Attachements)</h3> 
         <p>En plus des images, BlueNotebook vous permet d'attacher n'importe quel type de fichier à vos notes (PDF, documents, archives, etc.). Cette fonctionnalité est conçue pour centraliser toutes les ressources liées à votre journal en un seul endroit.</p>
         <h4>Comment insérer une pièce jointe ?</h4>
         <ol>
@@ -369,7 +510,7 @@
     </section>
 
     <section id="exif-data">
-        <h3>7.4 Insertion d'images avec données EXIF</h3> 
+        <h3>6.4 Insertion d'images avec données EXIF</h3> 
         <p>Pour enrichir vos notes, notamment pour un journal de voyage, BlueNotebook peut extraire et afficher les données EXIF (Exchangeable image file format) contenues dans vos photos.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
@@ -390,7 +531,7 @@
     </section>
 
     <section id="liens-locaux">
-        <h3>7.5 Insertion de Liens (locaux et distants)</h3> 
+        <h3>6.5 Insertion de Liens (locaux et distants)</h3> 
         <p>Le menu <code>Insérer > Lien</code> a été amélioré pour vous permettre de créer des liens non seulement vers des sites web, mais aussi vers n'importe quel fichier local de votre ordinateur, tout en garantissant la portabilité de votre journal.</p>
         <h4>Comment ça marche ?</h4>
         <ol>
@@ -413,7 +554,7 @@
     </section>
 
     <section id="lecteur-epub">
-        <h2>8. Le Panneau Lecteur (EPUB et PDF)</h2>
+        <h2>7. Le Panneau Lecteur (EPUB et PDF)</h2>
         <p>BlueNotebook intègre désormais un puissant lecteur de documents, vous permettant de consulter des livres au format <strong>EPUB</strong> et des documents <strong>PDF</strong> directement à côté de vos notes. C'est l'outil idéal pour la recherche, la prise de notes à partir de sources ou simplement pour la lecture.</p>
         <h3>Activation et Ouverture</h3>
         <ul>
@@ -437,7 +578,7 @@
     </section>
 
     <section id="gestion-notes">
-        <h2>9. La Gestion des Notes (Explorateur de Fichiers)</h2>
+        <h2>8. La Gestion des Notes (Explorateur de Fichiers)</h2>
         <p>Le panneau "Notes" (<code>F9</code>), situé à l'extrême gauche, est bien plus qu'un simple ajout : c'est un véritable explorateur de fichiers intégré à BlueNotebook, conçu pour organiser tous les documents, idées et ressources qui ne sont pas directement liés à une date précise. Il transforme votre journal en un véritable "second cerveau".</p>
 
         <h4>Fonctionnalités Clés du Panneau "Notes"</h4>
@@ -459,20 +600,20 @@
             <li><strong>Persistance :</strong> L'application mémorise le dernier dossier que vous avez sélectionné et le ré-ouvre automatiquement au prochain démarrage.</li>
         </ul>
 
-        <h3 id="notes-recherche">9.1 Recherche et Tri</h3>
+        <h3 id="notes-recherche">8.1 Recherche et Tri</h3>
         <p>Pour naviguer plus efficacement dans vos notes, le panneau intègre désormais des outils de recherche et de tri.</p>
         <ul>
             <li><strong>Barre de recherche :</strong> Située en haut du panneau, elle vous permet de filtrer instantanément l'arborescence. La recherche est insensible à la casse et aux accents. Appuyez sur <code>Entrée</code> ou sur le bouton "Rechercher" pour lancer le filtre. Un bouton d'effacement vous permet de réinitialiser la vue.</li>
             <li><strong>Tri par colonne :</strong> Cliquez sur les en-têtes des colonnes ("Nom", "Taille", "Dernière modification") pour trier les fichiers et dossiers. Un second clic sur le même en-tête inverse l'ordre de tri.</li>
         </ul>
 
-        <h3 id="notes-colonnes">9.2 Affichage des colonnes de détails</h3>
+        <h3 id="notes-colonnes">8.2 Affichage des colonnes de détails</h3>
         <p>Par défaut, seul le nom des fichiers est affiché. Vous pouvez afficher des informations supplémentaires :</p>
         <ul>
             <li>Utilisez le raccourci clavier <code>Ctrl+M</code> pour afficher ou masquer les colonnes "Taille", "Type" et "Dernière modification".</li>
         </ul>
 
-        <h3 id="notes-operations">9.3 Opérations sur les Fichiers et Dossiers (Menu Contextuel)</h3>
+        <h3 id="notes-operations">8.3 Opérations sur les Fichiers et Dossiers (Menu Contextuel)</h3>
         <p>Un clic droit dans le panneau "Notes" ouvre un menu contextuel riche qui s'adapte à ce que vous sélectionnez.</p>
         <p><strong>Sur un dossier :</strong></p>
         <ul>
@@ -496,10 +637,10 @@
     </section>
 
     <section id="integrations">
-        <h2>10. Intégrations (Météo, YouTube, etc.)</h2>
+        <h2>9. Intégrations (Météo, YouTube, etc.)</h2>
         <p>BlueNotebook peut interagir avec des services externes pour enrichir vos notes. Ces fonctionnalités se trouvent dans le menu <code>Intégrations</code>.</p>
 
-        <h3 id="meteo">10.1 Insérer la Météo du Jour</h3>
+        <h3 id="meteo">9.1 Insérer la Météo du Jour</h3>
         <p>Ajoutez les conditions météorologiques actuelles à vos notes journalières, ce qui est parfait pour un journal de bord ou pour contextualiser vos écrits.</p>
         <ol>
             <li><strong>Configuration initiale :</strong> Avant de pouvoir utiliser cette fonctionnalité, vous devez la configurer.
@@ -518,7 +659,7 @@
             </li>
         </ol>
 
-        <h3 id="gpx-trace">10.2 Intégrer une Trace GPX</h3>
+        <h3 id="gpx-trace">9.2 Intégrer une Trace GPX</h3>
         <p>Pour les amateurs de randonnée, de vélo ou de voyage, BlueNotebook permet d'intégrer une carte de votre parcours directement depuis un fichier de trace GPX.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Trace GPX</code>.</li>
@@ -540,7 +681,7 @@
         </ol>
         <p>Le résultat est une image de votre parcours, cliquable pour ouvrir la carte sur OpenStreetMap avec un marqueur sur le point de départ. La légende est riche et interactive : elle contient le nom du lieu (cliquable), la date et l'heure de départ, ainsi que la durée totale du parcours.</p>
 
-        <h3 id="cartes-gps">10.3 Intégrer une Carte Statique (GPS)</h3>
+        <h3 id="cartes-gps">9.3 Intégrer une Carte Statique (GPS)</h3>
         <p>Vous pouvez générer et insérer une carte statique directement dans vos notes à partir de coordonnées GPS. Cette fonctionnalité est idéale pour documenter des lieux de voyage, des randonnées ou des points d'intérêt.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Carte GPS</code>.</li>
@@ -559,7 +700,7 @@
 
 **GPS :** [46.58, 0.34] - [Poitiers](https://www.openstreetmap.org/...)</code></pre>
 
-        <h3 id="youtube-video">10.4 Intégrer une Vidéo YouTube</h3>
+        <h3 id="youtube-video">9.4 Intégrer une Vidéo YouTube</h3>
         <p>Vous pouvez facilement intégrer une vidéo ou une playlist YouTube dans vos notes, avec une miniature cliquable qui renvoie vers le site de YouTube.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Vidéo YouTube</code>.</li>
@@ -574,7 +715,7 @@
         </ol>
         <p><strong>Astuce :</strong> Vous pouvez activer ou désactiver cette fonctionnalité dans <code>Préférences > Intégrations</code>.</p>
         
-        <h4 id="youtube-transcript">10.4.1 Récupération de la Transcription</h4>
+        <h4 id="youtube-transcript">9.4.1 Récupération de la Transcription</h4>
         <p>Pour enrichir davantage vos notes, BlueNotebook peut automatiquement récupérer la transcription textuelle d'une vidéo YouTube, si elle est disponible.</p>
         <ol>
             <li><strong>Processus automatique :</strong> Lorsque vous intégrez une vidéo, l'application vérifie en arrière-plan si une transcription existe (en français ou en anglais). Cette recherche ne bloque pas l'interface, et un message <code>Récupération de la transcription en cours...</code> s'affiche dans la barre de statut.</li>
@@ -585,7 +726,7 @@
         <p><strong>Configuration :</strong> Vous pouvez contrôler cette fonctionnalité dans <code>Préférences > Intégrations</code> via la case à cocher <code>"Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"</code>. Notez que cette option n'est active que si l'intégration YouTube principale est elle-même autorisée.</p>
 
 
-        <h3 id="astro-du-jour">10.7 Insérer les Données Astronomiques du Jour</h3>
+        <h3 id="astro-du-jour">9.7 Insérer les Données Astronomiques du Jour</h3>
         <p>Ajoutez les heures de lever/coucher du soleil et la phase de la lune pour la ville de votre choix, idéal pour un journal de bord ou pour noter les conditions du jour.</p>
     <ol>
         <li><strong>Configuration initiale :</strong> Avant de pouvoir utiliser cette fonctionnalité, vous devez la configurer.
@@ -604,7 +745,7 @@
         </li>
     </ol>
 
-        <h3 id="pdf-to-markdown">10.8 Convertir un PDF en Markdown</h3>
+        <h3 id="pdf-to-markdown">9.8 Convertir un PDF en Markdown</h3>
         <p>Cette intégration puissante vous permet de transformer le contenu textuel d'un fichier PDF (local ou distant) en un document Markdown propre et éditable. C'est l'outil parfait pour extraire le contenu d'articles, de rapports ou de documents que vous souhaitez archiver et rendre consultables dans votre journal.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code> ou faites un clic-droit sur un dossier dans le panneau "Notes".</li>
@@ -614,7 +755,7 @@
         </ol>
         <p><strong>Note :</strong> Cette fonctionnalité s'appuie sur la bibliothèque <code>pymupdf4llm</code>. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).</p>
 
-        <h3 id="url-to-markdown">10.9 Convertir une URL/HTML en Markdown</h3>
+        <h3 id="url-to-markdown">9.9 Convertir une URL/HTML en Markdown</h3>
         <p>Transformez n'importe quelle page web ou fichier HTML local en une note Markdown propre et lisible. Cette fonctionnalité est idéale pour archiver des articles de blog, des documentations techniques ou toute autre page web que vous souhaitez conserver et annoter.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Conversion URL(HTML)-Markdown</code>.</li>
@@ -630,7 +771,7 @@
             <li>Le fichier est créé et immédiatement ouvert dans l'éditeur, prêt à être utilisé.</li>
         </ol>
 
-        <h3 id="quote-of-the-day">10.6 Insérer la Citation du Jour</h3>
+        <h3 id="quote-of-the-day">9.6 Insérer la Citation du Jour</h3>
         <p>Commencez votre journée avec une pensée inspirante. BlueNotebook peut récupérer une citation célèbre et l'insérer dans votre note.</p>
         <ul>
             <li><strong>Au démarrage :</strong> Si l'option est activée dans <code>Préférences > Intégrations</code>, une fenêtre affichant la citation du jour apparaîtra au lancement de l'application.</li>
@@ -640,7 +781,7 @@
 
 
     <section id="recherche-avancee">
-        <h2>11. Recherche et Navigation Avancée par Tags</h2>
+        <h2>10. Recherche et Navigation Avancée par Tags</h2>
         <p>Le panneau de Navigation intègre de puissants outils pour retrouver vos informations : le nuage de tags et un champ de recherche.</p>
         
         <h3>Le Nuage de Tags</h3>
@@ -677,7 +818,7 @@
     </section> 
 
     <section id="menus">
-        <h2>12. Exploration des Menus</h2>
+        <h2>11. Exploration des Menus</h2>
         <p>Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre de menus.</p>
         <pre><code>
 Fichier
@@ -749,10 +890,15 @@ Insérer
 └── Emoji : Ouvre un sous-menu pour insérer des emojis.
 
 Intégrations
-├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
-├── Trace GPX : Génère une carte à partir d'un fichier de trace GPX.
+├── Météo Weatherapi.com : Insère les conditions météorologiques actuelles (température, conditions, vent, humidité).
+├── Trace GPX : Génère une carte interactive à partir d'un fichier de trace GPX.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
 ├── Vidéo YouTube : Insère une vidéo ou une playlist YouTube avec sa miniature à partir d'une URL.
+├── Livre Amazon ISBN : Insère les informations d'un livre (titre, auteur, éditeur, résumé) à partir d'un ISBN.
+├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
+├── Données Astronomiques : Insère les informations astronomiques du jour (lever/coucher soleil/lune, phase lunaire).
+├── Convertir PDF en Markdown : Convertit un fichier PDF en texte Markdown.
+└── Convertir URL/HTML en Markdown : Convertit une page web en texte Markdown.
 
 Aide
 ├── Documentation en ligne : Ouvre ce manuel.
@@ -761,9 +907,9 @@ Aide
     </section>
 
     <section id="exportation-fichiers">
-        <h2>13. Exportation</h2>
+        <h2>12. Exportation</h2>
 
-        <h3 id="export-html-single">13.1. Exporter en HTML (fichier individuel)</h3>
+        <h3 id="export-html-single">12.1 Exporter en HTML (fichier individuel)</h3>
         <p>Cette fonction vous permet d'exporter le contenu de la note Markdown actuellement ouverte en un fichier HTML statique. C'est idéal pour partager rapidement une note ou la consulter dans un navigateur web.</p>
         <ul>
             <li><strong>Accès :</strong> Via le menu <code>Fichier > Exporter HTML...</code>.</li>
@@ -772,7 +918,7 @@ Aide
             <li><strong>Apparence :</strong> Le fichier HTML généré utilise le même thème visuel que votre aperçu dans l'application.</li>
         </ul>
 
-        <h3 id="export-pdf-single">13.2. Exporter en PDF (fichier individuel)</h3>
+        <h3 id="export-pdf-single">12.2 Exporter en PDF (fichier individuel)</h3>
         <p>Exportez la note Markdown actuellement ouverte en un document PDF. Cette option est utile pour archiver une note spécifique ou la partager dans un format universel.</p>
         <ul>
             <li><strong>Accès :</strong> Via le menu <code>Fichier > Exporter en PDF...</code>.</li>
@@ -782,7 +928,7 @@ Aide
             <li><strong>Mémorisation :</strong> L'application se souvient du dernier répertoire d'exportation utilisé.</li>
         </ul>
 
-        <h3 id="export-journal-pdf">13.3. Exporter le Journal en PDF</h3>
+        <h3 id="export-journal-pdf">12.3 Exporter le Journal en PDF</h3>
         <p>BlueNotebook vous permet de créer un document PDF professionnel et paginé de votre journal, idéal pour l'archivage, l'impression ou le partage. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal PDF...</code>.</p>
         <p>Lorsque vous lancez cette action, une boîte de dialogue apparaît, vous donnant un contrôle total sur le contenu de l'export :</p>
         <ul>
@@ -800,10 +946,8 @@ Aide
             <li><strong>Pagination :</strong> Toutes les pages sont numérotées en bas de page pour une lecture facile.</li>
         </ol>
         <p>Une fois les options choisies, l'application génère le fichier PDF en arrière-plan. Une notification clignotante "Veuillez patienter..." apparaît dans la barre de statut pendant le processus.</p>
-    </section>
 
-    <section id="export-journal-epub" style="display:none;"> <!-- Temporarily hiding this as it's part of the same section now -->
-        <h2>13.4. Exportation du Journal en EPUB</h2>
+        <h3 id="export-journal-epub">12.4 Exportation du Journal en EPUB</h3>
         <p>En plus du PDF, BlueNotebook vous permet de transformer votre journal en un véritable livre numérique au format EPUB, compatible avec toutes les liseuses (Kobo, Kindle, etc.) et applications de lecture. Cette fonctionnalité est accessible via <code>Fichier > Exporter Journal EPUB...</code>.</p>
         <p>L'export EPUB est conçu pour offrir une expérience de lecture optimale et inclut de nombreuses fonctionnalités avancées :</p>
         <ul>
@@ -818,30 +962,91 @@ Aide
     </section>
 
     <section id="backup-restore">
-        <h2>14. Sauvegarde et Restauration du Journal</h2>
-        <p>Pour garantir la sécurité de vos écrits, BlueNotebook intègre des outils simples pour sauvegarder et restaurer l'intégralité de votre journal.</p>
-        <h3>Sauvegarder votre Journal (<code>Fichier > Sauvegarde Journal...</code>)</h3>
-        <p>Cette action vous permet de créer une copie de sécurité complète de votre répertoire de journal.</p>
-        <ol>
-            <li>En cliquant sur cette option, une boîte de dialogue s'ouvrira.</li>
-            <li>Choisissez un emplacement et un nom pour votre fichier. Par défaut, un nom intelligent incluant la date et l'heure (ex: <code>BlueNotebook-Backup-MonJournal-2025-09-26-15-45.zip</code>) est proposé pour éviter d'écraser les anciennes sauvegardes. L'application se souvient aussi du dernier dossier que vous avez utilisé pour vous le proposer la prochaine fois.</li>
-            <li>BlueNotebook compressera alors tous vos fichiers de notes (<code>.md</code>), ainsi que les fichiers d'index, dans une seule archive <code>.zip</code>.</li>
-        </ol>
-        <p>C'est une excellente habitude à prendre régulièrement, ou avant de faire de grands changements.</p>
+        <h2>13. Sauvegarde et Restauration du Journal</h2>
+        <p>BlueNotebook V4.2.5+ dispose d'un système complet de sauvegarde et restauration de votre journal, avec des fonctionnalités avancées de fusion intelligente et de sécurité.</p>
 
-        <h3>Restaurer votre Journal (<code>Fichier > Restauration Journal...</code>)</h3>
-        <p>Si vous avez besoin de revenir à une version précédente de votre journal, ou de le transférer sur un nouvel ordinateur, cette fonction est là pour vous.</p>
+        <h3>Sauvegarde du journal</h3>
+        <h4>Comment créer une sauvegarde</h4>
         <ol>
-            <li>Sélectionnez l'option de menu. Une fenêtre vous demandera de choisir le fichier d'archive <code>.zip</code> que vous souhaitez restaurer.</li>
-            <li><strong>Action de sécurité :</strong> Avant de procéder, BlueNotebook renommera automatiquement votre répertoire de journal actuel (par exemple, de <code>bluenotebook</code> à <code>bluenotebook.bak-20250923-153000</code>). <strong>Vos données actuelles ne sont pas supprimées.</strong></li>
-            <li>Une boîte de dialogue vous demandera de confirmer l'opération, en vous informant du nom de la sauvegarde qui vient d'être créée.</li>
-            <li>Après confirmation, le contenu de l'archive sera extrait, remplaçant le contenu de votre répertoire de journal.</li>
-            <li>L'application vous informera que la restauration est terminée et vous invitera à la redémarrer pour charger le nouveau journal.</li>
+            <li><strong>Ouvrir le menu :</strong> <code>Fichier > Sauvegarde Journal...</code></li>
+            <li><strong>Choisir l'emplacement :</strong> Par défaut, BlueNotebook propose le dernier répertoire utilisé. Le nom de fichier est automatiquement généré : <code>BlueNotebook-Backup-2026-01-24-15-30.zip</code>. Vous pouvez modifier le nom et l'emplacement selon vos besoins.</li>
+            <li><strong>Lancer la sauvegarde :</strong> Cliquez sur <strong>Sauvegarder</strong>. Un message clignotant apparaît dans la barre de statut : <em>"Sauvegarde en cours..."</em>. L'interface reste responsive pendant la sauvegarde. Un message de confirmation s'affiche à la fin avec le chemin complet.</li>
         </ol>
+
+        <h4>Contenu de l'archive</h4>
+        <p>L'archive ZIP contient :</p>
+        <ul>
+            <li>Tous vos fichiers <code>.md</code> (notes quotidiennes)</li>
+            <li>Le dossier <code>notes/</code> (notes supplémentaires)</li>
+            <li>Le dossier <code>images/</code> (images insérées)</li>
+            <li>Le dossier <code>attachments/</code> (pièces jointes)</li>
+            <li>Le dossier <code>gpx/</code> (traces GPS)</li>
+            <li>Les fichiers d'index (tags, etc.)</li>
+        </ul>
+        <p><strong>Exclusions automatiques :</strong> Répertoires <code>__pycache__</code> (cache Python)</p>
+
+        <h3>Restauration du journal</h3>
+        <h4>Comment restaurer un journal</h4>
+        <ol>
+            <li><strong>Ouvrir le menu :</strong> <code>Fichier > Restauration Journal...</code></li>
+            <li><strong>Sélectionner l'archive :</strong> Choisissez le fichier <code>.zip</code> à restaurer. Par défaut, le dialogue s'ouvre dans le dernier répertoire de sauvegarde utilisé.</li>
+            <li><strong>Choisir la stratégie de restauration :</strong> Un dialogue s'affiche avec deux options :
+                <ul>
+                    <li><strong>Option 1 : Fusion intelligente (recommandé)</strong>
+                        <p><strong>Comportement :</strong></p>
+                        <ul>
+                            <li>Les <strong>nouveaux fichiers</strong> de l'archive sont <strong>ajoutés</strong> au journal actuel</li>
+                            <li>Les <strong>fichiers existants</strong> sont <strong>préservés</strong></li>
+                            <li>En cas de <strong>conflit</strong> (même nom de fichier) : votre fichier actuel est <strong>conservé</strong>, le fichier de l'archive est <strong>renommé</strong> avec l'extension <code>.restored</code></li>
+                        </ul>
+                        <p><strong>Avantages :</strong> Aucune perte de données, vous pouvez comparer les versions en conflit, fusion manuelle possible.</p>
+                    </li>
+                    <li><strong>Option 2 : Remplacement complet</strong>
+                        <p><strong>Comportement :</strong> Le contenu <strong>actuel</strong> du journal est <strong>complètement supprimé</strong> et le contenu de l'<strong>archive</strong> le <strong>remplace intégralement</strong>.</p>
+                        <p><strong>Attention :</strong> Toutes vos données actuelles seront supprimées (une sauvegarde de sécurité sera créée automatiquement).</p>
+                        <p><strong>Utilisez cette option :</strong> Pour restaurer un backup complet, pour migrer vers un nouveau journal, quand vous êtes sûr de vouloir remplacer tout le contenu.</p>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Suivre la progression :</strong> Un dialogue de progression s'affiche avec 5 phases :
+                <ol>
+                    <li>Validation de l'archive (0-10%) : Vérification de l'intégrité du ZIP</li>
+                    <li>Sauvegarde du journal actuel (10-30%) : Création du backup de sécurité</li>
+                    <li>Extraction de l'archive (30-70%) : Décompression des fichiers</li>
+                    <li>Fusion intelligente (70-95%) : Merge ou remplacement</li>
+                    <li>Finalisation (95-100%) : Nettoyage et vérification</li>
+                </ol>
+                <p>Un label clignotant dans la barre de statut : <em>"Restauration en cours..."</em>. L'interface reste responsive.</p>
+            </li>
+            <li><strong>Résultat :</strong> À la fin de la restauration, un message de résumé s'affiche indiquant le nombre de fichiers ajoutés, de conflits résolus et de fichiers préservés, ainsi que le chemin vers la sauvegarde de sécurité.</li>
+            <li><strong>Redémarrage nécessaire :</strong> L'application se ferme automatiquement après la restauration. <strong>Relancez BlueNotebook</strong> pour utiliser le journal restauré.</li>
+        </ol>
+
+        <h3>Sauvegarde de sécurité automatique</h3>
+        <p>Avant <strong>toute</strong> restauration (fusion ou remplacement), BlueNotebook crée automatiquement une copie de sécurité de votre journal actuel.</p>
+        <p><strong>Format du nom :</strong> <code>{journal_directory}.bak-YYYYMMDD-HHMMSS</code></p>
+        <p><strong>Exemple :</strong> <code>/home/user/BlueNotebookJournal.bak-20260124-153045</code></p>
+        <p><strong>Où se trouve la sauvegarde ?</strong> Même répertoire parent que votre journal actuel, nom basé sur le nom du journal + timestamp.</p>
+        <p><strong>Pourquoi c'est important ?</strong> En cas d'erreur ou si vous restaurez la mauvaise archive, votre journal actuel est intact dans le backup. Pour récupérer, copiez simplement le contenu du <code>.bak-*</code> vers votre journal.</p>
+        <p><strong>Note :</strong> Ces backups ne sont <strong>pas supprimés automatiquement</strong>. Pensez à les nettoyer manuellement de temps en temps.</p>
+
+        <h3>Validation de l'archive</h3>
+        <p>Avant toute restauration, BlueNotebook valide l'archive ZIP :</p>
+        <ul>
+            <li><strong>Intégrité du ZIP :</strong> Test de corruption du fichier, vérification de tous les fichiers de l'archive</li>
+            <li><strong>Structure du journal :</strong> Présence de fichiers <code>.md</code> (notes), détection de répertoires standards</li>
+            <li><strong>Sécurité :</strong> Pas de chemins dangereux (symlinks, <code>..</code>, chemins absolus)</li>
+        </ul>
+        <p><strong>Résultats possibles :</strong></p>
+        <ul>
+            <li><strong>Archive valide :</strong> La restauration peut continuer</li>
+            <li><strong>Archive suspecte :</strong> Un avertissement s'affiche, mais vous pouvez continuer</li>
+            <li><strong>Archive corrompue :</strong> La restauration est bloquée avec un message d'erreur</li>
+        </ul>
     </section>
 
     <section id="preferences">
-        <h2>15. Personnalisation (Préférences)</h2>
+        <h2>14. Personnalisation (Préférences)</h2>
         <p>La fenêtre des Préférences, accessible via <code>Fichier > Préférences...</code>, est le centre de contrôle pour adapter BlueNotebook à vos goûts. Les modifications sont appliquées immédiatement après avoir cliqué sur "Valider".</p>
 
         <h3>Onglet "Général"</h3>
@@ -854,7 +1059,7 @@ Aide
         <h3>Onglet "Affichage"</h3>
         <p>Cet onglet est le cœur de la personnalisation visuelle. Il est lui-même divisé en sous-onglets pour l'Éditeur, l'Aperçu, etc.</p>
 
-        <h4 id="themes-editeur">15.1 Thèmes de l'Éditeur</h4>
+        <h4 id="themes-editeur">14.1 Thèmes de l'Éditeur</h4>
         <p>Dans le sous-onglet <strong>"Éditeur Markdown"</strong>, vous pouvez changer chaque aspect de l'apparence de la zone d'écriture. BlueNotebook vous offre une flexibilité totale, que vous souhaitiez utiliser un thème prêt à l'emploi ou créer le vôtre.</p>
 
         <p> <strong>Affichage des numéros de lignes ? :</strong> </p>
@@ -874,7 +1079,7 @@ Aide
             <li><strong>Affichage des numéros de lignes :</strong> Cochez cette case pour afficher une marge avec les numéros de ligne, pratique pour se repérer dans de longs documents.</li>
         </ul>
 
-        <h4 id="themes-apercu">15.2 Thèmes de l'Aperçu HTML</h4>
+        <h4 id="themes-apercu">14.2 Thèmes de l'Aperçu HTML</h4>
         <p>Dans le sous-onglet <strong>"Aperçu HTML"</strong>, vous pouvez changer radicalement l'apparence du panneau de prévisualisation, ce qui affectera également l'apparence de vos <strong>exports HTML</strong>.</p>
         <p>L'apparence est contrôlée par des feuilles de style CSS. Pour vous aider à choisir, une prévisualisation du rendu est intégrée directement dans la fenêtre des préférences.</p>
         <ul>
@@ -883,7 +1088,7 @@ Aide
         </ul>
         <p>Le thème que vous validez est sauvegardé et sera automatiquement appliqué à chaque démarrage de BlueNotebook.</p>
         
-        <h4 id="themes-pdf">15.3 Thèmes de l'Export PDF</h4>
+        <h4 id="themes-pdf">14.3 Thèmes de l'Export PDF</h4>
         <p>De la même manière que pour l'aperçu HTML, vous pouvez désormais choisir un thème CSS <strong>spécifique pour vos exports PDF</strong>. Cette fonctionnalité est très utile pour utiliser un thème sombre pour l'édition à l'écran, et un thème clair, optimisé pour l'impression, pour vos documents PDF.</p>
         <ul>
             <li><strong>Accès :</strong> Rendez-vous dans <code>Préférences > Affichage > Export PDF</code>.</li>
@@ -929,7 +1134,7 @@ Aide
 
 
     <section id="raccourcis">
-        <h2>16. Raccourcis Clavier</h2>
+        <h2>15. Raccourcis Clavier</h2>
         <table>
             <thead><tr><th>Action</th><th>Raccourci</th></tr></thead>
             <tbody>
@@ -954,7 +1159,7 @@ Aide
     </section>
 
     <section id="faq">
-        <h2>17. Foire Aux Questions (FAQ)</h2>
+        <h2>16. Foire Aux Questions (FAQ)</h2>
         <p>Vous trouverez ici les réponses aux questions les plus fréquentes sur l'utilisation de l'application.</p>
 
         <h3>Gestion du Journal et des Notes</h3>
@@ -1071,7 +1276,7 @@ Aide
     </section>
 
     <section id="packages">
-        <h2>18. Principaux Packages Python</h2>
+        <h2>17. Principaux Packages Python</h2>
         <p>Voici une liste des principales bibliothèques Python qui animent le projet BlueNotebook, avec une explication de leur rôle.</p>
 
         <h3>Interface Graphique et Composants de Base</h3>
@@ -1178,10 +1383,178 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V4.2.5 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V4.2.6 de BlueNotebook.</em></p>
 
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
     </footer>
 
  
+    </div> <!-- Fin content-container -->
+</div> <!-- Fin main-container -->
+
+<script>
+// ============================================
+// FONCTION DE RECHERCHE INTÉGRÉE AMÉLIORÉE
+// ============================================
+
+(function() {
+    const searchInput = document.getElementById('doc-search');
+    const clearBtn = document.getElementById('clear-search');
+    const resultsCount = document.getElementById('search-results-count');
+    const resultsList = document.getElementById('search-results-list');
+    const tocList = document.getElementById('toc-list');
+    const contentSections = document.querySelectorAll('.content-container section');
+
+    let searchTimeout;
+    let matchedSections = [];
+
+    // Fonction de recherche
+    function performSearch(query) {
+        query = query.trim().toLowerCase();
+
+        // Si la recherche est vide, tout afficher
+        if (!query) {
+            resetSearch();
+            return;
+        }
+
+        matchedSections = [];
+        let firstMatch = null;
+
+        // Recherche dans les sections de contenu
+        contentSections.forEach(section => {
+            const text = section.textContent.toLowerCase();
+            const heading = section.querySelector('h2, h3, h4');
+
+            if (text.includes(query)) {
+                section.classList.remove('hidden');
+                section.classList.add('search-match');
+
+                // Stocker les sections correspondantes
+                if (heading) {
+                    matchedSections.push({
+                        element: section,
+                        title: heading.textContent.trim(),
+                        id: section.id
+                    });
+
+                    if (!firstMatch) {
+                        firstMatch = section;
+                    }
+
+                    // Mettre en évidence le texte trouvé dans le titre
+                    const headingText = heading.textContent.toLowerCase();
+                    if (headingText.includes(query)) {
+                        heading.classList.add('highlight');
+                    }
+                }
+            } else {
+                section.classList.add('hidden');
+                section.classList.remove('search-match');
+            }
+        });
+
+        // Mettre à jour la TOC
+        const tocItems = tocList.querySelectorAll('li');
+        tocItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(query)) {
+                item.classList.remove('hidden');
+                item.classList.add('toc-match');
+            } else {
+                item.classList.add('hidden');
+                item.classList.remove('toc-match');
+            }
+        });
+
+        // Afficher le nombre de résultats et la liste
+        displayResults(matchedSections.length);
+
+        // Scroll vers le premier résultat
+        if (firstMatch) {
+            setTimeout(() => {
+                firstMatch.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        // Afficher le bouton de suppression
+        clearBtn.style.display = 'block';
+    }
+
+    // Afficher la liste des résultats
+    function displayResults(count) {
+        if (count > 0) {
+            resultsCount.textContent = count + ' résultat' + (count > 1 ? 's' : '') + ' trouvé' + (count > 1 ? 's' : '');
+            resultsCount.style.color = '#27ae60';
+
+            // Créer la liste des résultats cliquables
+            resultsList.innerHTML = '';
+            matchedSections.forEach((match, index) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#' + match.id;
+                a.textContent = (index + 1) + '. ' + match.title;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    match.element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                li.appendChild(a);
+                resultsList.appendChild(li);
+            });
+            resultsList.style.display = 'block';
+        } else {
+            resultsCount.textContent = 'Aucun résultat trouvé';
+            resultsCount.style.color = '#e74c3c';
+            resultsList.style.display = 'none';
+        }
+    }
+
+    // Réinitialiser la recherche
+    function resetSearch() {
+        // Supprimer toutes les classes de recherche
+        contentSections.forEach(section => {
+            section.classList.remove('hidden', 'search-match');
+            const headings = section.querySelectorAll('h2, h3, h4');
+            headings.forEach(h => h.classList.remove('highlight'));
+        });
+
+        const tocItems = tocList.querySelectorAll('li');
+        tocItems.forEach(item => {
+            item.classList.remove('hidden', 'toc-match');
+        });
+
+        resultsCount.textContent = '';
+        resultsList.style.display = 'none';
+        resultsList.innerHTML = '';
+        clearBtn.style.display = 'none';
+        matchedSections = [];
+    }
+
+    // Événement de saisie avec debounce
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(this.value);
+        }, 300);
+    });
+
+    // Événement sur le bouton de suppression
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        resetSearch();
+        searchInput.focus();
+    });
+
+    // Recherche au chargement si query string présente
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('search');
+    if (initialQuery) {
+        searchInput.value = initialQuery;
+        performSearch(initialQuery);
+    }
+})();
+</script>
+
+</body>
+</html>

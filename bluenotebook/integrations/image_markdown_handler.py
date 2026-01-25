@@ -205,8 +205,8 @@ def handle_markdown_image_insertion(editor):
     if not main_window or not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            main_window.tr("Journal non défini"),
-            main_window.tr("Veuillez définir un répertoire de journal avant d'insérer une image."),
+            ImageMarkdownHandlerContext.tr("Journal non défini"),
+            ImageMarkdownHandlerContext.tr("Veuillez définir un répertoire de journal avant d'insérer une image."),
         )
         return
 

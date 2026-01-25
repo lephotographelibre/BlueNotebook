@@ -98,12 +98,12 @@ This level represents the application's ability to help the user organize, retri
 
  
 
-## How to Launch Bluenotebook 
+## How to Run Bluenotebook 
 
 
-To run BlueNotebook on your system, several formats are available under Linux: AppImage, Flatpak Local, and Docker Image (Docker Hub and GitHub packages). See the list on the Release page <https://github.com/lephotographelibre/BlueNotebook/releases>.
+To run BlueNotebook on your system, several packages are available for Linux: AppImage, Flatpak Local, and Docker Image (Docker Hub and GitHub packages). See the list on the Release page <https://github.com/lephotographelibre/BlueNotebook/releases>.
 
-A Windows installer will be available soon. Stay Tuned ! 
+A Windows installer will be available soon. Stay Tuned! 
 
 
 
@@ -111,13 +111,13 @@ A Windows installer will be available soon. Stay Tuned !
 ## **Screenshots**
 
 
-The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/409_Editor_english.jpg)
+The Markdown Editor and outline panel ![BlueNotebook](docs/Screencopy/V4.2.6_Editor_english.jpg)
 
-The Journal and the Task Manager on Linux ![BlueNotebook](docs/Screencopy/409_Journal_english.jpg)
+The Journal and the Task Manager on Linux ![BlueNotebook](docs/Screencopy/V4.2.6_Journal_english.jpg)
 
-The Integrated EPUB/PDF Reader ![BlueNotebook](docs/Screencopy/409_Reader_english.jpg)
+The Integrated EPUB/PDF Reader ![BlueNotebook](docs/Screencopy/V4.2.6_Reader_english.jpg)
 
-Note-taking management ![BlueNotebook](docs/Screencopy/V4.1.0_notes.jpg)
+Note-taking management ![BlueNotebook](docs/Screencopy/V4.2.6_Note-taking_english.jpg)
 
 The Markdown Editor on Windows ![BlueNotebook](docs/Screencopy/V4.1.0_Windows_Editor_English.jpg)
 
