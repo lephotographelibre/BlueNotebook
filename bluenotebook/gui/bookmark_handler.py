@@ -14,6 +14,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtCore import QCoreApplication
+
+
+class BookmarkHandlerContext:
+    """Classe de contexte pour la traduction des chaînes de bookmark_handler.py"""
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("BookmarkHandlerContext", text)
 
 
 def handle_insert_bookmark(main_window):
@@ -27,8 +35,8 @@ def handle_insert_bookmark(main_window):
     else:
         text, ok = QInputDialog.getText(
             main_window,
-            main_window.tr("Insérer un Bookmark"),
-            main_window.tr("Entrez l'URL de la page :"),
+            BookmarkHandlerContext.tr("Insérer un Bookmark"),
+            BookmarkHandlerContext.tr("Entrez l'URL de la page :"),
         )
         if ok and text:
             url = text.strip()
@@ -49,5 +57,5 @@ def handle_insert_bookmark(main_window):
         cursor.removeSelectedText()
     main_window.editor.insert_text(markdown_link)
     main_window.statusbar.showMessage(
-        main_window.tr("Bookmark inséré avec succès."), 3000
+        BookmarkHandlerContext.tr("Bookmark inséré avec succès."), 3000
     )
