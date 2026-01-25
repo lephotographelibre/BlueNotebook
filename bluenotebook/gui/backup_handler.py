@@ -22,20 +22,132 @@ from datetime import datetime
 from pathlib import Path
 import zipfile
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QMessageBox, QFileDialog, QDialog, QVBoxLayout, QLabel,
+    QRadioButton, QPushButton, QButtonGroup, QDialogButtonBox
+)
+from PyQt5.QtCore import Qt, QCoreApplication
 
 from core.journal_backup_worker import JournalBackupWorker
+from core.journal_restore_worker import JournalRestoreWorker
 
-# Pour la traduction j’ai utilisé main_window.tr(...) et pas self.tr(...) Parce que dans ce fichier backup_handler.py, il n’y a pas de self !
+
+class BackupHandlerContext:
+    """Classe de contexte pour la traduction des chaînes de backup_handler.py"""
+    @staticmethod
+    def tr(text):
+        return QCoreApplication.translate("BackupHandlerContext", text)
+
+
+class RestoreMergeDialog(QDialog):
+    """Dialogue pour choisir la stratégie de fusion lors de la restauration."""
+
+    def __init__(self, zip_path, journal_directory, parent=None):
+        super().__init__(parent)
+        self.zip_path = zip_path
+        self.journal_directory = journal_directory
+        self.merge_strategy = "smart_merge"  # Valeur par défaut
+        self.setup_ui()
+
+    def setup_ui(self):
+        """Configure l'interface utilisateur du dialogue."""
+        self.setWindowTitle(self.tr("Stratégie de restauration"))
+        self.setMinimumWidth(500)
+
+        layout = QVBoxLayout()
+
+        # Message d'introduction
+        intro_message = self.tr(
+            "Vous êtes sur le point de restaurer le journal depuis :\n"
+            "{archive}\n\n"
+            "Destination : {destination}\n\n"
+            "Veuillez choisir la stratégie de restauration :"
+        )
+        intro_message = intro_message.format(
+            archive=os.path.basename(self.zip_path),
+            destination=str(self.journal_directory)
+        )
+
+        intro_label = QLabel(intro_message)
+        intro_label.setWordWrap(True)
+        layout.addWidget(intro_label)
+
+        # Groupe de boutons radio
+        self.button_group = QButtonGroup(self)
+
+        # Option 1: Fusion intelligente (par défaut)
+        self.smart_merge_radio = QRadioButton(self.tr("Fusion intelligente (recommandé)"))
+        self.smart_merge_radio.setChecked(True)  # Sélectionné par défaut
+        self.button_group.addButton(self.smart_merge_radio, 1)
+
+        smart_merge_desc = QLabel(self.tr(
+            "Les nouveaux fichiers de l'archive sont ajoutés au journal actuel. "
+            "Les fichiers existants sont préservés. "
+            "En cas de conflit (même date), le fichier de l'archive est renommé avec .restored"
+        ))
+        smart_merge_desc.setWordWrap(True)
+        smart_merge_desc.setStyleSheet("color: #555; margin-left: 20px; margin-bottom: 10px;")
+
+        layout.addWidget(self.smart_merge_radio)
+        layout.addWidget(smart_merge_desc)
+
+        # Option 2: Remplacement complet
+        self.full_replace_radio = QRadioButton(self.tr("Remplacement complet"))
+        self.button_group.addButton(self.full_replace_radio, 2)
+
+        full_replace_desc = QLabel(self.tr(
+            "Le contenu actuel du journal est complètement remplacé par celui de l'archive. "
+            "Attention : toutes les données actuelles seront supprimées "
+            "(une sauvegarde de sécurité sera créée)."
+        ))
+        full_replace_desc.setWordWrap(True)
+        full_replace_desc.setStyleSheet("color: #d35400; margin-left: 20px; margin-bottom: 10px;")
+
+        layout.addWidget(self.full_replace_radio)
+        layout.addWidget(full_replace_desc)
+
+        # Note de sécurité
+        security_note = QLabel(self.tr(
+            "Note : Dans les deux cas, une sauvegarde de sécurité "
+            "de votre journal actuel sera créée avant la restauration."
+        ))
+        security_note.setWordWrap(True)
+        security_note.setStyleSheet("color: #27ae60; font-weight: bold; margin-top: 10px;")
+        layout.addWidget(security_note)
+
+        # Boutons OK/Annuler
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.button(QDialogButtonBox.Ok).setText(self.tr("Restaurer"))
+        button_box.button(QDialogButtonBox.Cancel).setText(self.tr("Annuler"))
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+
+        layout.addWidget(button_box)
+
+        self.setLayout(layout)
+
+    def accept(self):
+        """Appelé quand l'utilisateur clique sur OK."""
+        # Déterminer la stratégie choisie
+        if self.smart_merge_radio.isChecked():
+            self.merge_strategy = "smart_merge"
+        else:
+            self.merge_strategy = "replace"
+
+        super().accept()
+
+    def get_merge_strategy(self):
+        """Retourne la stratégie de fusion choisie."""
+        return self.merge_strategy
+
 
 def backup_journal(main_window):
     """Sauvegarde le répertoire du journal dans une archive ZIP."""
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            main_window.tr("Sauvegarde impossible"),
-            main_window.tr("Aucun répertoire de journal n'est actuellement défini."),
+            BackupHandlerContext.tr("Sauvegarde impossible"),
+            BackupHandlerContext.tr("Aucun répertoire de journal n'est actuellement défini."),
         )
         return
 
@@ -43,14 +155,14 @@ def backup_journal(main_window):
     if not initial_dir or not os.path.isdir(initial_dir):
         initial_dir = str(main_window.journal_directory.parent)
 
-    backup_filename_default = f"BlueNotebook-Backup-{main_window.journal_directory.name}-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
+    backup_filename_default = f"BlueNotebook-Backup-{datetime.now().strftime('%Y-%m-%d-%H-%M')}.zip"
     default_path = os.path.join(initial_dir, backup_filename_default)
 
     backup_path, _ = QFileDialog.getSaveFileName(
         main_window,
-        main_window.tr("Sauvegarder le journal"),
+        BackupHandlerContext.tr("Sauvegarder le journal"),
         default_path,
-        main_window.tr("Archives ZIP (*.zip)")
+        BackupHandlerContext.tr("Archives ZIP (*.zip)")
     )
 
     if backup_path:
@@ -64,84 +176,74 @@ def backup_journal(main_window):
             "backup.last_directory", os.path.dirname(backup_path)
         )
         main_window.settings_manager.save_settings()
-        main_window.statusbar.showMessage(main_window.tr("Lancement de la sauvegarde..."), 3000)
+        main_window.statusbar.showMessage(BackupHandlerContext.tr("Lancement de la sauvegarde..."), 3000)
 
 
 def restore_journal(main_window):
-    """Restaure un journal depuis une archive ZIP."""
+    """Restaure un journal depuis une archive ZIP de manière asynchrone."""
     if not main_window.journal_directory:
         QMessageBox.warning(
             main_window,
-            main_window.tr("Restauration impossible"),
-            main_window.tr("Aucun répertoire de journal de destination n'est défini."),
+            BackupHandlerContext.tr("Restauration impossible"),
+            BackupHandlerContext.tr("Aucun répertoire de journal de destination n'est défini."),
         )
         return
 
+    # Récupérer le dernier répertoire utilisé pour les backups
+    initial_dir = main_window.settings_manager.get("backup.last_directory")
+    if not initial_dir or not os.path.isdir(initial_dir):
+        initial_dir = str(main_window.journal_directory.parent)
+
+    # Sélection de l'archive ZIP
     zip_path, _ = QFileDialog.getOpenFileName(
         main_window,
-        main_window.tr("Restaurer le journal"),
-        "",
-        main_window.tr("Archives ZIP (*.zip)")
+        BackupHandlerContext.tr("Restaurer le journal"),
+        initial_dir,
+        BackupHandlerContext.tr("Archives ZIP (*.zip)")
     )
 
     if not zip_path:
         return
 
-    current_journal_backup_path = f"{main_window.journal_directory}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
-
-    msg_box = QMessageBox(main_window)
-    msg_box.setIcon(QMessageBox.Question)
-    msg_box.setWindowTitle(main_window.tr("Confirmation de la restauration"))
-    msg_box.setTextFormat(Qt.RichText)
-
-    # → Règle 4 : chaîne multi-lignes avec arguments
-    message = main_window.tr(
-        "<p>Vous êtes sur le point de restaurer le journal depuis '{filename}'.</p>"
-        "<p>Le journal actuel sera d'abord sauvegardé ici :<br><b>{backup_path}</b></p>"
-        "<p>L'application va devoir être redémarrée après la restauration. Continuer ?</p>"
-    ).format(
-        filename=os.path.basename(zip_path),
-        backup_path=current_journal_backup_path
+    # Afficher le dialogue de choix de stratégie de fusion
+    merge_dialog = RestoreMergeDialog(
+        zip_path=zip_path,
+        journal_directory=main_window.journal_directory,
+        parent=main_window
     )
-    msg_box.setText(message)
 
-    msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-    msg_box.button(QMessageBox.Yes).setText(main_window.tr("Valider"))
-    msg_box.button(QMessageBox.No).setText(main_window.tr("Annuler"))
-    msg_box.setDefaultButton(QMessageBox.No)
-    reply = msg_box.exec_()
-
-    if reply == QMessageBox.No:
+    if merge_dialog.exec_() != QDialog.Accepted:
         return
 
-    try:
-        os.rename(main_window.journal_directory, current_journal_backup_path)
-        os.makedirs(main_window.journal_directory)
+    # Récupérer la stratégie choisie
+    merge_strategy = merge_dialog.get_merge_strategy()
 
-        with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            zip_ref.extractall(main_window.journal_directory)
+    # Démarrer l'animation de statut
+    main_window._start_restore_flashing()
 
-        # → Règle 3 : multi-lignes sans argument
-        QMessageBox.information(
-            main_window,
-            main_window.tr("Restauration terminée"),
-            main_window.tr(
-                "La restauration est terminée. L'application va maintenant se fermer.\n"
-                "Veuillez la relancer pour utiliser le journal restauré."
-            ),
-        )
-        # Message console → non encapsulé (selon consigne et reste en anglais)
-        print(f"🔁 Restoration of the journal has been successfully completed since: {zip_path}")
-        main_window.close()
+    # Créer et lancer le worker asynchrone
+    worker = JournalRestoreWorker(
+        zip_path=Path(zip_path),
+        journal_directory=main_window.journal_directory,
+        merge_strategy=merge_strategy
+    )
 
-    except Exception as e:
-        # → Règle 2 : une ligne avec argument
-        error_msg = main_window.tr(
-            "La restauration a échoué : {error}"
-        ).format(error=str(e))
+    # Connecter les signaux aux callbacks
+    worker.signals.progress.connect(main_window._on_restore_progress)
+    worker.signals.finished.connect(main_window._on_restore_finished)
+    worker.signals.error.connect(main_window._on_restore_error)
 
-        QMessageBox.critical(
-            main_window,
-            main_window.tr("Erreur de restauration"),
-            error_msg
-        )
+    # Lancer le worker dans le thread pool
+    main_window.thread_pool.start(worker)
+
+    # Sauvegarder le dernier répertoire utilisé
+    main_window.settings_manager.set(
+        "backup.last_directory", os.path.dirname(zip_path)
+    )
+    main_window.settings_manager.save_settings()
+
+    # Message de statut
+    main_window.statusbar.showMessage(
+        BackupHandlerContext.tr("Lancement de la restauration..."),
+        3000
+    )

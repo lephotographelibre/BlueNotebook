@@ -87,6 +87,7 @@ from .backup_handler import backup_journal, restore_journal
 from .preferences_dialog import PreferencesDialog
 from .on_line_help import OnlineHelpWindow
 from core.journal_backup_worker import JournalBackupWorker
+from core.journal_restore_worker import JournalRestoreWorker
 from core.quote_fetcher import QuoteFetcher
 
 from integrations.weather import get_weather_markdown
@@ -1584,6 +1585,23 @@ class MainWindow(QMainWindow):
 
         self.statusbar.addPermanentWidget(self.backup_status_label)
 
+        # ──────────────────────────────────────────────────────────────
+        # Timer et label pour la restauration du journal
+        # ──────────────────────────────────────────────────────────────
+        self.restore_flash_timer = QTimer(self)
+        self.restore_flash_timer.setInterval(600)
+        self.restore_flash_timer.timeout.connect(self._toggle_restore_status_visibility)
+
+        self.restore_status_label = QLabel(self.tr("Restauration en cours..."))
+        self.restore_status_label.setStyleSheet("color: #2563eb; font-weight: bold;")
+        self.restore_status_label.setAlignment(Qt.AlignCenter)
+        self.restore_status_label.setVisible(False)
+
+        self.statusbar.addPermanentWidget(self.restore_status_label)
+
+        # Progress dialog for restore (created on demand)
+        self.restore_progress_dialog = None
+
         self.pdf_convert_flash_timer = QTimer(self)
         self.pdf_convert_flash_timer.setInterval(500)
         self.pdf_convert_flash_timer.timeout.connect(
@@ -2958,6 +2976,39 @@ class MainWindow(QMainWindow):
         # V4.1.6 Fix Issue: Ensure "Veuillez patienter" is also hidden
         self.pdf_status_label.setVisible(False)
 
+    def _start_restore_flashing(self):
+        """Démarre le clignotement pendant une restauration de journal"""
+        self.restore_status_label.setVisible(True)
+        self.restore_flash_timer.start()
+
+        # Créer le dialogue de progression
+        self.restore_progress_dialog = QProgressDialog(self)
+        self.restore_progress_dialog.setWindowTitle(self.tr("Restauration du journal"))
+        self.restore_progress_dialog.setLabelText(self.tr("Initialisation..."))
+        self.restore_progress_dialog.setRange(0, 100)
+        self.restore_progress_dialog.setValue(0)
+        self.restore_progress_dialog.setWindowModality(Qt.WindowModal)
+        self.restore_progress_dialog.setAutoClose(False)
+        self.restore_progress_dialog.setAutoReset(False)
+        # Cancel button disabled for now (future enhancement)
+        self.restore_progress_dialog.setCancelButton(None)
+        self.restore_progress_dialog.show()
+
+    def _stop_restore_flashing(self):
+        """Arrête le clignotement à la fin de la restauration"""
+        self.restore_flash_timer.stop()
+        self.restore_status_label.setVisible(False)
+
+        if self.restore_progress_dialog:
+            self.restore_progress_dialog.close()
+            self.restore_progress_dialog = None
+
+    def _toggle_restore_status_visibility(self):
+        """Bascule la visibilité du label de statut de restauration."""
+        self.restore_status_label.setVisible(
+            not self.restore_status_label.isVisible()
+        )
+
     def _start_pdf_convert_flashing(self):
         """Démarre le message clignotant pour la conversion PDF."""
         self.pdf_convert_status_label.setVisible(True)
@@ -3060,6 +3111,48 @@ class MainWindow(QMainWindow):
         """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
         self._stop_backup_flashing()
         QMessageBox.critical(self, self.tr("Erreur de sauvegarde"), error_message)
+
+    def _on_restore_progress(self, percentage: int, message: str):
+        """Callback appelé pour les mises à jour de progression de la restauration."""
+        # Capture la référence une seule fois pour éviter race condition
+        dialog = self.restore_progress_dialog
+        if dialog:
+            dialog.setValue(percentage)
+            dialog.setLabelText(message)
+
+    def _on_restore_finished(self, summary: str):
+        """Callback appelé lorsque la restauration se termine avec succès."""
+        self._stop_restore_flashing()
+
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setWindowTitle(self.tr("Restauration terminée"))
+        msg_box.setTextFormat(Qt.RichText)
+
+        message = self.tr(
+            "<p><b>La restauration est terminée avec succès.</b></p>"
+            "<p>{summary}</p>"
+            "<p>L'application va maintenant se fermer.<br>"
+            "Veuillez la relancer pour utiliser le journal restauré.</p>"
+        )
+        message = message.format(summary=summary.replace('\n', '<br>'))
+
+        msg_box.setText(message)
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        msg_box.exec_()
+
+        print(f"✅ Journal restoration completed successfully")
+        self.close()
+
+    def _on_restore_error(self, error_message: str):
+        """Callback appelé en cas d'erreur lors de la restauration."""
+        self._stop_restore_flashing()
+
+        QMessageBox.critical(
+            self,
+            self.tr("Erreur de restauration"),
+            error_message
+        )
 
     def start_task(self, message):
         """Démarre un message de tâche de fond clignotant."""
@@ -3214,21 +3307,6 @@ class MainWindow(QMainWindow):
             self.open_specific_file(destination_path)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Erreur"), str(e))
-
-    def _on_journal_backup_finished(self, backup_path: str):
-        """Slot appelé lorsque la sauvegarde du journal est terminée avec succès."""
-        self._stop_backup_flashing()
-        QMessageBox.information(
-            self,
-            "Sauvegarde terminée",
-            f"Le journal a été sauvegardé avec succès dans :\n{backup_path}",
-        )
-        print(f"🔁 Log backup successfully completed in: {backup_path}")
-
-    def _on_journal_backup_error(self, error_message: str):
-        """Slot appelé en cas d'erreur lors de la sauvegarde du journal."""
-        self._stop_backup_flashing()
-        QMessageBox.critical(self, "Erreur de sauvegarde", error_message)
 
     def sync_preview_scroll(self, value):
         """Synchronise le défilement de l'aperçu avec celui de l'éditeur."""
