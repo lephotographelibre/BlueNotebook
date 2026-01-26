@@ -33,7 +33,7 @@ class IndexerSignals(QObject):
     Hériter de QObject est nécessaire pour la définition des signaux.
     """
 
-    finished = pyqtSignal(int)  # Signal émis à la fin, avec le nombre de tags uniques
+    finished = pyqtSignal(int, str)  # Signal émis à la fin, avec le nombre de tags uniques et le chemin du journal
 
 
 class TagIndexer(QRunnable):
@@ -55,7 +55,7 @@ class TagIndexer(QRunnable):
         Logique d'indexation exécutée dans le thread.
         """
         if not self.journal_directory or not self.journal_directory.is_dir():
-            self.signals.finished.emit(0)
+            self.signals.finished.emit(0, str(self.journal_directory) if self.journal_directory else "")
             return
 
         index_file_path = self.journal_directory / "index_tags.json"
@@ -74,7 +74,7 @@ class TagIndexer(QRunnable):
             try:
                 with open(index_file_path, "r", encoding="utf-8") as f:
                     existing_data = json.load(f)
-                self.signals.finished.emit(len(existing_data))
+                self.signals.finished.emit(len(existing_data), str(self.journal_directory))
                 return
             except (json.JSONDecodeError, IOError):
                 pass  # En cas d'erreur, on réindexe tout
@@ -123,7 +123,7 @@ class TagIndexer(QRunnable):
                     continue
 
             if not all_tags_info:
-                self.signals.finished.emit(0)
+                self.signals.finished.emit(0, str(self.journal_directory))
                 return
 
             # Trier la liste par ordre alphabétique des tags
@@ -134,11 +134,11 @@ class TagIndexer(QRunnable):
             self._write_json_index(all_tags_info)
 
             # Émettre le signal de fin avec le nombre de tags uniques
-            self.signals.finished.emit(len(unique_tags))
+            self.signals.finished.emit(len(unique_tags), str(self.journal_directory))
 
         except Exception as e:
             print(f"❌ Error indexing tags: {e}")
-            self.signals.finished.emit(-1)  # Émettre -1 en cas d'erreur
+            self.signals.finished.emit(-1, str(self.journal_directory))  # Émettre -1 en cas d'erreur
 
     def _write_text_index(self, all_tags_info):
         """Écrit l'index au format texte simple."""
