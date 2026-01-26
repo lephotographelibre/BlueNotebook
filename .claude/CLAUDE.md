@@ -71,8 +71,58 @@ Les regles pour les f*strings s'appliquent également. Exemple:
 
 ```python
    resume_more_link_markdown = AmazonBooksContext.tr("[{plus}]({url})").format( plus=en_lire_plus, url=product_url)
-                
+
 ```
- 
+
+## En-tête de fichiers Python
+
+**IMPORTANT** : Tous les nouveaux fichiers Python créés doivent obligatoirement commencer par l'en-tête suivant :
+
+```python
+"""
+# Copyright (C) 2026 Jean-Marc DIGNE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+DESCRIPTIF DES FONCTIONS DE CE SCRIPT."""
+```
+
+**Note** : Remplacer "DESCRIPTIF DES FONCTIONS DE CE SCRIPT" par une description concise du rôle du fichier.
+
+**Exemple** :
+```python
+"""
+# Copyright (C) 2026 Jean-Marc DIGNE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Module de gestion de l'ouverture et du changement de journal."""
+
+import zipfile
+from pathlib import Path
+# ... reste du code
+```
 
 ##

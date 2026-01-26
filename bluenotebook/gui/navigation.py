@@ -196,6 +196,23 @@ class NavigationPanel(QWidget):
 
         :param dates: Une liste ou un set d'objets QDate à surligner.
         """
+        # D'abord, effacer toutes les surbrillances existantes
+        # en réinitialisant le format de toutes les dates du calendrier
+        empty_format = QTextCharFormat()
+
+        # Obtenir la plage de dates visibles dans le calendrier
+        # On va réinitialiser toutes les dates des 5 dernières et 5 prochaines années
+        current_year = QDate.currentDate().year()
+        for year in range(current_year - 5, current_year + 6):
+            for month in range(1, 13):
+                for day in range(1, 32):
+                    try:
+                        date = QDate(year, month, day)
+                        if date.isValid():
+                            self.calendar.setDateTextFormat(date, empty_format)
+                    except:
+                        pass
+
         # Format pour les dates avec une note (non-aujourd'hui)
         date_format = QTextCharFormat()
         # Utilise la même couleur bleue que le label du journal

@@ -507,9 +507,30 @@ fi
 echo -e "${BLUE}Génération de l'AppImage...${NC}"
 ARCH=x86_64 "$APPIMAGETOOL" --no-appstream "$APPDIR" "$APPIMAGE_NAME"
 
+# Embarquer l'icône dans l'AppImage pour qu'elle soit visible dans le gestionnaire de fichiers
+echo -e "${BLUE}Embarquement de l'icône dans l'AppImage...${NC}"
+
+# Méthode simple et fiable : ajouter l'icône à la fin du fichier avec le marqueur AppImage
+ICON_SIZE=$(stat -c%s "$ICON_SOURCE")
+
+# Ajouter l'icône à la fin de l'AppImage
+cat "$ICON_SOURCE" >> "$APPIMAGE_NAME"
+
+# Ajouter le marqueur pour que les gestionnaires de fichiers trouvent l'icône
+# Format: taille de l'icône (4 octets little-endian) + signature "AI\x02"
+printf "$(printf '\\x%02x' $((ICON_SIZE & 0xFF)) $((ICON_SIZE >> 8 & 0xFF)) $((ICON_SIZE >> 16 & 0xFF)) $((ICON_SIZE >> 24 & 0xFF)))" >> "$APPIMAGE_NAME"
+printf '\x41\x49\x02' >> "$APPIMAGE_NAME"
+
+echo -e "${GREEN}✓ Icône embarquée (taille: $ICON_SIZE octets)${NC}"
+
 # Déplacer l'AppImage dans le répertoire parent
 mv "$APPIMAGE_NAME" "$SCRIPT_DIR/"
 echo -e "${GREEN}✓ AppImage créée: $SCRIPT_DIR/$APPIMAGE_NAME${NC}"
+
+# Copier l'icône dans le répertoire parent pour le fichier .desktop
+echo -e "${BLUE}Copie de l'icône pour le fichier .desktop...${NC}"
+cp "$ICON_SOURCE" "$SCRIPT_DIR/"
+echo -e "${GREEN}✓ Icône copiée: $SCRIPT_DIR/$(basename "$ICON_SOURCE")${NC}"
 
 # Nettoyage temporaire
 rm -rf "$TEMP_EXTRACT"
@@ -522,6 +543,7 @@ echo ""
 echo -e "${YELLOW}Génération du fichier .desktop pour installation système...${NC}"
 
 APPIMAGE_ABSOLUTE_PATH="$(cd "$SCRIPT_DIR" && pwd)/$APPIMAGE_NAME"
+ICON_ABSOLUTE_PATH="$(cd "$SCRIPT_DIR" && pwd)/$(basename "$ICON_SOURCE")"
 
 cat > "$SCRIPT_DIR/$DESKTOP_FILE" << DESKTOP_SYSTEM_EOF
 [Desktop Entry]
@@ -531,7 +553,7 @@ Name=BlueNotebook
 GenericName=Journal personnel
 Comment=Journal personnel et organisateur de notes (Version ${VERSION})
 Exec=${APPIMAGE_ABSOLUTE_PATH} %F
-Icon=${APPIMAGE_ABSOLUTE_PATH}
+Icon=${ICON_ABSOLUTE_PATH}
 Terminal=false
 Categories=Office;Calendar;X-Diary;
 MimeType=text/plain;
@@ -565,11 +587,14 @@ INSTALL_EOF
 
 echo "VERSION=\"${VERSION}\"" >> "$SCRIPT_DIR/install_BlueNotebook-${VERSION}.sh"
 
-cat >> "$SCRIPT_DIR/install_BlueNotebook-${VERSION}.sh" << 'INSTALL_EOF2'
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APPIMAGE_FILE="${SCRIPT_DIR}/BlueNotebook-${VERSION}-x86_64.AppImage"
-DESKTOP_FILE="${SCRIPT_DIR}/BlueNotebook-${VERSION}.desktop"
-ICON_FILE="${SCRIPT_DIR}/bluenotebook_256-x256_fond_blanc.png"
+cat >> "$SCRIPT_DIR/install_BlueNotebook-${VERSION}.sh" << INSTALL_EOF2
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+APPIMAGE_FILE="\${SCRIPT_DIR}/BlueNotebook-${VERSION}-x86_64.AppImage"
+DESKTOP_FILE="\${SCRIPT_DIR}/BlueNotebook-${VERSION}.desktop"
+ICON_FILE="\${SCRIPT_DIR}/$(basename "$ICON_SOURCE")"
+INSTALL_EOF2
+
+cat >> "$SCRIPT_DIR/install_BlueNotebook-${VERSION}.sh" << 'INSTALL_EOF3'
 
 echo -e "${GREEN}Installation de BlueNotebook ${VERSION}${NC}"
 echo ""
@@ -619,7 +644,7 @@ echo "BlueNotebook est disponible dans:"
 echo "  • Menu → Bureautique → BlueNotebook"
 echo "  • Recherche d'applications: tapez 'BlueNotebook'"
 echo ""
-INSTALL_EOF2
+INSTALL_EOF3
 
 chmod +x "$SCRIPT_DIR/install_BlueNotebook-${VERSION}.sh"
 echo -e "${GREEN}✓ Script d'installation créé: install_BlueNotebook-${VERSION}.sh${NC}"
@@ -728,6 +753,7 @@ echo ""
 echo -e "\${YELLOW}Fichiers conservés:\${NC}"
 echo "  • ${APPIMAGE_NAME}"
 echo "  • ${DESKTOP_FILE}"
+echo "  • $(basename "$ICON_SOURCE")"
 echo "  • install_BlueNotebook-${VERSION}.sh"
 echo "  • uninstall_BlueNotebook-${VERSION}.sh"
 echo "  • cleanup.sh (ce script)"
@@ -751,6 +777,7 @@ echo ""
 echo -e "${YELLOW}Fichiers générés:${NC}"
 echo "  ✓ $APPIMAGE_NAME ($APPIMAGE_SIZE)"
 echo "  ✓ $DESKTOP_FILE"
+echo "  ✓ $(basename "$ICON_SOURCE")"
 echo "  ✓ install_BlueNotebook-${VERSION}.sh"
 echo "  ✓ uninstall_BlueNotebook-${VERSION}.sh"
 echo "  ✓ cleanup.sh"

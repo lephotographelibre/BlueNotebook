@@ -4,9 +4,9 @@
 ```bash
 # Download the BlueNotebook App as an AppImage from this page
 # Make it Runnable
-chmod +x BlueNotebook-4.2.5-x86_64.AppImage
+chmod +x BlueNotebook-4.2.7-x86_64.AppImage
 # Run
-./BlueNotebook-4.2.5-x86_64.AppImage
+./BlueNotebook-4.2.7-x86_64.AppImage
 ```
 
 ## A Flatpak bundle is available as a local .flatpak file
@@ -14,17 +14,17 @@ chmod +x BlueNotebook-4.2.5-x86_64.AppImage
 ```bash
 # Download bundle from this page
 $ ls -al *.flatpak
-BlueNotebook-V4.2.5.flatpak
+BlueNotebook-V4.2.7.flatpak
 
 # Install the local bundle
-$ flatpak install --bundle --user BlueNotebook-V4.2.5.flatpak
+$ flatpak install --bundle --user BlueNotebook-V4.2.7.flatpak
 ```
 
 ## A docker image for BlueNotebook is available for this release on docker hub <https://hub.docker.com>
 
 ```bash
 # get the docker image (558 MB)
-docker pull jmdigne/bluenotebook:4.2.5
+docker pull jmdigne/bluenotebook:4.2.7
 # Create mandatoruy directories on the host 
 # By default, the Journal, Backup, and Configuration directories are located in the user directory under the name `bluenotebook_docker`. You can change the name of the `bluenotebook_docker` directory and choose the name and location you want, but make the same changes in the following lines of script.
 
@@ -44,7 +44,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    jmdigne/bluenotebook:4.2.5
+    jmdigne/bluenotebook:4.2.7
 ```
 
 
@@ -55,7 +55,7 @@ docker run -it --rm \
 ```bash
 # Install from the command line
 
-$ docker pull ghcr.io/lephotographelibre/bluenotebook:4.2.5
+$ docker pull ghcr.io/lephotographelibre/bluenotebook:4.2.7
 
 # Create mandatoruy directories on the host 
 # By default, the Journal, Backup, and Configuration directories are located in the user directory under the name `bluenotebook_docker`. You can change the name of the `bluenotebook_docker` directory and choose the name and location you want, but make the same changes in the following lines of script.
@@ -76,7 +76,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    ghcr.io/lephotographelibre/bluenotebook:4.2.5
+    ghcr.io/lephotographelibre/bluenotebook:4.2.7
 ```
 ## **Ubuntu/Debian** install from source files
 
