@@ -80,6 +80,7 @@ from .navigation import NavigationPanel
 from .outline import OutlinePanel
 from .notes_panel import NotesPanel
 from .new_note_dialog import NewFileDialog
+from . import open_journal as open_journal_module
 from .bookmark_handler import handle_insert_bookmark
 from .epub_reader_panel import EpubReaderPanel
 from .date_range_dialog import DateRangeDialog
@@ -1871,26 +1872,7 @@ class MainWindow(QMainWindow):
 
     def open_journal(self):
         """Ouvre un dialogue pour sélectionner un nouveau répertoire de journal."""
-        dir_name = QFileDialog.getExistingDirectory(
-            self, self.tr("Sélectionner le répertoire du Journal")
-        )
-        if dir_name:
-            new_journal_path = Path(dir_name).resolve()
-            if new_journal_path.is_dir():
-                self.journal_directory = new_journal_path
-                self.update_journal_dir_label()
-                QMessageBox.information(
-                    self,
-                    self.tr("Journal"),
-                    self.tr("Le répertoire du journal est maintenant :\n{0}").format(
-                        self.journal_directory
-                    ),
-                )
-                self.start_initial_indexing()
-                self.update_calendar_highlights()
-                # Mettre à jour le panneau de notes avec le nouveau journal
-                self.notes_panel.set_journal_directory(self.journal_directory)
-                self.update_tag_cloud()
+        open_journal_module.open_journal(self)
 
     def open_specific_file(self, filename):
         """Ouvre un fichier spécifique depuis son chemin."""
@@ -3361,8 +3343,19 @@ class MainWindow(QMainWindow):
         self.tag_index_status_label.repaint()
         self.start_initial_indexing()
 
-    def on_indexing_finished(self, unique_tag_count):
-        """Callback exécuté à la fin de l'indexation."""
+    def on_indexing_finished(self, unique_tag_count, journal_path):
+        """Callback exécuté à la fin de l'indexation.
+
+        Args:
+            unique_tag_count (int): Nombre de tags uniques indexés
+            journal_path (str): Chemin du journal qui a été indexé
+        """
+        # Vérifier que le journal indexé est toujours le journal actuel
+        # Cela évite les problèmes quand on change de journal pendant l'indexation
+        if str(self.journal_directory) != journal_path:
+            print(f"⚠️  Ignoring indexing results from old journal: {journal_path}")
+            return
+
         self.tag_index_count = unique_tag_count
         self.update_indexing_status_label()
 

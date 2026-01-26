@@ -132,6 +132,7 @@ echo "--- Starting AppImage Build ---"
 ls -al
 mv -v BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-x86_64.AppImage
 mv -v *.desktop ../assets/
+mv -v bluenotebook_256-x256_fond_blanc.png ../assets/
 mv -v install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh
 mv -v uninstall_BlueNotebook-$VERSION.sh ../assets/uninstall_BlueNotebook-$VERSION-AppImage.sh
 ./cleanup.sh
@@ -146,3 +147,8 @@ echo "--- All asset builds finished ---"
 echo "--- Assets List ---"
 cd ..
 ls -al assets
+
+echo ""
+echo "--- Starting Upload to GitHub Release ---"
+./dev/scripts/upload_asset.sh $VERSION
+echo "--- Upload Complete ---"

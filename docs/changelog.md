@@ -1,3 +1,28 @@
+## V4.2.5 Open Journal
+
+- change protection +c dev/scripts/build_assets.sh et appimage/build_all appimage.sh OK
+- fichier assets/release_asset_template.md pas les bon numero  de version --> modifier update_version OK
+Fix issue [#180](https://github.com/lephotographelibre/BlueNotebook/issues/180)
+- integrer dev/scripts/upload_assets.sh dans dev/scripts/build_assets.sh #180 OK
+Fix issue [#179](https://github.com/lephotographelibre/BlueNotebook/issues/179)
+- icone sur appImage manquante #179 OK
+Fix issue [#105](https://github.com/lephotographelibre/BlueNotebook/issues/105)
+- V4.0.4 Journal Directory: How to create a new Directory Journal ? Fix Issue #105 OK
+
+- .claude/CLAUDE.md O add entete fichier GNU O
+
+
+- Fix flatpak metainfo.xml OK
+   - a la fois le nom des fichier images --> V4.2.6XX
+   - corriger https://raw.githubusercontent.com/lephotographelibre/BlueNotebook/073e62928bc7f823b5b837ccbab0f70b80e4ce2b/docs/Screencopy/V4.1.0_notes.jp ---> https://github.com/lephotographelibre/BlueNotebook/blob/main/docs/Screencopy/V4.2.6_Note-taking_english.jpg
+
+Fix issue [#177](https://github.com/lephotographelibre/BlueNotebook/issues/177)
+- Integration Amazon ne fonctionne plus #177 OK
+
+
+--> git commit -a -m "V4.2.7 Fix [#180] [#179] [#105] [#177]"
+
+
 ## V4.2.6 Backup + Assets download
 
 ~~- add dev/scripts/upload_assetscfrom Work~~ Fix Issue #176
