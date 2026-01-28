@@ -101,11 +101,11 @@ This level represents the application's ability to help the user organize, retri
 ## How to Run Bluenotebook 
 
 
-To run BlueNotebook on your system, several packages are available for Linux: AppImage, Flatpak Local, and Docker Image (Docker Hub and GitHub packages). See the list on the Release page <https://github.com/lephotographelibre/BlueNotebook/releases>.
+To run BlueNotebook on your system, several packages are available for Linux: AppImage, Flatpak Local, and Docker Image (Docker Hub and GitHub packages). 
 
-A Windows installer will be available soon. Stay Tuned! 
+A Windows installer is now available.
 
-
+See the list on the Release page <https://github.com/lephotographelibre/BlueNotebook/releases>.
 
 
 ## **Screenshots**
