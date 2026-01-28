@@ -15,8 +15,34 @@ C:\Program Files (x86)\solicus\InstallForge\
 3 pb de virus ?? changer de soft ?
 4 remove fenetre noire
 
+--------------  SUMMARY  ---------------------------------------------------------------------
+lancer  .\run_bluenotebook.bat une prmiere fois pour creer l'environnement virtuel .venv_3.11.9
 
-------------------------------------------------------------------------------------
+set "PATH=%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;%PATH%"
+cd .\github\
+cd .\BlueNotebook\
+.\bluenotebook\.venv_3.11.9\Scripts\Activate.ps1 
+pip -V
+pip install pyinstaller pyinstaller-hooks-contrib
+(.venv_3.11.9) PS C:\Users\jmdig\github\BlueNotebook\bluenotebook\dist> .\BlueNotebook\BlueNotebook.exe
+pyinstaller main.spec --clean --noconfirm
+
+Start-Process -FilePath "C:\Program Files (x86)\solicus\InstallForge\bin\ifbuildx86.exe" -ArgumentList "-i",
+     "`"C:\Users\jmdig\github\BlueNotebook\windows_installer\BlueNotebook_V4.2.7.ifp`"" -NoNewWindow -Wait
+
+
+  1. Building from the command line: Yes, it is possible to build the application from the command line using
+      ifbuildx86.exe (or ifbuildx64.exe) and the project file (.ifp). The command used was:
+
+   1     Start-Process -FilePath "C:\Program Files (x86)\solicus\InstallForge\bin\ifbuildx86.exe" -ArgumentList "-i",
+     "`"C:\Users\jmdig\github\BlueNotebook\windows_installer\BlueNotebook_V4.2.7.ifp`"" -NoNewWindow -Wait
+   2. Retrieving errors: The output of the Start-Process command, including Stdout and Stderr, would contain any error
+      messages or warnings generated during the build process. In this case, the Exit Code: 0 and the log messages
+      indicate a successful build with no errors. The setup package was created at
+      C:\Users\jmdig\Desktop\BlueNotebook-Setup-4.2.7.exe.
+
+
+-------END SUMMARY     --------------------------------------------------------------------------
 
 
 set "PATH=%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;%PATH%"
@@ -495,3 +521,12 @@ L’uninstallateur manuel via `Uninstall.exe` dans le répertoire d’installati
 Si le problème persiste après ces étapes, il s’agit probablement d’une limitation de l’interface Paramètres de Windows 11 pour les uninstallateurs non-MSI. L’utilisation du Panneau de configuration reste une solution fiable et standard.
 
 Fournissez plus de détails (version exacte d’InstallForge, nom de l’application, ou capture d’écran de la clé de registre) si vous souhaitez une assistance plus précise.
+
+
+
+-------------------- si erreur pour diag
+
+  & "C:\Program Files (x86)\io.github.lephotographelibre\BlueNotebook\BlueNotebook.exe"
+
+  L'erreur affichée dans la console vous indiquera ce qui empêche l'application de démarrer (dépendance manquante,
+  chemin incorrect, etc.).

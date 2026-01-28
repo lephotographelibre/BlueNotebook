@@ -1,3 +1,17 @@
+## V4.2.7plus _
+
+
+## V4.2.7 OpenJournal
+
+V4.2.7 Fix [#180] [#179] [#105] [#177]
+
+
+## V4.2.6 Backup
+
+V4.2.6 Fix Issue [#104] backup
+V4.2.6 new screenshots
+
+
 ## V4.2.5 Open Journal
 
 - change protection +c dev/scripts/build_assets.sh et appimage/build_all appimage.sh OK
