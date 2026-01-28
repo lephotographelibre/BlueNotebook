@@ -1,5 +1,14 @@
- 
-## An AppImage or BlueNotebook is available for this release on this page
+## A new Windows installer is available for this release on this page. (Beta release)
+
+This application has been built with InstallForge, a free Windows application. On some systems, this application generates false security alarms. Don't worry, it's safe.
+
+Install using the Windows installer `BlueNotebook-Setup-4.2.7.exe`
+
+Uninstall BlueNotebook
+```bash
+C:\Program Files (x86)\io.github.lephotographelibre\BlueNotebook> .\Uninstall.exe 
+```
+## An BlueNotebook AppImage is available for this release on this page
 
 ```bash
 # Download the BlueNotebook App as an AppImage from this page
@@ -8,6 +17,8 @@ chmod +x BlueNotebook-4.2.7-x86_64.AppImage
 # Run
 ./BlueNotebook-4.2.7-x86_64.AppImage
 ```
+Manual update from the previous version using zsync or AppImageUpdate with BlueNotebook-4.2.7-x86_64.AppImage.zsync
+
 
 ## A Flatpak bundle is available as a local .flatpak file
 
@@ -18,7 +29,9 @@ BlueNotebook-V4.2.7.flatpak
 
 # Install the local bundle
 $ flatpak install --bundle --user BlueNotebook-V4.2.7.flatpak
+
 ```
+
 
 ## A docker image for BlueNotebook is available for this release on docker hub <https://hub.docker.com>
 

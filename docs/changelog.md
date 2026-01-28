@@ -1,4 +1,12 @@
-## V4.2.7plus _
+## V4.2.7plus 
+
+- MAJ Windows Installer V4.2.7 
+
+--> git commit -a -m "V4.2.7Plus MAJ Windows Installer"
+
+- Fix Issue [#182](https://github.com/lephotographelibre/BlueNotebook/issues/182)V4.2.7 AppImage: .zsync needed
+
+--> git commit -a -m "V4.2.7Plus .zsynch"
 
 
 ## V4.2.7 OpenJournal
