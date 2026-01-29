@@ -21,6 +21,8 @@
 
 --> git commit -a -m "V4.2.7Plus Fix [#184] Exporting a note to a file outside the journal"
 
+- Fix Issue [#186](https://github.com/lephotographelibre/BlueNotebook/issues/186) V4.2.7 Notes: Modify contextual Menu from Conversion to Import #186
+--> git commit -a -m "V4.2.7Plus Fix [#186] Modify contextual Menu from Conversion to Import"   
 
 - Fix Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185) Upload to AppImageHub
 

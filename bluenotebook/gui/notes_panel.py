@@ -654,11 +654,11 @@ class NotesPanel(QWidget):
                 lambda: self.import_file_to_folder(file_path),
             )
             menu.addAction(
-                self.tr("Conversion PDF-Markdown"),
+                self.tr("Importer PDF -> Markdown"),
                 lambda: self.pdf_to_markdown_request.emit(file_path),
             )
             menu.addAction(
-                self.tr("Conversion URL(HTML)-Markdown"),
+                self.tr("Importer HTML -> Markdown"),
                 lambda: self.url_to_markdown_request.emit(file_path),
             )
             menu.addSeparator()
@@ -893,10 +893,7 @@ class NotesPanel(QWidget):
         file_filter = self.tr("Tous les fichiers (*.*)")
 
         destination_path, _ = QFileDialog.getSaveFileName(
-            self,
-            self.tr("Exporter le fichier"),
-            default_filename,
-            file_filter
+            self, self.tr("Exporter le fichier"), default_filename, file_filter
         )
 
         if not destination_path:
@@ -909,7 +906,7 @@ class NotesPanel(QWidget):
             QMessageBox.warning(
                 self,
                 self.tr("Opération impossible"),
-                self.tr("Vous ne pouvez pas exporter un fichier vers lui-même.")
+                self.tr("Vous ne pouvez pas exporter un fichier vers lui-même."),
             )
             return
 
@@ -918,7 +915,7 @@ class NotesPanel(QWidget):
             QMessageBox.information(
                 self,
                 self.tr("Export réussi"),
-                self.tr("Le fichier a été exporté avec succès.")
+                self.tr("Le fichier a été exporté avec succès."),
             )
         except Exception as e:
             msg = self.tr("Impossible d'exporter le fichier :\n{}")
