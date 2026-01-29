@@ -3448,91 +3448,10 @@ class MainWindow(QMainWindow):
         )
 
     def on_today_button_clicked(self):
-        """Sélectionne la date du jour et ouvre ou crée la note correspondante."""
-        if not self.journal_directory:
-            QMessageBox.warning(
-                self,
-                self.tr("Journal non défini"),
-                self.tr("Veuillez d'abord définir un répertoire de journal."),
-            )
-            return
-
-        # Vérifier si la note du jour existe
-        today_str = datetime.now().strftime("%Y%m%d")
-        journal_file_path = self.journal_directory / f"{today_str}.md"
-
-        if journal_file_path.exists():
-            # La note existe : l'ouvrir
-            if self.check_save_changes():
-                self.open_specific_file(str(journal_file_path))
-        else:
-            # La note n'existe pas : proposer le dialogue de choix de template
-            if not self.check_save_changes():
-                return
-
-            # Déterminer le template par défaut selon la locale
-            current_locale = locale.getlocale(locale.LC_TIME)[0]
-            if current_locale and current_locale.startswith("fr"):
-                default_template = "[Fr]Page_Journal_Standard.md"
-            else:
-                default_template = "[en-US]default.md"
-
-            dialog = NewFileDialog(
-                self,
-                use_template_by_default=True,
-                default_template_name=default_template,
-            )
-
-            if dialog.exec_() != QDialog.Accepted:
-                return
-
-            choice, template_name = dialog.get_selection()
-            content = ""
-
-            today_date_str = datetime.now().strftime("%A %d %B %Y").title()
-            timestamp_str = datetime.now().strftime("%H:%M")
-
-            if choice == "blank":
-                content = ""
-            elif choice == "template" and template_name:
-                try:
-                    base_path = Path(__file__).parent.parent
-                    template_path = base_path / "resources" / "templates" / template_name
-
-                    if not template_path.exists():
-                        raise FileNotFoundError(
-                            self.tr(
-                                "Le fichier template '{template_name}' est introuvable."
-                            ).format(template_name=template_name)
-                        )
-
-                    with open(template_path, "r", encoding="utf-8") as f:
-                        content = f.read()
-
-                    # Remplacement des placeholders
-                    if "{{date}}" in content:
-                        content = content.replace("{{date}}", today_date_str)
-                    if "{{horodatage}}" in content:
-                        content = content.replace("{{horodatage}}", timestamp_str)
-
-                except FileNotFoundError as e:
-                    QMessageBox.warning(self, self.tr("Template manquant"), str(e))
-                    content = f"# {today_date_str}\n\n"
-
-            # Charger le contenu dans l'éditeur et sauvegarder immédiatement
-            self.editor.set_text(content)
-            self.current_file = str(journal_file_path)
-            self.is_modified = False
-            self._save_to_file(str(journal_file_path))
-            self.update_title()
-            self.update_stats()
-            self._set_file_label_color("gray")
-            self.update_preview()
-            self.expand_outline()
-
-        # Mettre à jour la sélection dans le calendrier
+        """Sélectionne la date du jour et ouvre la note correspondante."""
         today = QDate.currentDate()
         self.navigation_panel.calendar.setSelectedDate(today)
+        self.on_calendar_date_clicked(today)
 
     def on_calendar_date_clicked(self, date):
         """Ouvre le fichier journal correspondant à la date cliquée."""
