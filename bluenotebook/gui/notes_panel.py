@@ -37,6 +37,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QDialog,
     QSplitter,
+    QFileDialog,
 )
 
 from .new_note_dialog import NewFileDialog
@@ -653,11 +654,11 @@ class NotesPanel(QWidget):
                 lambda: self.import_file_to_folder(file_path),
             )
             menu.addAction(
-                self.tr("Conversion PDF-Markdown"),
+                self.tr("Importer PDF -> Markdown"),
                 lambda: self.pdf_to_markdown_request.emit(file_path),
             )
             menu.addAction(
-                self.tr("Conversion URL(HTML)-Markdown"),
+                self.tr("Importer HTML -> Markdown"),
                 lambda: self.url_to_markdown_request.emit(file_path),
             )
             menu.addSeparator()
@@ -688,6 +689,11 @@ class NotesPanel(QWidget):
 
         open_action = menu.addAction(self.tr("Ouvrir"))
         open_action.triggered.connect(lambda: self.open_selected_item(source_index))
+
+        # Ajouter l'option "Exporter ..." uniquement pour les fichiers
+        if not is_dir:
+            export_action = menu.addAction(self.tr("Exporter ..."))
+            export_action.triggered.connect(lambda: self.export_file(source_index))
 
         menu.addSeparator()
         menu.addAction(self.tr("Copier"), lambda: self.copy_item(file_path))
@@ -874,6 +880,46 @@ class NotesPanel(QWidget):
         except Exception as e:
             msg = self.tr("Impossible d'importer le fichier :\n{}")
             QMessageBox.critical(self, self.tr("Erreur d'importation"), msg.format(e))
+
+    def export_file(self, source_index):
+        """Exporte un fichier vers un emplacement choisi par l'utilisateur."""
+        source_path = Path(self.model.filePath(source_index))
+
+        if not source_path.is_file():
+            return
+
+        # Ouvrir le sélecteur de fichier avec le nom du fichier pré-rempli
+        default_filename = source_path.name
+        file_filter = self.tr("Tous les fichiers (*.*)")
+
+        destination_path, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Exporter le fichier"), default_filename, file_filter
+        )
+
+        if not destination_path:
+            return
+
+        destination_path = Path(destination_path)
+
+        # Vérifier si on essaie d'écraser le fichier source
+        if destination_path.resolve() == source_path.resolve():
+            QMessageBox.warning(
+                self,
+                self.tr("Opération impossible"),
+                self.tr("Vous ne pouvez pas exporter un fichier vers lui-même."),
+            )
+            return
+
+        try:
+            shutil.copy2(source_path, destination_path)
+            QMessageBox.information(
+                self,
+                self.tr("Export réussi"),
+                self.tr("Le fichier a été exporté avec succès."),
+            )
+        except Exception as e:
+            msg = self.tr("Impossible d'exporter le fichier :\n{}")
+            QMessageBox.critical(self, self.tr("Erreur d'export"), msg.format(e))
 
     def copy_item(self, path):
         """Met le chemin en mémoire pour une opération de copie."""

@@ -131,6 +131,7 @@ echo "--- Starting AppImage Build ---"
 ./build_all_appimage.sh $VERSION
 ls -al
 mv -v BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-x86_64.AppImage
+mv -v BlueNotebook-$VERSION-x86_64.AppImage.zsync ../assets/BlueNotebook-$VERSION-x86_64.AppImage.zsync
 mv -v *.desktop ../assets/
 mv -v bluenotebook_256-x256_fond_blanc.png ../assets/
 mv -v install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh
