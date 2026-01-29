@@ -50,7 +50,9 @@ DOCKERFILE_VERSION="${WORK_DIR}/Dockerfile"
 ICON_SOURCE="${SCRIPT_DIR}/bluenotebook_256-x256_fond_blanc.png"
 DOCKER_IMAGE="bluenotebook-appimage:${VERSION}"
 APPIMAGE_NAME="BlueNotebook-${VERSION}-x86_64.AppImage"
+ZSYNC_NAME="${APPIMAGE_NAME}.zsync"
 DESKTOP_FILE="BlueNotebook-${VERSION}.desktop"
+APPIMAGE_URL="https://github.com/lephotographelibre/BlueNotebook/releases/download/v${VERSION}/${APPIMAGE_NAME}"
 
 # =============================================================================
 # Vérification des prérequis
@@ -170,8 +172,9 @@ RUN /usr/local/bin/pip3.11 install --no-cache-dir -r requirements.txt
 # Étape finale : Image runtime minimale
 FROM debian:11-slim
 
-# Installation des bibliothèques runtime uniquement
+# Installation des bibliothèques runtime et outils
 RUN apt-get update && apt-get install -y \
+    zsync \
     libcairo2 \
     libpango-1.0-0 \
     libgdk-pixbuf-2.0-0 \
@@ -527,13 +530,38 @@ echo -e "${GREEN}✓ Icône embarquée (taille: $ICON_SIZE octets)${NC}"
 mv "$APPIMAGE_NAME" "$SCRIPT_DIR/"
 echo -e "${GREEN}✓ AppImage créée: $SCRIPT_DIR/$APPIMAGE_NAME${NC}"
 
-# Copier l'icône dans le répertoire parent pour le fichier .desktop
-echo -e "${BLUE}Copie de l'icône pour le fichier .desktop...${NC}"
-cp "$ICON_SOURCE" "$SCRIPT_DIR/"
-echo -e "${GREEN}✓ Icône copiée: $SCRIPT_DIR/$(basename "$ICON_SOURCE")${NC}"
+# Vérifier que l'icône est disponible pour le fichier .desktop
+echo -e "${BLUE}Vérification de l'icône pour le fichier .desktop...${NC}"
+if [ -f "$ICON_SOURCE" ]; then
+    echo -e "${GREEN}✓ Icône disponible: $ICON_SOURCE${NC}"
+else
+    echo -e "${RED}⚠ Icône non trouvée: $ICON_SOURCE${NC}"
+fi
 
 # Nettoyage temporaire
 rm -rf "$TEMP_EXTRACT"
+echo ""
+
+# =============================================================================
+# Génération du fichier .zsync pour les mises à jour delta
+# =============================================================================
+
+echo -e "${YELLOW}Génération du fichier .zsync pour les mises à jour delta...${NC}"
+echo -e "${BLUE}URL de téléchargement: ${APPIMAGE_URL}${NC}"
+
+# Utiliser Docker pour exécuter zsyncmake (zsync est installé dans l'image)
+docker run --rm \
+    -v "$SCRIPT_DIR:/output" \
+    -w /output \
+    "$DOCKER_IMAGE" \
+    zsyncmake -u "$APPIMAGE_URL" -o "$ZSYNC_NAME" "$APPIMAGE_NAME"
+
+if [ -f "$SCRIPT_DIR/$ZSYNC_NAME" ]; then
+    ZSYNC_SIZE=$(du -h "$SCRIPT_DIR/$ZSYNC_NAME" | cut -f1)
+    echo -e "${GREEN}✓ Fichier .zsync généré: $SCRIPT_DIR/$ZSYNC_NAME ($ZSYNC_SIZE)${NC}"
+else
+    echo -e "${RED}⚠ Erreur lors de la génération du fichier .zsync${NC}"
+fi
 echo ""
 
 # =============================================================================
@@ -752,6 +780,7 @@ echo -e "\${GREEN}════════════════════�
 echo ""
 echo -e "\${YELLOW}Fichiers conservés:\${NC}"
 echo "  • ${APPIMAGE_NAME}"
+echo "  • ${ZSYNC_NAME}"
 echo "  • ${DESKTOP_FILE}"
 echo "  • $(basename "$ICON_SOURCE")"
 echo "  • install_BlueNotebook-${VERSION}.sh"
@@ -776,6 +805,10 @@ echo -e "${CYAN}═════════════════════�
 echo ""
 echo -e "${YELLOW}Fichiers générés:${NC}"
 echo "  ✓ $APPIMAGE_NAME ($APPIMAGE_SIZE)"
+if [ -f "$SCRIPT_DIR/$ZSYNC_NAME" ]; then
+    ZSYNC_SIZE=$(du -h "$SCRIPT_DIR/$ZSYNC_NAME" | cut -f1)
+    echo "  ✓ $ZSYNC_NAME ($ZSYNC_SIZE) - mises à jour delta"
+fi
 echo "  ✓ $DESKTOP_FILE"
 echo "  ✓ $(basename "$ICON_SOURCE")"
 echo "  ✓ install_BlueNotebook-${VERSION}.sh"

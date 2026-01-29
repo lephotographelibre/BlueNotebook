@@ -138,6 +138,9 @@ for ASSET_PATH in assets/*; do
     *.AppImage)
       CONTENT_TYPE="application/x-executable"
       ;;
+    *.zsync)
+      CONTENT_TYPE="application/x-zsync"
+      ;;
     *.sh)
       CONTENT_TYPE="application/x-sh"
       ;;

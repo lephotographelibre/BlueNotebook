@@ -1,3 +1,43 @@
+## V4.2.7plus WinInstaller+Zsynch
+
+- MAJ Windows Installer V4.2.7 
+
+--> git commit -a -m "V4.2.7Plus MAJ Windows Installer"
+
+- Fix Issue [#182](https://github.com/lephotographelibre/BlueNotebook/issues/182)V4.2.7 AppImage: .zsync needed
+
+--> git commit -a -m "V4.2.7Plus .zsynch"
+
+- MAJ README.md
+
+--> git commit -a -m "V4.2.7Plus MAJ Windows Installer - README.md"
+
+- Fix issue [#183](https://github.com/lephotographelibre/BlueNotebook/issues/183) V4.2.7 Gui: Today button doesn't create today Journal page if not exists #183
+
+--> git commit -a -m "V4.2.7Plus Fix [#183] Today button"
+
+
+- Fix Issue [#184](https://github.com/lephotographelibre/BlueNotebook/issues/184)  V4.2.7 Notes: Exporting a note to a file outside the journal #184
+
+--> git commit -a -m "V4.2.7Plus Fix [#184] Exporting a note to a file outside the journal"
+
+- Fix Issue [#186](https://github.com/lephotographelibre/BlueNotebook/issues/186) V4.2.7 Notes: Modify contextual Menu from Conversion to Import #186
+--> git commit -a -m "V4.2.7Plus Fix [#186] Modify contextual Menu from Conversion to Import"   
+
+- Fix Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185) Upload to AppImageHub
+
+
+## V4.2.7 OpenJournal
+
+V4.2.7 Fix [#180] [#179] [#105] [#177]
+
+
+## V4.2.6 Backup
+
+V4.2.6 Fix Issue [#104] backup
+V4.2.6 new screenshots
+
+
 ## V4.2.5 Open Journal
 
 - change protection +c dev/scripts/build_assets.sh et appimage/build_all appimage.sh OK

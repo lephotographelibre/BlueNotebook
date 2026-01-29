@@ -30,7 +30,7 @@ wheels/
 
 # PyInstaller
 *.manifest
-*.spec
+#*.spec
 
 # Tests
 .pytest_cache/
