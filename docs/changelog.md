@@ -3,6 +3,12 @@
 - Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185)  Mise en conformité AppImage Hub
 --> git commit -a -m "V4.2.8 AppImageHub Conformité"
 
+-- Windows Installer hash verfication
+
+        ../../windows_installer/Upload_to_GitHub.ps1
+        ../../windows_installer/Verification hash Installer.md
+--> git commit -a -m "V4.2.8 Win Installer Hash"
+
 ## V4.2.7plus WinInstaller+Zsynch
 
 - MAJ Windows Installer V4.2.7 
