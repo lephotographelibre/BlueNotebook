@@ -130,8 +130,17 @@ cd appimage
 echo "--- Starting AppImage Build ---"
 ./build_all_appimage.sh $VERSION
 ls -al
+
+echo "--- Starting AppImage Validation ---"
+./validate_appimage.sh $VERSION
+if [ $? -ne 0 ]; then
+    echo "❌ AppImage validation failed! Build aborted."
+    exit 1
+fi
+echo "--- AppImage Validation Complete ---"
+echo ""
+
 mv -v BlueNotebook-$VERSION-x86_64.AppImage ../assets/BlueNotebook-$VERSION-x86_64.AppImage
-mv -v BlueNotebook-$VERSION-x86_64.AppImage.zsync ../assets/BlueNotebook-$VERSION-x86_64.AppImage.zsync
 mv -v *.desktop ../assets/
 mv -v bluenotebook_256-x256_fond_blanc.png ../assets/
 mv -v install_BlueNotebook-$VERSION.sh ../assets/install_BlueNotebook-$VERSION-AppImage.sh

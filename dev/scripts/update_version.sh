@@ -64,6 +64,69 @@ changes_made=0
 files_modified=0
 total_occurrences=0
 
+# Special function to update screenshot URLs in metainfo.xml
+# Only updates the Git tag version (between "BlueNotebook/v" and "/docs")
+# Does NOT update version numbers in image filenames (e.g., V4.2.6_Editor_english.jpg)
+process_metainfo_screenshots() {
+    local file=$1
+    local relative_file="${file#$PROJECT_ROOT/}"
+
+    if [ ! -f "$file" ]; then
+        echo -e "${YELLOW}Warning: File not found: $relative_file${NC}"
+        return
+    fi
+
+    echo -e "\n${BLUE}─────────────────────────────────────────${NC}"
+    echo -e "${BLUE}Processing screenshot URLs in: ${NC}$relative_file"
+    echo -e "${BLUE}─────────────────────────────────────────${NC}"
+
+    # Pattern to match: BlueNotebook/v<VERSION>/docs
+    local url_pattern="BlueNotebook/v${OLD_VERSION}/docs"
+    local url_replacement="BlueNotebook/v${NEW_VERSION}/docs"
+
+    # Check if pattern exists in file
+    if ! grep -q "$url_pattern" "$file" 2>/dev/null; then
+        echo -e "${YELLOW}No screenshot URLs with version $OLD_VERSION found in this file.${NC}"
+        return
+    fi
+
+    # Count occurrences
+    local count=$(grep -c "$url_pattern" "$file" 2>/dev/null || echo "0")
+    echo -e "Found ${YELLOW}$count${NC} screenshot URL(s) with version ${RED}v$OLD_VERSION${NC}"
+    echo ""
+
+    # Show what will be changed
+    echo -e "${YELLOW}URLs to update:${NC}"
+    grep -n "$url_pattern" "$file" | while IFS=: read -r line_num line_content; do
+        echo -e "  Line $line_num: ${RED}$url_pattern${NC} → ${GREEN}$url_replacement${NC}"
+    done
+    echo ""
+
+    echo -e "Update all screenshot URLs in this file?"
+    echo -n "[y/N/q(quit)]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        [yY]|[yY][eE][sS])
+            # Use sed to replace ONLY the URL pattern (not version in filenames)
+            sed -i "s|$url_pattern|$url_replacement|g" "$file"
+
+            echo -e "${GREEN}✓ Updated $count screenshot URL(s)${NC}"
+            ((changes_made += count)) || true
+            ((files_modified++)) || true
+            ((total_occurrences += count)) || true
+            ;;
+        [qQ]|[qQ][uU][iI][tT])
+            echo -e "\n${YELLOW}Script aborted by user.${NC}"
+            echo -e "Changes made before abort: $changes_made"
+            exit 0
+            ;;
+        *)
+            echo -e "${YELLOW}Skipped${NC}"
+            ;;
+    esac
+}
+
 # Function to process a single file
 process_file() {
     local file=$1
@@ -153,6 +216,13 @@ process_file "$MAIN_PY"
 # Process flatpak files
 echo -e "\n${GREEN}Processing flatpak files...${NC}"
 process_file "$FLATPAK_YAML"
+
+# Special processing for metainfo.xml - first update screenshot URLs
+echo -e "\n${GREEN}Processing flatpak metainfo (screenshot URLs)...${NC}"
+process_metainfo_screenshots "$FLATPAK_METAINFO"
+
+# Then process other version occurrences in metainfo
+echo -e "\n${GREEN}Processing flatpak metainfo (other version references)...${NC}"
 process_file "$FLATPAK_METAINFO"
 
 # Process release asset template
