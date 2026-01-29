@@ -2,7 +2,7 @@
 
 This application has been built with InstallForge, a free Windows application. On some systems, this application generates false security alarms. Don't worry, it's safe.
 
-Install using the Windows installer `BlueNotebook-Setup-4.2.7.exe`
+Install using the Windows installer `BlueNotebook-Setup-4.2.8.exe`
 
 Uninstall BlueNotebook
 ```bash
@@ -13,11 +13,11 @@ C:\Program Files (x86)\io.github.lephotographelibre\BlueNotebook> .\Uninstall.ex
 ```bash
 # Download the BlueNotebook App as an AppImage from this page
 # Make it Runnable
-chmod +x BlueNotebook-4.2.7-x86_64.AppImage
+chmod +x BlueNotebook-4.2.8-x86_64.AppImage
 # Run
-./BlueNotebook-4.2.7-x86_64.AppImage
+./BlueNotebook-4.2.8-x86_64.AppImage
 ```
-Manual update from the previous version using zsync or AppImageUpdate with BlueNotebook-4.2.7-x86_64.AppImage.zsync
+Manual update from the previous version using zsync or AppImageUpdate with BlueNotebook-4.2.8-x86_64.AppImage.zsync
 
 
 ## A Flatpak bundle is available as a local .flatpak file
@@ -25,10 +25,10 @@ Manual update from the previous version using zsync or AppImageUpdate with BlueN
 ```bash
 # Download bundle from this page
 $ ls -al *.flatpak
-BlueNotebook-V4.2.7.flatpak
+BlueNotebook-V4.2.8.flatpak
 
 # Install the local bundle
-$ flatpak install --bundle --user BlueNotebook-V4.2.7.flatpak
+$ flatpak install --bundle --user BlueNotebook-V4.2.8.flatpak
 
 ```
 
@@ -37,7 +37,7 @@ $ flatpak install --bundle --user BlueNotebook-V4.2.7.flatpak
 
 ```bash
 # get the docker image (558 MB)
-docker pull jmdigne/bluenotebook:4.2.7
+docker pull jmdigne/bluenotebook:4.2.8
 # Create mandatoruy directories on the host 
 # By default, the Journal, Backup, and Configuration directories are located in the user directory under the name `bluenotebook_docker`. You can change the name of the `bluenotebook_docker` directory and choose the name and location you want, but make the same changes in the following lines of script.
 
@@ -57,7 +57,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    jmdigne/bluenotebook:4.2.7
+    jmdigne/bluenotebook:4.2.8
 ```
 
 
@@ -68,7 +68,7 @@ docker run -it --rm \
 ```bash
 # Install from the command line
 
-$ docker pull ghcr.io/lephotographelibre/bluenotebook:4.2.7
+$ docker pull ghcr.io/lephotographelibre/bluenotebook:4.2.8
 
 # Create mandatoruy directories on the host 
 # By default, the Journal, Backup, and Configuration directories are located in the user directory under the name `bluenotebook_docker`. You can change the name of the `bluenotebook_docker` directory and choose the name and location you want, but make the same changes in the following lines of script.
@@ -89,7 +89,7 @@ docker run -it --rm \
     -v ~/bluenotebook_docker/BlueNotebookJournal:/home/appuser/BlueNotebookJournal \
     -v ~/bluenotebook_docker/BlueNotebookBackup:/home/appuser/BlueNotebookBackup \
     --user=$(id -u):$(id -g) \
-    ghcr.io/lephotographelibre/bluenotebook:4.2.7
+    ghcr.io/lephotographelibre/bluenotebook:4.2.8
 ```
 ## **Ubuntu/Debian** install from source files
 

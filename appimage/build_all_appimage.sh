@@ -50,9 +50,7 @@ DOCKERFILE_VERSION="${WORK_DIR}/Dockerfile"
 ICON_SOURCE="${SCRIPT_DIR}/bluenotebook_256-x256_fond_blanc.png"
 DOCKER_IMAGE="bluenotebook-appimage:${VERSION}"
 APPIMAGE_NAME="BlueNotebook-${VERSION}-x86_64.AppImage"
-ZSYNC_NAME="${APPIMAGE_NAME}.zsync"
 DESKTOP_FILE="BlueNotebook-${VERSION}.desktop"
-APPIMAGE_URL="https://github.com/lephotographelibre/BlueNotebook/releases/download/v${VERSION}/${APPIMAGE_NAME}"
 
 # =============================================================================
 # Vérification des prérequis
@@ -172,9 +170,8 @@ RUN /usr/local/bin/pip3.11 install --no-cache-dir -r requirements.txt
 # Étape finale : Image runtime minimale
 FROM debian:11-slim
 
-# Installation des bibliothèques runtime et outils
+# Installation des bibliothèques runtime uniquement
 RUN apt-get update && apt-get install -y \
-    zsync \
     libcairo2 \
     libpango-1.0-0 \
     libgdk-pixbuf-2.0-0 \
@@ -268,6 +265,13 @@ cp -r "$TEMP_EXTRACT/usr/local/bin" "$APPDIR/usr/local/"
 # Copie de l'application
 echo -e "${BLUE}Copie de BlueNotebook...${NC}"
 cp -r "$TEMP_EXTRACT/app" "$APPDIR/"
+
+# Copie du fichier AppStream metainfo
+echo -e "${BLUE}Copie du fichier AppStream metainfo...${NC}"
+mkdir -p "$APPDIR/usr/share/metainfo"
+cp "$TEMP_EXTRACT/app/flatpak/io.github.lephotographelibre.BlueNotebook.metainfo.xml" \
+   "$APPDIR/usr/share/metainfo/"
+echo -e "${GREEN}✓ Metainfo copié${NC}"
 
 # Copie des bibliothèques SSL (critique pour Python _ssl)
 echo -e "${BLUE}Copie des bibliothèques SSL...${NC}"
@@ -393,27 +397,25 @@ echo -e "${GREEN}✓ Nettoyage effectué${NC}"
 echo -e "${BLUE}Copie de l'icône...${NC}"
 cp "$ICON_SOURCE" "$APPDIR/bluenotebook.png"
 ln -sf bluenotebook.png "$APPDIR/.DirIcon"
+# Copie également avec le nom Flatpak pour cohérence avec le metainfo
+cp "$ICON_SOURCE" "$APPDIR/io.github.lephotographelibre.BlueNotebook.png"
 echo -e "${GREEN}✓ Icône copiée (256x256)${NC}"
 
-# Création du fichier .desktop pour l'AppImage
-cat > "$APPDIR/bluenotebook.desktop" << DESKTOP_EOF
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=BlueNotebook
-GenericName=Journal personnel
-Comment=Journal personnel et organisateur de notes
-Exec=bluenotebook
-Icon=bluenotebook
-Terminal=false
-Categories=Office;Calendar;X-Diary;
-MimeType=text/plain;
-Keywords=journal;diary;notes;markdown;
-StartupNotify=true
-StartupWMClass=bluenotebook
-DESKTOP_EOF
+# Copie du fichier .desktop depuis Flatpak (pour cohérence avec metainfo)
+echo -e "${BLUE}Copie du fichier .desktop depuis Flatpak...${NC}"
+mkdir -p "$APPDIR/usr/share/applications"
+cp "$TEMP_EXTRACT/app/flatpak/io.github.lephotographelibre.BlueNotebook.desktop" \
+   "$APPDIR/usr/share/applications/"
 
-echo -e "${GREEN}✓ Fichier .desktop créé${NC}"
+# Créer un lien symbolique à la racine pour AppImage (requis par AppImage)
+# AppImage cherche un .desktop à la racine de l'AppDir
+ln -sf usr/share/applications/io.github.lephotographelibre.BlueNotebook.desktop \
+   "$APPDIR/io.github.lephotographelibre.BlueNotebook.desktop"
+
+# Créer aussi un lien avec le nom court pour compatibilité
+ln -sf io.github.lephotographelibre.BlueNotebook.desktop "$APPDIR/bluenotebook.desktop"
+
+echo -e "${GREEN}✓ Fichier .desktop copié et lié${NC}"
 
 # Création du script AppRun
 echo -e "${BLUE}Création du script AppRun...${NC}"
@@ -508,7 +510,7 @@ fi
 
 # Génération de l'AppImage
 echo -e "${BLUE}Génération de l'AppImage...${NC}"
-ARCH=x86_64 "$APPIMAGETOOL" --no-appstream "$APPDIR" "$APPIMAGE_NAME"
+ARCH=x86_64 "$APPIMAGETOOL" "$APPDIR" "$APPIMAGE_NAME"
 
 # Embarquer l'icône dans l'AppImage pour qu'elle soit visible dans le gestionnaire de fichiers
 echo -e "${BLUE}Embarquement de l'icône dans l'AppImage...${NC}"
@@ -530,38 +532,18 @@ echo -e "${GREEN}✓ Icône embarquée (taille: $ICON_SIZE octets)${NC}"
 mv "$APPIMAGE_NAME" "$SCRIPT_DIR/"
 echo -e "${GREEN}✓ AppImage créée: $SCRIPT_DIR/$APPIMAGE_NAME${NC}"
 
-# Vérifier que l'icône est disponible pour le fichier .desktop
-echo -e "${BLUE}Vérification de l'icône pour le fichier .desktop...${NC}"
-if [ -f "$ICON_SOURCE" ]; then
-    echo -e "${GREEN}✓ Icône disponible: $ICON_SOURCE${NC}"
+# Copier l'icône dans le répertoire parent pour le fichier .desktop (si nécessaire)
+ICON_DEST="$SCRIPT_DIR/$(basename "$ICON_SOURCE")"
+if [ "$ICON_SOURCE" != "$ICON_DEST" ]; then
+    echo -e "${BLUE}Copie de l'icône pour le fichier .desktop...${NC}"
+    cp "$ICON_SOURCE" "$ICON_DEST"
+    echo -e "${GREEN}✓ Icône copiée: $ICON_DEST${NC}"
 else
-    echo -e "${RED}⚠ Icône non trouvée: $ICON_SOURCE${NC}"
+    echo -e "${GREEN}✓ Icône déjà présente: $ICON_DEST${NC}"
 fi
 
 # Nettoyage temporaire
 rm -rf "$TEMP_EXTRACT"
-echo ""
-
-# =============================================================================
-# Génération du fichier .zsync pour les mises à jour delta
-# =============================================================================
-
-echo -e "${YELLOW}Génération du fichier .zsync pour les mises à jour delta...${NC}"
-echo -e "${BLUE}URL de téléchargement: ${APPIMAGE_URL}${NC}"
-
-# Utiliser Docker pour exécuter zsyncmake (zsync est installé dans l'image)
-docker run --rm \
-    -v "$SCRIPT_DIR:/output" \
-    -w /output \
-    "$DOCKER_IMAGE" \
-    zsyncmake -u "$APPIMAGE_URL" -o "$ZSYNC_NAME" "$APPIMAGE_NAME"
-
-if [ -f "$SCRIPT_DIR/$ZSYNC_NAME" ]; then
-    ZSYNC_SIZE=$(du -h "$SCRIPT_DIR/$ZSYNC_NAME" | cut -f1)
-    echo -e "${GREEN}✓ Fichier .zsync généré: $SCRIPT_DIR/$ZSYNC_NAME ($ZSYNC_SIZE)${NC}"
-else
-    echo -e "${RED}⚠ Erreur lors de la génération du fichier .zsync${NC}"
-fi
 echo ""
 
 # =============================================================================
@@ -780,7 +762,6 @@ echo -e "\${GREEN}════════════════════�
 echo ""
 echo -e "\${YELLOW}Fichiers conservés:\${NC}"
 echo "  • ${APPIMAGE_NAME}"
-echo "  • ${ZSYNC_NAME}"
 echo "  • ${DESKTOP_FILE}"
 echo "  • $(basename "$ICON_SOURCE")"
 echo "  • install_BlueNotebook-${VERSION}.sh"
@@ -805,10 +786,6 @@ echo -e "${CYAN}═════════════════════�
 echo ""
 echo -e "${YELLOW}Fichiers générés:${NC}"
 echo "  ✓ $APPIMAGE_NAME ($APPIMAGE_SIZE)"
-if [ -f "$SCRIPT_DIR/$ZSYNC_NAME" ]; then
-    ZSYNC_SIZE=$(du -h "$SCRIPT_DIR/$ZSYNC_NAME" | cut -f1)
-    echo "  ✓ $ZSYNC_NAME ($ZSYNC_SIZE) - mises à jour delta"
-fi
 echo "  ✓ $DESKTOP_FILE"
 echo "  ✓ $(basename "$ICON_SOURCE")"
 echo "  ✓ install_BlueNotebook-${VERSION}.sh"

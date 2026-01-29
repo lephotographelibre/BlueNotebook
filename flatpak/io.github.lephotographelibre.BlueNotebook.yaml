@@ -62,7 +62,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/lephotographelibre/BlueNotebook.git
-        tag: v4.2.7
+        tag: v4.2.8
       #- type: dir
       #  path: ..
 
