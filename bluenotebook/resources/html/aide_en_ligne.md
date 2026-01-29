@@ -1044,7 +1044,7 @@ Voici une liste des principales bibliothèques Python qui animent le projet Blue
 ---
 
 
-*Ce manuel a été rédigé pour la version V4.2.7 de BlueNotebook.*
+*Ce manuel a été rédigé pour la version V4.2.8 de BlueNotebook.*
 
 Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le [site du développeur](https://github.com/lephotographelibre/BlueNotebook/issues).
 

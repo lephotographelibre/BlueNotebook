@@ -1,3 +1,8 @@
+## V4.2.8 AppImageHub Conformité
+
+- Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185)  Mise en conformité AppImage Hub
+--> git commit -a -m "V4.2.8 AppImageHub Conformité"
+
 ## V4.2.7plus WinInstaller+Zsynch
 
 - MAJ Windows Installer V4.2.7 
