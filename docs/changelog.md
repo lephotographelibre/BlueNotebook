@@ -19,6 +19,9 @@
 
 - Fix Issue [#184](https://github.com/lephotographelibre/BlueNotebook/issues/184)  V4.2.7 Notes: Exporting a note to a file outside the journal #184
 
+--> git commit -a -m "V4.2.7Plus Fix [#184] Exporting a note to a file outside the journal"
+
+
 - Fix Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185) Upload to AppImageHub
 
 
