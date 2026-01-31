@@ -1044,7 +1044,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
 ---
 
 
-*This manual was written for BlueNotebook V4.2.8.*
+*This manual was written for BlueNotebook V4.2.9.*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 

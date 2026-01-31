@@ -93,13 +93,13 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True, # Gardez True pour voir si l'erreur change
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    # icon='resources/images/icon.ico',
+    icon='resources/icons/bluenotebook_256-x256_fond_blanc.ico',
 )
 
 coll = COLLECT(

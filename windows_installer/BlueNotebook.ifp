@@ -4,7 +4,7 @@
   <Metadata productVersion="1.6.1" projectFileVersion="2.0"/>
   <ProductInformation>
     <Name>BlueNotebook</Name>
-    <Version>4.2.7</Version>
+    <Version>4.2.9</Version>
     <CompanyName>io.github.lephotographelibre</CompanyName>
     <WebURI>https://github.com/lephotographelibre/BlueNotebook</WebURI>
   </ProductInformation>
@@ -76,9 +76,9 @@
     <Program executableFilePath="" isLaunchEnabled="false" isTerminationEnabled="false"/>
   </VisualUpdateConfiguration>
   <BuildConfiguration>
-    <SetupFilePath>C:\Users\jmdig\Desktop\BlueNotebook-Setup-4.2.7.exe</SetupFilePath>
-    <SetupIconPath>C:\Program Files (x86)\solicus\InstallForge\icons\ancient.ico</SetupIconPath>
-    <UninstallerIconPath>C:\Program Files (x86)\solicus\InstallForge\icons\ancient.ico</UninstallerIconPath>
+    <SetupFilePath>C:\Users\jmdig\github\BlueNotebook\windows_installer\BlueNotebook-Setup-4.2.9.exe</SetupFilePath>
+    <SetupIconPath>C:\Users\jmdig\github\BlueNotebook\bluenotebook\resources\icons\bluenotebook_256-x256_fond_blanc.ico</SetupIconPath>
+    <UninstallerIconPath>C:\Users\jmdig\github\BlueNotebook\bluenotebook\resources\icons\bluenotebook_256-x256_fond_blanc.ico</UninstallerIconPath>
     <Compression method="0" level="2"/>
     <CodeSigning isEnabled="false" signToolCommandLine="/n &quot;Subject&quot; /tr http://timestamp.digicert.com /td sha256 /fd sha256 &quot;&lt;ExecutableFilePath&gt;&quot;"/>
   </BuildConfiguration>

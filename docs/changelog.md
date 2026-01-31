@@ -1,3 +1,5 @@
+## V4.2.9 Wininstaller Update
+
 ## V4.2.8 AppImageHub Conformité
 
 - Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185)  Mise en conformité AppImage Hub
