@@ -148,6 +148,16 @@ Le panneau de Navigation (`F6`) vous offre plusieurs outils pour voyager dans le
 - **Boutons de Navigation :** Juste au-dessus du calendrier, les boutons `Précédent` et `Suivant` vous permettent de sauter à la note existante la plus proche, tandis que `Aujourd'hui` vous ramène à la note du jour.
 
 
+### 5.1 Raccourcis
+
+BlueNotebook offre des raccourcis clavier pour une navigation rapide dans votre journal :
+
+- **Bouton "📅 Aujourd'hui" (`Ctrl+H`) :** Ce bouton vous ramène instantanément à la note du jour en cours. Très pratique pour revenir rapidement au présent après avoir consulté d'anciennes notes.
+- **Bouton "📅 Demain" (`Ctrl+T`) :** Permet de naviguer vers le jour suivant. Utile pour planifier vos notes du lendemain ou parcourir votre journal de manière chronologique.
+
+
+*Note :* Ces raccourcis sont également accessibles via les boutons correspondants dans le panneau de navigation.
+
 ## 6. Gestion des Images et Pièces Jointes
 
 ### 6.1 Insérer un Bookmark (Signet)
