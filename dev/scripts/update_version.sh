@@ -58,6 +58,7 @@ MAIN_PY="$PROJECT_ROOT/bluenotebook/main.py"
 FLATPAK_YAML="$PROJECT_ROOT/flatpak/io.github.lephotographelibre.BlueNotebook.yaml"
 FLATPAK_METAINFO="$PROJECT_ROOT/flatpak/io.github.lephotographelibre.BlueNotebook.metainfo.xml"
 RELEASE_ASSET_TEMPLATE="$PROJECT_ROOT/assets/release_asset_template.md"
+WINDOWS_INSTALLER_IFP="$PROJECT_ROOT/windows_installer/BlueNotebook.ifp"
 
 # Counter for changes
 changes_made=0
@@ -228,6 +229,10 @@ process_file "$FLATPAK_METAINFO"
 # Process release asset template
 echo -e "\n${GREEN}Processing release asset template...${NC}"
 process_file "$RELEASE_ASSET_TEMPLATE"
+
+# Process Windows installer file
+echo -e "\n${GREEN}Processing Windows installer file...${NC}"
+process_file "$WINDOWS_INSTALLER_IFP"
 
 # Summary
 echo -e "\n${BLUE}========================================${NC}"

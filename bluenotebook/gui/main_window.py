@@ -25,12 +25,11 @@ import os
 import re
 import json
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 import zipfile
 import platform  # Ajout pour récupérer l'info OS
 import sys
 from urllib.parse import quote
-from datetime import datetime
 import requests
 
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -1427,6 +1426,12 @@ class MainWindow(QMainWindow):
         self.note_du_jour_button.setFont(QApplication.font())
         self.note_du_jour_button.clicked.connect(self.on_today_button_clicked)
         self.panels_toolbar.addWidget(self.note_du_jour_button)
+
+        # Bouton "Demain" juste à droite du bouton "Aujourd'hui"
+        self.demain_button = QPushButton("📅 " + self.tr("Demain"))
+        self.demain_button.setFont(QApplication.font())
+        self.demain_button.clicked.connect(self.on_tomorrow_button_clicked)
+        self.panels_toolbar.addWidget(self.demain_button)
 
         # Note: Les états initiaux seront définis dans apply_settings() après le chargement des préférences
 
@@ -3533,6 +3538,92 @@ class MainWindow(QMainWindow):
         # Mettre à jour la sélection dans le calendrier
         today = QDate.currentDate()
         self.navigation_panel.calendar.setSelectedDate(today)
+
+    def on_tomorrow_button_clicked(self):
+        """Sélectionne la date de demain et ouvre ou crée la note correspondante."""
+        if not self.journal_directory:
+            QMessageBox.warning(
+                self,
+                self.tr("Journal non défini"),
+                self.tr("Veuillez d'abord définir un répertoire de journal."),
+            )
+            return
+
+        # Calculer la date de demain
+        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y%m%d")
+        journal_file_path = self.journal_directory / f"{tomorrow_str}.md"
+
+        if journal_file_path.exists():
+            # La note existe : l'ouvrir
+            if self.check_save_changes():
+                self.open_specific_file(str(journal_file_path))
+        else:
+            # La note n'existe pas : proposer le dialogue de choix de template
+            if not self.check_save_changes():
+                return
+
+            # Déterminer le template par défaut selon la locale
+            current_locale = locale.getlocale(locale.LC_TIME)[0]
+            if current_locale and current_locale.startswith("fr"):
+                default_template = "[Fr]Page_Journal_Standard.md"
+            else:
+                default_template = "[en-US]default.md"
+
+            dialog = NewFileDialog(
+                self,
+                use_template_by_default=True,
+                default_template_name=default_template,
+            )
+
+            if dialog.exec_() != QDialog.Accepted:
+                return
+
+            choice, template_name = dialog.get_selection()
+            content = ""
+
+            # Utiliser la date de demain pour le formatage
+            tomorrow_date_str = tomorrow.strftime("%A %d %B %Y").title()
+            timestamp_str = datetime.now().strftime("%H:%M")
+
+            if choice == "blank":
+                content = ""
+            elif choice == "template" and template_name:
+                try:
+                    base_path = Path(__file__).parent.parent
+                    template_path = base_path / "resources" / "templates" / template_name
+
+                    if not template_path.exists():
+                        message = self.tr(
+                            "Le fichier template '{template_name}' est introuvable."
+                        )
+                        raise FileNotFoundError(message.format(template_name=template_name))
+
+                    with open(template_path, "r", encoding="utf-8") as f:
+                        content = f.read()
+
+                    # Remplacement des placeholders
+                    if "{{date}}" in content:
+                        content = content.replace("{{date}}", tomorrow_date_str)
+                    if "{{horodatage}}" in content:
+                        content = content.replace("{{horodatage}}", timestamp_str)
+
+                except FileNotFoundError as e:
+                    QMessageBox.warning(self, self.tr("Template manquant"), str(e))
+                    content = f"# {tomorrow_date_str}\n\n"
+
+            # Charger le contenu dans l'éditeur et sauvegarder immédiatement
+            self.editor.set_text(content)
+            self.current_file = str(journal_file_path)
+            self.is_modified = False
+            self._save_to_file(str(journal_file_path))
+            self.update_title()
+            self.update_stats()
+            self._set_file_label_color("gray")
+            self.update_preview()
+            self.expand_outline()
+
+        # Ne pas mettre à jour la sélection dans le calendrier (comme demandé)
 
     def on_calendar_date_clicked(self, date):
         """Ouvre le fichier journal correspondant à la date cliquée."""

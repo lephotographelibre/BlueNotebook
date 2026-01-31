@@ -148,6 +148,16 @@ The Navigation panel (`F6`) offers you several tools to travel in time through y
 - **Navigation Buttons:** Just above the calendar, the `Previous` and `Next` buttons allow you to jump to the nearest existing note, while `Today` brings you back to the note of the day.
 
 
+### 5.1 Shortcuts
+
+BlueNotebook offers keyboard shortcuts for quick navigation through your journal:
+
+- **"📅 Today" Button (`Ctrl+H`):** This button instantly takes you back to today's note. Very practical for quickly returning to the present after browsing old notes.
+- **"📅 Tomorrow" Button (`Ctrl+T`):** Allows you to navigate to the next day. Useful for planning tomorrow's notes or browsing through your journal chronologically.
+
+
+*Note:* These shortcuts are also accessible via the corresponding buttons in the navigation panel.
+
 ## 6. Managing Images and Attachments
 
 ### 6.1 Inserting a Bookmark
@@ -1044,7 +1054,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
 ---
 
 
-*This manual was written for BlueNotebook V4.2.8.*
+*This manual was written for BlueNotebook V4.2.9.*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
