@@ -1,3 +1,14 @@
+## V4.2.9 Wininstaller Update
+
+- Fix Issue [#192](https://github.com/lephotographelibre/BlueNotebook/issues/192) MAJ fichiers wininstaller icons+Scripts build + Scipts upload to GitHub
+
+--> git commit -a -m "V4.2.9 Fix Issue [#192] Wininstaller Update"
+
+- Fix Issue [#189](https://github.com/lephotographelibre/BlueNotebook/issues/189) V4.2.8 Add a button Tomorrow #189
+
+--> git commit -a -m "V4.2.9 Fix Issue [#189] Tomorrow Button"
+
+
 ## V4.2.8 AppImageHub Conformité
 
 - Issue [#185](https://github.com/lephotographelibre/BlueNotebook/issues/185)  Mise en conformité AppImage Hub
