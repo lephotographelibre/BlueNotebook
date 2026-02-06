@@ -1,3 +1,54 @@
+## V4.2.10 Fix Issue [#169] Intenal Links 
+
+Fix Issue [#169](https://github.com/lephotographelibre/BlueNotebook/issues/169)
+
+- Gestion des les liens internes BlueNotebook dans l'aperçu HTML. Les liens internes pointent vers des documents dans le dossier `notes/` du journal et s'ouvrent automatiquement dans les visionneuses appropriées après confirmation utilisateur.
+
+
+| Type | Extension | Action | Confirmation | Fenêtre |
+|------|-----------|--------|--------------|---------|
+| **Markdown** | `.md`, `.markdown` | Ouvre dans l'éditeur | ✓ | Éditeur principal |
+| **PDF** | `.pdf` | Ouvre dans le lecteur PDF/EPUB | ✓ | Panneau lecteur |
+| **Image** | `.jpg`, `.png`, `.gif`, `.bmp`, `.svg`, `.webp` | Ouvre dans DocumentViewerWindow | ✓ | Fenêtre séparée |
+| **HTML** | `.html`, `.htm` | Ouvre dans DocumentViewerWindow | ✓ | Fenêtre séparée |
+
+Créé:
+**bluenotebook/gui/internal_links_handler.py** (nouveau)
+
+- Contexte de traduction `InternalLinksContext`
+- Fonctions de détection et de parsing des liens internes
+- Dialogues de confirmation QMessageBox
+- Classe `DocumentViewerWindow` pour afficher images et HTML
+- Fonctions d'ouverture pour chaque type de document
+
+Modifiés
+
+**bluenotebook/gui/preview.py**
+
+- Import du module `internal_links_handler`
+- Ajout du paramètre `main_window` à `CustomWebEnginePage`
+- Modification de `acceptNavigationRequest()` pour gérer les liens internes
+- Ajout du paramètre `main_window` à `MarkdownPreview`
+
+**bluenotebook/gui/main_window.py**
+
+- Modification de l'instanciation de `MarkdownPreview` pour passer `main_window=self`
+
+
+
+- i18n
+- version -> 4.2.10
+- MAJ Aide_enligne
+
+
+--> git commit -a -m "v4.2.10_internal_links"
+
+Phase 2:
+
+- Ouverture des fichiers qui sont dans le Journal comme notes Panneau "Notes" sous menu contextuel "Ouvrir" avec les meme règles
+
+--> git commit -a -m "v4.2.10_open_notes_from_journal"
+
 ## V4.2.9 Wininstaller Update
 
 - Fix Issue [#192](https://github.com/lephotographelibre/BlueNotebook/issues/192) MAJ fichiers wininstaller icons+Scripts build + Scipts upload to GitHub
