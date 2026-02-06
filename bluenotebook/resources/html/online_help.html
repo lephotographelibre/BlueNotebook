@@ -237,7 +237,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="BlueNotebook Icon" class="header-icon">
-            Online Help - BlueNotebook V4.2.9</h1>
+            Online Help - BlueNotebook V4.2.10</h1>
     </header>
 
 <div class="main-container">
@@ -269,7 +269,7 @@
                     <li><a href="#images-markdown">6.2 Inserting Images (Markdown and HTML)</a></li>
                     <li><a href="#attachments">6.3 Managing Attachments</a></li>
                     <li><a href="#exif-data">6.4 Inserting Images with EXIF Data</a></li>
-                    <li><a href="#local-links">6.5 Inserting Links (local and remote)</a></li>
+                    <li><a href="#local-links">6.5 Smart management of local files</a></li>
                 </ul>
             </li>
             <li><a href="#reader-panel">7. The Reader Panel (EPUB and PDF)</a></li>
@@ -541,9 +541,12 @@
     </section>
 
     <section id="local-links">
-        <h3>6.5 Inserting Links (local and remote)</h3> 
+        <h3>6.5 Smart management of local files</h3>
+
+        <h4>Inserting local and remote links</h4>
         <p>The <code>Insert > Link</code> menu has been improved to allow you to create links not only to websites, but also to any local file on your computer, while ensuring the portability of your journal.</p>
-        <h4>How does it work?</h4>
+
+        <h5>How to create a link?</h5>
         <ol>
             <li>Go to the <code>Insert > Link</code> menu. A dialog box opens.</li>
             <li><strong>For a web link:</strong> Fill in the "Link text" and paste the URL (<code>http://...</code>) in the "URL or path" field.</li>
@@ -554,13 +557,62 @@
                 </ul>
             </li>
         </ol>
-        <h4>Smart management of local files</h4>
+
+        <h5>Portability management</h5>
         <ul>
             <li><strong>If the file is already in your journal:</strong> A relative link is created. Your journal remains portable.</li>
             <li><strong>If the file is outside your journal:</strong> A dialog box will ask you if you want to copy the file to your journal. If you accept, you can choose a destination folder (by default <code>notes/</code> or <code>attachments/</code>). The file will be copied there, and a relative link will be created. This ensures that you never lose a link if you move your journal.</li>
         </ul>
+
         <p>The link generated for a local file will have the following format: <code>🔗 [[[Link text]]](relative/path/to/file)</code>. The 🔗 emoji allows you to visually identify links to local files, and the <code>[[[...]]]</code> syntax is recognized by the editor for syntax highlighting, while remaining a perfectly functional link in the preview.</p>
         <p>This feature allows you to link your notes, reference documents and images together in a simple and robust way.</p>
+
+        <h4>Smart behavior when opening local links</h4>
+        <p>When you click on a local link in the HTML preview, BlueNotebook intelligently opens the file according to its type. A confirmation is always requested before opening the file for security reasons.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Extension</th>
+                    <th>Action</th>
+                    <th>Confirmation</th>
+                    <th>Window</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Markdown</strong></td>
+                    <td><code>.md</code>, <code>.markdown</code></td>
+                    <td>Opens in editor</td>
+                    <td>✓</td>
+                    <td>Main editor</td>
+                </tr>
+                <tr>
+                    <td><strong>PDF</strong></td>
+                    <td><code>.pdf</code></td>
+                    <td>Opens in PDF/EPUB reader</td>
+                    <td>✓</td>
+                    <td>Reader panel</td>
+                </tr>
+                <tr>
+                    <td><strong>Image</strong></td>
+                    <td><code>.jpg</code>, <code>.png</code>, <code>.gif</code>, <code>.bmp</code>, <code>.svg</code>, <code>.webp</code></td>
+                    <td>Opens in DocumentViewerWindow</td>
+                    <td>✓</td>
+                    <td>Separate window</td>
+                </tr>
+                <tr>
+                    <td><strong>HTML</strong></td>
+                    <td><code>.html</code>, <code>.htm</code></td>
+                    <td>Opens in DocumentViewerWindow</td>
+                    <td>✓</td>
+                    <td>Separate window</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>This behavior ensures an optimal user experience while maintaining smooth navigation between different types of documents in your journal. Whether you're working on Markdown notes, consulting reference PDFs, viewing images or exploring HTML pages, BlueNotebook automatically selects the best interface for each content type.</p>
     </section>
 
     <section id="reader-panel">
@@ -1393,7 +1445,7 @@ Help
 
     <footer>
         <hr>
-        <p><em>This manual was written for BlueNotebook V4.2.9.</em></p>
+        <p><em>This manual was written for BlueNotebook V4.2.10.</em></p>
 
         <p>If you encounter errors or malfunctions, you can notify them on the <a href="https://github.com/lephotographelibre/BlueNotebook/issues">developer's site</a>.</p>
         <p>BlueNotebook is free software distributed under the terms of the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3</a>.</p>

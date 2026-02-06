@@ -42,6 +42,7 @@ from PyQt5.QtWidgets import (
 
 from .new_note_dialog import NewFileDialog
 from .import_file_dialog import ImportFileDialog
+from . import internal_links_handler
 
 
 class ZoomableTreeView(QTreeView):
@@ -716,13 +717,57 @@ class NotesPanel(QWidget):
         if self.model.isDir(index):
             return
 
-        ext = Path(file_path).suffix.lower()
-        if ext in [".md", ".txt", ".html"]:
-            self.file_open_request.emit(file_path, "editor")
-        elif ext in [".pdf", ".epub"]:
-            self.file_open_request.emit(file_path, "reader")
+        file_path_obj = Path(file_path)
+
+        # Déterminer le type de document
+        doc_type = internal_links_handler.get_document_type(file_path_obj)
+
+        # Traiter selon le type de document
+        if doc_type == 'markdown':
+            # Markdown : demander confirmation puis ouvrir dans l'éditeur
+            if internal_links_handler.confirm_open_document(self, doc_type, file_path_obj.name):
+                self.file_open_request.emit(file_path, "editor")
+
+        elif doc_type == 'pdf':
+            # PDF : demander confirmation puis ouvrir dans le lecteur
+            if internal_links_handler.confirm_open_document(self, doc_type, file_path_obj.name):
+                self.file_open_request.emit(file_path, "reader")
+
+        elif doc_type == 'image':
+            # Image : demander confirmation puis ouvrir dans DocumentViewerWindow
+            if internal_links_handler.confirm_open_document(self, doc_type, file_path_obj.name):
+                # Trouver la fenêtre principale
+                main_window = self.window()
+                internal_links_handler.open_in_viewer_window(main_window, file_path_obj, doc_type)
+
+        elif doc_type == 'html':
+            # HTML : demander confirmation puis ouvrir dans DocumentViewerWindow
+            if internal_links_handler.confirm_open_document(self, doc_type, file_path_obj.name):
+                # Trouver la fenêtre principale
+                main_window = self.window()
+                internal_links_handler.open_in_viewer_window(main_window, file_path_obj, doc_type)
+
+        elif doc_type == 'unknown':
+            # Type non pris en charge : afficher un avertissement
+            warning_message = self.tr(
+                "Type de fichier non pris en charge :\n\n{file_name}"
+            ).format(file_name=file_path_obj.name)
+
+            QMessageBox.warning(
+                self,
+                self.tr("Type non pris en charge"),
+                warning_message
+            )
+
         else:
-            self.file_open_request.emit(file_path, "external")
+            # Autres types (txt, epub, etc.) : comportement par défaut
+            ext = file_path_obj.suffix.lower()
+            if ext in [".txt"]:
+                self.file_open_request.emit(file_path, "editor")
+            elif ext in [".epub"]:
+                self.file_open_request.emit(file_path, "reader")
+            else:
+                self.file_open_request.emit(file_path, "external")
 
     def create_new_note(self, directory_path):
         """Crée une nouvelle note Markdown dans le dossier spécifié."""
