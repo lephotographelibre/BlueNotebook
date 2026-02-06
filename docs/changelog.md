@@ -38,14 +38,16 @@ Modifiés
 
 - i18n
 - version -> 4.2.10
+- MAJ Aide_enligne
 
 
 --> git commit -a -m "v4.2.10_internal_links"
 
 Phase 2:
 
--TODO Ouverture des fichiers qui sont dans le Journal comme notes Panneau "Notes" sous menue contextuel "Ouvrir"
+- Ouverture des fichiers qui sont dans le Journal comme notes Panneau "Notes" sous menu contextuel "Ouvrir" avec les meme règles
 
+--> git commit -a -m "v4.2.10_open_notes_from_journal"
 
 ## V4.2.9 Wininstaller Update
 

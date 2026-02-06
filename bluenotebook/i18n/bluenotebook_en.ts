@@ -3194,268 +3194,268 @@ How would you like to proceed?</translation>
 <context>
     <name>NotesPanel</name>
     <message>
-        <location filename="../gui/notes_panel.py" line="307"/>
+        <location filename="../gui/notes_panel.py" line="308"/>
         <source>Notes</source>
         <translation>Notes</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="324"/>
+        <location filename="../gui/notes_panel.py" line="325"/>
         <source>Rechercher nom de fichier</source>
         <translation>Search filename</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="328"/>
+        <location filename="../gui/notes_panel.py" line="329"/>
         <source>Rechercher</source>
         <translation>Find</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="629"/>
+        <location filename="../gui/notes_panel.py" line="630"/>
         <source>Créer un dossier...</source>
         <translation>Create folder...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="703"/>
+        <location filename="../gui/notes_panel.py" line="704"/>
         <source>Coller</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="645"/>
+        <location filename="../gui/notes_panel.py" line="646"/>
         <source>Nouvelle note...</source>
         <translation>New note...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="648"/>
+        <location filename="../gui/notes_panel.py" line="649"/>
         <source>Créer un sous-dossier...</source>
         <translation>Create subfolder...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="652"/>
+        <location filename="../gui/notes_panel.py" line="653"/>
         <source>Importer un fichier...</source>
         <translation>Import file...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="665"/>
+        <location filename="../gui/notes_panel.py" line="666"/>
         <source>Déplier tout</source>
         <translation>Expand all</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="669"/>
+        <location filename="../gui/notes_panel.py" line="670"/>
         <source>Réplier tout</source>
         <translation>Collapse all</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="675"/>
+        <location filename="../gui/notes_panel.py" line="676"/>
         <source>🎨 Couleur du dossier</source>
         <translation>🎨 Folder Color</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="684"/>
+        <location filename="../gui/notes_panel.py" line="685"/>
         <source>Aucune couleur</source>
         <translation>No color</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="690"/>
+        <location filename="../gui/notes_panel.py" line="691"/>
         <source>Ouvrir</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="699"/>
+        <location filename="../gui/notes_panel.py" line="700"/>
         <source>Copier</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="700"/>
+        <location filename="../gui/notes_panel.py" line="701"/>
         <source>Couper</source>
         <translation>Cut</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="708"/>
+        <location filename="../gui/notes_panel.py" line="709"/>
         <source>Renommer...</source>
         <translation>Rename...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="709"/>
+        <location filename="../gui/notes_panel.py" line="710"/>
         <source>Supprimer...</source>
         <translation>Delete...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="733"/>
+        <location filename="../gui/notes_panel.py" line="778"/>
         <source>Nouvelle Note</source>
         <translation>New Note</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="733"/>
+        <location filename="../gui/notes_panel.py" line="778"/>
         <source>Nom de la note (sans extension) :</source>
         <translation>Note name (without extension):</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="857"/>
+        <location filename="../gui/notes_panel.py" line="902"/>
         <source>Fichier existant</source>
         <translation>File exists</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="742"/>
+        <location filename="../gui/notes_panel.py" line="787"/>
         <source>Une note avec ce nom existe déjà.</source>
         <translation>A note with this name already exists.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="781"/>
+        <location filename="../gui/notes_panel.py" line="826"/>
         <source>Impossible de créer la note :
 {}</source>
         <translation>Unable to create note:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1088"/>
+        <location filename="../gui/notes_panel.py" line="1133"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="786"/>
+        <location filename="../gui/notes_panel.py" line="831"/>
         <source>Nouveau Sous-Dossier</source>
         <translation>New Subfolder</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="786"/>
+        <location filename="../gui/notes_panel.py" line="831"/>
         <source>Nom du nouveau sous-dossier :</source>
         <translation>New subfolder name:</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1009"/>
+        <location filename="../gui/notes_panel.py" line="1054"/>
         <source>Dossier existant</source>
         <translation>Folder exists</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1009"/>
+        <location filename="../gui/notes_panel.py" line="1054"/>
         <source>Un dossier avec ce nom existe déjà.</source>
         <translation>A folder with this name already exists.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="806"/>
+        <location filename="../gui/notes_panel.py" line="851"/>
         <source>Impossible de créer le sous-dossier :
 {}</source>
         <translation>Unable to create subfolder:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="837"/>
+        <location filename="../gui/notes_panel.py" line="882"/>
         <source>Le fichier que vous voulez importer n'est pas supporté dans les notes.
 Les types valides sont uniquement : {}</source>
         <translation>The file you want to import is not supported in notes.
 Valid types are only: {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="841"/>
+        <location filename="../gui/notes_panel.py" line="886"/>
         <source>Type de fichier non supporté</source>
         <translation>Unsupported file type</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="854"/>
+        <location filename="../gui/notes_panel.py" line="899"/>
         <source>Le fichier '{}' existe déjà dans ce dossier. Voulez-vous le remplacer ?</source>
         <translation>File '{}' already exists in this folder. Do you want to replace it?</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="881"/>
+        <location filename="../gui/notes_panel.py" line="926"/>
         <source>Impossible d&apos;importer le fichier :
 {}</source>
         <translation>Could not import file:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="882"/>
+        <location filename="../gui/notes_panel.py" line="927"/>
         <source>Erreur d&apos;importation</source>
         <translation>Import error</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="945"/>
+        <location filename="../gui/notes_panel.py" line="990"/>
         <source>Opération impossible</source>
         <translation>Operation impossible</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="945"/>
+        <location filename="../gui/notes_panel.py" line="990"/>
         <source>Vous ne pouvez pas coller un dossier dans lui-même.</source>
         <translation>You cannot paste a folder into itself.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="953"/>
+        <location filename="../gui/notes_panel.py" line="998"/>
         <source>Un élément nommé '{}' existe déjà. Voulez-vous le remplacer ?</source>
         <translation>An item named '{}' already exists. Do you want to replace it?</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="956"/>
+        <location filename="../gui/notes_panel.py" line="1001"/>
         <source>Conflit</source>
         <translation>Conflict</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="971"/>
+        <location filename="../gui/notes_panel.py" line="1016"/>
         <source>Impossible de remplacer l'élément existant :
 {}</source>
         <translation>Could not replace existing item:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="984"/>
+        <location filename="../gui/notes_panel.py" line="1029"/>
         <source>L'opération a échoué :
 {}</source>
         <translation>Operation failed:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="985"/>
+        <location filename="../gui/notes_panel.py" line="1030"/>
         <source>Erreur de collage</source>
         <translation>Paste error</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="993"/>
+        <location filename="../gui/notes_panel.py" line="1038"/>
         <source>Action impossible</source>
         <translation>Action impossible</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="993"/>
+        <location filename="../gui/notes_panel.py" line="1038"/>
         <source>Le répertoire du journal n'est pas défini.</source>
         <translation>Journal directory is not set.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1000"/>
+        <location filename="../gui/notes_panel.py" line="1045"/>
         <source>Nouveau Dossier</source>
         <translation>New Folder</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1000"/>
+        <location filename="../gui/notes_panel.py" line="1045"/>
         <source>Nom du nouveau dossier :</source>
         <translation>New folder name:</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1019"/>
+        <location filename="../gui/notes_panel.py" line="1064"/>
         <source>Impossible de créer le dossier :
 {}</source>
         <translation>Could not create folder:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1027"/>
+        <location filename="../gui/notes_panel.py" line="1072"/>
         <source>Renommer</source>
         <translation>Rename</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1027"/>
+        <location filename="../gui/notes_panel.py" line="1072"/>
         <source>Nouveau nom :</source>
         <translation>New name:</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1038"/>
+        <location filename="../gui/notes_panel.py" line="1083"/>
         <source>Impossible de renommer :
 {}</source>
         <translation>Could not rename:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1050"/>
+        <location filename="../gui/notes_panel.py" line="1095"/>
         <source>Le dossier &apos;{}&apos; est vide. Voulez-vous le supprimer ?</source>
         <translation>Folder '{}' is empty. Do you want to delete it?</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1054"/>
+        <location filename="../gui/notes_panel.py" line="1099"/>
         <source>Le dossier &apos;{}&apos; n&apos;est pas vide.
 Il contient {} sous-dossier(s) et {} fichier(s).
 
@@ -3466,17 +3466,17 @@ It contains {} subfolder(s) and {} file(s).
 Do you want to delete everything?</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1072"/>
+        <location filename="../gui/notes_panel.py" line="1117"/>
         <source>Confirmation de suppression</source>
         <translation>Delete confirmation</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1071"/>
+        <location filename="../gui/notes_panel.py" line="1116"/>
         <source>Êtes-vous sûr de vouloir supprimer le fichier '{}' ?</source>
         <translation>Are you sure you want to delete the file '{}'?</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="1087"/>
+        <location filename="../gui/notes_panel.py" line="1132"/>
         <source>Impossible de supprimer :
 {}</source>
         <translation>Could not delete:
@@ -3493,56 +3493,70 @@ Do you want to delete everything?</translation>
         <translation type="obsolete">PDF-Markdown Conversion</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="695"/>
+        <location filename="../gui/notes_panel.py" line="696"/>
         <source>Exporter ...</source>
         <translation>Export ...</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="893"/>
+        <location filename="../gui/notes_panel.py" line="938"/>
         <source>Tous les fichiers (*.*)</source>
         <translation>All files (*.*)</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="895"/>
+        <location filename="../gui/notes_panel.py" line="940"/>
         <source>Exporter le fichier</source>
         <translation>Export the file</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="906"/>
+        <location filename="../gui/notes_panel.py" line="951"/>
         <source>Vous ne pouvez pas exporter un fichier vers lui-même.</source>
         <translation>You cannot export a file to itself.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="915"/>
+        <location filename="../gui/notes_panel.py" line="960"/>
         <source>Export réussi</source>
         <translation>Successful export</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="915"/>
+        <location filename="../gui/notes_panel.py" line="960"/>
         <source>Le fichier a été exporté avec succès.</source>
         <translation>The file was exported successfully.</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="921"/>
+        <location filename="../gui/notes_panel.py" line="966"/>
         <source>Impossible d&apos;exporter le fichier :
 {}</source>
         <translation>Unable to export the file:
 {}</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="922"/>
+        <location filename="../gui/notes_panel.py" line="967"/>
         <source>Erreur d&apos;export</source>
         <translation>Export error</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="656"/>
+        <location filename="../gui/notes_panel.py" line="657"/>
         <source>Importer PDF -&gt; Markdown</source>
         <translation>Import PDF -&gt; Markdown</translation>
     </message>
     <message>
-        <location filename="../gui/notes_panel.py" line="660"/>
+        <location filename="../gui/notes_panel.py" line="661"/>
         <source>Importer HTML -&gt; Markdown</source>
         <translation>Import HTML -&gt; Markdown</translation>
+    </message>
+    <message>
+        <location filename="../gui/notes_panel.py" line="752"/>
+        <source>Type de fichier non pris en charge :
+
+{file_name}</source>
+        <translation>Unsupported file type:
+
+{file_name}</translation>
+    </message>
+    <message>
+        <location filename="../gui/notes_panel.py" line="756"/>
+        <source>Type non pris en charge</source>
+        <translation>Type not supported</translation>
     </message>
 </context>
 <context>
