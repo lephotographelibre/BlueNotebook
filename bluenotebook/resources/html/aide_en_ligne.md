@@ -245,11 +245,13 @@ Si elles sont disponibles dans l'image, vous pourrez voir :
 
 Cette fonctionnalité transforme une simple image en une fiche d'information complète, parfaite pour se souvenir des détails de chaque moment capturé.
 
-### 6.5 Insertion de Liens (locaux et distants)
+### 6.5 Gestion intelligente des fichiers locaux
+
+#### Insertion de liens locaux et distants
 
 Le menu `Insérer > Lien` a été amélioré pour vous permettre de créer des liens non seulement vers des sites web, mais aussi vers n'importe quel fichier local de votre ordinateur, tout en garantissant la portabilité de votre journal.
 
-#### Comment ça marche ?
+##### Comment créer un lien ?
 
 1. Allez dans le menu `Insérer > Lien`. Une boîte de dialogue s'ouvre.
 2. **Pour un lien web :** Remplissez le "Texte du lien" et collez l'URL (`http://...`) dans le champ "URL ou chemin".
@@ -258,7 +260,7 @@ Le menu `Insérer > Lien` a été amélioré pour vous permettre de créer des l
   - Sélectionnez n'importe quel fichier (document, image, note, etc.). Le champ "Texte du lien" sera automatiquement rempli avec le nom du fichier.
 
 
-#### Gestion intelligente des fichiers locaux
+##### Gestion de la portabilité
 
 - **Si le fichier est déjà dans votre journal :** Un lien relatif est créé. Votre journal reste portable.
 - **Si le fichier est en dehors de votre journal :** Une boîte de dialogue vous demandera si vous souhaitez copier le fichier dans votre journal. Si vous acceptez, vous pourrez choisir un dossier de destination (par défaut `notes/` ou `attachments/`). Le fichier y sera copié, et un lien relatif sera créé. Cela garantit que vous ne perdrez jamais un lien si vous déplacez votre journal.
@@ -267,6 +269,20 @@ Le menu `Insérer > Lien` a été amélioré pour vous permettre de créer des l
 Le lien généré pour un fichier local aura le format suivant : `🔗 [[[Texte du lien]]](chemin/relatif/vers/le/fichier)`. L'emoji 🔗 vous permet d'identifier visuellement les liens vers des fichiers locaux, et la syntaxe `[[[...]]]` est reconnue par l'éditeur pour la coloration syntaxique, tout en restant un lien parfaitement fonctionnel dans l'aperçu.
 
 Cette fonctionnalité vous permet de lier entre elles vos notes, vos documents de référence et vos images de manière simple et robuste.
+
+#### Comportement intelligent lors de l'ouverture des liens locaux
+
+Lorsque vous cliquez sur un lien local dans l'aperçu HTML, BlueNotebook ouvre intelligemment le fichier selon son type. Une confirmation vous est toujours demandée avant d'ouvrir le fichier pour des raisons de sécurité.
+
+| Type | Extension | Action | Confirmation | Fenêtre |
+| --- | --- | --- | --- | --- |
+| **Markdown** | `.md`, `.markdown` | Ouvre dans l'éditeur | ✓ | Éditeur principal |
+| **PDF** | `.pdf` | Ouvre dans le lecteur PDF/EPUB | ✓ | Panneau lecteur |
+| **Image** | `.jpg`, `.png`, `.gif`, `.bmp`, `.svg`, `.webp` | Ouvre dans DocumentViewerWindow | ✓ | Fenêtre séparée |
+| **HTML** | `.html`, `.htm` | Ouvre dans DocumentViewerWindow | ✓ | Fenêtre séparée |
+
+
+Ce comportement garantit une expérience utilisateur optimale tout en maintenant une navigation fluide entre les différents types de documents de votre journal. Que vous travailliez sur des notes Markdown, consultiez des PDF de référence, visualisiez des images ou exploriez des pages HTML, BlueNotebook sélectionne automatiquement la meilleure interface pour chaque type de contenu.
 
 ## 7. Le Panneau Lecteur (EPUB et PDF)
 
@@ -1054,7 +1070,7 @@ Voici une liste des principales bibliothèques Python qui animent le projet Blue
 ---
 
 
-*Ce manuel a été rédigé pour la version V4.2.9 de BlueNotebook.*
+*Ce manuel a été rédigé pour la version V4.2.10 de BlueNotebook.*
 
 Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le [site du développeur](https://github.com/lephotographelibre/BlueNotebook/issues).
 

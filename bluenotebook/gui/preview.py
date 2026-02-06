@@ -33,18 +33,35 @@ from PyQt5.QtCore import QUrl, QEvent, Qt, QStandardPaths
 from PyQt5.QtGui import QDesktopServices
 import webbrowser
 
+from . import internal_links_handler
+
 
 class CustomWebEnginePage(QWebEnginePage):
     """Page web personnalisée qui gère les clics sur les liens"""
+
+    def __init__(self, *args, main_window=None, **kwargs):
+        """
+        Initialise la page web personnalisée.
+
+        Args:
+            main_window: Référence à la fenêtre principale pour gérer les liens internes
+        """
+        super().__init__(*args, **kwargs)
+        self.main_window = main_window
 
     def acceptNavigationRequest(self, url, _type, isMainFrame):
         """
         Intercepte les tentatives de navigation.
         Si c'est un clic sur un lien, l'ouvre dans le navigateur/visionneuse par défaut.
+        Gère spécialement les liens internes BlueNotebook.
         """
         if _type == QWebEnginePage.NavigationTypeTyped:
             return True
         if _type == QWebEnginePage.NavigationTypeLinkClicked:
+            # Essayer d'abord de gérer comme lien interne
+            if self.main_window and internal_links_handler.handle_internal_link(url, self.main_window):
+                return False
+            # Sinon, ouvrir dans le navigateur par défaut
             webbrowser.open(url.toString())
             return False
         return True
@@ -54,7 +71,7 @@ class CustomWebEnginePage(QWebEnginePage):
         Gère les demandes de nouvelle fenêtre (ex: target="_blank").
         Crée une page fantôme qui ouvrira le lien externe.
         """
-        return CustomWebEnginePage(self)
+        return CustomWebEnginePage(self, main_window=self.main_window)
 
 
 class TagInlineProcessor(InlineProcessor):
@@ -71,8 +88,9 @@ class TagInlineProcessor(InlineProcessor):
 class MarkdownPreview(QWidget):
     """Aperçu HTML avec QWebEngine"""
 
-    def __init__(self):
+    def __init__(self, main_window=None):
         super().__init__()
+        self.main_window = main_window
         self.current_html = ""
         self.current_markdown = ""
         self.setup_ui()
@@ -126,7 +144,7 @@ class MarkdownPreview(QWidget):
         self.profile.setCachePath(cache_path)
         self.profile.setPersistentStoragePath(cache_path)
 
-        self.custom_page = CustomWebEnginePage(self.profile, self.web_view)
+        self.custom_page = CustomWebEnginePage(self.profile, self.web_view, main_window=self.main_window)
         self.web_view.setPage(self.custom_page)
 
         self.web_view.setStyleSheet(

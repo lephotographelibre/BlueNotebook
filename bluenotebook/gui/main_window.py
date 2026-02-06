@@ -850,7 +850,7 @@ class MainWindow(QMainWindow):
         self.editor = MarkdownEditor(main_window=self)
         editor_preview_splitter.addWidget(self.editor)
 
-        self.preview = MarkdownPreview()
+        self.preview = MarkdownPreview(main_window=self)
         editor_preview_splitter.addWidget(self.preview)
 
         editor_preview_splitter.setSizes([700, 700])

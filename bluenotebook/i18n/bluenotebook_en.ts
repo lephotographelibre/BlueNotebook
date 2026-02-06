@@ -1128,6 +1128,115 @@ Do you want to use it as a journal anyway?</translation>
     </message>
 </context>
 <context>
+    <name>InternalLinksContext</name>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="132"/>
+        <source>le document Markdown</source>
+        <translation>the Markdown document</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="133"/>
+        <source>le document PDF</source>
+        <translation>the PDF document</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="134"/>
+        <source>l&apos;image</source>
+        <translation>the image</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="135"/>
+        <source>le document HTML</source>
+        <translation>the HTML document</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="139"/>
+        <source>dans l'éditeur Markdown</source>
+        <translation>in the Markdown editor</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="140"/>
+        <source>dans le lecteur PDF</source>
+        <translation>in the EPUB/PDF reader</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="142"/>
+        <source>dans une fenêtre séparée</source>
+        <translation>in a separate window</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="145"/>
+        <source>le document</source>
+        <translation>the document</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="146"/>
+        <source>dans une application externe</source>
+        <translation>in an external application</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="148"/>
+        <source>Voulez-vous ouvrir {type_label} :
+
+{file_name}
+
+{action_label} ?</source>
+        <translation>Do you want to open {type_label}:
+
+{file_name}
+
+{action_label}?</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="157"/>
+        <source>Ouvrir un document</source>
+        <translation>Open a document</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="184"/>
+        <source>Visualiseur d&apos;images</source>
+        <translation>Image viewer</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="186"/>
+        <source>Visualiseur de documents</source>
+        <translation>Document viewer</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="217"/>
+        <source>Fermer</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="322"/>
+        <source>Le fichier n&apos;existe pas :
+
+{file_path}</source>
+        <translation>The file does not exist:
+
+{file_path}</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="326"/>
+        <source>Fichier introuvable</source>
+        <translation>File not found</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="338"/>
+        <source>Type de fichier non pris en charge :
+
+{file_name}</source>
+        <translation>Unsupported file type:
+
+{file_name}</translation>
+    </message>
+    <message>
+        <location filename="../gui/internal_links_handler.py" line="342"/>
+        <source>Type non pris en charge</source>
+        <translation>Type not supported</translation>
+    </message>
+</context>
+<context>
     <name>JournalRestoreContext</name>
     <message>
         <location filename="../core/journal_restore_worker.py" line="64"/>
@@ -2820,117 +2929,117 @@ Allowed extensions are: {allowed_ext}</translation>
 <context>
     <name>MarkdownPreview</name>
     <message>
-        <location filename="../gui/preview.py" line="410"/>
+        <location filename="../gui/preview.py" line="428"/>
         <source>Copier</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="416"/>
+        <location filename="../gui/preview.py" line="434"/>
         <source>Tout sélectionner</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="423"/>
+        <location filename="../gui/preview.py" line="441"/>
         <source>Recharger</source>
         <translation>Reload</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="428"/>
+        <location filename="../gui/preview.py" line="446"/>
         <source>Ouvrir dans le navigateur</source>
         <translation>Open in browser</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="97"/>
+        <location filename="../gui/preview.py" line="115"/>
         <source>Aperçu HTML</source>
         <translation>HTML Preview</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="280"/>
+        <location filename="../gui/preview.py" line="298"/>
         <source>🔵 Bienvenue dans BlueNotebook</source>
         <translation>🔵 Welcome to BlueNotebook</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="281"/>
+        <location filename="../gui/preview.py" line="299"/>
         <source>Commencez à taper du Markdown dans l'éditeur pour voir l'aperçu ici.</source>
         <translation>Start typing Markdown in the editor to see the preview here.</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="284"/>
+        <location filename="../gui/preview.py" line="302"/>
         <source>📝 Syntaxe Markdown supportée :</source>
         <translation>📝 Supported Markdown syntax:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="285"/>
+        <location filename="../gui/preview.py" line="303"/>
         <source>Titres</source>
         <translation>Titles</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="286"/>
+        <location filename="../gui/preview.py" line="304"/>
         <source>Mise en forme</source>
         <translation>Formatting</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="287"/>
+        <location filename="../gui/preview.py" line="305"/>
         <source>Gras</source>
         <translation>Bold</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="288"/>
+        <location filename="../gui/preview.py" line="306"/>
         <source>Italique</source>
         <translation>Italic</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="289"/>
+        <location filename="../gui/preview.py" line="307"/>
         <source>Code inline</source>
         <translation>Inline code</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="290"/>
+        <location filename="../gui/preview.py" line="308"/>
         <source>Listes</source>
         <translation>Lists</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="291"/>
+        <location filename="../gui/preview.py" line="309"/>
         <source>Liste à puces :</source>
         <translation>Bulleted list:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="292"/>
+        <location filename="../gui/preview.py" line="310"/>
         <source>Liste numérotée :</source>
         <translation>Numbered list:</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="293"/>
+        <location filename="../gui/preview.py" line="311"/>
         <source>Autres</source>
         <translation>Others</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="294"/>
+        <location filename="../gui/preview.py" line="312"/>
         <source>Citations :</source>
         <translation>Quotes :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="295"/>
+        <location filename="../gui/preview.py" line="313"/>
         <source>Liens :</source>
         <translation>Links :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="296"/>
+        <location filename="../gui/preview.py" line="314"/>
         <source>Images :</source>
         <translation>Images :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="297"/>
+        <location filename="../gui/preview.py" line="315"/>
         <source>Tables :</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="298"/>
+        <location filename="../gui/preview.py" line="316"/>
         <source>Code :</source>
         <translation>Code :</translation>
     </message>
     <message>
-        <location filename="../gui/preview.py" line="243"/>
+        <location filename="../gui/preview.py" line="261"/>
         <source>📋 Table des matières</source>
         <translation>📋 Table of Contents</translation>
     </message>

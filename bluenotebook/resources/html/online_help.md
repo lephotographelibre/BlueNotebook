@@ -245,11 +245,13 @@ If available in the image, you can see:
 
 This feature transforms a simple image into a complete information sheet, perfect for remembering the details of each captured moment.
 
-### 6.5 Inserting Links (local and remote)
+### 6.5 Smart management of local files
+
+#### Inserting local and remote links
 
 The `Insert > Link` menu has been improved to allow you to create links not only to websites, but also to any local file on your computer, while ensuring the portability of your journal.
 
-#### How does it work?
+##### How to create a link?
 
 1. Go to the `Insert > Link` menu. A dialog box opens.
 2. **For a web link:** Fill in the "Link text" and paste the URL (`http://...`) in the "URL or path" field.
@@ -258,7 +260,7 @@ The `Insert > Link` menu has been improved to allow you to create links not only
   - Select any file (document, image, note, etc.). The "Link text" field will be automatically filled with the file name.
 
 
-#### Smart management of local files
+##### Portability management
 
 - **If the file is already in your journal:** A relative link is created. Your journal remains portable.
 - **If the file is outside your journal:** A dialog box will ask you if you want to copy the file to your journal. If you accept, you can choose a destination folder (by default `notes/` or `attachments/`). The file will be copied there, and a relative link will be created. This ensures that you never lose a link if you move your journal.
@@ -267,6 +269,20 @@ The `Insert > Link` menu has been improved to allow you to create links not only
 The link generated for a local file will have the following format: `🔗 [[[Link text]]](relative/path/to/file)`. The 🔗 emoji allows you to visually identify links to local files, and the `[[[...]]]` syntax is recognized by the editor for syntax highlighting, while remaining a perfectly functional link in the preview.
 
 This feature allows you to link your notes, reference documents and images together in a simple and robust way.
+
+#### Smart behavior when opening local links
+
+When you click on a local link in the HTML preview, BlueNotebook intelligently opens the file according to its type. A confirmation is always requested before opening the file for security reasons.
+
+| Type | Extension | Action | Confirmation | Window |
+| --- | --- | --- | --- | --- |
+| **Markdown** | `.md`, `.markdown` | Opens in editor | ✓ | Main editor |
+| **PDF** | `.pdf` | Opens in PDF/EPUB reader | ✓ | Reader panel |
+| **Image** | `.jpg`, `.png`, `.gif`, `.bmp`, `.svg`, `.webp` | Opens in DocumentViewerWindow | ✓ | Separate window |
+| **HTML** | `.html`, `.htm` | Opens in DocumentViewerWindow | ✓ | Separate window |
+
+
+This behavior ensures an optimal user experience while maintaining smooth navigation between different types of documents in your journal. Whether you're working on Markdown notes, consulting reference PDFs, viewing images or exploring HTML pages, BlueNotebook automatically selects the best interface for each content type.
 
 ## 7. The Reader Panel (EPUB and PDF)
 
@@ -1054,7 +1070,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
 ---
 
 
-*This manual was written for BlueNotebook V4.2.9.*
+*This manual was written for BlueNotebook V4.2.10.*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
