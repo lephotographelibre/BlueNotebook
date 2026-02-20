@@ -258,6 +258,9 @@ def open_markdown_in_editor(main_window, file_path):
         main_window: Instance de MainWindow
         file_path: Chemin du fichier Markdown (Path)
     """
+    # Vérifier si le document en cours a des modifications non sauvegardées
+    if not main_window.check_save_changes():
+        return
     # Utiliser la méthode existante de MainWindow pour ouvrir un fichier
     main_window.open_specific_file(str(file_path))
 
