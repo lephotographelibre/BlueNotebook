@@ -111,10 +111,6 @@ from integrations.pdf_exporter import (
 from integrations.pdf_exporter import (
     get_pdf_theme_css,
 )  # V3.1.5 - Import the new helper
-from integrations.amazon_books import (  # V3.1.5 - Keep existing imports
-    get_book_info_from_amazon,
-    generate_book_markdown_fragment,
-)
 from integrations.youtube_video import (
     get_youtube_video_details,
     generate_youtube_markdown_block,
@@ -122,6 +118,7 @@ from integrations.youtube_video import (
     TranscriptWorker,
 )
 from integrations.sun_moon import get_sun_moon_markdown
+from integrations.google_books import get_book_metadata, generate_book_markdown_fragment
 from integrations.gps_map_handler import (
     generate_gps_map_markdown,
     parse_gps_coordinates,
@@ -152,33 +149,6 @@ class MainWindowContext:
         return QCoreApplication.translate("MainWindowContext", text)
 
 
-class BookWorker(QRunnable):
-    """Worker pour la recherche de livre Amazon en arrière-plan."""
-
-    class Signals(QObject):
-        finished = pyqtSignal(str, bool)  # markdown_fragment, has_selection
-        error = pyqtSignal(str)
-
-    def __init__(self, isbn, has_selection):
-        super().__init__()
-        self.isbn = isbn
-        self.has_selection = has_selection
-        self.signals = self.Signals()
-
-    @pyqtSlot()
-    def run(self):
-        try:
-            book_data_json = get_book_info_from_amazon(self.isbn)  # Renamed function
-            markdown_fragment = generate_book_markdown_fragment(
-                book_data_json
-            )  # Renamed function
-            self.signals.finished.emit(
-                markdown_fragment, self.has_selection
-            )  # Renamed variable
-        except Exception as e:
-            self.signals.error.emit(str(e))
-
-
 class SunMoonWorker(QRunnable):
     """Worker pour la recherche des données astro en arrière-plan."""
 
@@ -202,6 +172,28 @@ class SunMoonWorker(QRunnable):
             self.signals.error.emit(error_message)
         else:
             self.signals.finished.emit(html_fragment)
+
+
+class BookIsbnWorker(QRunnable):
+    """Worker pour la recherche des métadonnées de livre en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str)
+        error = pyqtSignal(str)
+
+    def __init__(self, isbn):
+        super().__init__()
+        self.isbn = isbn
+        self.signals = self.Signals()
+
+    @pyqtSlot()
+    def run(self):
+        book_data, error_message = get_book_metadata(self.isbn)
+        if error_message:
+            self.signals.error.emit(error_message)
+        else:
+            markdown_fragment = generate_book_markdown_fragment(book_data)
+            self.signals.finished.emit(markdown_fragment)
 
 
 class NewFileDialog(QDialog):
@@ -961,8 +953,8 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_gps_map_action)
         integrations_menu.addAction(self.insert_youtube_video_action)
         integrations_menu.addAction(self.insert_weather_action)
-        integrations_menu.addAction(self.insert_amazon_book_action)
         integrations_menu.addAction(self.insert_sun_moon_action)
+        integrations_menu.addAction(self.insert_book_isbn_action)
         integrations_menu.addAction(self.convert_pdf_markdown_action)
         integrations_menu.addAction(self.convert_url_markdown_action)
 
@@ -1175,19 +1167,17 @@ class MainWindow(QMainWindow):
             statusTip=self.tr("Insérer une carte à partir d'une trace GPX"),
             triggered=self.insert_gpx_trace,
         )
+        self.insert_book_isbn_action = QAction(
+            self.tr("Livre ISBN"),
+            self,
+            statusTip=self.tr("Rechercher et insérer les métadonnées d'un livre par ISBN"),
+            triggered=self.insert_book_isbn,
+        )
         self.insert_weather_action = QAction(
             self.tr("Météo Weatherapi.com"),
             self,
             statusTip=self.tr("Insérer la météo actuelle"),
             triggered=self.insert_weather,
-        )
-        self.insert_amazon_book_action = QAction(
-            self.tr("Amazon ISBN"),
-            self,
-            statusTip=self.tr(
-                "Insérer les informations d'un livre depuis Amazon via son ISBN"
-            ),
-            triggered=self.insert_amazon_book,
         )
         self.insert_sun_moon_action = QAction(
             self.tr("Astro du jour"),
@@ -1561,18 +1551,6 @@ class MainWindow(QMainWindow):
         self.pdf_status_label.setStyleSheet("color: red; font-weight: bold;")
         self.pdf_status_label.setVisible(False)
         self.statusbar.addWidget(self.pdf_status_label, 1)
-
-        self.book_search_flash_timer = QTimer(self)
-        self.book_search_flash_timer.setInterval(500)
-        self.book_search_flash_timer.timeout.connect(
-            self._toggle_book_search_status_visibility
-        )
-        self.book_search_status_label = CenteredStatusBarLabel(
-            self.tr("Recherche du livre...")
-        )
-        self.book_search_status_label.setStyleSheet("color: red; font-weight: bold;")
-        self.book_search_status_label.setVisible(False)
-        self.statusbar.addWidget(self.book_search_status_label, 1)
 
         # ──────────────────────────────────────────────────────────────
         # Timer pour faire clignoter le message de sauvegarde du journal
@@ -2813,34 +2791,56 @@ class MainWindow(QMainWindow):
             self.editor.insert_text(markdown_fragment)
             self.statusbar.showMessage(self.tr("Météo insérée avec succès."), 3000)
 
-    def insert_amazon_book(self):
-        """Récupère et insère les informations d'un livre depuis Amazon via ISBN."""
-        has_selection = False
-        cursor = self.editor.text_edit.textCursor()
-        selected_text = cursor.selectedText().strip()
+    def insert_book_isbn(self):
+        """Recherche et insère les métadonnées d'un livre par ISBN."""
+        def _looks_like_isbn(text):
+            cleaned = re.sub(r"[^0-9X]", "", text.upper())
+            return len(cleaned) in (10, 13)
 
-        isbn = ""
-        if selected_text:
+        # 1. Texte sélectionné dans l'éditeur
+        selected_text = self.editor.text_edit.textCursor().selectedText().strip()
+        if selected_text and _looks_like_isbn(selected_text):
             isbn = selected_text
         else:
-            has_selection = True
-            text, ok = QInputDialog.getText(
-                self,
-                self.tr("Recherche de livre par ISBN"),
-                self.tr("Entrez le code ISBN du livre:"),
-            )
-            if ok and text:
-                isbn = text.strip()
+            # 2. Presse-papier
+            from PyQt5.QtWidgets import QApplication
+            clipboard_text = QApplication.clipboard().text().strip()
+            if clipboard_text and _looks_like_isbn(clipboard_text):
+                isbn = clipboard_text
+            else:
+                # 3. Saisie manuelle
+                isbn, ok = QInputDialog.getText(
+                    self,
+                    self.tr("Livre ISBN"),
+                    self.tr("Saisir l'ISBN du livre (10 ou 13 chiffres) :"),
+                )
+                if not ok or not isbn.strip():
+                    return
+                isbn = isbn.strip()
 
-        if not isbn:
-            return
+        self.statusbar.showMessage(
+            self.tr("Recherche du livre en cours..."), 0
+        )
 
-        # Afficher un message d'attente
-        self._start_book_search_flashing()
-        worker = self._create_book_worker(isbn, has_selection)
-        worker.signals.finished.connect(self.on_book_search_finished)
-        worker.signals.error.connect(self.on_book_search_error)
+        worker = BookIsbnWorker(isbn.strip())
+        worker.signals.finished.connect(self.on_book_isbn_finished)
+        worker.signals.error.connect(self.on_book_isbn_error)
         self.thread_pool.start(worker)
+
+    def on_book_isbn_finished(self, markdown_fragment):
+        """Insère le fragment Markdown du livre dans l'éditeur."""
+        self.statusbar.clearMessage()
+        self.editor.insert_text(f"\n{markdown_fragment}\n")
+        self.statusbar.showMessage(self.tr("Informations du livre insérées."), 3000)
+
+    def on_book_isbn_error(self, error_message):
+        """Affiche une erreur si la recherche du livre a échoué."""
+        self.statusbar.clearMessage()
+        QMessageBox.warning(
+            self,
+            self.tr("Erreur Livre ISBN"),
+            error_message,
+        )
 
     def insert_sun_moon_data(self):
         """Récupère et insère les données astro du jour."""
@@ -2880,26 +2880,6 @@ class MainWindow(QMainWindow):
         self.statusbar.clearMessage()
         QMessageBox.critical(self, self.tr("Erreur Astro"), error_message)
 
-    def _create_book_worker(self, isbn, has_selection):
-        """Crée et retourne un worker pour la recherche de livre."""
-        return BookWorker(isbn, has_selection)
-
-    def on_book_search_finished(self, markdown_fragment, has_selection):
-        """Insère le fragment Markdown du livre dans l'éditeur."""
-        self._stop_book_search_flashing()
-        if has_selection:
-            self.editor.text_edit.textCursor().removeSelectedText()
-        self.editor.insert_text(f"\n{markdown_fragment}\n")
-        self.statusbar.showMessage(
-            self.tr("Informations du livre insérées avec succès."), 5000
-        )
-
-    def on_book_search_error(self, error_message):
-        """Affiche une erreur si la recherche de livre a échoué."""
-        self._stop_book_search_flashing()
-        self.statusbar.clearMessage()
-        QMessageBox.critical(self, self.tr("Erreur de recherche"), error_message)
-
     def on_transcript_finished(self, transcript, lang):
         """Callback quand une transcription est trouvée."""
         self._stop_transcript_flashing()
@@ -2934,22 +2914,6 @@ class MainWindow(QMainWindow):
         self._stop_transcript_flashing()
         # Pas de message à l'utilisateur, c'est un comportement normal
         print(f"ℹ️ No transcript found for this video.")
-
-    def _start_book_search_flashing(self):
-        """Démarre le message clignotant pour la recherche de livre."""
-        self.book_search_status_label.setVisible(True)
-        self.book_search_flash_timer.start()
-
-    def _stop_book_search_flashing(self):
-        """Arrête le message clignotant de recherche de livre."""
-        self.book_search_flash_timer.stop()
-        self.book_search_status_label.setVisible(False)
-
-    def _toggle_book_search_status_visibility(self):
-        """Bascule la visibilité du label de statut de recherche de livre."""
-        self.book_search_status_label.setVisible(
-            not self.book_search_status_label.isVisible()
-        )
 
     def _start_backup_flashing(self):
         """Démarre le clignotement pendant une sauvegarde de journal"""

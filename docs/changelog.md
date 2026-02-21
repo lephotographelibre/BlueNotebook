@@ -1,3 +1,72 @@
+## V4.2.12 Add a new Integration for Book ISBN Issue [#198] [#196] [#199]
+
+1. Fix Issue [#198](https://github.com/lephotographelibre/BlueNotebook/issues/198)
+
+- Google Books + fallback Open Library (robuste).
+
+2. Fix Issue [#196](https://github.com/lephotographelibre/BlueNotebook/issues/196)
+V4.2.10 Doc: error in the asset pages #196
+
+3. Webclipper for BlueNotebook
+
+#### Fichiers créés
+
+| Fichier | Rôle |
+|---|---|
+| [bluenotebook_webclipper.js](dev/scripts/bluenotebook_webclipper.js) | Source lisible commentée (443 lignes) |
+| [bluenotebook_webclipper.min.js](dev/scripts/bluenotebook_webclipper.min.js) | Bookmarklet prêt à installer (8 Ko, une seule ligne) |
+| [bluenotebook_webclipper_install.html](dev/scripts/bluenotebook_webclipper_install.html) | Page d'installation avec bouton à glisser |
+
+
+
+#### Fonctionnement
+
+1. **Clic sur le bookmarklet** → un overlay s'affiche dans le navigateur
+2. **Champs modifiables** : Titre, Auteur, Tags (mise à jour de l'aperçu en temps réel)
+3. **Aperçu Markdown** directement modifiable dans la textarea
+4. **Copier & Fermer** → contenu dans le presse-papier
+5. **Coller** dans BlueNotebook avec `Ctrl+V`
+
+4. ARCHITECTURE.md
+
+Pour éviter le problème classique de “context loss” entre les sessions.  
+ 
+Le fichier ARCHITECTURE.md — la solution principale
+Crée un fichier à la racine de ton projet que tu colles au début de chaque conversation. Il doit contenir :
+
+Structure des dossiers (arbre complet avec rôle de chaque fichier)
+Flux de données principaux (ex: comment une note est créée/sauvegardée)
+Stack technique (frameworks, libs clés, versions)
+Conventions utilisées (nommage, patterns récurrents)
+Points d'entrée importants (fichiers à modifier souvent)
+
+Tu peux demander à Claude de générer ce fichier maintenant en lui donnant accès à ton code — il sera beaucoup plus précis que si tu l'écris à la main.
+
+Autres techniques complémentaires
+Prompt d'amorce standardisé — commence chaque session avec :
+
+"Voici l'architecture de Bluenotebook : [colle ARCHITECTURE.md]. Je veux ajouter X."
+
+5. Fix Issue [#199] Internal Links within Journal repository
+
+Fix Issue [#199](https://github.com/lephotographelibre/BlueNotebook/issues/199)
+V4.2.10 Internal Links within Journal repository #199
+Le fix est appliqué. Maintenant, quand tu cliques sur un lien interne vers un fichier Markdown dans l'aperçu HTML :
+
+Si la note en cours n'est pas modifiée → le document lié s'ouvre directement
+Si la note en cours a des modifications non sauvegardées → la boîte de dialogue "Sauvegarder / Ne pas sauvegarder / Annuler" s'affiche avant d'ouvrir le lien
+
+## V4.2.11 @@BlueNotebook Supprimer Integration Amazon issue [#197]
+
+Fix issue [#197](https://github.com/lephotographelibre/BlueNotebook/issues/197) V4.2.10 Inetgration: Amazon ISBN broker #197
+
+
+je voudrais supprimer tout ce qui concerne l'intégration Amazon ISBN
+- Menu Integration + code main_windows.py
+- Code integrations/amazon_books.py
+- Suppression des entrees dans le fichiers .ts de traduction
+- docs html & md
+
 ## V4.2.10 Fix Issue [#169] Intenal Links 
 
 Fix Issue [#169](https://github.com/lephotographelibre/BlueNotebook/issues/169)

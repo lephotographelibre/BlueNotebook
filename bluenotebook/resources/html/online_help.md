@@ -449,7 +449,15 @@ This feature is extremely useful for taking notes, searching for keywords in a v
 
 **Configuration:** You can control this feature in `Preferences > Integrations` via the checkbox `"Allow display of YouTube video transcripts in the Markdown editor"`. Note that this option is only active if the main YouTube integration is itself authorized.
 
-### 9.7 Inserting the Day's Astronomical Data
+### 9.5 Inserting the Quote of the Day
+
+Start your day with an inspiring thought. BlueNotebook can retrieve a famous quote and insert it into your note.
+
+- **At startup:** If the option is enabled in `Preferences > Integrations`, a window displaying the quote of the day will appear at the launch of the application.
+- **Manually:** At any time, you can go to the `Integrations > Quote of the day` menu to insert the current quote (formatted as a Markdown quote) where your cursor is.
+
+
+### 9.6 Inserting the Day's Astronomical Data
 
 Add the sunrise/sunset times and the phase of the moon for the city of your choice, ideal for a logbook or for noting the day's conditions.
 
@@ -462,7 +470,7 @@ Add the sunrise/sunset times and the phase of the moon for the city of your choi
   - A block of text in Markdown format containing the information (sunrise/sunset, moon phase) for your city will be inserted into your note.
 
 
-### 9.8 Converting a PDF to Markdown
+### 9.7 Converting a PDF to Markdown
 
 This powerful integration allows you to transform the textual content of a PDF file (local or remote) into a clean and editable Markdown document. It is the perfect tool for extracting the content of articles, reports or documents that you want to archive and make searchable in your journal.
 
@@ -474,7 +482,7 @@ This powerful integration allows you to transform the textual content of a PDF f
 
 **Note:** This feature relies on the `pymupdf4llm` library. The quality of the conversion depends on the structure of the source PDF (text-based PDFs work better than image-based ones).
 
-### 9.9 Converting a URL/HTML to Markdown
+### 9.8 Converting a URL/HTML to Markdown
 
 Transform any web page or local HTML file into a clean and readable Markdown note. This feature is ideal for archiving blog articles, technical documentation or any other web page that you want to keep and annotate.
 
@@ -488,12 +496,28 @@ Transform any web page or local HTML file into a clean and readable Markdown not
 5. The file is created and immediately opened in the editor, ready to be used.
 
 
-### 9.6 Inserting the Quote of the Day
+### 9.9 Book ISBN — Metadata via Google Books
 
-Start your day with an inspiring thought. BlueNotebook can retrieve a famous quote and insert it into your note.
+Automatically insert a complete book card (cover, author, publisher, summary, etc.) into your daily note by simply entering its ISBN.
 
-- **At startup:** If the option is enabled in `Preferences > Integrations`, a window displaying the quote of the day will appear at the launch of the application.
-- **Manually:** At any time, you can go to the `Integrations > Quote of the day` menu to insert the current quote (formatted as a Markdown quote) where your cursor is.
+This feature uses the **Google Books API** (no API key or authentication required). If the book is not found on Google Books, an **automatic fallback to Open Library** is performed.
+
+#### Usage
+
+1. Go to the `Integrations > Book ISBN` menu.
+2. A dialog box asks you to enter the book's ISBN (10 or 13 digits, with or without hyphens).
+3. Click **OK**. BlueNotebook launches the search in the background.
+4. If the book is found, a Markdown block is inserted in the editor with:
+  - The book **title** (linked to the Google Books or Open Library page)
+  - A **cover image** thumbnail
+  - The **author**, **publisher**, **publication date** and number of **pages**
+  - The **ISBN-13** (and ISBN-10 if available)
+  - A **summary** (truncated to 500 characters with a "Read more" link)
+  - The **source** used (Google Books or Open Library)
+
+
+**Note:** No prior configuration is needed. This integration works without an API key.
+
 
 
 ## 10. Advanced Search and Navigation by Tags
@@ -616,9 +640,9 @@ Here is a visual guide to all the features accessible from the menu bar.
     ├── GPX Trace: Generates an interactive map from a GPX trace file.
     ├── GPS Map: Generates and inserts a static map from GPS coordinates.
     ├── YouTube Video: Inserts a YouTube video or playlist with its thumbnail from a URL.
-    ├── Amazon Book ISBN: Inserts book information (title, author, publisher, summary) from an ISBN.
     ├── Quote of the day: Inserts the quote of the day (retrieved from the Internet) into your note.
     ├── Astronomical Data: Inserts the day's astronomical information (sunrise/sunset, moon phase).
+    ├── Book ISBN: Inserts a complete book card (cover, author, publisher, summary, etc.) from its ISBN via Google Books.
     ├── Convert PDF to Markdown: Converts a PDF file to Markdown text.
     └── Convert URL/HTML to Markdown: Converts a web page to Markdown text.
 
@@ -1070,7 +1094,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
 ---
 
 
-*This manual was written for BlueNotebook V4.2.10.*
+*This manual was written for BlueNotebook V4.2.12.*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
