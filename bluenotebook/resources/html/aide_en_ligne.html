@@ -237,7 +237,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="Icône BlueNotebook" class="header-icon">
-            Aide en Ligne - BlueNotebook V4.2.10</h1>
+            Aide en Ligne - BlueNotebook V4.2.12</h1>
     </header>
 
 <div class="main-container">
@@ -284,11 +284,11 @@
                     <li><a href="#youtube-video">9.4 Intégrer une Vidéo YouTube</a>
                         <ul><li><a href="#youtube-transcript">9.4.1 Récupération de la Transcription</a></li></ul>
                     </li>
-                    <li><a href="#amazon-isbn">9.5 Intégrer un Livre (Amazon ISBN)</a></li>
-                    <li><a href="#quote-of-the-day">9.6 Insérer la Citation du Jour</a></li>
-                    <li><a href="#astro-du-jour">9.7 Insérer les Données Astronomiques du Jour</a></li>
-                    <li><a href="#pdf-to-markdown">9.8 Convertir un PDF en Markdown</a></li>
-                    <li><a href="#url-to-markdown">9.9 Convertir une URL/HTML en Markdown</a></li>
+                    <li><a href="#quote-of-the-day">9.5 Insérer la Citation du Jour</a></li>
+                    <li><a href="#astro-du-jour">9.6 Insérer les Données Astronomiques du Jour</a></li>
+                    <li><a href="#pdf-to-markdown">9.7 Convertir un PDF en Markdown</a></li>
+                    <li><a href="#url-to-markdown">9.8 Convertir une URL/HTML en Markdown</a></li>
+                    <li><a href="#livre-isbn">9.9 Livre ISBN — Métadonnées via Google Books</a></li>
                 </ul>
             </li>
             <li><a href="#recherche-avancee">10. Recherche et Navigation Avancée</a></li>
@@ -789,8 +789,14 @@
         <p>Cette fonctionnalité est extrêmement utile pour la prise de notes, la recherche de mots-clés dans une vidéo ou pour conserver une trace écrite d'un contenu oral.</p>
         <p><strong>Configuration :</strong> Vous pouvez contrôler cette fonctionnalité dans <code>Préférences > Intégrations</code> via la case à cocher <code>"Autoriser l'affichage des transcripts de vidéo Youtube dans l'éditeur Markdown"</code>. Notez que cette option n'est active que si l'intégration YouTube principale est elle-même autorisée.</p>
 
-
-        <h3 id="astro-du-jour">9.7 Insérer les Données Astronomiques du Jour</h3>
+        <h3 id="quote-of-the-day">9.5 Insérer la Citation du Jour</h3>
+        <p>Commencez votre journée avec une pensée inspirante. BlueNotebook peut récupérer une citation célèbre et l'insérer dans votre note.</p>
+        <ul>
+            <li><strong>Au démarrage :</strong> Si l'option est activée dans <code>Préférences > Intégrations</code>, une fenêtre affichant la citation du jour apparaîtra au lancement de l'application.</li>
+            <li><strong>Manuellement :</strong> À tout moment, vous pouvez aller dans le menu <code>Intégrations > Citation du jour</code> pour insérer la citation actuelle (formatée comme une citation Markdown) à l'endroit où se trouve votre curseur.</li>
+        </ul>
+        
+        <h3 id="astro-du-jour">9.6 Insérer les Données Astronomiques du Jour</h3>
         <p>Ajoutez les heures de lever/coucher du soleil et la phase de la lune pour la ville de votre choix, idéal pour un journal de bord ou pour noter les conditions du jour.</p>
     <ol>
         <li><strong>Configuration initiale :</strong> Avant de pouvoir utiliser cette fonctionnalité, vous devez la configurer.
@@ -809,7 +815,7 @@
         </li>
     </ol>
 
-        <h3 id="pdf-to-markdown">9.8 Convertir un PDF en Markdown</h3>
+        <h3 id="pdf-to-markdown">9.7 Convertir un PDF en Markdown</h3>
         <p>Cette intégration puissante vous permet de transformer le contenu textuel d'un fichier PDF (local ou distant) en un document Markdown propre et éditable. C'est l'outil parfait pour extraire le contenu d'articles, de rapports ou de documents que vous souhaitez archiver et rendre consultables dans votre journal.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Conversion PDF-Markdown</code> ou faites un clic-droit sur un dossier dans le panneau "Notes".</li>
@@ -819,7 +825,7 @@
         </ol>
         <p><strong>Note :</strong> Cette fonctionnalité s'appuie sur la bibliothèque <code>pymupdf4llm</code>. La qualité de la conversion dépend de la structure du PDF source (les PDF basés sur du texte fonctionnent mieux que ceux basés sur des images).</p>
 
-        <h3 id="url-to-markdown">9.9 Convertir une URL/HTML en Markdown</h3>
+        <h3 id="url-to-markdown">9.8 Convertir une URL/HTML en Markdown</h3>
         <p>Transformez n'importe quelle page web ou fichier HTML local en une note Markdown propre et lisible. Cette fonctionnalité est idéale pour archiver des articles de blog, des documentations techniques ou toute autre page web que vous souhaitez conserver et annoter.</p>
         <ol>
             <li>Allez dans le menu <code>Intégrations > Conversion URL(HTML)-Markdown</code>.</li>
@@ -835,12 +841,27 @@
             <li>Le fichier est créé et immédiatement ouvert dans l'éditeur, prêt à être utilisé.</li>
         </ol>
 
-        <h3 id="quote-of-the-day">9.6 Insérer la Citation du Jour</h3>
-        <p>Commencez votre journée avec une pensée inspirante. BlueNotebook peut récupérer une citation célèbre et l'insérer dans votre note.</p>
-        <ul>
-            <li><strong>Au démarrage :</strong> Si l'option est activée dans <code>Préférences > Intégrations</code>, une fenêtre affichant la citation du jour apparaîtra au lancement de l'application.</li>
-            <li><strong>Manuellement :</strong> À tout moment, vous pouvez aller dans le menu <code>Intégrations > Citation du jour</code> pour insérer la citation actuelle (formatée comme une citation Markdown) à l'endroit où se trouve votre curseur.</li>
-        </ul>
+        <h3 id="livre-isbn">9.9 Livre ISBN — Métadonnées via Google Books</h3>
+        <p>Insérez automatiquement une fiche complète d'un livre (couverture, auteur, éditeur, résumé, etc.) dans votre note du jour, en saisissant simplement son ISBN.</p>
+        <p>Cette fonctionnalité utilise l'<strong>API Google Books</strong> (sans clé ni authentification requise). Si le livre n'est pas trouvé sur Google Books, un <strong>fallback automatique sur Open Library</strong> est effectué.</p>
+        <h4>Utilisation</h4>
+        <ol>
+            <li>Allez dans le menu <code>Intégrations &gt; Livre ISBN</code>.</li>
+            <li>Une boîte de dialogue vous demande de saisir l'ISBN du livre (10 ou 13 chiffres, avec ou sans tirets).</li>
+            <li>Cliquez sur <strong>OK</strong>. BlueNotebook lance la recherche en arrière-plan.</li>
+            <li>Si le livre est trouvé, un bloc Markdown est inséré dans l'éditeur avec :
+                <ul>
+                    <li>Le <strong>titre</strong> du livre (lié à la fiche Google Books ou Open Library)</li>
+                    <li>La <strong>couverture</strong> en miniature</li>
+                    <li>L'<strong>auteur</strong>, l'<strong>éditeur</strong>, la <strong>date de publication</strong> et le nombre de <strong>pages</strong></li>
+                    <li>L'<strong>ISBN-13</strong> (et l'ISBN-10 si disponible)</li>
+                    <li>Un <strong>résumé</strong> (tronqué à 500 caractères avec lien « Lire la suite »)</li>
+                    <li>La <strong>source</strong> utilisée (Google Books ou Open Library)</li>
+                </ul>
+            </li>
+        </ol>
+        <p><strong>Note :</strong> Aucune configuration préalable n'est nécessaire. Cette intégration fonctionne sans clé API.</p>
+
     </section>
 
 
@@ -958,9 +979,9 @@ Intégrations
 ├── Trace GPX : Génère une carte interactive à partir d'un fichier de trace GPX.
 ├── Carte GPS : Génère et insère une carte statique à partir de coordonnées GPS.
 ├── Vidéo YouTube : Insère une vidéo ou une playlist YouTube avec sa miniature à partir d'une URL.
-├── Livre Amazon ISBN : Insère les informations d'un livre (titre, auteur, éditeur, résumé) à partir d'un ISBN.
 ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
 ├── Données Astronomiques : Insère les informations astronomiques du jour (lever/coucher soleil/lune, phase lunaire).
+├── Livre ISBN : Insère une fiche complète d'un livre (couverture, auteur, éditeur, résumé, etc.) à partir de son ISBN via Google Books.
 ├── Convertir PDF en Markdown : Convertit un fichier PDF en texte Markdown.
 └── Convertir URL/HTML en Markdown : Convertit une page web en texte Markdown.
 
@@ -1447,7 +1468,7 @@ Aide
 
     <footer>
         <hr>
-        <p><em>Ce manuel a été rédigé pour la version V4.2.10 de BlueNotebook.</em></p>
+        <p><em>Ce manuel a été rédigé pour la version V4.2.12 de BlueNotebook.</em></p>
 
         <p>Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le <a href="https://github.com/lephotographelibre/BlueNotebook/issues">site du développeur</a>.</p>
         <p>BlueNotebook est un logiciel libre distribué sous les termes de la <a href="https://www.gnu.org/licenses/gpl-3.0.html">Licence Publique Générale GNU v3</a>.</p>
