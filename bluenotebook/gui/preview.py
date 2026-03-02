@@ -144,7 +144,7 @@ class MarkdownPreview(QWidget):
         self.profile.setCachePath(cache_path)
         self.profile.setPersistentStoragePath(cache_path)
 
-        self.custom_page = CustomWebEnginePage(self.profile, self.web_view, main_window=self.main_window)
+        self.custom_page = CustomWebEnginePage(self.profile, main_window=self.main_window)
         self.web_view.setPage(self.custom_page)
 
         self.web_view.setStyleSheet(
@@ -487,4 +487,4 @@ class MarkdownPreview(QWidget):
         """Libère les ressources de la vue web avant la fermeture."""
         self.web_view.setPage(None)
         if hasattr(self, "custom_page"):
-            self.custom_page.deleteLater()
+            del self.custom_page  # Python owns la page (pas de parent Qt) → suppression immédiate
