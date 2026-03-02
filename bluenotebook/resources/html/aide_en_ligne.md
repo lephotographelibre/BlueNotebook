@@ -518,6 +518,33 @@ Cette fonctionnalité utilise l'**API Google Books** (sans clé ni authentificat
 
 **Note :** Aucune configuration préalable n'est nécessaire. Cette intégration fonctionne sans clé API.
 
+### 9.10 Album Musique — Métadonnées via Discogs
+
+Insérez automatiquement une fiche complète d'un album de musique (pochette, artiste, label, tracklist, vidéos YouTube, etc.) dans votre note, en saisissant simplement le code-barres de l'album ou son identifiant Discogs.
+
+Cette fonctionnalité utilise l'**API Discogs**. Un **token Discogs** est requis : configurez-le dans `Préférences > Intégrations > DISCOGS TOKEN`.
+
+#### Utilisation
+
+1. Allez dans le menu `Intégrations > Album musique Discogs`.
+2. Une boîte de dialogue vous demande de saisir :
+  - Le **code-barres** de l'album (EAN/UPC, ex : `5 099703 203226`, avec ou sans espaces)
+  - Ou le **release ID Discogs** (ex : `r29696215`, `[r29696215]` ou simplement `29696215`)
+3. Cliquez sur **OK**. BlueNotebook lance la recherche en arrière-plan.
+4. Si l'album est trouvé, un bloc Markdown est inséré dans l'éditeur avec :
+  - Le **tag** `@@Musique`, le **nom de l'artiste** en gras et le **titre de l'album** avec lien vers la fiche Discogs
+  - La **pochette** de l'album
+  - Le **label**, le **format**, le **pays**, l'**année de sortie** et le(s) **genre(s)**
+  - La **liste des morceaux** sous forme de tableau (position, titre, artiste, album, durée)
+  - La **liste des vidéos YouTube** référencées par Discogs
+
+
+#### Configuration
+
+Avant d'utiliser cette intégration, renseignez votre token dans `Préférences > Intégrations > DISCOGS TOKEN` (champ de 50 caractères, mode masqué).
+
+Pour obtenir un token gratuit, créez un compte sur [discogs.com](https://www.discogs.com) puis rendez-vous dans vos paramètres développeur (*Developers settings*) pour générer un *Personal access token*.
+
 
 
 ## 10. Recherche et Navigation Avancée par Tags
@@ -643,6 +670,7 @@ Voici un guide visuel de toutes les fonctionnalités accessibles depuis la barre
     ├── Citation du jour : Insère la citation du jour (récupérée depuis Internet) dans votre note.
     ├── Données Astronomiques : Insère les informations astronomiques du jour (lever/coucher soleil/lune, phase lunaire).
     ├── Livre ISBN : Insère une fiche complète d'un livre (couverture, auteur, éditeur, résumé, etc.) à partir de son ISBN via Google Books.
+    ├── Album musique Discogs : Insère une fiche complète d'un album de musique (pochette, label, tracklist, vidéos YouTube) via l'API Discogs, à partir d'un code-barres ou d'un release ID.
     ├── Convertir PDF en Markdown : Convertit un fichier PDF en texte Markdown.
     └── Convertir URL/HTML en Markdown : Convertit une page web en texte Markdown.
 
@@ -1094,7 +1122,7 @@ Voici une liste des principales bibliothèques Python qui animent le projet Blue
 ---
 
 
-*Ce manuel a été rédigé pour la version V4.2.12 de BlueNotebook.*
+*Ce manuel a été rédigé pour la version V5.0.1 de BlueNotebook.*
 
 Si vous rencontrez des erreurs ou dysfonctionnements, vous pouvez notifier ceux-ci sur le [site du développeur](https://github.com/lephotographelibre/BlueNotebook/issues).
 

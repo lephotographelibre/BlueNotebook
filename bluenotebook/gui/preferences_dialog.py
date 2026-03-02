@@ -98,6 +98,9 @@ class PreferencesDialog(QDialog):
         self.tabs.addTab(self._create_display_tab(), self.tr("Affichage"))
         self.tabs.addTab(self._create_panels_tab(), self.tr("Panneaux"))
         self.tabs.addTab(self._create_integrations_tab(), self.tr("Intégrations"))
+        # Onglet IA — visible uniquement si IA_ENABLED=true
+        if os.getenv("IA_ENABLED", "").lower() == "true":
+            self.tabs.addTab(self._create_ia_tab(), self.tr("IA"))
 
         # Boutons Valider/Annuler
         self.button_box = QDialogButtonBox(
@@ -827,8 +830,134 @@ class PreferencesDialog(QDialog):
         astro_widget.setLayout(astro_layout)
         layout.addWidget(astro_widget)
 
+        # Album Musique Discogs
+        discogs_layout = QHBoxLayout()
+        discogs_layout.addWidget(QLabel(self.tr("Album musique Discogs")))
+
+        discogs_layout.addWidget(QLabel(self.tr("DISCOGS TOKEN :")))
+        self.discogs_token_edit = QLineEdit()
+        self.discogs_token_edit.setMaxLength(50)
+        self.discogs_token_edit.setEchoMode(QLineEdit.Password)
+        self.discogs_token_edit.setMinimumWidth(260)
+        self.discogs_token_edit.setText(
+            self.settings_manager.get("integrations.discogs.token", "")
+        )
+        discogs_layout.addWidget(self.discogs_token_edit)
+
+        discogs_layout.addStretch()
+        discogs_widget = QWidget()
+        discogs_widget.setLayout(discogs_layout)
+        layout.addWidget(discogs_widget)
+
         layout.addStretch()
         return widget
+
+    def _create_ia_tab(self):
+        """Crée l'onglet 'IA' (visible uniquement si IA_ENABLED=true).
+
+        Les deux fournisseurs IA (Ollama et Gemini) sont exclusifs :
+        cocher l'un désactive et grise l'autre. Par défaut : Gemini sélectionné.
+        """
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Lire les états sauvegardés
+        ollama_enabled = self.settings_manager.get("ia.ollama_enabled", False)
+        gemini_enabled = self.settings_manager.get("ia.gemini_enabled", True)
+        # Par défaut (aucun actif) : sélectionner Gemini
+        if not ollama_enabled and not gemini_enabled:
+            gemini_enabled = True
+
+        # --- Ollama ---
+        self.ollama_checkbox = QCheckBox(self.tr("Utiliser Ollama en local"))
+        self.ollama_checkbox.setChecked(ollama_enabled)
+        layout.addWidget(self.ollama_checkbox)
+
+        ollama_layout = QHBoxLayout()
+        ollama_layout.addWidget(QLabel(self.tr("URL Ollama :")))
+        self.ollama_url_edit = QLineEdit()
+        self.ollama_url_edit.setMaxLength(40)
+        self.ollama_url_edit.setFixedWidth(320)
+        self.ollama_url_edit.setText(
+            self.settings_manager.get("ia.ollama_url", "http://localhost:11434")
+        )
+        ollama_layout.addWidget(self.ollama_url_edit)
+        ollama_layout.addStretch()
+        ollama_widget = QWidget()
+        ollama_widget.setLayout(ollama_layout)
+        layout.addWidget(ollama_widget)
+
+        # --- Gemini ---
+        self.gemini_checkbox = QCheckBox(self.tr("Utiliser Gemini"))
+        self.gemini_checkbox.setChecked(gemini_enabled)
+        layout.addWidget(self.gemini_checkbox)
+
+        gemini_layout = QHBoxLayout()
+        gemini_layout.addWidget(QLabel(self.tr("GEMINI_API_KEY :")))
+        self.gemini_api_key_edit = QLineEdit()
+        self.gemini_api_key_edit.setMaxLength(40)
+        self.gemini_api_key_edit.setFixedWidth(320)
+        self.gemini_api_key_edit.setEchoMode(QLineEdit.Password)
+        self.gemini_api_key_edit.setText(
+            self.settings_manager.get("ia.gemini_api_key", "")
+        )
+        gemini_layout.addWidget(self.gemini_api_key_edit)
+        gemini_layout.addStretch()
+        gemini_widget = QWidget()
+        gemini_widget.setLayout(gemini_layout)
+        layout.addWidget(gemini_widget)
+
+        # Appliquer l'état initial : champ de saisie actif seulement si la case est cochée
+        self.ollama_url_edit.setEnabled(ollama_enabled)
+        self.gemini_api_key_edit.setEnabled(gemini_enabled)
+        # Griser l'autre fournisseur selon le choix initial
+        if ollama_enabled:
+            self.gemini_checkbox.setEnabled(False)
+            self.gemini_api_key_edit.setEnabled(False)
+        elif gemini_enabled:
+            self.ollama_checkbox.setEnabled(False)
+            self.ollama_url_edit.setEnabled(False)
+
+        # Connexion des signaux (exclusion mutuelle)
+        self.ollama_checkbox.toggled.connect(self._on_ia_ollama_toggled)
+        self.gemini_checkbox.toggled.connect(self._on_ia_gemini_toggled)
+
+        layout.addStretch()
+        return widget
+
+    def _on_ia_ollama_toggled(self, checked):
+        """Exclusion mutuelle : Ollama coché → Gemini décoché et grisé, et vice-versa."""
+        self.ollama_url_edit.setEnabled(checked)
+        if checked:
+            self.gemini_checkbox.blockSignals(True)
+            self.gemini_checkbox.setChecked(False)
+            self.gemini_checkbox.blockSignals(False)
+            self.gemini_checkbox.setEnabled(False)
+            self.gemini_api_key_edit.setEnabled(False)
+        else:
+            # Ollama décoché → Gemini redevient actif et coché automatiquement
+            self.gemini_checkbox.setEnabled(True)
+            self.gemini_checkbox.blockSignals(True)
+            self.gemini_checkbox.setChecked(True)
+            self.gemini_checkbox.blockSignals(False)
+            self.gemini_api_key_edit.setEnabled(True)
+
+    def _on_ia_gemini_toggled(self, checked):
+        """Exclusion mutuelle : Gemini coché → Ollama décoché et grisé, et vice-versa."""
+        self.gemini_api_key_edit.setEnabled(checked)
+        if checked:
+            self.ollama_checkbox.blockSignals(True)
+            self.ollama_checkbox.setChecked(False)
+            self.ollama_checkbox.blockSignals(False)
+            self.ollama_checkbox.setEnabled(False)
+            self.ollama_url_edit.setEnabled(False)
+        else:
+            # Gemini décoché → Ollama redevient actif et coché automatiquement
+            self.ollama_checkbox.setEnabled(True)
+            self.ollama_checkbox.blockSignals(True)
+            self.ollama_checkbox.setChecked(True)
+            self.ollama_checkbox.blockSignals(False)
+            self.ollama_url_edit.setEnabled(True)
 
     def _select_font(self):
         """Sélectionne la police pour l'éditeur."""
@@ -1298,6 +1427,25 @@ class PreferencesDialog(QDialog):
         self.settings_manager.set(
             "integrations.sun_moon.longitude", self.astro_lon_edit.text()
         )
+
+        # Sauvegarde du token Discogs
+        self.settings_manager.set(
+            "integrations.discogs.token", self.discogs_token_edit.text()
+        )
+
+        # Sauvegarde des paramètres IA (si onglet présent)
+        if hasattr(self, "ollama_checkbox"):
+            self.settings_manager.set(
+                "ia.ollama_enabled", self.ollama_checkbox.isChecked()
+            )
+            self.settings_manager.set("ia.ollama_url", self.ollama_url_edit.text())
+            self.settings_manager.set(
+                "ia.gemini_enabled", self.gemini_checkbox.isChecked()
+            )
+            self.settings_manager.set(
+                "ia.gemini_api_key", self.gemini_api_key_edit.text()
+            )
+
         # ... (le reste de la méthode accept originale)
         # NOTE: La logique de sauvegarde des autres onglets doit être ajoutée ici.
         # Pour l'instant, on appelle juste super().accept()

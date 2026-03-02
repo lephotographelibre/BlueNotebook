@@ -1,4 +1,33 @@
-## V4.2.12 Add a new Integration for Book ISBN Issue [#198] [#196] [#199]
+## V5.0.1 IA_Infra & Intégration Music Album Integration
+
+- Au demarrage de l'application tous les panneaux doivent etre fermé à l'exeception de l'editeur Markdown
+
+- dans BlueNotebook, je voudrais que les nouvelles fonctionnalités suivantes liées à la mise en oeuvre de l'IA n'apparaissent que si la variable d'environnement IA_ENABLED soit égale à true. dans tous les autres cas ces fonctionnalités ne devronts pas apparaitre. + MAJ settings.json
+
+- Correction Bug a la fermeture de l'application
+""Release of profile requested but WebEnginePage still not deleted. Expect troubles !"
+
+@@TODO
+
+- @@IA Si IA Mode Enabled Proposer de mettre en forme le transcript youtube avant insertion dans l'editeur (2 Mise en oeuvre Ollama et Gemini suivnat choix utilisateur)
+
+- @@IA Si IA Mode Enable traduire 
+    - soit la sélection dans la éditeur
+    - soit tout le document si pas de sélection
+
+BlueNotebookV5.0.1-1
+
+- Fix Issue [#1202](https://github.com/lephotographelibre/BlueNotebook/issues/202) V4.2.12 New Integration Discogs Music Album #202
+
+- I18n
+- Maj aide en ligne
+
+BlueNotebookV5.0.1-2
+
+git commit -a -m "V5.0.1 IA_Infra & Intégration Music Album Integration"
+
+
+## V4.2.12 Add a new Integration for Book ISBN Issue [#198] [#196]
 
 1. Fix Issue [#198](https://github.com/lephotographelibre/BlueNotebook/issues/198)
 

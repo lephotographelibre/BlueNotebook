@@ -119,6 +119,7 @@ from integrations.youtube_video import (
 )
 from integrations.sun_moon import get_sun_moon_markdown
 from integrations.google_books import get_book_metadata, generate_book_markdown_fragment
+from integrations.discogs_music import get_discogs_album, generate_discogs_markdown
 from integrations.gps_map_handler import (
     generate_gps_map_markdown,
     parse_gps_coordinates,
@@ -193,6 +194,29 @@ class BookIsbnWorker(QRunnable):
             self.signals.error.emit(error_message)
         else:
             markdown_fragment = generate_book_markdown_fragment(book_data)
+            self.signals.finished.emit(markdown_fragment)
+
+
+class DiscogsWorker(QRunnable):
+    """Worker pour la récupération des métadonnées d'un album Discogs en arrière-plan."""
+
+    class Signals(QObject):
+        finished = pyqtSignal(str)
+        error = pyqtSignal(str)
+
+    def __init__(self, query, token):
+        super().__init__()
+        self.query = query
+        self.token = token
+        self.signals = self.Signals()
+
+    @pyqtSlot()
+    def run(self):
+        release_data, error_message = get_discogs_album(self.query, self.token)
+        if error_message:
+            self.signals.error.emit(error_message)
+        else:
+            markdown_fragment = generate_discogs_markdown(release_data)
             self.signals.finished.emit(markdown_fragment)
 
 
@@ -756,7 +780,7 @@ class MainWindow(QMainWindow):
         self.setup_menu()
         self.setup_panels_toolbar()
         self.setup_notes_panel()
-        self.apply_settings()
+        self.apply_settings(startup=True)
         self.setup_connections()
 
         # Timer pour mettre à jour l'aperçu
@@ -955,8 +979,13 @@ class MainWindow(QMainWindow):
         integrations_menu.addAction(self.insert_weather_action)
         integrations_menu.addAction(self.insert_sun_moon_action)
         integrations_menu.addAction(self.insert_book_isbn_action)
+        integrations_menu.addAction(self.insert_discogs_album_action)
         integrations_menu.addAction(self.convert_pdf_markdown_action)
         integrations_menu.addAction(self.convert_url_markdown_action)
+        # Fonctionnalités IA — visibles uniquement si IA_ENABLED=true
+        if os.getenv("IA_ENABLED", "").lower() == "true":
+            integrations_menu.addSeparator()
+            integrations_menu.addAction(self.ia_translate_action)
 
         # Menu Aide
         help_menu = menubar.addMenu(self.tr("&Aide"))
@@ -1173,6 +1202,15 @@ class MainWindow(QMainWindow):
             statusTip=self.tr("Rechercher et insérer les métadonnées d'un livre par ISBN"),
             triggered=self.insert_book_isbn,
         )
+        self.insert_discogs_album_action = QAction(
+            self.tr("Album musique Discogs"),
+            self,
+            statusTip=self.tr(
+                "Rechercher et insérer les métadonnées d'un album via Discogs "
+                "(code-barres ou release ID)"
+            ),
+            triggered=self.insert_discogs_album,
+        )
         self.insert_weather_action = QAction(
             self.tr("Météo Weatherapi.com"),
             self,
@@ -1206,6 +1244,13 @@ class MainWindow(QMainWindow):
             self,
             statusTip=self.tr("Insérer un signet à partir d'une URL"),
             triggered=lambda: handle_insert_bookmark(self),
+        )
+        # Action IA (stub — visible uniquement si IA_ENABLED=true)
+        self.ia_translate_action = QAction(
+            self.tr("Traduire avec l'IA"),
+            self,
+            statusTip=self.tr("Traduire la sélection avec l'IA"),
+            triggered=self._ia_translate_stub,
         )
 
     def _setup_format_menu(self, format_menu):
@@ -2359,19 +2404,6 @@ class MainWindow(QMainWindow):
 
         return True
 
-    def closeEvent(self, event):
-        """Événement de fermeture de la fenêtre"""
-        if self.check_save_changes():
-            self.save_panel_visibility_settings()
-            event.accept()
-            # V3.3.8 - Assurer la suppression propre des widgets complexes
-            # pour éviter les erreurs "WebEnginePage still not deleted".
-            self.epub_reader_panel.deleteLater()
-            self.preview.deleteLater()
-
-        else:
-            event.ignore()
-
     def open_any_file(self):
         """Ouvre un fichier et l'aiguille vers l'éditeur ou le lecteur."""
         if not self.check_save_changes():
@@ -2842,6 +2874,53 @@ class MainWindow(QMainWindow):
             error_message,
         )
 
+    def insert_discogs_album(self):
+        """Recherche et insère les métadonnées d'un album de musique via Discogs."""
+        token = self.settings_manager.get("integrations.discogs.token", "")
+        if not token:
+            QMessageBox.warning(
+                self,
+                self.tr("Token Discogs manquant"),
+                self.tr(
+                    "Le token Discogs n'est pas configuré.\n"
+                    "Veuillez le renseigner dans 'Préférences > Intégrations'."
+                ),
+            )
+            return
+
+        query, ok = QInputDialog.getText(
+            self,
+            self.tr("Album musique Discogs"),
+            self.tr(
+                "Saisir le code-barres de l'album (ex : 5 099703 203226)\n"
+                "ou le release ID Discogs (ex : r29696215 ou [r29696215]) :"
+            ),
+        )
+        if not ok or not query.strip():
+            return
+
+        self.statusbar.showMessage(self.tr("Recherche de l'album en cours..."), 0)
+
+        worker = DiscogsWorker(query.strip(), token)
+        worker.signals.finished.connect(self.on_discogs_album_finished)
+        worker.signals.error.connect(self.on_discogs_album_error)
+        self.thread_pool.start(worker)
+
+    def on_discogs_album_finished(self, markdown_fragment):
+        """Insère le fragment Markdown de l'album dans l'éditeur."""
+        self.statusbar.clearMessage()
+        self.editor.insert_text(f"\n{markdown_fragment}\n")
+        self.statusbar.showMessage(self.tr("Informations de l'album insérées."), 3000)
+
+    def on_discogs_album_error(self, error_message):
+        """Affiche une erreur si la recherche de l'album a échoué."""
+        self.statusbar.clearMessage()
+        QMessageBox.warning(
+            self,
+            self.tr("Erreur Discogs"),
+            error_message,
+        )
+
     def insert_sun_moon_data(self):
         """Récupère et insère les données astro du jour."""
         city = self.settings_manager.get("integrations.sun_moon.city")
@@ -3138,6 +3217,10 @@ class MainWindow(QMainWindow):
         if not self.check_save_changes():
             return
         run_url_to_markdown_conversion(self, initial_url="", default_save_dir=directory)
+
+    def _ia_translate_stub(self):
+        """Stub — traduction IA non encore implémentée."""
+        pass
 
     def on_url_to_markdown_finished(self, markdown_content, output_file_path):
         """Slot appelé lorsque la conversion URL -> MD est terminée."""
@@ -3852,14 +3935,22 @@ class MainWindow(QMainWindow):
         )
         self.settings_manager.save_settings()
 
-    def apply_settings(self):
+    def apply_settings(self, startup=False):
         """Applique les paramètres chargés à l'interface utilisateur."""
-        # Récupérer l'état des panneaux depuis les paramètres
-        show_notes = self.settings_manager.get("ui.show_notes_panel", True)
-        show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
-        show_outline = self.settings_manager.get("ui.show_outline_panel", False)
-        show_preview = self.settings_manager.get("ui.show_preview_panel", True)
-        show_reader = self.settings_manager.get("ui.show_reader_panel", False)
+        # Au démarrage, tous les panneaux sont fermés sauf l'éditeur
+        if startup:
+            show_notes = False
+            show_nav = False
+            show_outline = False
+            show_preview = False
+            show_reader = False
+        else:
+            # Récupérer l'état des panneaux depuis les paramètres (après changement de préférences)
+            show_notes = self.settings_manager.get("ui.show_notes_panel", False)
+            show_nav = self.settings_manager.get("ui.show_navigation_panel", False)
+            show_outline = self.settings_manager.get("ui.show_outline_panel", False)
+            show_preview = self.settings_manager.get("ui.show_preview_panel", False)
+            show_reader = self.settings_manager.get("ui.show_reader_panel", False)
 
         # Bloquer temporairement les signaux pour éviter les appels en cascade
         self.notes_button.blockSignals(True)

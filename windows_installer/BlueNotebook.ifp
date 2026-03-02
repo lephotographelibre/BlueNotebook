@@ -4,7 +4,7 @@
   <Metadata productVersion="1.6.1" projectFileVersion="2.0"/>
   <ProductInformation>
     <Name>BlueNotebook</Name>
-    <Version>4.2.12</Version>
+    <Version>5.0.1</Version>
     <CompanyName>io.github.lephotographelibre</CompanyName>
     <WebURI>https://github.com/lephotographelibre/BlueNotebook</WebURI>
   </ProductInformation>
@@ -76,10 +76,10 @@
     <Program executableFilePath="" isLaunchEnabled="false" isTerminationEnabled="false"/>
   </VisualUpdateConfiguration>
   <BuildConfiguration>
-    <SetupFilePath>C:\Users\jmdig\github\BlueNotebook\windows_installer\BlueNotebook-Setup-4.2.12.exe</SetupFilePath>
+    <SetupFilePath>C:\Users\jmdig\github\BlueNotebook\windows_installer\BlueNotebook-Setup-5.0.1.exe</SetupFilePath>
     <SetupIconPath>C:\Users\jmdig\github\BlueNotebook\bluenotebook\resources\icons\bluenotebook_256-x256_fond_blanc.ico</SetupIconPath>
     <UninstallerIconPath>C:\Users\jmdig\github\BlueNotebook\bluenotebook\resources\icons\bluenotebook_256-x256_fond_blanc.ico</UninstallerIconPath>
-    <Compression method="0" level="2"/>
+    <Compression method="2" level="0"/>
     <CodeSigning isEnabled="false" signToolCommandLine="/n &quot;Subject&quot; /tr http://timestamp.digicert.com /td sha256 /fd sha256 &quot;&lt;ExecutableFilePath&gt;&quot;"/>
   </BuildConfiguration>
 </InstallForgeProject>

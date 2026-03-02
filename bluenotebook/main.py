@@ -67,6 +67,12 @@ def main():
     # --- ÉTAPE 1 : Charger les paramètres SILENCIEUSEMENT (avant QApplication) ---
     settings_manager = SettingsManager()
 
+    # Synchroniser ia.ia_enabled avec la variable d'environnement IA_ENABLED
+    ia_enabled = os.getenv("IA_ENABLED", "").lower() == "true"
+    settings_manager.set("ia.ia_enabled", ia_enabled)
+    settings_manager.save_settings()
+    print(f"✅ IA_ENABLED={ia_enabled} → ia.ia_enabled set in settings.json")
+
     # --- ÉTAPE 2 : Déterminer la langue ---
     forced_locale_str = os.getenv("BLUENOTEBOOK_LOCALE")
     settings_language = settings_manager.get("app.language")
@@ -224,7 +230,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        version = "4.2.12"
+        version = "5.0.1"
         app.setApplicationName("BlueNotebook")
         app.setApplicationVersion(version)
         app.setOrganizationName("BlueNotebook")

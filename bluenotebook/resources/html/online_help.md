@@ -518,6 +518,33 @@ This feature uses the **Google Books API** (no API key or authentication require
 
 **Note:** No prior configuration is needed. This integration works without an API key.
 
+### 9.10 Music Album — Metadata via Discogs
+
+Automatically insert a complete music album card (cover, artist, label, tracklist, YouTube videos, etc.) into your note by simply entering the album's barcode or its Discogs identifier.
+
+This feature uses the **Discogs API**. A **Discogs token** is required: configure it in `Preferences > Integrations > DISCOGS TOKEN`.
+
+#### Usage
+
+1. Go to the `Integrations > Music Album Discogs` menu.
+2. A dialog box asks you to enter:
+  - The album **barcode** (EAN/UPC, e.g. `5 099703 203226`, with or without spaces)
+  - Or the **Discogs release ID** (e.g. `r29696215`, `[r29696215]` or simply `29696215`)
+3. Click **OK**. BlueNotebook launches the search in the background.
+4. If the album is found, a Markdown block is inserted in the editor with:
+  - The **`@@Musique` tag**, the **artist name** in bold and the **album title** with a link to the Discogs page
+  - The album **cover image**
+  - The **label**, **format**, **country**, **release year** and **genre(s)**
+  - The **track list** as a table (position, title, artist, album, duration)
+  - The **YouTube videos** referenced by Discogs
+
+
+#### Configuration
+
+Before using this integration, enter your token in `Preferences > Integrations > DISCOGS TOKEN` (50-character field, hidden input).
+
+To obtain a free token, create an account on [discogs.com](https://www.discogs.com) and go to your developer settings (*Developers settings*) to generate a *Personal access token*.
+
 
 
 ## 10. Advanced Search and Navigation by Tags
@@ -643,6 +670,7 @@ Here is a visual guide to all the features accessible from the menu bar.
     ├── Quote of the day: Inserts the quote of the day (retrieved from the Internet) into your note.
     ├── Astronomical Data: Inserts the day's astronomical information (sunrise/sunset, moon phase).
     ├── Book ISBN: Inserts a complete book card (cover, author, publisher, summary, etc.) from its ISBN via Google Books.
+    ├── Music Album Discogs: Inserts a complete music album card (cover, label, tracklist, YouTube videos) via the Discogs API, from a barcode or a release ID.
     ├── Convert PDF to Markdown: Converts a PDF file to Markdown text.
     └── Convert URL/HTML to Markdown: Converts a web page to Markdown text.
 
@@ -1094,7 +1122,7 @@ Here is a list of the main Python libraries that power the BlueNotebook project,
 ---
 
 
-*This manual was written for BlueNotebook V4.2.12.*
+*This manual was written for BlueNotebook V5.0.1.*
 
 If you encounter errors or malfunctions, you can notify them on the [developer's site](https://github.com/lephotographelibre/BlueNotebook/issues).
 
