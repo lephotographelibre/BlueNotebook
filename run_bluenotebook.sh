@@ -101,6 +101,7 @@ export JOURNAL_DIRECTORY="/ssd/Dropbox/BlueNotebookJournal/"
 # Définir un répertoire de sauvegarde par défaut (optionnel, décommenter pour utiliser)
 # export BACKUP__DIRECTORY="/home/jm/Documents/BlueNotebook_Backups"
 export BACKUP__DIRECTORY="/ssd/Dropbox/BlueNotebookBackup/"
+export IA_ENABLED="true"
 
 #
 cd bluenotebook && "$PYTHON_EXEC" main.py "$@"

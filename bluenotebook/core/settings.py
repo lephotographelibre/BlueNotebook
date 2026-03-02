@@ -67,6 +67,7 @@ class SettingsManager:
                 "show_quote_of_the_day": False,
                 "weather": {"city": "", "api_key": ""},
                 "sun_moon": {"city": "", "latitude": "", "longitude": ""},
+                "discogs": {"token": ""},
             },
             "ui": {
                 "app_font_family": "Noto Sans",
@@ -96,6 +97,13 @@ class SettingsManager:
             },
             "backup": {
                 "last_directory": "",
+            },
+            "ia": {
+                "ia_enabled": False,
+                "ollama_enabled": False,
+                "ollama_url": "http://localhost:11434",
+                "gemini_enabled": True,
+                "gemini_api_key": "",
             },
         }
 

@@ -237,7 +237,7 @@
     <header>
         <h1>
             <img src="../images/bluenotebook_256-x256_fond_blanc.png" alt="BlueNotebook Icon" class="header-icon">
-            Online Help - BlueNotebook V4.2.12</h1>
+            Online Help - BlueNotebook V5.0.1</h1>
     </header>
 
 <div class="main-container">
@@ -289,6 +289,7 @@
                     <li><a href="#pdf-to-markdown">9.7 Converting a PDF to Markdown</a></li>
                     <li><a href="#url-to-markdown">9.8 Converting a URL/HTML to Markdown</a></li>
                     <li><a href="#book-isbn">9.9 Book ISBN — Metadata via Google Books</a></li>
+                    <li><a href="#discogs-album">9.10 Music Album — Metadata via Discogs</a></li>
                 </ul>
             </li>
             <li><a href="#advanced-search">10. Advanced Search and Navigation</a></li>
@@ -860,6 +861,33 @@
         </ol>
         <p><strong>Note:</strong> No prior configuration is needed. This integration works without an API key.</p>
 
+        <h3 id="discogs-album">9.10 Music Album — Metadata via Discogs</h3>
+        <p>Automatically insert a complete music album card (cover, artist, label, tracklist, YouTube videos, etc.) into your note by simply entering the album's barcode or its Discogs identifier.</p>
+        <p>This feature uses the <strong>Discogs API</strong>. A <strong>Discogs token</strong> is required: configure it in <code>Preferences &gt; Integrations &gt; DISCOGS TOKEN</code>.</p>
+        <h4>Usage</h4>
+        <ol>
+            <li>Go to the <code>Integrations &gt; Music Album Discogs</code> menu.</li>
+            <li>A dialog box asks you to enter:
+                <ul>
+                    <li>The album <strong>barcode</strong> (EAN/UPC, e.g. <code>5 099703 203226</code>, with or without spaces)</li>
+                    <li>Or the <strong>Discogs release ID</strong> (e.g. <code>r29696215</code>, <code>[r29696215]</code> or simply <code>29696215</code>)</li>
+                </ul>
+            </li>
+            <li>Click <strong>OK</strong>. BlueNotebook launches the search in the background.</li>
+            <li>If the album is found, a Markdown block is inserted in the editor with:
+                <ul>
+                    <li>The <strong><code>@@Musique</code> tag</strong>, the <strong>artist name</strong> in bold and the <strong>album title</strong> with a link to the Discogs page</li>
+                    <li>The album <strong>cover image</strong></li>
+                    <li>The <strong>label</strong>, <strong>format</strong>, <strong>country</strong>, <strong>release year</strong> and <strong>genre(s)</strong></li>
+                    <li>The <strong>track list</strong> as a table (position, title, artist, album, duration)</li>
+                    <li>The <strong>YouTube videos</strong> referenced by Discogs</li>
+                </ul>
+            </li>
+        </ol>
+        <h4>Configuration</h4>
+        <p>Before using this integration, enter your token in <code>Preferences &gt; Integrations &gt; DISCOGS TOKEN</code> (50-character field, hidden input).</p>
+        <p>To obtain a free token, create an account on <a href="https://www.discogs.com" target="_blank">discogs.com</a> and go to your developer settings (<em>Developers settings</em>) to generate a <em>Personal access token</em>.</p>
+
     </section>
 
 
@@ -980,6 +1008,7 @@ Integrations
 ├── Quote of the day: Inserts the quote of the day (retrieved from the Internet) into your note.
 ├── Astronomical Data: Inserts the day's astronomical information (sunrise/sunset, moon phase).
 ├── Book ISBN: Inserts a complete book card (cover, author, publisher, summary, etc.) from its ISBN via Google Books.
+├── Music Album Discogs: Inserts a complete music album card (cover, label, tracklist, YouTube videos) via the Discogs API, from a barcode or a release ID.
 ├── Convert PDF to Markdown: Converts a PDF file to Markdown text.
 └── Convert URL/HTML to Markdown: Converts a web page to Markdown text.
 
@@ -1466,7 +1495,7 @@ Help
 
     <footer>
         <hr>
-        <p><em>This manual was written for BlueNotebook V4.2.12.</em></p>
+        <p><em>This manual was written for BlueNotebook V5.0.1.</em></p>
 
         <p>If you encounter errors or malfunctions, you can notify them on the <a href="https://github.com/lephotographelibre/BlueNotebook/issues">developer's site</a>.</p>
         <p>BlueNotebook is free software distributed under the terms of the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3</a>.</p>

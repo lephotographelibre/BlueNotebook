@@ -368,7 +368,7 @@ class EpubReaderPanel(QWidget):
 
         self.stacked_viewer = QStackedWidget()
         self.web_view = CustomWebEngineView(self)
-        self.web_page = QWebEnginePage(self.profile, self.web_view)
+        self.web_page = QWebEnginePage(self.profile)
         self.web_view.setPage(self.web_page)
         self.pdf_viewer = PdfViewer(settings_manager=self.settings_manager, parent=self)
         self.web_view.scroll_position_changed.connect(self.sync_toc_from_scroll)
@@ -1068,6 +1068,5 @@ class EpubReaderPanel(QWidget):
         """
         self.web_view.setPage(None)
         if hasattr(self, 'web_page'):
-            self.web_page.deleteLater()
-        self.web_view.deleteLater()
+            del self.web_page  # Python owns la page (pas de parent Qt) → suppression immédiate
         super().closeEvent(event)
